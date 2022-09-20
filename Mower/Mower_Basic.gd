@@ -49,35 +49,26 @@ func get_input():
 	input_dir = input_dir.normalized()
 	
 	
-	
 	return input_dir
 
+"""
+	Function to handle pause button being pressed
+	
+	TODO: maybe move this function out of the _input() function and into
+	the main script
+"""
 func _input(event):
 	if Input.is_action_just_released("pause"):
 		pause = !pause
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		
-	
+
+"""
+	Function is used for rotating of the camera
+"""
 func _unhandled_input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		
 		rotate_y(-event.relative.x * mouse_sensitivity)
-		
 
-
-"""
-	Function to update the HUD. 
-"""
-func update_pos_speed_info():
-	var current_pos = transform.origin.round()
-	var xPos = "X: "+ str(current_pos.x)
-	var yPos = "Y: "+ str(current_pos.y)
-	var zPos = "Z: "+ str(current_pos.z)
-		
-	xyz_speed_position_display.text = xPos + "\n" + yPos + "\n" + zPos + "\n" + "Speed: " + str(max_speed)
-	 
-	
-	
 """
 	Main loop for this script
 """
@@ -91,29 +82,60 @@ func _physics_process(delta):
 		
 		#get user input movement
 		var user_input_movement = get_input() * max_speed
-
 		velocity.x = user_input_movement.x
 		velocity.z = user_input_movement.z
 		
-		
-		if jump:	
-			jump = false
-			velocity.y = 0
-			velocity.y += jump_strength
-		velocity = move_and_slide(velocity,Vector3.UP,true)
-		for i in get_slide_count():
-			var collision = get_slide_collision(i)
-			
-			##TO DO: change this_is_test to something more descriptive
-			emit_signal("this_is_test",collision)
+		jump()
+		move()
 	
+	##for devolper usage: display some information on the screen
 	update_pos_speed_info()
-	
+
+
 """
 	Internal function to move the mower from point to another (not to be confused with
 	move_slide as this will do it without simulating movement)
+	
+	@param x,y,z: three different values relating to the position in area
 """
 func go_to(x, y, z):
 	self.transform.origin.x = x
 	self.transform.origin.z = z
 	self.transform.origin.y = y
+
+"""
+	Internal method to simulate a jump
+	
+	TODO: prevent the double,triple.... jump
+"""
+func jump():
+	if jump:	
+		jump = false
+		velocity.y = 0
+		velocity.y += jump_strength
+
+"""
+	Internal method to move the mower around. This functions usage is to 
+	make the the physics function easier to read
+"""
+func move():
+	velocity = move_and_slide(velocity,Vector3.UP,true)
+	for i in get_slide_count():
+		var collision = get_slide_collision(i)
+			
+		##TO DO: change this_is_test to something more descriptive
+		emit_signal("this_is_test",collision)
+
+"""
+	Deveolper function to update the HUD. 
+"""
+func update_pos_speed_info():
+	var current_pos = transform.origin.round()
+	var xPos = "X: "+ str(current_pos.x)
+	var yPos = "Y: "+ str(current_pos.y)
+	var zPos = "Z: "+ str(current_pos.z)
+		
+	xyz_speed_position_display.text = xPos + "\n" + yPos + "\n" + zPos + "\n" + "Speed: " + str(max_speed)
+	 
+	
+	

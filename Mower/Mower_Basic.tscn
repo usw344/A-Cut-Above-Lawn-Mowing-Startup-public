@@ -42,9 +42,6 @@ transform = Transform( 5.09433e-07, -0.268549, 0.963265, -0.00011004, 0.963266, 
 current = true
 fov = 98.4375
 
-[node name="distant_view" type="Camera" parent="."]
-transform = Transform( -0.999991, -0.00404971, -0.00077963, -0.00404974, 0.928531, 0.371232, -0.000779474, 0.371232, -0.928539, -7.13927, 0.904489, 2.69509 )
-
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0565352, 0 )
 shape = SubResource( 5 )
