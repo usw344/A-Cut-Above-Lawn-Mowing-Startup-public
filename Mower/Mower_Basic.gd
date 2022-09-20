@@ -28,7 +28,8 @@ func _ready():
 	
 	
 	
-
+"""
+"""
 func get_input():	
 	var input_dir = Vector3()
 	if Input.is_action_pressed("move_forward"):
