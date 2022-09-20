@@ -29,6 +29,9 @@ func _ready():
 	
 	
 """
+	Function to get user input. Currently linked to the basic mower. 
+	
+	@returns a Vector3 containing the move directions
 """
 func get_input():	
 	var input_dir = Vector3()
@@ -83,11 +86,15 @@ func _physics_process(delta):
 	if pause:
 		max_speed = hud_model.get_current_speed(max_speed)
 	else:
+		##set the gravity effect on movement
 		velocity.y += gravity * delta
-		var desired_velocity = get_input() * max_speed
+		
+		#get user input movement
+		var user_input_movement = get_input() * max_speed
 
-		velocity.x = desired_velocity.x
-		velocity.z = desired_velocity.z
+		velocity.x = user_input_movement.x
+		velocity.z = user_input_movement.z
+		
 		
 		if jump:	
 			jump = false
@@ -102,12 +109,11 @@ func _physics_process(delta):
 	
 	update_pos_speed_info()
 	
-
+"""
+	Internal function to move the mower from point to another (not to be confused with
+	move_slide as this will do it without simulating movement)
+"""
 func go_to(x, y, z):
 	self.transform.origin.x = x
 	self.transform.origin.z = z
 	self.transform.origin.y = y
-
-
-func _on_Ground_list_current_cell_ident(cell_item_ident):
-	hud_model.get_label("cell_item_ident").text = "Current collision with non -1: " + str(cell_item_ident)
