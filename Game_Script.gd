@@ -55,7 +55,6 @@ func assign_button_action(button_name):
 	match button_name:
 		"Play":
 			new_game()
-		
 		"Settings":
 			#change the scene to the settings menu
 			
@@ -66,7 +65,7 @@ func assign_button_action(button_name):
 			
 			assign_button_key_press(current_menu.get_buttons())
 		"Saved Games":
-			set_menu("saved_games")
+			pass
 		"Main_Menu":
 						
 			next_menu = load("res://Menus/Main_Menu/Main_Menu.tscn").instance()
@@ -75,15 +74,9 @@ func assign_button_action(button_name):
 			current_menu = next_menu
 			
 			assign_button_key_press(current_menu.get_buttons())
-	
-"""
-	Internal method to display menu that is clicked/action is done to bring up. 
-	This function also assigns correct mouse mode
-"""
-func set_menu(menu_key):
-	print(menu_key)
+
 
 func _input(event):
 	if Input.is_action_just_released("pause"):
-		set_menu("pause")
+		pass
 

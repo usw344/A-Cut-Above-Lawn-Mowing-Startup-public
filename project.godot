@@ -17,6 +17,10 @@ run/main_scene="res://Main.tscn"
 
 window/size/height=720
 
+[global]
+
+auto=false
+
 [input]
 
 move_forward={

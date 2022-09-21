@@ -21,7 +21,7 @@ var pause = false
 
 func _ready():
 	 #prepare variables from the model
-	xyz_speed_position_display = hud_model.get_label("position_label")
+#	xyz_speed_position_display = hud_model.get_label("position_label")
 	
 	#this is the placeholder for start position. TO DO: Make this relative rather then hardcoded
 	go_to(-5,0,50)
@@ -51,16 +51,16 @@ func get_input():
 	
 	return input_dir
 
-"""
-	Function to handle pause button being pressed
-	
-	TODO: maybe move this function out of the _input() function and into
-	the main script
-"""
-func _input(event):
-	if Input.is_action_just_released("pause"):
-		pause = !pause
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+#"""
+#	Function to handle pause button being pressed
+#
+#	TODO: maybe move this function out of the _input() function and into
+#	the main script
+#"""
+#func _input(event):
+#	if Input.is_action_just_released("pause"):
+#		pause = !pause
+#		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 """
 	Function is used for rotating of the camera
@@ -135,7 +135,7 @@ func update_pos_speed_info():
 	var yPos = "Y: "+ str(current_pos.y)
 	var zPos = "Z: "+ str(current_pos.z)
 		
-	xyz_speed_position_display.text = xPos + "\n" + yPos + "\n" + zPos + "\n" + "Speed: " + str(max_speed)
+#	xyz_speed_position_display.text = xPos + "\n" + yPos + "\n" + zPos + "\n" + "Speed: " + str(max_speed)
 	 
 	
 	
