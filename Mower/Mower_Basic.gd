@@ -1,7 +1,6 @@
 extends KinematicBody
 ##
 onready var camera = $Pivot/Camera
-onready var hud_model = $HUD
 onready var xyz_speed_position_display
 
 var gravity = -30
@@ -73,20 +72,16 @@ func _unhandled_input(event):
 	Main loop for this script
 """
 func _physics_process(delta):
-
-	if pause:
-		max_speed = hud_model.get_current_speed(max_speed)
-	else:
-		##set the gravity effect on movement
-		velocity.y += gravity * delta
+	##set the gravity effect on movement
+	velocity.y += gravity * delta
 		
-		#get user input movement
-		var user_input_movement = get_input() * max_speed
-		velocity.x = user_input_movement.x
-		velocity.z = user_input_movement.z
+	#get user input movement
+	var user_input_movement = get_input() * max_speed
+	velocity.x = user_input_movement.x
+	velocity.z = user_input_movement.z
 		
-		jump()
-		move()
+	handle_jump()
+	move()
 	
 	##for devolper usage: display some information on the screen
 	update_pos_speed_info()
@@ -108,7 +103,7 @@ func go_to(x, y, z):
 	
 	TODO: prevent the double,triple.... jump
 """
-func jump():
+func handle_jump():
 	if jump:	
 		jump = false
 		velocity.y = 0

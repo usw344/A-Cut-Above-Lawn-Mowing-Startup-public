@@ -76,7 +76,7 @@ func assign_button_action(button_name):
 			assign_button_key_press(current_menu.get_buttons())
 
 
-func _input(event):
+func _input(_event):
 	if Input.is_action_just_released("pause"):
 		pass
 

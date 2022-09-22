@@ -36,4 +36,4 @@ func calc_time_in_string_format(time_in_raw_seconds):
 	
 """
 func update_money_label():
-	pass
+	return timer_label.text
