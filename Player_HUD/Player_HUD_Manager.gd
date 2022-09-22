@@ -30,3 +30,10 @@ func calc_time_in_string_format(time_in_raw_seconds):
 	var time_string := "%02d:%02d:%02d" % [minutes, seconds, milliseconds]
 	
 	return time_string
+
+"""
+	Function to keep updating the the label listing money made.
+	
+"""
+func update_money_label():
+	pass
