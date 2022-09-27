@@ -1,7 +1,6 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Mower/Mower_Basic.gd" type="Script" id=2]
-[ext_resource path="res://Player_HUD/Player_HUD.tscn" type="PackedScene" id=3]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 4, 2, 2 )
@@ -40,8 +39,6 @@ transform = Transform( 5.09433e-07, -0.268549, 0.963265, -0.00011004, 0.963266, 
 current = true
 fov = 98.4375
 
-[node name="CollisionShape" type="CollisionShape" parent="."]
+[node name="Base_of_Mower" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0565352, 0 )
 shape = SubResource( 5 )
-
-[node name="CanvasLayer" parent="." instance=ExtResource( 3 )]
