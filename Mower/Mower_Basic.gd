@@ -12,7 +12,7 @@ var jump = false
 var jump_strength = 10
 
 var velocity = Vector3()
-signal this_is_test
+signal collided
 
 
 #to see if the mode is currentlly paused
@@ -119,7 +119,7 @@ func move():
 		var collision = get_slide_collision(i)
 			
 		##TO DO: change this_is_test to something more descriptive
-		emit_signal("this_is_test",collision)
+		emit_signal("collided",collision)
 
 """
 	Deveolper function to update the HUD. 

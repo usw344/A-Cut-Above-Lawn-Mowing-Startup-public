@@ -9,7 +9,7 @@ func _ready():
 	pass
 
 
-func _on_Mower_this_is_test(collision):
+func mower_collided_handle(collision):
 	var grid_position = gridmap.world_to_map(collision.position-collision.normal)
 	
 	

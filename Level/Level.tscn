@@ -107,4 +107,4 @@ anims/sun_rotate = SubResource( 5 )
 
 [node name="Player_HUD" parent="." instance=ExtResource( 6 )]
 
-[connection signal="this_is_test" from="Mower" to="Ground" method="_on_Mower_this_is_test"]
+[connection signal="collided" from="Mower" to="Ground" method="mower_collided_handle"]
