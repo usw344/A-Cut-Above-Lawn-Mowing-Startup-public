@@ -90,33 +90,6 @@ func get_noise(grid,x_constraint,y_constraint,z_constraint):
 			for z in z_constraint:
 				var current_noise = noise.get_noise_2d(x,z)
 				grid[Vector2(x,z)] = current_noise
-#
-#"""
-#	Function to draw the start point for player
-#"""
-#func place_start_area(grid_id):
-#	var width = grids[grid_id][1]
-#	var height = grids[grid_id][2]
-#	var length = grids[grid_id][3]
-#
-##
-##	##first place the "floor" after the top layer has been removed
-##	for x in width:
-##		for y in height:
-##			for z in length:
-##				set_cell_item(x,0,z,block_list["ground_block"])
-#
-#	var size = 10
-#	var mid_point_x = width/2 - size
-#	var mid_point_z = length/2  
-#
-#
-##	#for any grid size this makes a small space to act as starting point.
-##	for x in range(mid_point_x, mid_point_x + size, 1):
-##		for y in range (1):
-##			for z in range (-size,0,1):
-##				set_cell_item(z,0,x,3)
-##				#set_cell_item(x,-1,z,3)
 
 """
 	Function to allow editing a grid

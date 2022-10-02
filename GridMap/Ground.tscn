@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://GridMap/basic_lawn_ground.gd" type="Script" id=1]
-[ext_resource path="res://GridMap/basic_meshlib_2.tres" type="MeshLibrary" id=2]
+[ext_resource path="res://GridMap/generate_grid.gd" type="Script" id=1]
+[ext_resource path="res://GridMap/current_in_use_mesh_lib.tres" type="MeshLibrary" id=2]
 [ext_resource path="res://GridMap/Ground.gd" type="Script" id=3]
 
 [node name="Ground" type="Spatial"]
@@ -10,9 +10,6 @@ script = ExtResource( 3 )
 [node name="GridMap" type="GridMap" parent="."]
 mesh_library = ExtResource( 2 )
 cell_center_y = false
-data = {
-"cells": PoolIntArray(  )
-}
 script = ExtResource( 1 )
 __meta__ = {
 "_editor_clip_": 0

@@ -1,6 +1,6 @@
 extends Node
 
-var level = preload("res://Level/Level.tscn")
+var level = preload("res://Level/Current_Job.tscn")
 
 
 
