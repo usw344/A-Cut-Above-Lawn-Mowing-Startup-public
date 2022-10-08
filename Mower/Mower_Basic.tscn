@@ -15,7 +15,7 @@ albedo_color = Color( 0.376471, 0.188235, 0.713726, 1 )
 [sub_resource type="BoxShape" id=5]
 extents = Vector3( 1, 0.0366496, 0.903114 )
 
-[node name="Mower_with_out_raycast" type="KinematicBody"]
+[node name="Mower_Basic" type="KinematicBody"]
 transform = Transform( 0.0109082, 0, -0.999941, 0, 1, 0, 0.999941, 0, 0.0109082, 0, 0, 0 )
 script = ExtResource( 2 )
 

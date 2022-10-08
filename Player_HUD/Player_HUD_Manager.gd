@@ -2,10 +2,14 @@ extends CanvasLayer
 
 ##time since the "job" started
 var elaspsed_time = 0.0
+
+##store refernces of the different nodes
 onready var timer_label = $Time_and_Job_Container/Current_Elasped_Time
 onready var storage_progress_bar = $Storage_ProgressBar
-var current_storage_value = 0
+onready var money_label = $Top_bar_Container/Money_And_Label_Container/Money_Number
 
+var current_storage_value = 0
+var current_fuel_value = 100
 ############################################### Main file Functions $$$$$$$$$$$$$
 
 
@@ -47,7 +51,7 @@ func update_money_label():
 	return timer_label.text
 
 
-############################################### Progress Bar Functiona $$$$$$$$$$$$$
+############################################### Storage ProgressBar Functions $$$$$$$$$$$$$
 
 """
 	Function to add to the storage 
@@ -62,3 +66,32 @@ func add_to_storage(value = 1):
 """
 func update_progress_bar():
 	storage_progress_bar.value = current_storage_value
+
+func clear_storage_handler():
+	current_storage_value = 0
+	update_progress_bar()
+	
+func get_storage_value():
+	return current_storage_value
+############################################### Fuel Bar Functions $$$$$$$$$$$$$
+"""
+	Internal function to set the fuel progress bar to be the fuel stored in script
+"""
+func update_fuel():
+	$Fuel_Bar.value = current_fuel_value 
+
+func set_current_fuel_value(new_value):
+	current_fuel_value = new_value
+	update_fuel()
+
+func get_current_fuel_value():
+	return $Fuel_Bar.value
+
+"""
+	Function to update money label
+"""
+func add_value_to_money_label(value):
+	var current_value = int(money_label.text)
+	current_value+= value
+	money_label.text = String(current_value)
+	

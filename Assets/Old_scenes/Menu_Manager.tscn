@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Old_scenes/Menu_Manager.gd" type="Script" id=1]
-[ext_resource path="res://Old_scenes/Start_Screen.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Old_scenes/Pause_Menu.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Assets/Old_scenes/Menu_Manager.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Old_scenes/Start_Screen.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Old_scenes/Pause_Menu.tscn" type="PackedScene" id=3]
 
 [node name="Menu_Manager" type="Node"]
 script = ExtResource( 1 )

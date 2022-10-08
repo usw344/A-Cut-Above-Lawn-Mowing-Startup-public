@@ -50,17 +50,6 @@ func get_input():
 	
 	return input_dir
 
-#"""
-#	Function to handle pause button being pressed
-#
-#	TODO: maybe move this function out of the _input() function and into
-#	the main script
-#"""
-#func _input(event):
-#	if Input.is_action_just_released("pause"):
-#		pause = !pause
-#		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-
 """
 	Function is used for rotating of the camera
 """
@@ -132,5 +121,4 @@ func update_pos_speed_info():
 		
 #	xyz_speed_position_display.text = xPos + "\n" + yPos + "\n" + zPos + "\n" + "Speed: " + str(max_speed)
 	 
-	
 	
