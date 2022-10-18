@@ -48,8 +48,9 @@ func handle_mower_collision(collision):
 		empty_storage()
 	
 	if current_name == "Fuel_Truck":
-		print("printing")
+		pay_for_fuel()
 
+	##if storage is not full and collision is with a block
 	if get_storage_value() != 100:
 		
 		#get location of the block that was collided with
@@ -62,7 +63,8 @@ func handle_mower_collision(collision):
 			##update mower storage and fuel. for now just use a raw value of -1 -1. 
 			receive_update({"fuel":compute_fuel_loss(true),"storage":value_of_mowed_grass_in_storage})
 	
-	else: ##the storage is full and the collision is not with a truck either
+	##the storage is full and the collision is not with a truck either
+	else: 
 		if not storage_is_full_limter:
 			print("storage_is_full") #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
 		storage_is_full_limter = true
@@ -126,7 +128,6 @@ func compute_fuel_loss(is_block):
 			fuel_whole_number_counter = 0
 			return 1
 	
-	
 	return 0
 
 """
@@ -135,6 +136,8 @@ func compute_fuel_loss(is_block):
 func steps_to_fuel_loss():
 	return 0
 
+func pay_for_fuel():
+	pass
 
 func _physics_process(delta):
 	pass
