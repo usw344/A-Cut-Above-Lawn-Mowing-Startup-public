@@ -124,5 +124,12 @@ func compute_fuel_loss(is_block):
 	
 	return 0
 
+"""
+	Feature to calcute fuel loss due to running machine on idle
+"""
 func steps_to_fuel_loss():
 	return 0
+
+
+func _physics_process(delta):
+	pass
