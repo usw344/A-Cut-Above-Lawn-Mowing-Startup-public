@@ -16,7 +16,7 @@ var storage_cap = 25
 onready var mowing_area = $Mowing_Area/GridMap
 onready var grid = $Mowing_Area/GridMap
 onready var player_hud = $Player_HUD
-
+onready var storage_truck = $Storage_Depot
 ##mower variables
 var fuel = 100
 var value_of_mowed_grass_in_storage = 5
@@ -28,7 +28,7 @@ var storage_is_full_limter = false
 
 func _ready():
 	go_to($Storage_Depot,-5,1,20)
-
+	go_to($Fuel_Truck, -20,1,20)
 
 """
 	Function to update the fuel and storage
@@ -41,10 +41,14 @@ func receive_update(update):
 
 func handle_mower_collision(collision):
 	
-	var currentName = collision.collider.name
-	if currentName == "Truck":
+	var current_name = collision.collider.name
+	
+	if current_name == "Storage_Truck":
 		add_money_for_grass()
 		empty_storage()
+	
+	if current_name == "Fuel_Truck":
+		print("printing")
 
 	if get_storage_value() != 100:
 		
@@ -57,7 +61,8 @@ func handle_mower_collision(collision):
 			
 			##update mower storage and fuel. for now just use a raw value of -1 -1. 
 			receive_update({"fuel":compute_fuel_loss(true),"storage":value_of_mowed_grass_in_storage})
-	else:
+	
+	else: ##the storage is full and the collision is not with a truck either
 		if not storage_is_full_limter:
 			print("storage_is_full") #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
 		storage_is_full_limter = true
