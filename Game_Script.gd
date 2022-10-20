@@ -57,7 +57,6 @@ func assign_button_action(button_name):
 			new_game()
 		"Settings":
 			#change the scene to the settings menu
-			
 			next_menu = load("res://Menus/Settings/Settings.tscn").instance()
 			add_child(next_menu)
 			current_menu.queue_free()
@@ -67,7 +66,6 @@ func assign_button_action(button_name):
 		"Saved Games":
 			pass
 		"Main_Menu":
-						
 			next_menu = load("res://Menus/Main_Menu/Main_Menu.tscn").instance()
 			add_child(next_menu)
 			current_menu.queue_free()
@@ -78,5 +76,9 @@ func assign_button_action(button_name):
 
 func _input(_event):
 	if Input.is_action_just_released("pause"):
-		pass
-
+		var current_mouse_mode = Input.mouse_mode
+		if current_mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	

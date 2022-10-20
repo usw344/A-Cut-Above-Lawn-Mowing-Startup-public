@@ -17,12 +17,13 @@ onready var mowing_area = $Mowing_Area/GridMap
 onready var grid = $Mowing_Area/GridMap
 onready var player_hud = $Player_HUD
 onready var storage_truck = $Storage_Depot
+
 ##mower variables
 var fuel = 100
 var value_of_mowed_grass_in_storage = 5
+var mower_on = 0
 
-
-##internal script methods
+##internal script methods functions
 var fuel_whole_number_counter = 0
 var storage_is_full_limter = false
 
@@ -110,6 +111,8 @@ func compute_storage_value():
 func get_storage_value():
 	return int(player_hud.get_storage_value())
 
+########################################### Functions relating to fuel 
+
 """
 	Internal function to get current fuel amount in mower
 """
@@ -118,26 +121,42 @@ func get_current_fuel_value():
 
 func compute_fuel_loss(is_block):
 	if not is_block:
-		return steps_to_fuel_loss() * 0
+		return steps_to_fuel_loss() * 1
 	else:
 		fuel_whole_number_counter += 0.25
 		##check if the fuel counter should be returned 1
 		#PLACEHOLDER UNTIL A WAY TO SET PROGRESS BAR IN DECIMAL CAN FOUND
-		
 		if fuel_whole_number_counter == 1:
 			fuel_whole_number_counter = 0
 			return 1
 	
 	return 0
-
+	
 """
-	Feature to calcute fuel loss due to running machine on idle
+	Internal function that computes fuel loss due to simply running the mower in game
 """
 func steps_to_fuel_loss():
-	return 0
+	if fmod(mower_on, 5) == 0:
+		mower_on = 0
+		
+		##REPLACE WITH NOTIFICATION SYSTEM IF IT IS IMPLEMENTED
+		print("fuel decreased")
+		return 1
+	else:
+		return 0
 
+"""
+	Internal function that increased the fuel based on amount being purchased
+	Also reduces money listed
+"""
 func pay_for_fuel():
 	pass
 
+##################################################### Other functions
 func _physics_process(delta):
-	pass
+	###adds approx. amount of time the mower object has been running 
+	mower_on += delta
+	mower_on = stepify(mower_on,0.01) ##ROUNDs the value to 2 decimal places
+	
+	receive_update({"fuel":compute_fuel_loss(false),"storage":0})
+	
