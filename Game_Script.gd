@@ -1,7 +1,7 @@
 extends Node
 
 var level = preload("res://Current_Job/Current_Job.tscn")
-
+var game_screen = preload("res://Main Game Screen/Game Screen.tscn")
 
 
 onready var current_menu = $Main_Menu
@@ -24,6 +24,10 @@ func _ready():
 	**CURRENT** Currently swtiches to game scene
 """
 func new_game():
+	#add_child(game_screen.instance())
+	#current_menu.queue_free()
+	
+	##old
 	add_child(level.instance()) 
 	current_menu.queue_free()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

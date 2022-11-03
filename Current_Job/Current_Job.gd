@@ -37,13 +37,13 @@ func _ready():
 	in format of of a dictionary
 """
 func receive_update(update):
+	##make releated updates to other areas
 	$Player_HUD.add_to_storage(update["storage"])
 	$Player_HUD.set_current_fuel_value(get_current_fuel_value()-update["fuel"])
 
 func handle_mower_collision(collision):
 	
 	var current_name = collision.collider.name
-	
 	if current_name == "Storage_Truck":
 		add_money_for_grass()
 		empty_storage()
@@ -52,7 +52,7 @@ func handle_mower_collision(collision):
 		pay_for_fuel()
 
 	##if storage is not full and collision is with a block
-	if get_storage_value() != 100:
+	if get_storage_value() != 100 and get_current_fuel_value() > 0:
 		
 		#get location of the block that was collided with
 		var grid_position = grid.world_to_map(collision.position-collision.normal)
@@ -66,9 +66,13 @@ func handle_mower_collision(collision):
 	
 	##the storage is full and the collision is not with a truck either
 	else: 
-		if not storage_is_full_limter:
+		# in case where storage is full
+		if not storage_is_full_limter and get_current_fuel_value() > 0: 
 			print("storage_is_full") #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
-		storage_is_full_limter = true
+			storage_is_full_limter = true
+		elif get_current_fuel_value() < 0: #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
+			print("out of fuel")
+		
 """
 	Internal function to move the mower from point to another (not to be confused with
 	move_slide as this will do it without simulating movement)
@@ -121,7 +125,7 @@ func get_current_fuel_value():
 
 func compute_fuel_loss(is_block):
 	if not is_block:
-		return steps_to_fuel_loss() * 1
+		return steps_to_fuel_loss() * 50
 	else:
 		fuel_whole_number_counter += 0.25
 		##check if the fuel counter should be returned 1
@@ -140,7 +144,7 @@ func steps_to_fuel_loss():
 		mower_on = 0
 		
 		##REPLACE WITH NOTIFICATION SYSTEM IF IT IS IMPLEMENTED
-		print("fuel decreased")
+		
 		return 1
 	else:
 		return 0
@@ -150,7 +154,7 @@ func steps_to_fuel_loss():
 	Also reduces money listed
 """
 func pay_for_fuel():
-	pass
+	player_hud.set_current_fuel_value(100)
 
 ##################################################### Other functions
 func _physics_process(delta):
