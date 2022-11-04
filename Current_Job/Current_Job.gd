@@ -27,6 +27,9 @@ var mower_on = 0
 var fuel_whole_number_counter = 0
 var storage_is_full_limter = false
 
+
+signal send_notification
+
 func _ready():
 	go_to($Storage_Depot,-5,1,20)
 	go_to($Fuel_Truck, -20,1,20)
@@ -70,6 +73,11 @@ func handle_mower_collision(collision):
 		if not storage_is_full_limter and get_current_fuel_value() > 0: 
 			print("storage_is_full") #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
 			storage_is_full_limter = true
+			var time = OS.get_time()
+			var string_format = String(time.hour) +":"+String(time.minute)+":"+String(time.second)
+			emit_signal("send_notification",String("Storage Is Full. Sent at"+ string_format))
+		
+		
 		elif get_current_fuel_value() < 0: #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
 			print("out of fuel")
 		
@@ -125,7 +133,7 @@ func get_current_fuel_value():
 
 func compute_fuel_loss(is_block):
 	if not is_block:
-		return steps_to_fuel_loss() * 50
+		return steps_to_fuel_loss() * 1
 	else:
 		fuel_whole_number_counter += 0.25
 		##check if the fuel counter should be returned 1
