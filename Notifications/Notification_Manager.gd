@@ -8,4 +8,7 @@ func _ready():
 
 
 func add_notification(notification):
-	$Label.text = notification
+	$MarginContainer/Label.text = notification
+	print("Got signal")
+
+

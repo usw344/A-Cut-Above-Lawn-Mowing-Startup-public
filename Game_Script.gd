@@ -3,6 +3,7 @@ extends Node
 var level = preload("res://Current_Job/Current_Job.tscn")
 var game_screen = preload("res://Main Game Screen/Game Screen.tscn")
 
+onready var notification_system = $Notification_System
 
 onready var current_menu = $Main_Menu
 
@@ -18,6 +19,7 @@ func _ready():
 	##for main menu mouse mode should be visable
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
+	
 
 """
 	TODO: Function to start a new game by brining up new game selection screen.
@@ -28,10 +30,12 @@ func new_game():
 	#current_menu.queue_free()
 	
 	##old
-	add_child(level.instance()) 
+	var new_game = level.instance()
+	add_child(new_game) 
 	current_menu.queue_free()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
+	new_game.connect("send_notification", notification_system, "add_notification")
 	
 """
 	Internal method to take a dictionary with buttons as value in key:value pair and
