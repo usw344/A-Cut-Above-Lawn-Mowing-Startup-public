@@ -76,7 +76,7 @@ func handle_mower_collision(collision):
 			var time = OS.get_time()
 			var string_format = String(time.hour) +":"+String(time.minute)+":"+String(time.second)
 			
-			print("emiting signal of storage is full")
+
 			emit_signal("send_notification",String("Storage Is Full. Sent at"+ string_format))
 		
 		
