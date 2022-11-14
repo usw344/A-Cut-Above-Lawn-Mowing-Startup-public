@@ -71,13 +71,12 @@ func handle_mower_collision(collision):
 	else: 
 		# in case where storage is full
 		if not storage_is_full_limter and get_current_fuel_value() > 0: 
-			print("storage_is_full") #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
 			storage_is_full_limter = true
 			var time = OS.get_time()
 			var string_format = String(time.hour) +":"+String(time.minute)+":"+String(time.second)
 			
 
-			emit_signal("send_notification",String("Storage Is Full. Sent at"+ string_format))
+			emit_signal("send_notification",String("Storage Is Full. Sent at "+ string_format))
 		
 		
 		elif get_current_fuel_value() < 0: #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call

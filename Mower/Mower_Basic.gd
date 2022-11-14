@@ -54,9 +54,7 @@ func get_input():
 	Function is used for rotating of the camera
 """
 func _input(event):
-	print("rotate")
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		print("rotate")
 		rotate_y(-event.relative.x * mouse_sensitivity)
 
 """
