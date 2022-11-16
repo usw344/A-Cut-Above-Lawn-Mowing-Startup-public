@@ -38,8 +38,4 @@ func clear_notification_display(container):
 	for old_label in container.get_children():
 		old_label.queue_free()
 		
-func _process(delta):
-	if Input.is_action_just_released("add_notification"):
-		add_notification("Testing"+str(counter))
-		ending_of_label += 1
-		
+

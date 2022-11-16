@@ -8,24 +8,26 @@ job specic choices )
 
 """
 
-var storage = 0
-var storage_cap = 25
-
-
 ## Variable refernce to nodes
 onready var mowing_area = $Mowing_Area/GridMap
 onready var grid = $Mowing_Area/GridMap
 onready var player_hud = $Player_HUD
 onready var storage_truck = $Storage_Depot
 
-##mower variables
+####mower variables for fuel
 var fuel = 100
-var value_of_mowed_grass_in_storage = 5
+
+####mover variables for grass
+var value_of_mowed_grass_in_storage = 2
+var value_per_unit  = 0.05
+
+##counter variable used in fuel loss computation due to idleling
 var mower_on = 0
 
 ##internal script methods functions
-var fuel_whole_number_counter = 0
-var storage_is_full_limter = false
+var fuel_whole_number_counter = 0 ##variable used in fuel loss computation due to idleling
+var storage_is_full_notification_limiter = false
+var fuel_is_empty_notification_limiter = false
 
 
 signal send_notification
@@ -46,6 +48,7 @@ func receive_update(update):
 
 func handle_mower_collision(collision):
 	
+	##CHECK which thing the collision occured with in game
 	var current_name = collision.collider.name
 	if current_name == "Storage_Truck":
 		add_money_for_grass()
@@ -70,18 +73,24 @@ func handle_mower_collision(collision):
 	##the storage is full and the collision is not with a truck either
 	else: 
 		# in case where storage is full
-		if not storage_is_full_limter and get_current_fuel_value() > 0: 
-			storage_is_full_limter = true
-			var time = OS.get_time()
-			var string_format = String(time.hour) +":"+String(time.minute)+":"+String(time.second)
-			
+		if not storage_is_full_notification_limiter and get_current_fuel_value() > 0: 
+			storage_is_full_notification_limiter = true ##stops the notification storage is full from being sent after first collision
+			prepare_and_send_notification("Storage Is Full")
 
-			emit_signal("send_notification",String("Storage Is Full. Sent at "+ string_format))
-		
-		
-		elif get_current_fuel_value() < 0: #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
-			print("out of fuel")
-		
+		##in case it is the fuel that is run out but storage is there
+		elif get_current_fuel_value() <= 0 and not fuel_is_empty_notification_limiter: #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
+			fuel_is_empty_notification_limiter = true
+			prepare_and_send_notification("Fuel Empty")
+
+"""
+	Function to prepare and send a notification
+	In this case sends a notification and roughly the time of sending it
+"""
+func prepare_and_send_notification(wording):
+	var time = OS.get_time()
+	var string_format = String(time.hour) +":"+String(time.minute)+":"+String(time.second)
+	emit_signal("send_notification",String(string_format+ ": "+wording))
+
 """
 	Internal function to move the mower from point to another (not to be confused with
 	move_slide as this will do it without simulating movement)
@@ -98,7 +107,7 @@ func go_to(obj,x, y, z):
 """
 func empty_storage():
 	player_hud.clear_storage_handler()
-	storage_is_full_limter = false
+	storage_is_full_notification_limiter = false
 	
 """
 """
@@ -112,14 +121,14 @@ func add_money_for_grass():
 	return value of current storage
 """
 func compute_storage_value():
+	##REASON this function and add_money_for_grass are not merged is that the plan is to add market value calculations in it
+	##right now it seems these two functions could be merged
 	var storage_value = get_storage_value()
-	var value_per_unit = 5
-	
-	
 	return storage_value*value_per_unit ##CHANGE HARDCOODE VALUE TO BE RELATIVE TO MARKET VALUE LATER
 
 """
-	Internal function to get current amount of items in mower storage
+	Internal function to get current amount of items in mower storage 
+	return int value of current mower storage value
 """
 func get_storage_value():
 	return int(player_hud.get_storage_value())
@@ -136,10 +145,11 @@ func compute_fuel_loss(is_block):
 	if not is_block:
 		return steps_to_fuel_loss() * 1
 	else:
-		fuel_whole_number_counter += 0.25
+		fuel_whole_number_counter += 5
+		
 		##check if the fuel counter should be returned 1
 		#PLACEHOLDER UNTIL A WAY TO SET PROGRESS BAR IN DECIMAL CAN FOUND
-		if fuel_whole_number_counter == 1:
+		if fuel_whole_number_counter == 5:
 			fuel_whole_number_counter = 0
 			return 1
 	
@@ -148,12 +158,9 @@ func compute_fuel_loss(is_block):
 """
 	Internal function that computes fuel loss due to simply running the mower in game
 """
-func steps_to_fuel_loss():
+func steps_to_fuel_loss(): ##NEEDS MORE COMMENTING EXPLAINING FUNCTION
 	if fmod(mower_on, 5) == 0:
 		mower_on = 0
-		
-		##REPLACE WITH NOTIFICATION SYSTEM IF IT IS IMPLEMENTED
-		
 		return 1
 	else:
 		return 0
@@ -162,8 +169,9 @@ func steps_to_fuel_loss():
 	Internal function that increased the fuel based on amount being purchased
 	Also reduces money listed
 """
-func pay_for_fuel():
+func pay_for_fuel(): ##INCOMPLETE FUNCTION since does not allow currently to fill fuel based on amount of cash spent
 	player_hud.set_current_fuel_value(100)
+	storage_is_full_notification_limiter = false
 
 ##################################################### Other functions
 func _physics_process(delta):
