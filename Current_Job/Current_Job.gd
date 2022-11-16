@@ -15,7 +15,8 @@ onready var player_hud = $Player_HUD
 onready var storage_truck = $Storage_Depot
 
 ####mower variables for fuel
-var fuel = 100
+var fuel = 100 
+var fuel_used_per_block_removed = 2
 
 ####mover variables for grass
 var value_of_mowed_grass_in_storage = 2
@@ -76,12 +77,13 @@ func handle_mower_collision(collision):
 		if not storage_is_full_notification_limiter and get_current_fuel_value() > 0: 
 			storage_is_full_notification_limiter = true ##stops the notification storage is full from being sent after first collision
 			prepare_and_send_notification("Storage Is Full")
+			
 
 		##in case it is the fuel that is run out but storage is there
 		elif get_current_fuel_value() <= 0 and not fuel_is_empty_notification_limiter: #TO DO REPLACE THIS WITH NOTIFCATION SYSTEM call
 			fuel_is_empty_notification_limiter = true
 			prepare_and_send_notification("Fuel Empty")
-
+			
 """
 	Function to prepare and send a notification
 	In this case sends a notification and roughly the time of sending it
@@ -145,14 +147,7 @@ func compute_fuel_loss(is_block):
 	if not is_block:
 		return steps_to_fuel_loss() * 1
 	else:
-		fuel_whole_number_counter += 5
-		
-		##check if the fuel counter should be returned 1
-		#PLACEHOLDER UNTIL A WAY TO SET PROGRESS BAR IN DECIMAL CAN FOUND
-		if fuel_whole_number_counter == 5:
-			fuel_whole_number_counter = 0
-			return 1
-	
+		return fuel_used_per_block_removed
 	return 0
 	
 """
@@ -171,7 +166,7 @@ func steps_to_fuel_loss(): ##NEEDS MORE COMMENTING EXPLAINING FUNCTION
 """
 func pay_for_fuel(): ##INCOMPLETE FUNCTION since does not allow currently to fill fuel based on amount of cash spent
 	player_hud.set_current_fuel_value(100)
-	storage_is_full_notification_limiter = false
+	fuel_is_empty_notification_limiter = false
 
 ##################################################### Other functions
 func _physics_process(delta):
