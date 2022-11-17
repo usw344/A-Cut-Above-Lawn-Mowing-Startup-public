@@ -17,6 +17,7 @@ onready var storage_truck = $Storage_Depot
 ####mower variables for fuel
 var fuel = 100 
 var fuel_used_per_block_removed = 2
+var fuel_used_idling_multiplier = 2
 
 ####mover variables for grass
 var value_of_mowed_grass_in_storage = 2
@@ -145,7 +146,7 @@ func get_current_fuel_value():
 
 func compute_fuel_loss(is_block):
 	if not is_block:
-		return steps_to_fuel_loss() * 1
+		return steps_to_fuel_loss() * fuel_used_idling_multiplier
 	else:
 		return fuel_used_per_block_removed
 	return 0

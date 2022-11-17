@@ -15,9 +15,16 @@ panorama = ExtResource( 1 )
 [sub_resource type="Environment" id=2]
 background_mode = 2
 background_sky = SubResource( 3 )
+background_sky_custom_fov = 32.1
+ambient_light_energy = 6.83
+ambient_light_sky_contribution = 0.07
 fog_enabled = true
-fog_sun_color = Color( 0.784314, 0.584314, 0.176471, 1 )
+fog_color = Color( 0.148195, 0.53586, 0.910156, 1 )
+fog_sun_color = Color( 0.690196, 0.54902, 0.0196078, 1 )
 fog_sun_amount = 1.0
+fog_depth_begin = 5.0
+tonemap_mode = 4
+auto_exposure_enabled = true
 
 [sub_resource type="Animation" id=4]
 length = 0.001
