@@ -4,10 +4,7 @@ var level = preload("res://Mowing/Current_Job/Current_Job.tscn")
 var game_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
 
 onready var notification_system = $Notification_System
-
 onready var current_menu = $Main_Menu
-onready var line = $Line2D
-onready var line2 = $Line
 
 var buttons = {}
 var game_scene = null
@@ -72,7 +69,7 @@ func assign_button_action(button_name):
 			new_game()
 		"Settings":
 			#change the scene to the settings menu
-			next_menu = load("res://Menus/Settings/Settings.tscn").instance()
+			next_menu = load("res://UI/Menus/Settings_Menu/Settings.tscn").instance()
 			add_child(next_menu)
 			current_menu.queue_free()
 			current_menu = next_menu
@@ -81,7 +78,7 @@ func assign_button_action(button_name):
 		"Saved Games":
 			pass
 		"Main_Menu":
-			next_menu = load("res://Menus/Main_Menu/Main_Menu.tscn").instance()
+			next_menu = load("res://UI/Menus/Main_Menu/Main_Menu.tscn").instance()
 			add_child(next_menu)
 			current_menu.queue_free()
 			current_menu = next_menu
