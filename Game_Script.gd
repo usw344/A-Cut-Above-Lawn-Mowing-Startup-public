@@ -1,14 +1,19 @@
 extends Node
 
-var level = preload("res://Current_Job/Current_Job.tscn")
-var game_screen = preload("res://Main Game Screen/Game Screen.tscn")
+var level = preload("res://Mowing/Current_Job/Current_Job.tscn")
+var game_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
 
 onready var notification_system = $Notification_System
 
 onready var current_menu = $Main_Menu
+onready var line = $Line2D
+onready var line2 = $Line
 
 var buttons = {}
 var game_scene = null
+
+var noise = OpenSimplexNoise.new()
+
 func _ready():
 	
 	#setup buttons for main_menu
@@ -18,6 +23,8 @@ func _ready():
 	
 	##for main menu mouse mode should be visable
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
+	
 	
 	
 
@@ -90,3 +97,10 @@ func _input(_event):
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
+#var testingVector = Vector2()
+#var counter = 10
+#func _process(delta):
+#	counter += delta * 15
+#	testingVector = Vector2(counter, 800+noise.get_noise_2d(counter+10,counter/2)*500)
+#	line.add_point(testingVector)
+#	line2.add_point( Vector2(counter, 800+noise.get_noise_1d(counter+10)*500)  )
