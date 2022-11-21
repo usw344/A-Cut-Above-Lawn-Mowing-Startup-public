@@ -46,9 +46,6 @@ func assign_button_key_press(button_dict):
 		
 		#
 		button.connect("pressed",self,"assign_button_action",[button.name])
-		
-		
-
 """
 	Internal function handle button clicks. Function uses other functions to handle
 	what should happen when a specific button is clicked
