@@ -9,8 +9,6 @@ onready var current_menu = $Main_Menu
 var buttons = {}
 var game_scene = null
 
-var noise = OpenSimplexNoise.new()
-
 func _ready():
 	
 	#setup buttons for main_menu
@@ -20,19 +18,12 @@ func _ready():
 	
 	##for main menu mouse mode should be visable
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
-	
-	
-	
 
 """
 	TODO: Function to start a new game by brining up new game selection screen.
 	**CURRENT** Currently swtiches to game scene
 """
 func new_game():
-	#add_child(game_screen.instance())
-	#current_menu.queue_free()
-	
 	##old
 	var new_game = level.instance()
 	add_child(new_game) 
@@ -88,8 +79,7 @@ func assign_button_action(button_name):
 
 func _input(_event):
 	if Input.is_action_just_released("pause"):
-		var current_mouse_mode = Input.mouse_mode
-		if current_mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		else:
 			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
