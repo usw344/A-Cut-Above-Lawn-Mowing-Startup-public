@@ -31,15 +31,23 @@ var fuel_whole_number_counter = 0 ##variable used in fuel loss computation due t
 var storage_is_full_notification_limiter = false
 var fuel_is_empty_notification_limiter = false
 
+#################### Variables for fuel and grass screens in game
+var show_grass_deposit_screen_if_clicked = false
+var show_fuel_screen_if_clicked          = false
+var timer_for_button_click_to_display_screen = Timer.new()
 
+
+#################### Signals
 signal send_notification
+signal show_grass_desposit_screen
 
 func _ready():
 	go_to($Storage_Depot,-5,1,20)
 	go_to($Fuel_Truck, -20,1,20)
 #	go_to($Start_Area_For_Mower,0,-1,0)
 #	$Ground_Below_Grid_Map.mesh_instance.mesh.size.x = 1200
-
+	timer_for_button_click_to_display_screen.connect("timeout",self,"remove_press_key")
+	add_child(timer_for_button_click_to_display_screen)
 """
 	Function to update the fuel and storage
 	Signal Receive: from Mowing_Area node, recives how much to update the money and gas
@@ -57,6 +65,13 @@ func handle_mower_collision(collision):
 	if current_name == "Storage_Truck":
 		add_money_for_grass()
 		empty_storage()
+		
+		##display screen for 
+		player_hud.display_deposit_grass_key_label("K to open grass deposit screen")
+		show_grass_deposit_screen_if_clicked = true
+		timer_for_button_click_to_display_screen.wait_time = 3.0
+		timer_for_button_click_to_display_screen.start()
+		
 	
 	if current_name == "Fuel_Truck":
 		pay_for_fuel()
@@ -178,4 +193,14 @@ func _physics_process(delta):
 	mower_on = stepify(mower_on,0.01) ##ROUNDs the value to 2 decimal places
 	
 	receive_update({"fuel":compute_fuel_loss(false),"storage":0})
+
+func _input(event):
+	if show_grass_deposit_screen_if_clicked and Input.is_action_just_released("Open Grass Deposit Screen"):
+		emit_signal("show_grass_desposit_screen")
+
+func remove_press_key():
+	show_grass_deposit_screen_if_clicked = false
+	show_fuel_screen_if_clicked = false
+	
+	player_hud.clear_press_key_labels()
 	

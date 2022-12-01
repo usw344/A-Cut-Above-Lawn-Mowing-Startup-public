@@ -3,11 +3,15 @@ extends Node
 var level = preload("res://Mowing/Current_Job/Current_Job.tscn")
 var game_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
 
+onready var grass_desposit_screen = load("res://Mowing/Grass Deposit and Sale/Grass Desposit and Sale.tscn").instance()
+
 onready var notification_system = $Notification_System
 onready var current_menu = $Main_Menu
 
 var buttons = {}
 var game_scene = null
+
+var game
 
 func _ready():
 	
@@ -17,7 +21,7 @@ func _ready():
 
 	
 	##for main menu mouse mode should be visable
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	display_mouse()
 
 """
 	TODO: Function to start a new game by brining up new game selection screen.
@@ -25,12 +29,13 @@ func _ready():
 """
 func new_game():
 	##old
-	var new_game = level.instance()
-	add_child(new_game) 
+	game = level.instance()
+	add_child(game) 
 	current_menu.queue_free()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	new_game.connect("send_notification", notification_system, "add_notification")
+	game.connect("send_notification", notification_system, "add_notification")
+	game.connect("show_grass_desposit_screen",self, "display_grass_deposit_screen")
 	
 """
 	Internal method to take a dictionary with buttons as value in key:value pair and
@@ -77,9 +82,21 @@ func assign_button_action(button_name):
 func _input(_event):
 	if Input.is_action_just_released("pause"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			remove_mouse()
 		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			display_mouse()
+
+
+func display_grass_deposit_screen():
+	remove_child(game)
+	add_child(grass_desposit_screen)
+	display_mouse()
+
+func remove_mouse():
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func display_mouse():
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 #var testingVector = Vector2()
 #var counter = 10

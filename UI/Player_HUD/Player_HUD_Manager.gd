@@ -12,6 +12,7 @@ var current_storage_value = 0
 var current_fuel_value = 100
 ############################################### Main file Functions $$$$$$$$$$$$$
 
+onready var press_key_for_grass_deposit_screen = $"Press K"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,6 +24,11 @@ func _process(delta):
 	
 	timer_label.text = calc_time_in_string_format(elaspsed_time)
 
+func display_deposit_grass_key_label(key):
+	press_key_for_grass_deposit_screen.text = "Press " + str(key)
+
+func clear_press_key_labels():
+	press_key_for_grass_deposit_screen.text = ""
 
 ############################################### Timer-related Functions $$$$$$$$$$$$$
 
