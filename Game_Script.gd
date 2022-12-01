@@ -20,6 +20,7 @@ func _ready():
 	assign_button_key_press(buttons)
 
 	
+	
 	##for main menu mouse mode should be visable
 	display_mouse()
 
@@ -79,24 +80,43 @@ func assign_button_action(button_name):
 			assign_button_key_press(current_menu.get_buttons())
 
 
+############################################ Functions relating to input and mouse modes
 func _input(_event):
 	if Input.is_action_just_released("pause"):
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			remove_mouse()
-		else:
 			display_mouse()
-
-
-func display_grass_deposit_screen():
-	remove_child(game)
-	add_child(grass_desposit_screen)
-	display_mouse()
+		else:
+			remove_mouse()
 
 func remove_mouse():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func display_mouse():
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+############################################ Functions relating to grass deposit screen
+func display_grass_deposit_screen():
+	remove_child(game)
+	remove_child(notification_system)
+	add_child(grass_desposit_screen)
+	set_grass_deposit_screen_signals()
+	
+	display_mouse()
+
+
+
+func set_grass_deposit_screen_signals():
+	grass_desposit_screen.get_items_list()
+	grass_desposit_screen.get_item("back_button").connect("pressed",self,"close_grass_desposit_screen")
+
+####################### Function to run when signals are sent from grass deposit screen
+func close_grass_desposit_screen():
+	remove_child(grass_desposit_screen)
+	add_child(notification_system)
+	add_child(game)
+	remove_mouse()
+
 
 #var testingVector = Vector2()
 #var counter = 10
