@@ -8,10 +8,16 @@ onready var grass_desposit_screen = load("res://Mowing/Grass Deposit and Sale/Gr
 onready var notification_system = $Notification_System
 onready var current_menu = $Main_Menu
 
+onready var fuel_price = $"Fuel Price" ###THIS IS TO BE CHANGED TO THE CORRECT ONE LATER
+onready var grass_price = $"Grass Price"
 var buttons = {}
 var game_scene = null
 
 var game
+
+##to store game variables. These MIGHT be stored in save
+onready var model = $Model
+
 
 func _ready():
 	
@@ -23,7 +29,8 @@ func _ready():
 	
 	##for main menu mouse mode should be visable
 	display_mouse()
-
+	
+	
 """
 	TODO: Function to start a new game by brining up new game selection screen.
 	**CURRENT** Currently swtiches to game scene
@@ -37,6 +44,7 @@ func new_game():
 	
 	game.connect("send_notification", notification_system, "add_notification")
 	game.connect("show_grass_desposit_screen",self, "display_grass_deposit_screen")
+	game.connect("add_grass",self,"add_grass_to_storage")
 	
 """
 	Internal method to take a dictionary with buttons as value in key:value pair and
@@ -96,32 +104,47 @@ func display_mouse():
 
 
 ############################################ Functions relating to grass deposit screen
+"""
+	Function to display the grass desposit screen when the signal is received
+"""
 func display_grass_deposit_screen():
-	remove_child(game)
-	remove_child(notification_system)
+	
+	##remove current 
+	remove_child(game)                
+	notification_system.clear_all_displayed_notifications()
+	
+	##get the information from the model and add it to grass screen. Pass in grass price model
+	grass_desposit_screen.set_grass_stored(model.get_grass())
+	grass_desposit_screen.set_grass_price_model(grass_price)
+	
+	
 	add_child(grass_desposit_screen)
 	set_grass_deposit_screen_signals()
 	
 	display_mouse()
 
-
-
+"""
+	Connect the relevent signals from the grass desposit screen scnene to functions
+"""
 func set_grass_deposit_screen_signals():
 	grass_desposit_screen.get_items_list()
 	grass_desposit_screen.get_item("back_button").connect("pressed",self,"close_grass_desposit_screen")
 
-####################### Function to run when signals are sent from grass deposit screen
+"""
+	Function that is used when signal to close grass desposit screen is received
+"""
 func close_grass_desposit_screen():
 	remove_child(grass_desposit_screen)
-	add_child(notification_system)
+	
 	add_child(game)
 	remove_mouse()
 
+"""
+	Function to use to add grass to model
+"""
+func add_grass_to_storage(value):
+	model.set_grass(model.get_grass() + value)
+	
 
-#var testingVector = Vector2()
-#var counter = 10
-#func _process(delta):
-#	counter += delta * 15
-#	testingVector = Vector2(counter, 800+noise.get_noise_2d(counter+10,counter/2)*500)
-#	line.add_point(testingVector)
-#	line2.add_point( Vector2(counter, 800+noise.get_noise_1d(counter+10)*500)  )
+
+

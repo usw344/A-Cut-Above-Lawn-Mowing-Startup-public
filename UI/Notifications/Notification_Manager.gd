@@ -31,11 +31,14 @@ func add_notification(notification):
 		notification_container.add_child(new_notification_label)
 	else:
 		notification_container.add_child(new_notification_label)
+
+"""
+	Removes all currently displayed notifications from the screen
+"""
+func clear_all_displayed_notifications():
+	for x in notification_container.get_child_count():
+		notification_container.get_child(x).queue_free()
 	
-		
-func clear_notification_display(container):
-	print("Clearing notification")
-	for old_label in container.get_children():
-		old_label.queue_free()
+
 		
 

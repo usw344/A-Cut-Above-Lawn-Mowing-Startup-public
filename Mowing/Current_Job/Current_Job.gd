@@ -41,6 +41,8 @@ var timer_for_button_click_to_display_screen = Timer.new()
 signal send_notification
 signal show_grass_desposit_screen
 
+signal add_grass
+
 func _ready():
 	go_to($Storage_Depot,-5,1,20)
 	go_to($Fuel_Truck, -20,1,20)
@@ -63,7 +65,7 @@ func handle_mower_collision(collision):
 	##CHECK which thing the collision occured with in game
 	var current_name = collision.collider.name
 	if current_name == "Storage_Truck":
-		add_money_for_grass()
+		add_grass_to_storage()
 		empty_storage()
 		
 		##display screen for 
@@ -121,7 +123,12 @@ func go_to(obj,x, y, z):
 	obj.transform.origin.x = x
 	obj.transform.origin.z = z
 	obj.transform.origin.y = y
-
+###################################################
+"""
+	Function empties storage
+"""
+func add_grass_to_storage():
+	emit_signal("add_grass",get_storage_value())
 """
 	Set storage amount in mower to zero
 """
@@ -135,6 +142,7 @@ func add_money_for_grass():
 	var add_money_value = compute_storage_value()
 	player_hud.add_value_to_money_label(add_money_value)
 
+####################################################
 """
 	Function to compute how much money to add based on current storage value
 	

@@ -1,7 +1,8 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Assets/Old_scenes/FP_Player/FP_Player.gd" type="Script" id=1]
-[ext_resource path="res://Mowing/Developer_HUD/coding_info_hud/HUD.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Developer_HUD/coding_info_hud/HUD.tscn" type="PackedScene" id=2]
+
 
 
 [sub_resource type="CapsuleShape" id=1]
