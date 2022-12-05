@@ -3,7 +3,7 @@ extends Node
 var level = preload("res://Mowing/Current_Job/Current_Job.tscn")
 var game_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
 
-onready var grass_desposit_screen = load("res://Mowing/Grass Deposit and Sale/Grass Desposit and Sale.tscn").instance()
+onready var grass_deposit_screen = load("res://Mowing/Grass Deposit and Sale/Grass Desposit and Sale.tscn").instance()
 
 onready var notification_system = $Notification_System
 onready var current_menu = $Main_Menu
@@ -43,8 +43,10 @@ func new_game():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
 	game.connect("send_notification", notification_system, "add_notification")
-	game.connect("show_grass_desposit_screen",self, "display_grass_deposit_screen")
+	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
 	game.connect("add_grass",self,"add_grass_to_storage")
+	
+
 	
 """
 	Internal method to take a dictionary with buttons as value in key:value pair and
@@ -114,11 +116,13 @@ func display_grass_deposit_screen():
 	notification_system.clear_all_displayed_notifications()
 	
 	##get the information from the model and add it to grass screen. Pass in grass price model
-	grass_desposit_screen.set_grass_stored(model.get_grass())
-	grass_desposit_screen.set_grass_price_model(grass_price)
+	grass_deposit_screen.set_grass_stored(model.get_grass())
+	grass_deposit_screen.set_funds(model.get_funds())
+	grass_deposit_screen.set_grass_price_model(grass_price)
 	
 	
-	add_child(grass_desposit_screen)
+	add_child(grass_deposit_screen)
+	grass_deposit_screen.get_items_list()
 	set_grass_deposit_screen_signals()
 	
 	display_mouse()
@@ -127,14 +131,16 @@ func display_grass_deposit_screen():
 	Connect the relevent signals from the grass desposit screen scnene to functions
 """
 func set_grass_deposit_screen_signals():
-	grass_desposit_screen.get_items_list()
-	grass_desposit_screen.get_item("back_button").connect("pressed",self,"close_grass_desposit_screen")
+	grass_deposit_screen.get_items_list()
+	
+	grass_deposit_screen.get_item("back_button").connect("pressed",self,"close_grass_deposit_screen")
+	grass_deposit_screen.connect("update_model",self,"update_model")
 
 """
 	Function that is used when signal to close grass desposit screen is received
 """
-func close_grass_desposit_screen():
-	remove_child(grass_desposit_screen)
+func close_grass_deposit_screen():
+	remove_child(grass_deposit_screen)
 	
 	add_child(game)
 	remove_mouse()
@@ -145,6 +151,7 @@ func close_grass_desposit_screen():
 func add_grass_to_storage(value):
 	model.set_grass(model.get_grass() + value)
 	
-
-
-
+func update_model():
+	model.set_grass( grass_deposit_screen.get_grass_stored() )
+	model.set_funds( grass_deposit_screen.get_funds()   )
+	

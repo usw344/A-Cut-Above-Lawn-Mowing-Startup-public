@@ -39,7 +39,7 @@ var timer_for_button_click_to_display_screen = Timer.new()
 
 #################### Signals
 signal send_notification
-signal show_grass_desposit_screen
+signal show_grass_deposit_screen
 
 signal add_grass
 
@@ -138,9 +138,9 @@ func empty_storage():
 	
 """
 """
-func add_money_for_grass():
-	var add_money_value = compute_storage_value()
-	player_hud.add_value_to_money_label(add_money_value)
+func add_money_for_grass(value_to_add):
+	#var add_money_value = compute_storage_value()
+	player_hud.add_value_to_money_label(value_to_add)
 
 ####################################################
 """
@@ -204,8 +204,11 @@ func _physics_process(delta):
 
 func _input(event):
 	if show_grass_deposit_screen_if_clicked and Input.is_action_just_released("Open Grass Deposit Screen"):
-		emit_signal("show_grass_desposit_screen")
+		emit_signal("show_grass_deposit_screen")
 
+"""
+	Remove the text on screen displaying what to click for deposit screen
+"""
 func remove_press_key():
 	show_grass_deposit_screen_if_clicked = false
 	show_fuel_screen_if_clicked = false

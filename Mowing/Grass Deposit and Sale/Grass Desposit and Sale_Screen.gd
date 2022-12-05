@@ -19,19 +19,23 @@ var items = {}
 ##data
 var current_grass_stored = 0
 var grass_price_model = null
+var current_amount_in_sale_label = 0
 
+var funds = 0 
 
-
+signal update_model
 
 func _ready():
-	pass
+	get_items_list()
+
 	
 	
-"""
+"""w
 	Function to get the values of the nodes before the ready function is run
 	Used when this object is stored but not displayed
 """
 func get_items_list():
+	
 	#Buttons
 	less_button = $Less
 	more_button = $More
@@ -54,17 +58,86 @@ func get_items_list():
 	Returns an item from this class that matches the description
 """
 func get_item(key):
-	print(items.size())
 	return items[key]
 
-func set_grass_stored(val):
-	current_grass_stored = val
+
 	
+"""
+	Function to get the current stored cuttings value in the deposit screen
+"""
 func get_grass_stored():
 	return current_grass_stored
+
+func add_grass_to_sell():
+	if current_amount_in_sale_label < get_grass_stored(): ## can't sell more than there is
+		current_amount_in_sale_label += 1
+		update_display()
 	
+func remove_grass_to_sell():
+	if current_amount_in_sale_label > 0: #value to remain 0 or above
+		current_amount_in_sale_label -= 1
+		update_display()
+
+###################################################### Function relating to grass price
+"""
+	Set the grass model object
+"""
 func set_grass_price_model(price_model):
 	grass_price_model = price_model
 
+"""
+	Sell the grass amount selected
+	
+	emit: signal to change model for amount of funds
+"""
+func sell_grass():
+
+	##add the value of grass to total funds in game
+	funds += get_grass_value_in_funds()
+	
+	##remove the amount from the sale label data
+	current_grass_stored -= current_amount_in_sale_label
+	
+	##reset amount of grass shown in label
+	current_amount_in_sale_label = 0
+	
+	
+	emit_signal("update_model")
+	update_display()
+	
+	
+
+func get_grass_value_in_funds():
+	return grass_price_model.get_grass_price() * current_amount_in_sale_label
+
+##################################################################### General Functions OR relating to model
+"""
+	Function to update data in the labels from the variables stored
+"""
+func update_display():
+	$Cuttings.text = str(get_grass_stored())
+	$"Current Selected Amount".text = str(current_amount_in_sale_label)
+
 func _process(delta):
 	sale_price_label.text = str(grass_price_model.get_grass_price())
+	$"Price Applied To Amount".text = str(get_grass_value_in_funds() )
+	
+	$"Current Funds".text = str(funds)
+
+"""
+	Set funds
+	this function is used by the Game_Script
+"""
+func set_funds(value):
+	funds = value
+
+func get_funds():
+	return funds
+
+"""
+	Set the grass stored value for the cuttings display
+	this function is used by the Game_Script
+"""
+func set_grass_stored(val):
+	current_grass_stored = val
+	update_display()

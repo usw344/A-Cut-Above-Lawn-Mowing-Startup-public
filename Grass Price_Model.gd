@@ -27,7 +27,7 @@ func _process(delta):
 """
 	Returns the current grass price
 	
-	return float which contains current grass price
+	return float which contains current grass price rounded to 3 decimal places
 """
 func get_grass_price():
 	return stepify(array_of_points[array_of_points.size()-1].y,0.001) ##return the last value added to the point array
