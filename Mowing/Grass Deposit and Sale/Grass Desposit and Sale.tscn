@@ -270,3 +270,5 @@ text = "1"
 [connection signal="pressed" from="Less" to="." method="remove_grass_to_sell"]
 [connection signal="pressed" from="More" to="." method="add_grass_to_sell"]
 [connection signal="pressed" from="Sell" to="." method="sell_grass"]
+[connection signal="pressed" from="Downward Grouping" to="." method="update_add_to_sale_per_click"]
+[connection signal="pressed" from="Upward Grouping" to="." method="update_add_to_sale_per_click"]

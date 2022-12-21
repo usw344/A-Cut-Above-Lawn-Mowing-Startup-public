@@ -23,6 +23,10 @@ var current_amount_in_sale_label = 0
 
 var funds = 0 
 
+var per_click_counter = 1
+
+
+##Signals
 signal update_model
 
 func _ready():
@@ -53,6 +57,9 @@ func get_items_list():
 	items["sell_button"] = sell_button
 	items["back_button"] = back_button
 	
+	items["upward_grouping"] = $"Upward Grouping"
+	items["downward_grouping"] = $"Downward Grouping"
+	
 
 """
 	Returns an item from this class that matches the description
@@ -70,12 +77,19 @@ func get_grass_stored():
 
 func add_grass_to_sell():
 	if current_amount_in_sale_label < get_grass_stored(): ## can't sell more than there is
-		current_amount_in_sale_label += 1
+		##check if more is being added to label than there is grass
+		if get_grass_stored() - (current_amount_in_sale_label + per_click_counter) <= 0:
+			current_amount_in_sale_label += (get_grass_stored() - current_amount_in_sale_label) 
+		else:
+			current_amount_in_sale_label += per_click_counter
 		update_display()
 	
 func remove_grass_to_sell():
 	if current_amount_in_sale_label > 0: #value to remain 0 or above
-		current_amount_in_sale_label -= 1
+		if current_amount_in_sale_label - per_click_counter >= 0:
+			current_amount_in_sale_label -= per_click_counter
+		else:
+			current_amount_in_sale_label = 0
 		update_display()
 
 ###################################################### Function relating to grass price
@@ -141,3 +155,16 @@ func get_funds():
 func set_grass_stored(val):
 	current_grass_stored = val
 	update_display()
+
+##################################################################### Functions relating to grouping
+func update_add_to_sale_per_click():
+	calc_per_click_counter()
+	get_item("upward_grouping").text = str(per_click_counter)
+	get_item("downward_grouping").text = str(-per_click_counter)
+	
+
+
+func calc_per_click_counter():
+	per_click_counter *= 10
+	if per_click_counter > 1000:
+		per_click_counter = 1
