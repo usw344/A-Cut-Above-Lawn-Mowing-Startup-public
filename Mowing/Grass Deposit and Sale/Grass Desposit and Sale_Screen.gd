@@ -79,7 +79,7 @@ func add_grass_to_sell():
 	if current_amount_in_sale_label < get_grass_stored(): ## can't sell more than there is
 		##check if more is being added to label than there is grass
 		if get_grass_stored() - (current_amount_in_sale_label + per_click_counter) <= 0:
-			current_amount_in_sale_label += (get_grass_stored() - current_amount_in_sale_label) 
+			current_amount_in_sale_label += (get_grass_stored() - current_amount_in_sale_label) ##add remaing
 		else:
 			current_amount_in_sale_label += per_click_counter
 		update_display()
