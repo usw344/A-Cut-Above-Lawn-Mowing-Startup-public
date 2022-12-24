@@ -1,17 +1,21 @@
-[gd_scene format=2]
+[gd_scene load_steps=3 format=2]
 
-[node name="Control" type="Control"]
+[ext_resource path="res://UI/Main Game Screen/Workers Screen.tscn" type="PackedScene" id=1]
+[ext_resource path="res://UI/Main Game Screen/Job Screen/Job Screen.tscn" type="PackedScene" id=2]
+
+[node name="Game Screen" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="Label" type="Label" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -23.0
-margin_top = -15.5
-margin_right = 23.0
-margin_bottom = 15.5
-text = "Testing
-"
+[node name="Screen Container" type="TabContainer" parent="."]
+margin_right = 718.0
+margin_bottom = 1073.0
+
+[node name="Job Screen" parent="Screen Container" instance=ExtResource( 2 )]
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="Workers Screen" parent="Screen Container" instance=ExtResource( 1 )]
+visible = false

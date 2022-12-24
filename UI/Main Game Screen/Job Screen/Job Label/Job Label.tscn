@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+
+[node name="Job Label" type="Control"]
+
+[node name="Placeholder" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 92.0
+custom_styles/normal = SubResource( 1 )
+text = "THIS IS PLACE HOLDER TEXT FOR A JOB REQUEST. Replace with"

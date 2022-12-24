@@ -65,10 +65,10 @@ __meta__ = {
 }
 
 [node name="Current Sale Price Label" type="Label" parent="."]
-anchor_left = 0.0429688
-anchor_top = 0.0930556
-anchor_right = 0.139648
-anchor_bottom = 0.102778
+anchor_left = 0.0236111
+anchor_top = 0.114063
+anchor_right = 0.161111
+anchor_bottom = 0.123785
 margin_top = -10.0
 margin_right = 40.0
 margin_bottom = 4.0
@@ -79,10 +79,10 @@ __meta__ = {
 }
 
 [node name="Current Storaged Cuttings Label" type="Label" parent="."]
-anchor_left = 0.740234
-anchor_top = 0.104167
-anchor_right = 0.740234
-anchor_bottom = 0.104167
+anchor_left = 0.709722
+anchor_top = 0.123438
+anchor_right = 0.709722
+anchor_bottom = 0.123438
 margin_left = 5.0
 margin_top = -18.0
 margin_right = 192.0
@@ -110,10 +110,10 @@ __meta__ = {
 }
 
 [node name="Cuttings" type="Label" parent="."]
-anchor_left = 0.811523
-anchor_top = 0.148611
-anchor_right = 0.811523
-anchor_bottom = 0.148611
+anchor_left = 0.811111
+anchor_top = 0.142188
+anchor_right = 0.806944
+anchor_bottom = 0.151562
 margin_top = -12.0
 margin_right = 77.0
 margin_bottom = 19.0
@@ -129,10 +129,12 @@ __meta__ = {
 [node name="Less" type="Button" parent="."]
 anchor_left = 0.1875
 anchor_top = 0.408333
-anchor_right = 0.267578
-anchor_bottom = 0.452778
-margin_right = 40.0
-margin_bottom = 40.0
+anchor_right = 0.213
+anchor_bottom = 0.446
+margin_left = -20.0
+margin_top = -14.6663
+margin_right = 59.2961
+margin_bottom = 34.0096
 custom_fonts/font = SubResource( 12 )
 custom_styles/hover = SubResource( 13 )
 text = "<"
@@ -140,19 +142,23 @@ text = "<"
 [node name="More" type="Button" parent="."]
 anchor_left = 0.695313
 anchor_top = 0.409722
-anchor_right = 0.774414
-anchor_bottom = 0.452778
-margin_right = 40.0
-margin_bottom = 40.0
+anchor_right = 0.763
+anchor_bottom = 0.447
+margin_left = 28.3747
+margin_top = -14.4442
+margin_right = 76.5928
+margin_bottom = 32.9516
 custom_fonts/font = SubResource( 14 )
 custom_styles/hover = SubResource( 15 )
 text = ">"
 
 [node name="Current Selected Amount" type="Label" parent="."]
-anchor_left = 0.364258
-anchor_top = 0.391667
-anchor_right = 0.598633
-anchor_bottom = 0.504167
+anchor_left = 0.330389
+anchor_top = 0.385156
+anchor_right = 0.647222
+anchor_bottom = 0.477344
+margin_left = 0.119995
+margin_top = -3.05176e-05
 margin_right = 40.0
 margin_bottom = 14.0
 custom_fonts/font = ExtResource( 3 )
@@ -210,14 +216,14 @@ __meta__ = {
 }
 
 [node name="Current Funds" type="Label" parent="."]
-anchor_left = 0.0615234
-anchor_top = 0.231944
-anchor_right = 0.0976563
-anchor_bottom = 0.255556
+anchor_left = 0.0597222
+anchor_top = 0.209375
+anchor_right = 0.110199
+anchor_bottom = 0.235431
 margin_left = 3.0
 margin_top = 33.0
-margin_right = 43.0
-margin_bottom = 47.0
+margin_right = 32.6725
+margin_bottom = 43.8716
 custom_fonts/font = ExtResource( 1 )
 custom_styles/normal = ExtResource( 2 )
 text = "0"
@@ -228,10 +234,10 @@ __meta__ = {
 }
 
 [node name="Curent Funds Text" type="Label" parent="."]
-anchor_left = 0.0458984
-anchor_top = 0.238889
-anchor_right = 0.142578
-anchor_bottom = 0.248611
+anchor_left = 0.0388889
+anchor_top = 0.203906
+anchor_right = 0.138889
+anchor_bottom = 0.213628
 margin_top = -10.0
 margin_right = 40.0
 margin_bottom = 4.0
@@ -246,10 +252,10 @@ anchor_left = 0.1875
 anchor_top = 0.408333
 anchor_right = 0.267578
 anchor_bottom = 0.452778
-margin_left = 19.0
-margin_top = 99.0002
-margin_right = 20.0001
-margin_bottom = 121.0
+margin_left = -4.0
+margin_top = 143.334
+margin_right = -2.99991
+margin_bottom = 165.334
 custom_fonts/font = SubResource( 16 )
 custom_styles/hover = SubResource( 13 )
 text = "1"
@@ -259,10 +265,10 @@ anchor_left = 0.1875
 anchor_top = 0.408333
 anchor_right = 0.267578
 anchor_bottom = 0.452778
-margin_left = 541.0
-margin_top = 99.0002
-margin_right = 542.0
-margin_bottom = 121.0
+margin_left = 404.0
+margin_top = 156.334
+margin_right = 405.0
+margin_bottom = 178.333
 custom_fonts/font = SubResource( 16 )
 custom_styles/hover = SubResource( 13 )
 text = "1"

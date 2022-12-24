@@ -35,9 +35,10 @@ shape = SubResource( 6 )
 [node name="Pivot" type="Spatial" parent="."]
 
 [node name="Camera" type="Camera" parent="Pivot"]
-transform = Transform( 5.09433e-07, -0.268549, 0.963265, -0.00011004, 0.963266, 0.268549, -1, -0.000106135, -2.90601e-05, -0.893898, 3.67972, -0.0118867 )
+transform = Transform( 5.09433e-07, -0.268549, 0.963266, -0.00011004, 0.963266, 0.268549, -1, -0.000106135, -2.90601e-05, -0.930134, 4.06196, -0.0123942 )
 current = true
-fov = 98.4375
+fov = 115.0
+far = 801.0
 
 [node name="Base_of_Mower" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0565352, 0 )

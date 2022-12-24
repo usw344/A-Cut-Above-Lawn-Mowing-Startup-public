@@ -10,6 +10,7 @@
 script = ExtResource( 1 )
 
 [node name="Notification_System" parent="." instance=ExtResource( 3 )]
+margin_bottom = -2.0
 
 [node name="Main_Menu" parent="." instance=ExtResource( 2 )]
 position = Vector2( -1, 3 )
