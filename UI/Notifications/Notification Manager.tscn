@@ -3,18 +3,19 @@
 [ext_resource path="res://UI/Notifications/Notification_Manager.gd" type="Script" id=2]
 
 [node name="Notification_System" type="Control"]
-anchor_left = 0.342
-anchor_top = 0.859
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -246.24
-margin_top = -927.72
+margin_top = 6.10352e-05
 margin_bottom = -4.0
 script = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 513.0
-margin_top = 615.0
-margin_right = 691.0
-margin_bottom = 629.0
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -190.0
+margin_top = -270.0
+margin_right = -12.0
+margin_bottom = -256.0
 custom_constants/separation = 25

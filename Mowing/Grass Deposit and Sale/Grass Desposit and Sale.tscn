@@ -50,10 +50,10 @@ margin_bottom = -2.0
 script = ExtResource( 4 )
 
 [node name="Screen Label" type="Label" parent="."]
-anchor_left = 0.482422
-anchor_top = 0.0736111
-anchor_right = 0.482422
-anchor_bottom = 0.0736111
+anchor_left = 0.481944
+anchor_top = 0.0490741
+anchor_right = 0.481944
+anchor_bottom = 0.0490741
 margin_left = -187.0
 margin_right = 187.0
 margin_bottom = 40.0
@@ -110,7 +110,7 @@ __meta__ = {
 }
 
 [node name="Cuttings" type="Label" parent="."]
-anchor_left = 0.811111
+anchor_left = 0.806944
 anchor_top = 0.142188
 anchor_right = 0.806944
 anchor_bottom = 0.151562

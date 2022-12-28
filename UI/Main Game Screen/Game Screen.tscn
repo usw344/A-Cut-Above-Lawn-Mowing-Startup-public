@@ -1,21 +1,43 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://UI/Main Game Screen/Workers Screen.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/Main Game Screen/Job Screen/Job Screen.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Fonts/Play_Regular_For_Screen_text.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Main Game Screen/Game Managment Screen.gd" type="Script" id=4]
 
 [node name="Game Screen" type="Control"]
-anchor_right = 1.0
-anchor_bottom = 1.0
+margin_right = 720.0
+margin_bottom = 1080.0
+script = ExtResource( 4 )
 
 [node name="Screen Container" type="TabContainer" parent="."]
-margin_right = 718.0
-margin_bottom = 1073.0
+anchor_right = 1.0
+anchor_bottom = 0.994
+margin_top = 4.0
+margin_right = -2.0
+margin_bottom = 3.47998
+custom_fonts/font = ExtResource( 3 )
+tab_align = 0
+drag_to_rearrange_enabled = true
 
 [node name="Job Screen" parent="Screen Container" instance=ExtResource( 2 )]
 margin_left = 4.0
-margin_top = 32.0
+margin_top = 39.0
 margin_right = -4.0
 margin_bottom = -4.0
 
 [node name="Workers Screen" parent="Screen Container" instance=ExtResource( 1 )]
 visible = false
+
+[node name="New Job Offer Timer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="Label" type="Label" parent="."]
+anchor_bottom = 0.006
+margin_left = 474.0
+margin_top = 977.0
+margin_right = 661.0
+margin_bottom = 1030.52
+
+[connection signal="timeout" from="New Job Offer Timer" to="." method="new_game_offer_adder"]

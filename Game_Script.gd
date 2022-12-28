@@ -10,10 +10,15 @@ onready var current_menu = $Main_Menu
 
 onready var fuel_price = $"Fuel Price" ###THIS IS TO BE CHANGED TO THE CORRECT ONE LATER
 onready var grass_price = $"Grass Price"
+
+onready var game_management_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
+
 var buttons = {}
 var game_scene = null
 
+##Variables for instances
 var game
+var management_screen
 
 ##to store game variables. These MIGHT be stored in save
 onready var model = $Model
@@ -37,14 +42,21 @@ func _ready():
 """
 func new_game():
 	##old
-	game = level.instance()
-	add_child(game) 
-	current_menu.queue_free()
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	
-	game.connect("send_notification", notification_system, "add_notification")
-	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
-	game.connect("add_grass",self,"add_grass_to_storage")
+	management_screen = game_management_screen.instance()
+	add_child(management_screen)
+	current_menu.queue_free()
+	
+	management_screen.set_model(model)
+	
+#	game = level.instance()
+#	add_child(game) 
+#	current_menu.queue_free()
+#	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+#
+#	game.connect("send_notification", notification_system, "add_notification")
+#	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
+#	game.connect("add_grass",self,"add_grass_to_storage")
 	
 
 	
@@ -155,3 +167,6 @@ func update_model():
 	model.set_grass( grass_deposit_screen.get_grass_stored() )
 	model.set_funds( grass_deposit_screen.get_funds()   )
 	
+
+func test_model_reference():
+	print("This is current test_var value " + str(model.get_test_var()))
