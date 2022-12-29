@@ -31,23 +31,38 @@ func _ready():
 	assign_button_key_press(buttons)
 
 	
-	
 	##for main menu mouse mode should be visable
 	display_mouse()
 	
+	##if a current job is set change to it
 	model.connect("set_current_scene_to_job",self,"change_to_game")
 
 
 func change_to_game():
 	game = model.get_current_job()["Game"]
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	remove_mouse()
 
 	game.connect("send_notification", notification_system, "add_notification")
 	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
 	game.connect("add_grass",self,"add_grass_to_storage")
+	game.connect("exit",self,"change_to_managment_screen")
 	
+	game.set_current_job_label(model.get_current_job()["Job Text"])
+	
+	management_screen.pause()
 	remove_child(management_screen)
+	
 	add_child(game) 
+
+func change_to_managment_screen():
+	remove_child(game)
+	display_mouse()
+	add_child(management_screen)
+	
+	management_screen.unpause()
+	
+	model.remove_current_job()
+
 
 """
 	TODO: Function to start a new game by brining up new game selection screen.

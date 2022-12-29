@@ -10,6 +10,8 @@ onready var money_label = $Top_bar_Container/Money_And_Label_Container/Money_Num
 
 var current_storage_value = 0
 var current_fuel_value = 100
+
+signal Return
 ############################################### Main file Functions $$$$$$$$$$$$$
 
 onready var press_key_for_grass_deposit_screen = $"Press K"
@@ -100,4 +102,19 @@ func add_value_to_money_label(value):
 	var current_value = int(money_label.text)
 	current_value+= value
 	money_label.text = String(current_value)
+
+
+"""
+	Function to prep data and emit signal to return to current job screen
+"""
+func exit_current_job_screen():
+	emit_signal("Return")
+
+
+
+#######################################################################
+func set_current_job_label(text):
+	$Time_and_Job_Container/Current_Job.text = text
 	
+func get_current_job_label():
+	return $Time_and_Job_Container/Current_Job.text 

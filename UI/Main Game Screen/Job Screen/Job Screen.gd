@@ -56,7 +56,7 @@ func remove_label(text):
 """
 func accept_job(val):
 	var game = game_job.instance()
-	var job_object = {"Job Text":val,"Game": game}
+	var job_object = {"Job Text":val,"Game": game} ####
 	
 	var current_label = list_of_job_on_offer[val]
 	

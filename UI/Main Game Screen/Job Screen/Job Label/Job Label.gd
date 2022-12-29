@@ -37,7 +37,7 @@ func stop_elapse():
 func change_to_current():
 	self.remove_child($"Accept Job")
 	self.remove_child($Decline)
-	self.remove_child($Elapse)
+	self.remove_child($Elaspe)
 	
 	var a_button = Button.new()
 	a_button.text = "Start Job"

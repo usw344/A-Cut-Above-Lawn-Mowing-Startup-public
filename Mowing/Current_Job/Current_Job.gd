@@ -39,8 +39,8 @@ var timer_for_button_click_to_display_screen = Timer.new()
 #################### Signals
 signal send_notification
 signal show_grass_deposit_screen
-
 signal add_grass
+signal exit
 
 func _ready():
 	go_to($Storage_Depot,-5,1,20)
@@ -49,6 +49,9 @@ func _ready():
 #	$Ground_Below_Grid_Map.mesh_instance.mesh.size.x = 1200
 	timer_for_button_click_to_display_screen.connect("timeout",self,"remove_press_key")
 	add_child(timer_for_button_click_to_display_screen)
+	
+	player_hud.connect("Return",self,"return_to_managment_screen")
+	
 """
 	Function to update the fuel and storage
 	Signal Receive: from Mowing_Area node, recives how much to update the money and gas
@@ -204,6 +207,8 @@ func _physics_process(delta):
 func _input(event):
 	if show_grass_deposit_screen_if_clicked and Input.is_action_just_released("Open Grass Deposit Screen"):
 		emit_signal("show_grass_deposit_screen")
+	if Input.is_action_just_released("exit_to_managment_screen"):
+		return_to_managment_screen()
 
 """
 	Remove the text on screen displaying what to click for deposit screen
@@ -213,4 +218,9 @@ func remove_press_key():
 	show_fuel_screen_if_clicked = false
 	
 	player_hud.clear_press_key_labels()
-	
+
+func return_to_managment_screen():
+	emit_signal("exit") ###IN THIS SIGNAL ALSO RETURN ANY DATA THAT NEEDS TO BE STORED
+
+func set_current_job_label(text):
+	$Player_HUD.set_current_job_label(text)

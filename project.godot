@@ -16,7 +16,7 @@ run/main_scene="res://Main.tscn"
 [display]
 
 window/size/width=720
-window/size/height=1080
+window/size/height=1000
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
 
@@ -69,6 +69,11 @@ add_notification={
 "Open Grass Deposit Screen"={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
+exit_to_managment_screen={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":90,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
 

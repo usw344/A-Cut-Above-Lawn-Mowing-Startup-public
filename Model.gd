@@ -36,6 +36,15 @@ func get_funds():
 	return funds
 
 
+################################################################ FUNCTION relating Fuel
+
+func set_fuel(f):
+	fuel = f
+	
+func get_fuel():
+	return fuel
+
+
 ################################################################ FUNCTIONS relating to jobs
 """
 	Function to add jobs that are on offer
@@ -91,9 +100,17 @@ func set_current_job(job_object):
 """
 func get_current_job():
 	return current_job
+	
+"""
+	Remove current job.
+"""
+func remove_current_job():
+	current_job = null
 
 """
 	From the current jobs list that matches the job number as key
+	this is in reference to the list of jobs that have been put in the taken job
+	dictionary
 	
 	return job object
 """

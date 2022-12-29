@@ -32,6 +32,13 @@ func new_game_offer_adder():
 func add_job_label(label_text):
 	job_screen.add_label(label_text)
 
+
+func pause():
+	$"New Job Offer Timer".stop()
+
+func unpause():
+	$"New Job Offer Timer".start()
+
 ############################################# OTHER
 
 func set_model(m):
