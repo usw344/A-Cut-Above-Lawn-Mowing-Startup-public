@@ -35,7 +35,20 @@ func _ready():
 	##for main menu mouse mode should be visable
 	display_mouse()
 	
+	model.connect("set_current_scene_to_job",self,"change_to_game")
+
+
+func change_to_game():
+	game = model.get_current_job()["Game"]
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
+	game.connect("send_notification", notification_system, "add_notification")
+	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
+	game.connect("add_grass",self,"add_grass_to_storage")
 	
+	remove_child(management_screen)
+	add_child(game) 
+
 """
 	TODO: Function to start a new game by brining up new game selection screen.
 	**CURRENT** Currently swtiches to game scene

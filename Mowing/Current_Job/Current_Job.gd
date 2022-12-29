@@ -9,7 +9,6 @@ job specic choices )
 """
 
 ## Variable refernce to nodes
-onready var mowing_area = $Mowing_Area/GridMap
 onready var grid = $Mowing_Area/GridMap
 onready var player_hud = $Player_HUD
 onready var storage_truck = $Storage_Depot
