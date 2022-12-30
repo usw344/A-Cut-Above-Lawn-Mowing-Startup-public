@@ -8,7 +8,9 @@ var events_multiplier = {"Winter":0.5}
 
 
 func _ready():
-	pass
+	noise.set_seed(randi())
+	noise.set_octaves(6)
+	noise.set_period(128)
 
 
 var insert_into_array = Vector2()

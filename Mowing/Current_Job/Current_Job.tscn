@@ -91,16 +91,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0 )
 [node name="Mower" parent="." instance=ExtResource( 1 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 3, 0 )
 
-[node name="Start_Area_For_Mower" parent="." instance=ExtResource( 5 )]
-visible = false
-y = -2
-z = 50
-
-[node name="Ground_Below_Grid_Map" parent="." instance=ExtResource( 5 )]
-floor_width = 100
-floor_height = 100
-y = -2
-z = 50
+[node name="Ground_Below_Grid" parent="." instance=ExtResource( 5 )]
 
 [node name="Environment" type="WorldEnvironment" parent="."]
 environment = SubResource( 2 )

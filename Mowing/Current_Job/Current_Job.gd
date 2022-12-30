@@ -40,13 +40,11 @@ var timer_for_button_click_to_display_screen = Timer.new()
 signal send_notification
 signal show_grass_deposit_screen
 signal add_grass
-signal exit
+signal exit(fuel)
 
 func _ready():
-	go_to($Storage_Depot,-5,1,20)
-	go_to($Fuel_Truck, -20,1,20)
-#	go_to($Start_Area_For_Mower,0,-1,0)
-#	$Ground_Below_Grid_Map.mesh_instance.mesh.size.x = 1200
+	
+#	
 	timer_for_button_click_to_display_screen.connect("timeout",self,"remove_press_key")
 	add_child(timer_for_button_click_to_display_screen)
 	
@@ -144,7 +142,7 @@ func add_money_for_grass(value_to_add):
 	#var add_money_value = compute_storage_value()
 	player_hud.add_value_to_money_label(value_to_add)
 
-####################################################
+#################################################### Functions relating to storage
 """
 	Function to compute how much money to add based on current storage value
 	
@@ -196,6 +194,16 @@ func pay_for_fuel(): ##INCOMPLETE FUNCTION since does not allow currently to fil
 	player_hud.set_current_fuel_value(100)
 	fuel_is_empty_notification_limiter = false
 
+
+func set_fuel_vars(fuel_object):
+	fuel = fuel_object["fuel_val"]
+	fuel_used_idling_multiplier = fuel_object["fuel_per_idle"] 
+	
+	fuel_used_per_block_removed= fuel_object["fuel_used_per_block"]
+	
+	
+	$Player_HUD.set_current_fuel_value(fuel)
+
 ##################################################### Other functions
 func _physics_process(delta):
 	###adds approx. amount of time the mower object has been running 
@@ -219,8 +227,32 @@ func remove_press_key():
 	
 	player_hud.clear_press_key_labels()
 
+########################################################## FUNCTIONS relating to the main tscn
+
 func return_to_managment_screen():
-	emit_signal("exit") ###IN THIS SIGNAL ALSO RETURN ANY DATA THAT NEEDS TO BE STORED
+	emit_signal("exit",get_current_fuel_value()) ###IN THIS SIGNAL ALSO RETURN ANY DATA THAT NEEDS TO BE STORED
 
 func set_current_job_label(text):
 	$Player_HUD.set_current_job_label(text)
+
+"""
+	Function to set the grid variables for this job
+"""
+func set_grid_vars(grid_var_object):
+	var width = grid_var_object["width"]
+	var length = grid_var_object["length"]
+	$Mowing_Area.new_grid(width,length,grid_var_object["tileset"])
+
+	##set the planes
+	$Ground_Below_Grid.set_width(width*2)
+	$Ground_Below_Grid.set_length(length*2)
+	
+	$Ground_Below_Grid.set_location(Vector3(0,-2,width))
+	$Ground_Below_Grid.update_ground_variables()
+
+	##set location for start points
+	go_to($Storage_Depot,-20,1,20)
+	go_to($Fuel_Truck, -35,1,20)
+	go_to($Mowing_Area,-15,-2,0)
+	
+	go_to($Mower,0,0,50)

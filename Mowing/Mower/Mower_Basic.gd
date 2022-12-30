@@ -23,7 +23,7 @@ func _ready():
 #	xyz_speed_position_display = hud_model.get_label("position_label")
 	
 	#this is the placeholder for start position. TO DO: Make this relative rather then hardcoded
-	go_to(-5,0,50)
+	pass
 	
 	
 	

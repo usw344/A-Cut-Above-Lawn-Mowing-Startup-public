@@ -136,5 +136,5 @@ margin_left = -351.0
 margin_top = -56.0
 margin_right = -13.0
 margin_bottom = -13.0
-text = "Click to return to Managment Screen or press z"
+text = " press z to return to managment screen"
 clip_text = true

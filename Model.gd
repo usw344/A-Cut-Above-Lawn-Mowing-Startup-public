@@ -2,7 +2,8 @@ extends Node
 
 var grass_stored = 0
 var funds = 0
-var fuel = 100
+
+var fuel_object = {"fuel_val":100,"fuel_per_idle":2, "fuel_used_per_block":2}
 
 var jobs_on_offer = {} ##array of label objects
 var jobs_current  = {}
@@ -39,10 +40,10 @@ func get_funds():
 ################################################################ FUNCTION relating Fuel
 
 func set_fuel(f):
-	fuel = f
+	fuel_object["fuel_val"] = f
 	
-func get_fuel():
-	return fuel
+func get_fuel_object():
+	return fuel_object
 
 
 ################################################################ FUNCTIONS relating to jobs

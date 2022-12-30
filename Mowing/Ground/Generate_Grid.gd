@@ -5,8 +5,8 @@ var noise = OpenSimplexNoise.new()
 
 #Function to hold basic grid shapes
 var grids = {}
-export var grid_width = 50
-export var grid_length = 50
+var grid_width = 50
+var grid_length = 50
 
 var block_list = {
 	"green":       1,
@@ -17,11 +17,7 @@ var block_list = {
 }
 
 func _ready():
-	make_new_grid("Testing",grid_width,1,grid_length)
-	
-	display_this_grid("Testing",1) #draw the things to be destroyed
-
-
+	randomize()
 	
 
 """
@@ -59,8 +55,7 @@ func display_this_grid(grid_id,layer):
 	var width = grids[grid_id][1]
 	var height = grids[grid_id][2]
 	var length = grids[grid_id][3]
-	
-	
+
 	var current_grid = grids[grid_id][0]
 	
 	for x in width:
@@ -96,3 +91,22 @@ func get_noise(grid,x_constraint,y_constraint,z_constraint):
 """
 func edit_grid(grid_ID,location,replacment_block_id):
 	set_cell_item(location.x,location.y+1,location.z,replacment_block_id)
+
+
+############################################################# FUNCTIONS to set grid variables
+
+func new_noise():
+	noise.set_seed(randi())
+	
+
+func set_grid_width(width):
+	grid_width = width
+	
+func set_grid_length(length):
+	grid_length = length
+
+func grid():
+	make_new_grid("grid",grid_width,1,grid_length)
+	display_this_grid("grid",1) #draw the things to be destroyed
+
+	noise.set_octaves(9)

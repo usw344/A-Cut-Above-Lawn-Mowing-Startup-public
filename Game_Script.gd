@@ -42,19 +42,25 @@ func change_to_game():
 	game = model.get_current_job()["Game"]
 	remove_mouse()
 
+	##set signals
 	game.connect("send_notification", notification_system, "add_notification")
 	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
 	game.connect("add_grass",self,"add_grass_to_storage")
 	game.connect("exit",self,"change_to_managment_screen")
 	
+	##set variables for this
 	game.set_current_job_label(model.get_current_job()["Job Text"])
-	
+	game.set_grid_vars({"width":20,"length":20,"tileset":2})
+	##Remove managment_screen
 	management_screen.pause()
 	remove_child(management_screen)
 	
+	
+	game.set_fuel_vars(model.get_fuel_object())
+	
 	add_child(game) 
 
-func change_to_managment_screen():
+func change_to_managment_screen(fuel_value):
 	remove_child(game)
 	display_mouse()
 	add_child(management_screen)
@@ -62,7 +68,7 @@ func change_to_managment_screen():
 	management_screen.unpause()
 	
 	model.remove_current_job()
-
+	model.set_fuel(fuel_value)
 
 """
 	TODO: Function to start a new game by brining up new game selection screen.

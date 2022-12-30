@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Mowing/Mowing Area/Mowing Area.gd" type="Script" id=1]
+[ext_resource path="res://Mowing/Mowing Area/some_meshes.tres" type="MeshLibrary" id=2]
+[ext_resource path="res://Mowing/Mower/Mower_Basic.tscn" type="PackedScene" id=3]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 50, 2, 50 )
+
+[sub_resource type="BoxShape" id=2]
+
+[node name="Mowing Area" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="Ground Area" type="StaticBody" parent="."]
+
+[node name="MeshInstance" type="MeshInstance" parent="Ground Area"]
+mesh = SubResource( 1 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Ground Area"]
+shape = SubResource( 2 )
+
+[node name="GridMap" type="GridMap" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
+mesh_library = ExtResource( 2 )
+cell_center_y = false
+__meta__ = {
+"_editor_clip_": 0
+}
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( -0.113431, 0.49294, -0.862638, 0.0642648, 0.870063, 0.488733, 0.991465, -7.40296e-09, -0.13037, -64.9713, 39.0398, 16.5028 )
+
+[node name="Mower_Basic" parent="." instance=ExtResource( 3 )]
