@@ -21,14 +21,11 @@ mesh = SubResource( 1 )
 shape = SubResource( 2 )
 
 [node name="GridMap" type="GridMap" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 mesh_library = ExtResource( 2 )
 cell_center_y = false
 __meta__ = {
 "_editor_clip_": 0
 }
 
-[node name="Camera" type="Camera" parent="."]
-transform = Transform( -0.113431, 0.49294, -0.862638, 0.0642648, 0.870063, 0.488733, 0.991465, -7.40296e-09, -0.13037, -64.9713, 39.0398, 16.5028 )
-
 [node name="Mower_Basic" parent="." instance=ExtResource( 3 )]
+visible = false

@@ -12,9 +12,9 @@ var block_list = {
 
 func _ready():
 	##For testing to see if code is working
-	set_mowing_area(15,15,1)
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	
+#	set_mowing_area(15,15,1)
+#	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	pass
 
 ############################################################### FUNCTION that can be
 															  # used by other scripts
@@ -35,11 +35,12 @@ func set_mowing_area(width,length,tileset):
 	Function to set the ground under the grid_map in this code
 """
 func set_ground_area(width,length):
+	print("set_ground_area")
 	var mesh_instance = $"Ground Area/MeshInstance"
 	var collision_shape = $"Ground Area/CollisionShape"
 	
 	##move the ground to be in line with the grid map 
-	$"Ground Area".transform.origin.y = 2
+	$"Ground Area".transform.origin.y = 0
 	
 	##adding width and height since gridmap uses size 2 squares
 	$"Ground Area".transform.origin.x += width
@@ -53,13 +54,12 @@ func set_ground_area(width,length):
 	mesh_instance.mesh.size.z = length*2
 	
 	##add space for trucks and start space
-	var margin = width/6 + 5
+	var margin = width/6 + 5 ##How much space for the trucks
 	collision_shape.shape.extents.x += margin
 	mesh_instance.mesh.size.x += margin*2
 	
 	$"Ground Area".transform.origin.x -= margin
-	
-	
+
 
 ################################################################# FUNCTIONS
 
@@ -74,7 +74,6 @@ func calc_grid(width,height,length):
 				noise_grid[Vector2(x,z)] = current_noise
 
 func set_gridmap(width,height,length):
-	print("setting")
 	var gridmap = $GridMap ###THIS COULD RESULT IN NULL DEPENDING ON IF THE GAME HAS ENTERED
 	for x in width:
 		for y in height:
@@ -91,6 +90,22 @@ func set_noise():
 	randomize()
 	noise.set_seed(randi())
 	noise.set_octaves(6)
+
+
+
+func remove_cell(cell_location):
+	var gridmap = $GridMap
+	gridmap.set_cell_item(cell_location.x,cell_location.y,cell_location.z,-1)
+
+func get_cell_item(in_grid_location):
+	var gridmap = $GridMap
+	print(in_grid_location.y)
+	return gridmap.get_cell_item(in_grid_location.x, in_grid_location.y,in_grid_location.z)
+
+func get_cell_position_at_collision(collision):
+	var gridmap = $GridMap
+	return gridmap.world_to_map(collision.position-collision.normal)
+	
 
 """
 	Function to check if a give value is between two bounds

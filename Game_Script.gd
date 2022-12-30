@@ -50,7 +50,7 @@ func change_to_game():
 	
 	##set variables for this
 	game.set_current_job_label(model.get_current_job()["Job Text"])
-	game.set_grid_vars({"width":20,"length":20,"tileset":2})
+	game.set_grid_vars({"width":15,"length":15,"tileset":2})
 	##Remove managment_screen
 	management_screen.pause()
 	remove_child(management_screen)

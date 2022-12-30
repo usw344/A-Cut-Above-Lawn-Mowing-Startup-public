@@ -9,7 +9,8 @@ job specic choices )
 """
 
 ## Variable refernce to nodes
-onready var grid = $Mowing_Area/GridMap
+
+onready var mowing_area = $"Mowing Area"
 onready var player_hud = $Player_HUD
 onready var storage_truck = $Storage_Depot
 
@@ -82,15 +83,18 @@ func handle_mower_collision(collision):
 	if get_storage_value() != 100 and get_current_fuel_value() > 0:
 		
 		#get location of the block that was collided with
-		var grid_position = grid.world_to_map(collision.position-collision.normal)
-		var cell_item_ident = grid.get_cell_item(grid_position.x, grid_position.y+1,grid_position.z)
+		var grid_position = mowing_area.get_cell_position_at_collision(collision)
+		#var grid_pos = $"Mowing Area/GridMap".world_to_map(collision.position-collision.normal)
 		
+		var cell_item_ident = mowing_area.get_cell_item(grid_position)
+		
+		#print("grid_position: " + str(grid_pos) + " cell ident " + str(cell_item_ident))
 		if(cell_item_ident != 4 and cell_item_ident != -1):
-			grid.edit_grid("Testing",grid_position,-1)
+			mowing_area.remove_cell(grid_position)
 			
 			##update mower storage and fuel. for now just use a raw value of -1 -1. 
 			receive_update({"fuel":compute_fuel_loss(true),"storage":value_of_mowed_grass_in_storage})
-	
+		
 	##the storage is full and the collision is not with a truck either
 	else: 
 		# in case where storage is full
@@ -241,18 +245,14 @@ func set_current_job_label(text):
 func set_grid_vars(grid_var_object):
 	var width = grid_var_object["width"]
 	var length = grid_var_object["length"]
-	$Mowing_Area.new_grid(width,length,grid_var_object["tileset"])
-
-	##set the planes
-	$Ground_Below_Grid.set_width(width*2)
-	$Ground_Below_Grid.set_length(length*2)
+	var tileset = grid_var_object["tileset"]
 	
-	$Ground_Below_Grid.set_location(Vector3(0,-2,width))
-	$Ground_Below_Grid.update_ground_variables()
+	
+	$"Mowing Area".set_mowing_area(width,length,tileset)
 
 	##set location for start points
-	go_to($Storage_Depot,-20,1,20)
-	go_to($Fuel_Truck, -35,1,20)
-	go_to($Mowing_Area,-15,-2,0)
+	go_to($Storage_Depot,-10,5,10)
+	go_to($Fuel_Truck, -10,5,30)
+
 	
-	go_to($Mower,0,0,50)
+	go_to($Mower,10,8,10)
