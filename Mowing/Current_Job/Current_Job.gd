@@ -42,6 +42,7 @@ signal send_notification
 signal show_grass_deposit_screen
 signal add_grass
 signal exit(fuel)
+signal done
 
 func _ready():
 	
@@ -51,6 +52,42 @@ func _ready():
 	
 	player_hud.connect("Return",self,"return_to_managment_screen")
 	
+	##testing save feature
+	
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	###same for save and laod
+	var file = File.new()
+	var save_file = "res://Saves/testing_save.save"
+	
+	##to load
+	file.open(save_file,File.READ)
+	var save_data = file.get_var(true)
+	
+	load_data(save_data)
+	var a_fuel_object = {"fuel_val":100,"fuel_per_idle":2,"fuel_used_per_block":2}
+	set_fuel_vars(a_fuel_object)
+
+#	to save
+#	set_grid_vars({"width":10,"length":10,"tileset":1})
+#	set_current_job_label("This is a save file testing")
+#	file.open(save_file,File.WRITE)
+#	file.store_var(save_data(),true)
+#
+#
+#	file.close()
+
+func save_testing():
+	if Input.is_action_just_released("save"):
+		var file = File.new()
+		var save_file = "res://Saves/testing_save.save"
+		
+		file.open(save_file,File.WRITE)
+		file.store_var(save_data(),true)
+
+
+		file.close()
+		print("saved")
+
 """
 	Function to update the fuel and storage
 	Signal Receive: from Mowing_Area node, recives how much to update the money and gas
@@ -90,7 +127,10 @@ func handle_mower_collision(collision):
 		
 		#print("grid_position: " + str(grid_pos) + " cell ident " + str(cell_item_ident))
 		if(cell_item_ident != 4 and cell_item_ident != -1):
-			mowing_area.remove_cell(grid_position)
+			##return true if that was last cell in current gridmap
+			if mowing_area.remove_cell(grid_position): 
+				receive_update({"fuel":compute_fuel_loss(true),"storage":value_of_mowed_grass_in_storage})
+				emit_signal("done")
 			
 			##update mower storage and fuel. for now just use a raw value of -1 -1. 
 			receive_update({"fuel":compute_fuel_loss(true),"storage":value_of_mowed_grass_in_storage})
@@ -123,10 +163,10 @@ func prepare_and_send_notification(wording):
 	
 	@param x,y,z: three different values relating to the position in area
 """
-func go_to(obj,x, y, z):
-	obj.transform.origin.x = x
-	obj.transform.origin.z = z
-	obj.transform.origin.y = y
+func go_to(obj,location):
+	obj.transform.origin.x = location.x
+	obj.transform.origin.z = location.z
+	obj.transform.origin.y = location.y
 ###################################################
 """
 	Function empties storage
@@ -206,6 +246,7 @@ func set_fuel_vars(fuel_object):
 	fuel_used_per_block_removed= fuel_object["fuel_used_per_block"]
 	
 	
+	
 	$Player_HUD.set_current_fuel_value(fuel)
 
 ##################################################### Other functions
@@ -213,7 +254,7 @@ func _physics_process(delta):
 	###adds approx. amount of time the mower object has been running 
 	mower_on += delta
 	mower_on = stepify(mower_on,0.01) ##ROUNDs the value to 2 decimal places
-	
+	save_testing()
 	receive_update({"fuel":compute_fuel_loss(false),"storage":0})
 
 func _input(event):
@@ -230,6 +271,12 @@ func remove_press_key():
 	show_fuel_screen_if_clicked = false
 	
 	player_hud.clear_press_key_labels()
+	
+	
+
+func display_done_label():
+	$Done.show()
+	$"Managment Screen".show()
 
 ########################################################## FUNCTIONS relating to the main tscn
 
@@ -251,8 +298,37 @@ func set_grid_vars(grid_var_object):
 	$"Mowing Area".set_mowing_area(width,length,tileset)
 
 	##set location for start points
-	go_to($Storage_Depot,-10,5,10)
-	go_to($Fuel_Truck, -10,5,30)
-
+	$"Mowing Area".set_truck_location("right",$Storage_Depot)
+	$"Mowing Area".set_truck_location("left",$Fuel_Truck)
+	$"Mowing Area".set_mower_position($Mower)
 	
-	go_to($Mower,10,8,10)
+"""
+	Return data that is to be stored
+"""
+func save_data():
+	var game = $"Mowing Area"
+	var data_object = {
+		"Game grid":game.get_grid(),
+		"Game size type":null,
+		"Grid Size":game.get_grid_size(),
+		"Fuel truck location":$Fuel_Truck.transform.origin,
+		"Storage depot location":$Storage_Depot.transform.origin,
+		"Mower location":$Mower.transform.origin,
+		"Job label":$Player_HUD.get_current_job_label(),
+		"Job elapse":$Player_HUD.get_elapse()
+	}
+	
+	return data_object
+	
+func load_data(data_object):
+	set_current_job_label(data_object["Job label"])
+	go_to($Mower,data_object["Mower location"])
+	go_to($Storage_Depot,data_object["Storage depot location"])
+	
+	go_to($Fuel_Truck,data_object["Fuel truck location"])
+	
+	$"Mowing Area".set_grid_size(data_object["Grid Size"])
+	$"Mowing Area".set_grid(data_object["Game grid"],data_object["Grid Size"])
+	$Player_HUD.set_elapse(data_object["Job elapse"])
+	print('loaded game')
+	

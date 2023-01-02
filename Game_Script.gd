@@ -40,21 +40,23 @@ func _ready():
 
 func change_to_game():
 	game = model.get_current_job()["Game"]
+	if model.started_game():
+		### MAY NEED THIS 
+		pass
+	else:
+		##set signals
+		game.connect("send_notification", notification_system, "add_notification")
+		game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
+		game.connect("add_grass",self,"add_grass_to_storage")
+		game.connect("exit",self,"change_to_managment_screen")
+		game.connect("done",self,"current_job_selected_complete")
+	
+	
 	remove_mouse()
 
-	##set signals
-	game.connect("send_notification", notification_system, "add_notification")
-	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
-	game.connect("add_grass",self,"add_grass_to_storage")
-	game.connect("exit",self,"change_to_managment_screen")
-	
-	##set variables for this
-	game.set_current_job_label(model.get_current_job()["Job Text"])
-	game.set_grid_vars({"width":15,"length":15,"tileset":2})
 	##Remove managment_screen
 	management_screen.pause()
 	remove_child(management_screen)
-	
 	
 	game.set_fuel_vars(model.get_fuel_object())
 	
@@ -71,26 +73,23 @@ func change_to_managment_screen(fuel_value):
 	model.set_fuel(fuel_value)
 
 """
-	TODO: Function to start a new game by brining up new game selection screen.
-	**CURRENT** Currently swtiches to game scene
+	Function to start a new game by brining up new game selection screen.
 """
 func new_game():
-	##old
-	
 	management_screen = game_management_screen.instance()
 	add_child(management_screen)
 	current_menu.queue_free()
 	
+	management_screen.connect("save_current_game_data",self,"save_game")
 	management_screen.set_model(model)
+
+"""
 	
-#	game = level.instance()
-#	add_child(game) 
-#	current_menu.queue_free()
-#	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-#
-#	game.connect("send_notification", notification_system, "add_notification")
-#	game.connect("show_grass_deposit_screen",self, "display_grass_deposit_screen")
-#	game.connect("add_grass",self,"add_grass_to_storage")
+"""
+func current_job_selected_complete():
+	model.add_to_past_jobs()
+	$Timer.start()
+	game.display_done_label()
 	
 
 	
@@ -204,3 +203,10 @@ func update_model():
 
 func test_model_reference():
 	print("This is current test_var value " + str(model.get_test_var()))
+
+
+"""
+	Save data
+"""
+func save_game():
+	model.save_information()

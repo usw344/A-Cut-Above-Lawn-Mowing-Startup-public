@@ -68,7 +68,7 @@ material/0 = SubResource( 10 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.45056, 9.53674e-07, -0.056303 )
 shape = SubResource( 11 )
 
-[node name="Label3D" type="Label3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.896148, 1.45029, 2.15999 )
+[node name="Label3D" type="Label3D" parent="Fuel_Truck"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.989769, 1.45029, 2.15999 )
 text = "Fuel Truck"
 font = ExtResource( 1 )

@@ -20,11 +20,7 @@ func _process(delta):
 	##print( (noise.get_noise_1d(counter)+1) ) 
 	insert_into_array = Vector2(counter, noise.get_noise_1d(counter)+1)
 	array_of_points.append(insert_into_array)
-	
-	
-#	testingVector = Vector2(counter, 800+noise.get_noise_2d(counter+10,counter/2)*500)
-#	line.add_point(testingVector)
-#	line2.add_point( Vector2(counter, 800+noise.get_noise_1d(counter+10)*500)  )
+
 
 """
 	Returns the current grass price

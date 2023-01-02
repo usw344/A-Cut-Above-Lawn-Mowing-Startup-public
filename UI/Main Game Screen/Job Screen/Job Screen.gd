@@ -21,7 +21,7 @@ func _ready():
 """
 	Function periodcally adds jobs offers
 """
-func add_label(label_text):
+func add_label(label_text,size):
 	var a_label = label_scene.instance()
 	
 	##store in the dictionary to be able to remove
@@ -34,7 +34,7 @@ func add_label(label_text):
 	
 	##other function to setup up label
 	a_label.set_label_text(label_text)
-	
+	a_label.set_job_size_label(size)
 	var elapse_time = model.get_int_in_range(0,time_elaspe_val_for_label.size()-1)
 	a_label.set_elaspe(time_elaspe_val_for_label[elapse_time]*2.2)
 	
@@ -56,14 +56,21 @@ func remove_label(text):
 """
 func accept_job(val):
 	var game = game_job.instance()
+	var current_label = list_of_job_on_offer[val]
+	var mowing_area_size = model.get_grid_size_relating_to_job_size(current_label.get_job_size())	
+	
+	game.set_current_job_label(val)
+	game.set_grid_vars({"width":mowing_area_size,"length":mowing_area_size,"tileset":2})
+	
+	
 	var job_object = {"Job Text":val,"Game": game} ####
 	
-	var current_label = list_of_job_on_offer[val]
+	
 	
 	current_label.stop_elapse()
 	current_label.change_to_current()
 	
-	list_of_job_on_offer.erase(val)
+#	list_of_job_on_offer.erase(val)
 	
 	model.add_job_to_current_jobs(job_object)
 
@@ -77,3 +84,4 @@ func set_curent_job(text):
 
 func set_model(m):
 	model = m
+	model.connect("remove_job_from_screen",self,"remove_label")

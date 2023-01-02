@@ -13,13 +13,21 @@ var current_job
 
 var num = RandomNumberGenerator.new()
 
+var job_sizes = {
+	"type 1":[8,10],
+	"type 2":[11,16],
+	"type 3":[20,25],
+	"type 4":[26,30],
+	"type 5":[31,32]}
+var rotation_counter = 0
 ##Signals
 signal set_current_scene_to_job
-
+signal remove_job_from_screen(job_text)
 
 
 func _ready():
-	pass
+	save_model()
+	load_model()
 
 
 ############################################################### FUNCTIONS related to grass
@@ -118,6 +126,51 @@ func remove_current_job():
 func get_from_current_jobs(job_number):
 	return jobs_current[job_number]
 
+"""
+	Adds the current job object into the past object list
+	Clears the current_job value
+	
+	NOTE in the job screen code the remove_label function which connects 
+	to the signal from here also REMOVES the job from the job offer list
+	The erase is also done here
+"""
+func add_to_past_jobs():
+	jobs_past[current_job["Job Text"]] = current_job	
+	emit_signal("remove_job_from_screen",current_job["Job Text"])
+	jobs_on_offer.erase(current_job["Job Text"])
+	current_job = null
+
+
+
+
+
+##################################################### FUNCTIONS other
+"""
+	Function to see if this game has already been started
+"""
+func started_game():
+	pass
+"""
+	Rotates between type 1 - 5 job sizes
+	
+	return: the name of size cataogory
+"""
+func get_next_job_size():
+	var return_key = job_sizes.keys()[rotation_counter]
+	rotation_counter += 1
+	if rotation_counter > job_sizes.size()-1:
+		rotation_counter = 0
+	return return_key
+
+"""
+	returns a value in range of the size range of the given cataogry
+"""
+func get_grid_size_relating_to_job_size(size):
+	var range_size = job_sizes[size]
+	
+	return get_int_in_range(range_size[0],range_size[1])
+	
+
 ####################################################################### FUNCTIONS relating to number
 
 """
@@ -132,3 +185,35 @@ func get_int_in_range(val1, val2):
 	return num.randi_range(val1, val2)
 
 
+###################################################################### FUNCTIONS relating to saving
+
+func save_model():
+	##get data from all in-game jobs that are on going and store them
+		#store the gridmap
+		
+		#store the location of the trucks
+		
+			
+	##store the fuel, mower storage and money
+	
+	##Store the seeds for random num, fuel mode and grass price
+	
+	##Store the 
+	var testing = {"x":[3,54,12],"y":[9,42,123],"This":[113,34,343]}
+	var testing2 = {"x":["a","b","c"],"y":[2349,442,12343],"This":[1432413,34342,34343]}
+	var file = File.new()
+	var save = "res://testing.save"
+	file.open(save,File.WRITE)
+	file.store_var(testing,true)
+	file.store_var(testing2,true)
+	file.close()
+	
+func load_model():
+	var file = File.new()
+	var save = "res://testing.save"
+	file.open(save, File.READ)
+	var c = file.get_var(true)
+	var c2 = file.get_var(true)
+	file.close()
+	print(c["x"])
+	print(c2["x"])

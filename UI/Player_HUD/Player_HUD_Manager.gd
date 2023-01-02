@@ -32,6 +32,7 @@ func display_deposit_grass_key_label(key):
 func clear_press_key_labels():
 	press_key_for_grass_deposit_screen.text = ""
 
+
 ############################################### Timer-related Functions $$$$$$$$$$$$$
 
 
@@ -51,6 +52,12 @@ func calc_time_in_string_format(time_in_raw_seconds):
 	
 	return time_string
 
+func get_elapse():
+	return elaspsed_time
+	
+func set_elapse(elapse):
+	elaspsed_time = elapse
+################################################################################ OTHER
 """
 	Function to keep updating the the label listing money made.
 	

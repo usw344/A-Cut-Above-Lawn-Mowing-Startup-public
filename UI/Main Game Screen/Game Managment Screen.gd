@@ -5,9 +5,9 @@ onready var job_screen = $"Screen Container/Job Screen"
 onready var a_game = preload("res://Mowing/Current_Job/Current_Job.tscn")
 
 var job_counter = 0
-
+signal save_current_game_data
 func _ready():
-	pass
+	$"Screen Container/Save/Save button".connect("pressed",self,"save_signal_handler")
 
 
 	
@@ -19,7 +19,7 @@ func new_game_offer_adder():
 	var label_text = "Job " + str(job_counter)
 	job_counter += 1
 	
-	add_job_label(label_text)
+	add_job_label(label_text,model.get_next_job_size())
 	var wait_time = model.get_float_in_range(3,15)
 	$"New Job Offer Timer".wait_time = wait_time
 	
@@ -29,8 +29,8 @@ func new_game_offer_adder():
 """
 	Functiont to add a label to the 
 """
-func add_job_label(label_text):
-	job_screen.add_label(label_text)
+func add_job_label(label_text,size):
+	job_screen.add_label(label_text,size)
 
 
 func pause():
@@ -46,3 +46,8 @@ func set_model(m):
 	
 	job_screen.set_model(model)
 
+"""
+	Function to add layer to save button signal
+"""
+func save_signal_handler():
+	emit_signal("save_current_game_data")

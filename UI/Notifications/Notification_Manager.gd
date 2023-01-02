@@ -20,6 +20,7 @@ func _ready():
 	param notification: a string 
 """
 func add_notification(notification):
+	var notification_container_ = $VBoxContainer 
 	var new_notification_label = label.instance()
 	new_notification_label.set_text_for_label(notification)
 	
@@ -27,10 +28,11 @@ func add_notification(notification):
 	counter += 1
 	
 	if counter > 6:
-		notification_container.get_child(0).queue_free()
-		notification_container.add_child(new_notification_label)
+		print(counter)
+		notification_container_.get_child(0).queue_free()
+		notification_container_.add_child(new_notification_label)
 	else:
-		notification_container.add_child(new_notification_label)
+		notification_container_.add_child(new_notification_label)
 
 """
 	Removes all currently displayed notifications from the screen

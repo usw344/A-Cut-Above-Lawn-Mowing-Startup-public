@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Mowing/Mowing Area/Mowing Area.gd" type="Script" id=1]
 [ext_resource path="res://Mowing/Mowing Area/some_meshes.tres" type="MeshLibrary" id=2]
 [ext_resource path="res://Mowing/Mower/Mower_Basic.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Mowing/Storage Empty Truck/Storage_Empty_Area.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Mowing/Fuel_Truck/Fuel_Truck.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 50, 2, 50 )
@@ -27,5 +29,13 @@ __meta__ = {
 "_editor_clip_": 0
 }
 
+[node name="Storage_Depot" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 18.6185, 4.50675, 0 )
+visible = false
+
 [node name="Mower_Basic" parent="." instance=ExtResource( 3 )]
+visible = false
+
+[node name="Fuel_Truck_Container" parent="." instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0971651, 0, 0 )
 visible = false

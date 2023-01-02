@@ -16,7 +16,10 @@ func set_label_text(text):
 	$"Job Number".text = text
 	text_this = text
 
-
+func set_job_size_label(text):
+	$"Job Size".text = text
+func get_job_size():
+	return $"Job Size".text
 func remove():
 	emit_signal("remove_job",$"Job Number".text)
 

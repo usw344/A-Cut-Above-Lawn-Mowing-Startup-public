@@ -1,23 +1,26 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://UI/Main Game Screen/Workers Screen.tscn" type="PackedScene" id=1]
+[ext_resource path="res://UI/Main Game Screen/Workers Screen/Workers Screen.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/Main Game Screen/Job Screen/Job Screen.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Fonts/Play_Regular_For_Screen_text.tres" type="DynamicFont" id=3]
 [ext_resource path="res://UI/Main Game Screen/Game Managment Screen.gd" type="Script" id=4]
+[ext_resource path="res://UI/Main Game Screen/Save game screen/Save game screen.tscn" type="PackedScene" id=5]
 
 [node name="Game Screen" type="Control"]
-margin_right = 720.0
-margin_bottom = 1080.0
+margin_right = 717.0
+margin_bottom = 999.0
 script = ExtResource( 4 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 46.0 ]
+}
 
 [node name="Screen Container" type="TabContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 0.994
+anchor_right = 1.004
+anchor_bottom = 0.999
 margin_top = 4.0
-margin_right = -2.0
-margin_bottom = 3.47998
+margin_right = 0.131958
+margin_bottom = -0.00109863
 custom_fonts/font = ExtResource( 3 )
-tab_align = 0
 drag_to_rearrange_enabled = true
 
 [node name="Job Screen" parent="Screen Container" instance=ExtResource( 2 )]
@@ -28,6 +31,16 @@ margin_bottom = -4.0
 
 [node name="Workers Screen" parent="Screen Container" instance=ExtResource( 1 )]
 visible = false
+
+[node name="Past Jobs" type="Label" parent="Screen Container"]
+visible = false
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="Save" parent="Screen Container" instance=ExtResource( 5 )]
+visible = false
+margin_top = -4.0
+margin_bottom = -4.0
 
 [node name="New Job Offer Timer" type="Timer" parent="."]
 wait_time = 2.0

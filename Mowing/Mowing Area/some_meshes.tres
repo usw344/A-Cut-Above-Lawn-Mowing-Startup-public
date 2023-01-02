@@ -1,6 +1,6 @@
 [gd_resource type="MeshLibrary" load_steps=27 format=2]
 
-[ext_resource path="res://Mowing/Ground/MeshLib/Purple_Mettalic.tres" type="Material" id=1]
+[ext_resource path="res://Assets/Old_scenes/Ground/MeshLib/Purple_Mettalic.tres" type="Material" id=1]
 [ext_resource path="res://Assets/Environment/atexture.png" type="Texture" id=2]
 
 [sub_resource type="CubeMesh" id=36]
