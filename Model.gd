@@ -13,6 +13,9 @@ var current_job
 
 var num = RandomNumberGenerator.new()
 
+var game_difficulty
+var game_number
+
 var job_sizes = {
 	"type 1":[8,10],
 	"type 2":[11,16],
@@ -24,10 +27,11 @@ var rotation_counter = 0
 signal set_current_scene_to_job
 signal remove_job_from_screen(job_text)
 
+var file = File.new()
+var save_file_location
 
 func _ready():
-	save_model()
-	load_model()
+	pass
 
 
 ############################################################### FUNCTIONS related to grass
@@ -185,9 +189,13 @@ func get_int_in_range(val1, val2):
 	return num.randi_range(val1, val2)
 
 
-###################################################################### FUNCTIONS relating to saving
+###################################################################### FUNCTIONS 
+##																relating to saving/load
 
-func save_model():
+"""
+	For current game_number save the information
+"""
+func save_information():
 	##get data from all in-game jobs that are on going and store them
 		#store the gridmap
 		
@@ -207,8 +215,11 @@ func save_model():
 	file.store_var(testing,true)
 	file.store_var(testing2,true)
 	file.close()
-	
-func load_model():
+
+"""
+	For the given game number load the current game information
+"""
+func load_information():
 	var file = File.new()
 	var save = "res://testing.save"
 	file.open(save, File.READ)
@@ -217,3 +228,14 @@ func load_model():
 	file.close()
 	print(c["x"])
 	print(c2["x"])
+
+func set_game_number(game_num):
+	game_number = game_num
+
+func get_game_number():
+	return game_number
+
+func set_game_difficulty(diff):
+	game_difficulty = diff
+func get_game_difficulty():
+	return game_difficulty

@@ -1,8 +1,8 @@
 extends Node
 
 var level = preload("res://Mowing/Current_Job/Current_Job.tscn")
-var game_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
-
+#var game_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
+var new_game = preload("res://UI/Menus/New Game Menu/New Game Menu.tscn")
 onready var grass_deposit_screen = load("res://Mowing/Grass Deposit and Sale/Grass Desposit and Sale.tscn").instance()
 
 onready var notification_system = $Notification_System
@@ -12,7 +12,7 @@ onready var fuel_price = $"Fuel Price" ###THIS IS TO BE CHANGED TO THE CORRECT O
 onready var grass_price = $"Grass Price"
 
 onready var game_management_screen = preload("res://UI/Main Game Screen/Game Screen.tscn")
-
+onready var new_game_screen
 var buttons = {}
 var game_scene = null
 
@@ -76,12 +76,29 @@ func change_to_managment_screen(fuel_value):
 	Function to start a new game by brining up new game selection screen.
 """
 func new_game():
+	new_game_screen = new_game.instance()
+	add_child(new_game_screen)
+
+	new_game_screen.connect("new_game",self,"first_switch_to_managment_screen")
+	
+	current_menu.queue_free()
+	current_menu = new_game_screen
+
+"""
+	When new game is started this function is used to start the managment screen
+"""
+func first_switch_to_managment_screen(game_num,game_diff):
 	management_screen = game_management_screen.instance()
 	add_child(management_screen)
-	current_menu.queue_free()
 	
 	management_screen.connect("save_current_game_data",self,"save_game")
 	management_screen.set_model(model)
+	
+	model.set_game_number(game_num)
+	model.set_game_difficulty(game_diff)
+	
+	##current menu
+	current_menu.queue_free()
 
 """
 	
@@ -125,7 +142,10 @@ func assign_button_action(button_name):
 			
 			assign_button_key_press(current_menu.get_buttons())
 		"Saved Games":
-			pass
+			next_menu = load("res://UI/Menus/Load Menu/Load Game Menu.tscn").instance()
+			add_child(next_menu)
+			current_menu.queue_free()
+			current_menu= next_menu
 		"Main_Menu":
 			next_menu = load("res://UI/Menus/Main_Menu/Main_Menu.tscn").instance()
 			add_child(next_menu)

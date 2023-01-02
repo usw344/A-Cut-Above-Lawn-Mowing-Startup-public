@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Fonts/Play_FONT_BOLD.tres" type="DynamicFont" id=1]
+[ext_resource path="res://Fonts/Play_Regular_For_Screen_text.tres" type="DynamicFont" id=2]
+[ext_resource path="res://UI/Menus/New Game Menu/New Game Menu.gd" type="Script" id=3]
+
+[node name="New game menu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+
+[node name="Screen label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -179.0
+margin_top = 14.0
+margin_right = 192.0
+margin_bottom = 54.0
+custom_fonts/font = ExtResource( 1 )
+text = "New Game Information"
+
+[node name="Game number label" type="Label" parent="."]
+anchor_left = 0.075
+anchor_top = 0.093
+anchor_right = 0.075
+anchor_bottom = 0.093
+margin_top = 6.0
+margin_right = 130.0
+margin_bottom = 38.0
+custom_fonts/font = ExtResource( 2 )
+text = "Game number"
+
+[node name="Game number input" type="TextEdit" parent="."]
+anchor_left = 0.099
+anchor_right = 0.099
+margin_left = -15.28
+margin_top = 131.0
+margin_right = 331.72
+margin_bottom = 170.0
+text = "Enter game number here"
+
+[node name="Game difficulty label" type="Label" parent="."]
+anchor_left = 0.086
+anchor_top = 0.224
+anchor_right = 0.086
+anchor_bottom = 0.224
+margin_left = 0.079998
+margin_right = 217.08
+margin_bottom = 27.0
+custom_fonts/font = ExtResource( 2 )
+text = "Select game difficulty"
+
+[node name="Game difficulty menu" type="OptionButton" parent="."]
+anchor_left = 0.09
+anchor_top = 0.256
+anchor_right = 0.09
+anchor_bottom = 0.256
+margin_left = 0.199997
+margin_right = 218.2
+margin_bottom = 33.0
+text = "click"
+align = 1
+
+[node name="Start" type="Button" parent="."]
+anchor_left = 0.494
+anchor_top = 0.445
+anchor_right = 0.494
+anchor_bottom = 0.445
+margin_left = -78.68
+margin_top = -35.0
+margin_right = 78.32
+margin_bottom = 41.0
+custom_fonts/font = ExtResource( 1 )
+text = "Start"
+
+[connection signal="pressed" from="Start" to="." method="start_game"]

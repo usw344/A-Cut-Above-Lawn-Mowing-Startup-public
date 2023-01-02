@@ -45,7 +45,6 @@ signal exit(fuel)
 signal done
 
 func _ready():
-	
 #	
 	timer_for_button_click_to_display_screen.connect("timeout",self,"remove_press_key")
 	add_child(timer_for_button_click_to_display_screen)
@@ -53,28 +52,8 @@ func _ready():
 	player_hud.connect("Return",self,"return_to_managment_screen")
 	
 	##testing save feature
-	
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	###same for save and laod
-	var file = File.new()
-	var save_file = "res://Saves/testing_save.save"
-	
-	##to load
-	file.open(save_file,File.READ)
-	var save_data = file.get_var(true)
-	
-	load_data(save_data)
-	var a_fuel_object = {"fuel_val":100,"fuel_per_idle":2,"fuel_used_per_block":2}
-	set_fuel_vars(a_fuel_object)
-
-#	to save
-#	set_grid_vars({"width":10,"length":10,"tileset":1})
-#	set_current_job_label("This is a save file testing")
-#	file.open(save_file,File.WRITE)
-#	file.store_var(save_data(),true)
-#
-#
-#	file.close()
+	##press q to save
+	##load_testing()
 
 func save_testing():
 	if Input.is_action_just_released("save"):
@@ -87,7 +66,19 @@ func save_testing():
 
 		file.close()
 		print("saved")
-
+func load_testing():
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	###same for save and laod
+	var file = File.new()
+	var save_file = "res://Saves/testing_save.save"
+#
+	##to load
+	file.open(save_file,File.READ)
+	var save_data = file.get_var(true)
+#
+	load_data(save_data)
+	var a_fuel_object = {"fuel_val":100,"fuel_per_idle":2,"fuel_used_per_block":2}
+	set_fuel_vars(a_fuel_object)
 """
 	Function to update the fuel and storage
 	Signal Receive: from Mowing_Area node, recives how much to update the money and gas
@@ -326,9 +317,10 @@ func load_data(data_object):
 	go_to($Storage_Depot,data_object["Storage depot location"])
 	
 	go_to($Fuel_Truck,data_object["Fuel truck location"])
+
 	
 	$"Mowing Area".set_grid_size(data_object["Grid Size"])
 	$"Mowing Area".set_grid(data_object["Game grid"],data_object["Grid Size"])
 	$Player_HUD.set_elapse(data_object["Job elapse"])
-	print('loaded game')
+	
 	
