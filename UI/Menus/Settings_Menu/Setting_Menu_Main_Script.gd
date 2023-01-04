@@ -22,7 +22,7 @@ func screen_resized():
 """
 func get_buttons():
 	return {
-		"main_menu":$CanvasLayer/MarginContainer/VBoxContainer/Main_Menu
+		"Main_Menu":$CanvasLayer/MarginContainer/VBoxContainer/Main_Menu
 	}
 
 """

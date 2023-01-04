@@ -310,7 +310,10 @@ func save_data():
 	}
 	
 	return data_object
-	
+
+func print_test():
+	print($Player_HUD.get_current_job_label())
+
 func load_data(data_object):
 	set_current_job_label(data_object["Job label"])
 	go_to($Mower,data_object["Mower location"])
@@ -322,5 +325,4 @@ func load_data(data_object):
 	$"Mowing Area".set_grid_size(data_object["Grid Size"])
 	$"Mowing Area".set_grid(data_object["Game grid"],data_object["Grid Size"])
 	$Player_HUD.set_elapse(data_object["Job elapse"])
-	
 	

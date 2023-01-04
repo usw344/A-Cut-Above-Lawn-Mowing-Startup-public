@@ -80,8 +80,18 @@ func accept_job(val):
 func set_curent_job(text):
 	model.set_current_job(model.get_from_current_jobs(text))
 
-
-
 func set_model(m):
 	model = m
 	model.connect("remove_job_from_screen",self,"remove_label")
+
+func load_data():
+	##load on offer job labels
+	for a_label in model.get_on_offer_jobs():
+		##connect relevent signals
+		a_label.connect("remove_job",self,"remove_label") 
+		a_label.connect("accept_job",self,"accept_job")
+		a_label.connect("start_job",self,"set_curent_job")
+		
+		list_of_job_on_offer[a_label.get_text()] = a_label
+		
+		$VBoxContainer.add_child(a_label)

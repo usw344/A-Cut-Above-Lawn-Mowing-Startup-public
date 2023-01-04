@@ -97,11 +97,39 @@ func first_switch_to_managment_screen(game_num,game_diff):
 	model.set_game_number(game_num)
 	model.set_game_difficulty(game_diff)
 	
+	##save the game init
+	model.save_information()
+	
 	##current menu
 	current_menu.queue_free()
 
 """
+	Load a game from information
+"""
+func load_a_game(game_location):
+	### determine the location to load. This is done in the
+	### set game function of the model res://Saves/game_location/
+	model.set_game_number(game_location)
 	
+	##this functions loads the data into the current games, on offer labels etc
+	model.load_information() ##currently empty
+	
+	###fill in the objects in the relevent nodes
+	
+	##setup the managment screen
+	management_screen = game_management_screen.instance()
+	add_child(management_screen)
+	
+	management_screen.connect("save_current_game_data",self,"save_game")
+	management_screen.set_model(model)
+	
+	##enter the data for the mangament screen
+	management_screen.load_data() ##handle all data loading needed from model
+	
+	##set the screen to be the loaded managment screen
+	current_menu.queue_free()
+"""
+	Connects with signal from game object
 """
 func current_job_selected_complete():
 	model.add_to_past_jobs()
@@ -122,8 +150,10 @@ func assign_button_key_press(button_dict):
 		#get the button in question
 		var button = button_dict[key]
 		
-		#
+		###NOTE button name refers to what is listed in the node list NOT the dict key
+		##NOT the button text
 		button.connect("pressed",self,"assign_button_action",[button.name])
+		#button.connect("pressed",self,"assign_button_action",[key])
 """
 	Internal function handle button clicks. Function uses other functions to handle
 	what should happen when a specific button is clicked
@@ -145,7 +175,11 @@ func assign_button_action(button_name):
 			next_menu = load("res://UI/Menus/Load Menu/Load Game Menu.tscn").instance()
 			add_child(next_menu)
 			current_menu.queue_free()
-			current_menu= next_menu
+			current_menu = next_menu
+			
+			current_menu.connect("load_game",self,"load_a_game")
+			assign_button_key_press(current_menu.get_buttons())
+			
 		"Main_Menu":
 			next_menu = load("res://UI/Menus/Main_Menu/Main_Menu.tscn").instance()
 			add_child(next_menu)
@@ -162,7 +196,8 @@ func _input(_event):
 			display_mouse()
 		else:
 			remove_mouse()
-
+	if Input.is_action_just_pressed("save"):
+		model.save_information()
 func remove_mouse():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 

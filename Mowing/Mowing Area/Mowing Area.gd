@@ -31,6 +31,7 @@ func _ready():
 ############################################################### FUNCTION that can be
 															  # used by other scripts
 
+
 """
 	Function to draw the grid map (the blocks that are mowed)
 

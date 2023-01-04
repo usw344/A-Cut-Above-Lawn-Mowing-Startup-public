@@ -4,6 +4,7 @@ var grass_stored = 0
 var funds = 0
 
 var fuel_object = {"fuel_val":100,"fuel_per_idle":2, "fuel_used_per_block":2}
+var mower_upgrades = {}
 
 var jobs_on_offer = {} ##array of label objects
 var jobs_current  = {}
@@ -23,6 +24,7 @@ var job_sizes = {
 	"type 4":[26,30],
 	"type 5":[31,32]}
 var rotation_counter = 0
+var job_counter = 0
 ##Signals
 signal set_current_scene_to_job
 signal remove_job_from_screen(job_text)
@@ -166,6 +168,10 @@ func get_next_job_size():
 		rotation_counter = 0
 	return return_key
 
+func get_job_counter():
+	return job_counter
+func set_job_counter(count):
+	job_counter = count
 """
 	returns a value in range of the size range of the given cataogry
 """
@@ -196,42 +202,57 @@ func get_int_in_range(val1, val2):
 	For current game_number save the information
 """
 func save_information():
-	##get data from all in-game jobs that are on going and store them
-		#store the gridmap
-		
-		#store the location of the trucks
-		
-			
+	var game_var = {
+		"Fuel idle multiplier":fuel_object["fuel_per_idle"],
+		"Fuel used per block":fuel_object["fuel_used_per_block"],
+		"Cuttings":grass_stored,
+		"Funds":funds,
+		"Mower upgrades":mower_upgrades,
+		"Rotation counter":rotation_counter
+	}
+	##in a dictionary of key:value (key == job number value == job save obj)
+	var save_current_jobs = {}
+	for i in jobs_current.keys():
+		save_current_jobs[i] = jobs_current[i]["Game"].save_date()
+	
+	var save_on_offer= {}
+	for on_offer_key in jobs_on_offer.keys():
+		save_on_offer[on_offer_key] = jobs_on_offer[on_offer_key]
+	
 	##store the fuel, mower storage and money
 	
 	##Store the seeds for random num, fuel mode and grass price
 	
 	##Store the 
-	var testing = {"x":[3,54,12],"y":[9,42,123],"This":[113,34,343]}
-	var testing2 = {"x":["a","b","c"],"y":[2349,442,12343],"This":[1432413,34342,34343]}
 	var file = File.new()
-	var save = "res://testing.save"
-	file.open(save,File.WRITE)
-	file.store_var(testing,true)
-	file.store_var(testing2,true)
+	
+	file.open(save_file_location,File.WRITE)
+	file.store_var(game_var,true)
+	file.store_var(save_current_jobs,true)
+	file.store_var(save_on_offer,true)
 	file.close()
 
 """
 	For the given game number load the current game information
 """
 func load_information():
-	var file = File.new()
-	var save = "res://testing.save"
-	file.open(save, File.READ)
-	var c = file.get_var(true)
-	var c2 = file.get_var(true)
+	file.open(save_file_location, File.READ)
+	var game_var_load = {}
+	var current_job_load = {}
+	var on_offer_load = {}
+	
+	file.get_var(game_var_load, true)
+	file.get_var(current_job, true)
+	file.get_var(on_offer_load,true)
+	
 	file.close()
-	print(c["x"])
-	print(c2["x"])
-
+	
+	##store the variables back in their place
+	
 func set_game_number(game_num):
 	game_number = game_num
-
+	save_file_location = "res://Saves/"+game_num+"/"
+	
 func get_game_number():
 	return game_number
 
