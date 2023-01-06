@@ -112,7 +112,7 @@ func load_a_game(game_location):
 	model.set_game_number(game_location)
 	
 	##this functions loads the data into the current games, on offer labels etc
-	model.load_information() ##currently empty
+	model.load_information()
 	
 	###fill in the objects in the relevent nodes
 	

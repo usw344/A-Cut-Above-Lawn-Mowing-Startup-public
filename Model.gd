@@ -88,7 +88,11 @@ func remove_job_on_offer(job_number):
 """
 func add_job_to_current_jobs(job):
 	jobs_current[job["Job Text"]] = job
-	
+"""
+	function to return a list of each job number of each current job
+"""
+func get_current_jobs():
+	return jobs_current.keys()
 """
 	Function to remove a job that is currently on going and also return the job object
 	
@@ -213,7 +217,7 @@ func save_information():
 	##in a dictionary of key:value (key == job number value == job save obj)
 	var save_current_jobs = {}
 	for i in jobs_current.keys():
-		save_current_jobs[i] = jobs_current[i]["Game"].save_date()
+		save_current_jobs[i] = jobs_current[i]["Game"].save_data()
 	
 	var save_on_offer= {}
 	for on_offer_key in jobs_on_offer.keys():
@@ -225,7 +229,7 @@ func save_information():
 	
 	##Store the 
 	var file = File.new()
-	
+	save_file_location += "game_infomation_model.save"
 	file.open(save_file_location,File.WRITE)
 	file.store_var(game_var,true)
 	file.store_var(save_current_jobs,true)
@@ -236,14 +240,41 @@ func save_information():
 	For the given game number load the current game information
 """
 func load_information():
+	var game_scene = load("res://Mowing/Current_Job/Current_Job.tscn")
+	save_file_location+="game_infomation_model.save"
 	file.open(save_file_location, File.READ)
+	print(save_file_location)
 	var game_var_load = {}
 	var current_job_load = {}
 	var on_offer_load = {}
 	
-	file.get_var(game_var_load, true)
-	file.get_var(current_job, true)
-	file.get_var(on_offer_load,true)
+	game_var_load = file.get_var(true)
+	current_job_load = file.get_var(true)
+	on_offer_load = file.get_var(true)
+	
+#	var game_var = {
+#		"Fuel idle multiplier":fuel_object["fuel_per_idle"],
+#		"Fuel used per block":fuel_object["fuel_used_per_block"],
+#		"Cuttings":grass_stored,
+#		"Funds":funds,
+#		"Mower upgrades":mower_upgrades,
+#		"Rotation counter":rotation_counter
+#	}
+	fuel_object["fuel_per_idle"] = game_var_load["Fuel idle multiplier"]
+	fuel_object["fuel_used_per_block"] = game_var_load["Fuel used per block"]
+	grass_stored = game_var_load["Cuttings"]
+	funds = game_var_load["Funds"]
+	mower_upgrades = game_var_load["Mower upgrades"]
+	rotation_counter = game_var_load["Rotation counter"]
+	
+#	for on_offer_key in jobs_on_offer.keys():
+#		save_on_offer[on_offer_key] = jobs_on_offer[on_offer_key]
+	for job_number_key in current_job_load:
+		var game_data_load = current_job_load[job_number_key]
+		var a_game = game_scene.instance()
+		a_game.load_data(game_data_load)
+		add_job_to_current_jobs(a_game)
+	
 	
 	file.close()
 	

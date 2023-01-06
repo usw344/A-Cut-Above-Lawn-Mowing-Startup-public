@@ -85,6 +85,14 @@ func set_model(m):
 	model.connect("remove_job_from_screen",self,"remove_label")
 
 func load_data():
+	##load current jobs
+	for a_label_text in model.get_current_jobs():
+		var some_label = label_scene.instance()
+		some_label.set_label_text(a_label_text)
+		some_label.connect("start_job",self,"set_curent_job")
+		some_label.stop_elapse()
+		some_label.change_to_current()
+	
 	##load on offer job labels
 	for a_label in model.get_on_offer_jobs():
 		##connect relevent signals
