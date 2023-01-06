@@ -92,14 +92,16 @@ func load_data():
 		some_label.connect("start_job",self,"set_curent_job")
 		some_label.stop_elapse()
 		some_label.change_to_current()
-	
+		$VBoxContainer.add_child(some_label)
 	##load on offer job labels
-	for a_label in model.get_on_offer_jobs():
-		##connect relevent signals
+	##print( model.get_on_offer_jobs())
+	for value in model.get_on_offer_jobs().keys():
+		var a_label = model.get_job_on_offer(value)
+		
 		a_label.connect("remove_job",self,"remove_label") 
 		a_label.connect("accept_job",self,"accept_job")
 		a_label.connect("start_job",self,"set_curent_job")
 		
-		list_of_job_on_offer[a_label.get_text()] = a_label
+		##list_of_job_on_offer[a_label.get_text()] = a_label
 		
 		$VBoxContainer.add_child(a_label)

@@ -79,7 +79,15 @@ func remove_job_on_offer(job_number):
 	var job = jobs_on_offer[job_number]
 	jobs_on_offer.erase(job_number)
 	return job
-
+	
+"""
+	Return the array of job offers
+"""
+func get_on_offer_jobs():
+	return jobs_on_offer
+	
+func get_job_on_offer(key):
+	return jobs_on_offer[key]
 """
 	Function to add jobs that are currently going
 	
@@ -212,25 +220,27 @@ func save_information():
 		"Cuttings":grass_stored,
 		"Funds":funds,
 		"Mower upgrades":mower_upgrades,
-		"Rotation counter":rotation_counter
+		"Rotation counter":rotation_counter,
+		"Job Counter":job_counter
 	}
 	##in a dictionary of key:value (key == job number value == job save obj)
 	var save_current_jobs = {}
 	for i in jobs_current.keys():
 		save_current_jobs[i] = jobs_current[i]["Game"].save_data()
 	
-	var save_on_offer= {}
-	for on_offer_key in jobs_on_offer.keys():
-		save_on_offer[on_offer_key] = jobs_on_offer[on_offer_key]
-	
+#	var save_on_offer= {}
+#	for on_offer_key in jobs_on_offer.keys():
+#		save_on_offer[on_offer_key] = jobs_on_offer[on_offer_key]
+	var save_on_offer = jobs_on_offer
 	##store the fuel, mower storage and money
 	
 	##Store the seeds for random num, fuel mode and grass price
 	
 	##Store the 
 	var file = File.new()
-	save_file_location += "game_infomation_model.save"
-	file.open(save_file_location,File.WRITE)
+	var save_file_location_with_file = save_file_location + "game_infomation_model.save"
+
+	file.open(save_file_location_with_file,File.WRITE)
 	file.store_var(game_var,true)
 	file.store_var(save_current_jobs,true)
 	file.store_var(save_on_offer,true)
@@ -241,8 +251,8 @@ func save_information():
 """
 func load_information():
 	var game_scene = load("res://Mowing/Current_Job/Current_Job.tscn")
-	save_file_location+="game_infomation_model.save"
-	file.open(save_file_location, File.READ)
+	var save_file_location_with_file = save_file_location + "game_infomation_model.save"
+	file.open(save_file_location_with_file, File.READ)
 	print(save_file_location)
 	var game_var_load = {}
 	var current_job_load = {}
@@ -251,6 +261,8 @@ func load_information():
 	game_var_load = file.get_var(true)
 	current_job_load = file.get_var(true)
 	on_offer_load = file.get_var(true)
+	jobs_on_offer = on_offer_load
+	print("Information in variable "+ str(on_offer_load.size()))
 	
 #	var game_var = {
 #		"Fuel idle multiplier":fuel_object["fuel_per_idle"],
@@ -259,6 +271,7 @@ func load_information():
 #		"Funds":funds,
 #		"Mower upgrades":mower_upgrades,
 #		"Rotation counter":rotation_counter
+#		"Job Counter:"job_counter
 #	}
 	fuel_object["fuel_per_idle"] = game_var_load["Fuel idle multiplier"]
 	fuel_object["fuel_used_per_block"] = game_var_load["Fuel used per block"]
@@ -266,14 +279,14 @@ func load_information():
 	funds = game_var_load["Funds"]
 	mower_upgrades = game_var_load["Mower upgrades"]
 	rotation_counter = game_var_load["Rotation counter"]
-	
+	set_job_counter(game_var_load["Job Counter"])
 #	for on_offer_key in jobs_on_offer.keys():
 #		save_on_offer[on_offer_key] = jobs_on_offer[on_offer_key]
 	for job_number_key in current_job_load:
 		var game_data_load = current_job_load[job_number_key]
 		var a_game = game_scene.instance()
 		a_game.load_data(game_data_load)
-		add_job_to_current_jobs(a_game)
+		add_job_to_current_jobs({"Job Text":job_number_key, "Game":a_game})
 	
 	
 	file.close()

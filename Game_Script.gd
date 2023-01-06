@@ -96,10 +96,7 @@ func first_switch_to_managment_screen(game_num,game_diff):
 	
 	model.set_game_number(game_num)
 	model.set_game_difficulty(game_diff)
-	
-	##save the game init
-	model.save_information()
-	
+
 	##current menu
 	current_menu.queue_free()
 

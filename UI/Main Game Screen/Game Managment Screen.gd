@@ -57,3 +57,4 @@ func save_signal_handler():
 func load_data():
 	job_screen = $"Screen Container/Job Screen"
 	job_screen.load_data()
+	job_counter = model.get_job_counter()
