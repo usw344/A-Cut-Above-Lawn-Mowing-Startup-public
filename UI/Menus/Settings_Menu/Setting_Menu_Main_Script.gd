@@ -1,17 +1,9 @@
-extends Node2D
+extends Control
 
-onready var text_rect = $TextureRect
-onready var menu_label = $CanvasLayer/MarginContainer/VBoxContainer/Settings_Menu_Label
+onready var menu_label = $CanvasLayer/Settings_Menu_Label
 
 
 func _ready():
-	pass
-
-
-"""
-	Internal method to handel background screen image size resizing upon screen being resized
-"""
-func screen_resized():
 	pass
 
 
@@ -22,7 +14,7 @@ func screen_resized():
 """
 func get_buttons():
 	return {
-		"Main_Menu":$CanvasLayer/MarginContainer/VBoxContainer/Main_Menu
+		"Main_Menu":$CanvasLayer/Main_Menu
 	}
 
 """
@@ -30,7 +22,7 @@ func get_buttons():
 """
 func get_label():
 	return menu_label
-
+	print(in_string_earlier)
 
 """
 	Set the text for the label

@@ -1,8 +1,16 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Fonts/Play_FONT_BOLD.tres" type="DynamicFont" id=1]
-[ext_resource path="res://Fonts/Play_Regular_For_Screen_text.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Assets/Font/Play-Regular.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://UI/Menus/New Game Menu/New Game Menu.gd" type="Script" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 33
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 34
+font_data = ExtResource( 2 )
 
 [node name="New game menu" type="Control"]
 anchor_right = 1.0
@@ -24,52 +32,57 @@ anchor_left = 0.075
 anchor_top = 0.093
 anchor_right = 0.075
 anchor_bottom = 0.093
-margin_top = 6.0
-margin_right = 130.0
-margin_bottom = 38.0
-custom_fonts/font = ExtResource( 2 )
+margin_left = -2.0
+margin_top = 10.0
+margin_right = 353.0
+margin_bottom = 67.0
+custom_fonts/font = SubResource( 1 )
 text = "Game number"
 
 [node name="Game number input" type="TextEdit" parent="."]
 anchor_left = 0.099
 anchor_right = 0.099
-margin_left = -15.28
-margin_top = 131.0
-margin_right = 331.72
-margin_bottom = 170.0
+margin_left = -26.28
+margin_top = 167.0
+margin_right = 399.72
+margin_bottom = 217.0
+custom_fonts/font = ExtResource( 1 )
 text = "Enter game number here"
 
 [node name="Game difficulty label" type="Label" parent="."]
-anchor_left = 0.086
-anchor_top = 0.224
-anchor_right = 0.086
-anchor_bottom = 0.224
-margin_left = 0.079998
-margin_right = 217.08
-margin_bottom = 27.0
-custom_fonts/font = ExtResource( 2 )
+anchor_left = 0.065
+anchor_top = 0.243
+anchor_right = 0.065
+anchor_bottom = 0.243
+margin_left = 0.199997
+margin_top = -1.52588e-05
+margin_right = 367.2
+margin_bottom = 61.0
+custom_fonts/font = SubResource( 2 )
 text = "Select game difficulty"
 
 [node name="Game difficulty menu" type="OptionButton" parent="."]
-anchor_left = 0.09
-anchor_top = 0.256
-anchor_right = 0.09
-anchor_bottom = 0.256
-margin_left = 0.199997
-margin_right = 218.2
-margin_bottom = 33.0
+anchor_left = 0.056
+anchor_top = 0.318
+anchor_right = 0.056
+anchor_bottom = 0.318
+margin_left = -0.32
+margin_top = -3.05176e-05
+margin_right = 427.68
+margin_bottom = 58.0
+custom_fonts/font = ExtResource( 1 )
 text = "click"
 align = 1
 
 [node name="Start" type="Button" parent="."]
-anchor_left = 0.494
-anchor_top = 0.445
-anchor_right = 0.494
-anchor_bottom = 0.445
-margin_left = -78.68
-margin_top = -35.0
-margin_right = 78.32
-margin_bottom = 41.0
+anchor_left = 0.549
+anchor_top = 0.578
+anchor_right = 0.549
+anchor_bottom = 0.578
+margin_left = -326.28
+margin_top = 43.0
+margin_right = 279.72
+margin_bottom = 150.0
 custom_fonts/font = ExtResource( 1 )
 text = "Start"
 

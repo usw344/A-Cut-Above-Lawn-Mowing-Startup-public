@@ -25,7 +25,7 @@ onready var model = $Model
 
 
 func _ready():
-	
+	OS.low_processor_usage_mode = OS.get_name() != "Android"
 	#setup buttons for main_menu
 	buttons = current_menu.get_buttons()
 	assign_button_key_press(buttons)

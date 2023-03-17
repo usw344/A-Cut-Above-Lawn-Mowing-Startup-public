@@ -1,7 +1,7 @@
-extends Node2D
+extends Control
 
-onready var text_rect = $TextureRect
-onready var menu_label = $CanvasLayer/MarginContainer/VBoxContainer/Main_Menu_Label
+
+onready var menu_label = $CanvasLayer/Main_Menu_Label
 
 
 func _ready():
@@ -22,9 +22,9 @@ func screen_resized():
 """
 func get_buttons():
 	return {
-		"play":$CanvasLayer/MarginContainer/VBoxContainer/Play,
-		"settings":$CanvasLayer/MarginContainer/VBoxContainer/Settings,
-		"saved_game":$"CanvasLayer/MarginContainer/VBoxContainer/Saved Games"		
+		"play":$CanvasLayer/Play,
+		"settings":$CanvasLayer/Settings,
+		"saved_game":$"CanvasLayer/Saved Games"
 	}
 
 """
