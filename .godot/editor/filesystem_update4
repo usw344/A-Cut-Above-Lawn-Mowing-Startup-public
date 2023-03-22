@@ -1,4 +1,5 @@
-res://default_env.tres
-res://Mowing/Current_Job/Current_Job.tscn
-res://Assets/Player_HUD_UI/money_label_background_theme.tres
+res://Mowing Section/Mower/Mower.tscn
+res://Mowing Section/Mower/Mower.gd
 res://Main.tscn
+res://Game.gd
+res://model.gd

@@ -1,0 +1,80 @@
+[gd_scene load_steps=13 format=3 uid="uid://dyw2180ar1dgp"]
+
+[ext_resource type="Script" path="res://Mowing Section/Mower/Mower.gd" id="1_olmw0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_telxy"]
+albedo_color = Color(0.333333, 0.380392, 0.968627, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_w456h"]
+material = SubResource("StandardMaterial3D_telxy")
+size = Vector3(4, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m4jyy"]
+albedo_color = Color(0.494118, 0.494118, 0.494118, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_2jadp"]
+material = SubResource("StandardMaterial3D_m4jyy")
+size = Vector3(2, 3, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4skfe"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5tc8m"]
+size = Vector3(2, 3, 2.5)
+
+[sub_resource type="Gradient" id="Gradient_kry47"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0, 0.425197, 0.937008, 0.952756, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0835435, 0.0835435, 0.0835435, 1, 0.806257, 0.466588, 0.227589, 1, 0.284104, 0.284104, 0.284104, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4gcak"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_o1c5i"]
+bump_strength = 2.5
+color_ramp = SubResource("Gradient_kry47")
+noise = SubResource("FastNoiseLite_4gcak")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dnmgt"]
+albedo_texture = SubResource("NoiseTexture2D_o1c5i")
+
+[sub_resource type="SphereMesh" id="SphereMesh_ftgvt"]
+material = SubResource("StandardMaterial3D_dnmgt")
+radius = 0.8
+height = 1.6
+
+[node name="Mower" type="CharacterBody3D"]
+script = ExtResource("1_olmw0")
+
+[node name="Box" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.608251, 0)
+mesh = SubResource("BoxMesh_w456h")
+
+[node name="Cutter" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 3.37404, 0.715668, 0)
+mesh = SubResource("PrismMesh_2jadp")
+
+[node name="Base of mower" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0613975, 0)
+shape = SubResource("BoxShape3D_4skfe")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-3.63769e-08, 0.554467, -0.832206, 2.42365e-08, 0.832206, 0.554467, 1, 0, -4.37114e-08, -2.88543, 3.9917, 0)
+
+[node name="Cutter collision" type="CollisionShape3D" parent="."]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 3.39374, 0.770971, 0.0133789)
+shape = SubResource("BoxShape3D_5tc8m")
+
+[node name="Wheel_1_F_L" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.00123, -0.190075, -1.00465)
+mesh = SubResource("SphereMesh_ftgvt")
+
+[node name="Wheel_1_F_R" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.001, -0.19, 1.03)
+mesh = SubResource("SphereMesh_ftgvt")
+
+[node name="Wheel_1_B_L" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.077, -0.19, -1.03)
+mesh = SubResource("SphereMesh_ftgvt")
+
+[node name="Wheel_1_B_R" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.07749, -0.19, 1.03)
+mesh = SubResource("SphereMesh_ftgvt")
