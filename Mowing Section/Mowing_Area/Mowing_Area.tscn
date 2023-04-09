@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://d31p3saka3ged"]
+
+[ext_resource type="Script" path="res://Mowing Section/Mowing_Area/Mowing_Area.gd" id="1_fhp54"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lad8l"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hwxvw"]
+
+[node name="Mowing Area" type="Node3D"]
+script = ExtResource("1_fhp54")
+
+[node name="Ground Area" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground Area"]
+mesh = SubResource("BoxMesh_lad8l")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground Area"]
+shape = SubResource("BoxShape3D_hwxvw")

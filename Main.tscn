@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://cog2qs88oxdhl"]
+[gd_scene load_steps=6 format=3 uid="uid://cmwmo6hgommdv"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_65434"]
 [ext_resource type="PackedScene" uid="uid://dyw2180ar1dgp" path="res://Mowing Section/Mower/Mower.tscn" id="1_tc1i2"]
-[ext_resource type="Script" path="res://model.gd" id="2_lrl7u"]
+[ext_resource type="Script" path="res://Model.gd" id="3_b0l4p"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_8rh4d"]
 size = Vector3(50, 1, 50)
@@ -29,4 +29,4 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55547, 0)
 transform = Transform3D(1, 0, 0, 0, -0.0559958, 0.998431, 0, -0.998431, -0.0559958, 0, 13.2204, 0)
 
 [node name="model" type="Node" parent="."]
-script = ExtResource("2_lrl7u")
+script = ExtResource("3_b0l4p")

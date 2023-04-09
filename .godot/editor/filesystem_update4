@@ -1,5 +1,4 @@
 res://Mowing Section/Mower/Mower.tscn
-res://Mowing Section/Mower/Mower.gd
+res://Mowing Section/Mower/testing_wheel.gdshader
 res://Main.tscn
-res://Game.gd
-res://model.gd
+res://Mowing Section/Mowing_Area/Mowing_Area.tscn

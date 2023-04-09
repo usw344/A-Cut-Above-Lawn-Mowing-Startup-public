@@ -1,9 +1,14 @@
 bdbec74c6e5bd72edee867077d70896c
-::res://::1679156773
-export_presets.cfg::TextFile::-1::1679106307::0::1::::<><>::
+::res://::1680479695
+export_presets.cfg::TextFile::-1::1679161980::0::1::::<><>::
+Game.gd::GDScript::-1::1679166280::0::1::::<>Node3D<>::
 icon.svg::CompressedTexture2D::4162017106046224383::1679098134::1679098139::1::::<><>::
-Main.tscn::PackedScene::5769540374268020733::1679106617::0::1::::<><>::
-::res://Mowing Section/::1679107629
-::res://Mowing Section/Mower/::1679109276
-Mower.gd::GDScript::-1::1679109276::0::1::::<>CharacterBody3D<>::
-Mower.tscn::PackedScene::8890898170342025735::1679109247::0::1::::<><>::
+Main.tscn::PackedScene::5661279045989064171::1679546607::0::1::::<><>::res://Game.gd<>uid://dyw2180ar1dgp<>res://Model.gd
+Model.gd::GDScript::-1::1679193888::0::1::::<>Node<>::
+::res://Mowing Section/::1679546096
+::res://Mowing Section/Mower/::1679546425
+Mower.gd::GDScript::-1::1679546425::0::1::::<>CharacterBody3D<>::
+Mower.tscn::PackedScene::8890898170342025735::1679543158::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
+::res://Mowing Section/Mowing_Area/::1679554331
+Mowing_Area.gd::GDScript::-1::1679546488::0::1::::<>Node3D<>::
+Mowing_Area.tscn::PackedScene::9179185197546362563::1679554331::0::1::::<><>::res://Mowing Section/Mowing_Area/Mowing_Area.gd

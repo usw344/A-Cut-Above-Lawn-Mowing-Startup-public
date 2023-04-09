@@ -54,7 +54,7 @@ func _physics_process(delta):
 """
 	Function to handle collision and send correct signal
 	This code used to be in the _physics_process function but due to 
-	checking for empty fuel then there 2 two signals
+	checking for empty fuel then there are 2 two signals
 """
 func handle_collision(signal_name):
 	for i in get_slide_collision_count():
@@ -125,7 +125,13 @@ func rotate_wheels(angles):
 		wheel.rotate_x(angles["backward"])
 		wheel.rotate_z(angles["right"])
 		wheel.rotate_z(angles["left"])
-
+	
+"""
+	Function to set the size of the mesh and collision shape of the mower
+	This function uses the value set in the model
+	
+	TODO: set this to update after the value is changed in the model 
+"""
 func set_blade_width():
 	$Cutter.mesh.size.z = model.get_blade_length() * 2.5
 	$"Cutter collision".shape.extents.z = model.get_blade_length() * 2.5
