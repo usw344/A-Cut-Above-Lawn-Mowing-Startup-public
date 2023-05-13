@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://c07cejnoc8c8e"]
+
+[ext_resource type="Shader" path="res://Sky/sky.gdshader" id="1_36bfg"]
+[ext_resource type="Texture2D" uid="uid://rje27tro15v8" path="res://Sky/moon.png" id="2_ybt3j"]
+[ext_resource type="Script" path="res://Sky/sky.gd" id="4_cuqt8"]
+[ext_resource type="Texture2D" uid="uid://y630he11hwt4" path="res://Sky/starfield.png" id="4_wugfe"]
+[ext_resource type="AudioStream" uid="uid://dbi0qq5xjxi0d" path="res://Sky/thunder.ogg" id="6_4e1ve"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tksbq"]
+shader = ExtResource("1_36bfg")
+shader_parameter/moon_tint = Color(1, 1, 1, 1)
+shader_parameter/clouds_tint = Color(1, 1, 1, 1)
+shader_parameter/SCATERRING = false
+shader_parameter/SUN_POS = Vector3(0, 0.992631, -0.121176)
+shader_parameter/MOON_POS = Vector3(0, -0.992631, 0.121176)
+shader_parameter/MOON_TEX_POS = Vector3(0, -0.998156, 0.0607002)
+shader_parameter/LIGHTING_POS = Vector3(0, 1, 0)
+shader_parameter/lighting_strength = 0.0
+shader_parameter/MOON_PHASE = 0.735
+shader_parameter/moon_size = 0.219
+shader_parameter/attenuation = 0.75
+shader_parameter/WIND = Vector3(0.18, 0, 0)
+shader_parameter/SIZE = 2.0
+shader_parameter/SOFTNESS = 1.09
+shader_parameter/COVERAGE = 0.445
+shader_parameter/HEIGHT = 0.46
+shader_parameter/THICKNESS = 16.1
+shader_parameter/ABSORPTION = 1.36
+shader_parameter/STEPS = 20
+shader_parameter/star_sky = ExtResource("4_wugfe")
+shader_parameter/moon = ExtResource("2_ybt3j")
+
+[sub_resource type="Sky" id="Sky_jusdg"]
+sky_material = SubResource("ShaderMaterial_tksbq")
+radiance_size = 0
+
+[sub_resource type="Environment" id="Environment_h6yc6"]
+background_mode = 2
+sky = SubResource("Sky_jusdg")
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.75
+fog_light_color = Color(1, 1, 1, 1)
+adjustment_enabled = true
+adjustment_brightness = 1.56
+adjustment_contrast = 0.89
+adjustment_saturation = 0.75
+
+[node name="sky" type="WorldEnvironment"]
+environment = SubResource("Environment_h6yc6")
+script = ExtResource("4_cuqt8")
+time_of_day_setup = 0.564
+clouds_height = 0.46
+sunset_light = Color(0.996078, 0.717647, 0.32549, 1)
+
+[node name="sun_moon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-1, 8.67786e-08, -1.05936e-08, 0, 0.121176, 0.992631, 8.74228e-08, 0.992631, -0.121176, 0, 0.992631, -0.121176)
+light_energy = 0.75
+light_indirect_energy = 0.487
+
+[node name="thunder" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_4e1ve")

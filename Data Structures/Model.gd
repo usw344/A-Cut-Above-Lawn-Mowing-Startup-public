@@ -1,4 +1,5 @@
 extends Node
+class_name Model
 
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
 var speed = 10
@@ -62,6 +63,15 @@ func is_mower_fuel_idle_counter():
 """
 func increment_mower_fuel_idle_counter(add):
 	mower_fuel_idle_counter += add
+"""------------------------------------------- Job function and variables  -------------------------------------------"""
+
+# store all current jobs. key = id and value = Job Data container
+var current_jobs:Dictionary = {}
+
+# store list of all completed jobs key = id and value = Job Data container
+var past_jobs:Dictionary = {}
+
+# store all jobs currently on offer
 
 """------------------------------------------- Model functions  -------------------------------------------"""
 func save_game_data(file_name):

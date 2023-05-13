@@ -1,32 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://cmwmo6hgommdv"]
+[gd_scene load_steps=3 format=3 uid="uid://csg8ier3wmn30"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_65434"]
-[ext_resource type="PackedScene" uid="uid://dyw2180ar1dgp" path="res://Mowing Section/Mower/Mower.tscn" id="1_tc1i2"]
-[ext_resource type="Script" path="res://Model.gd" id="3_b0l4p"]
-
-[sub_resource type="BoxMesh" id="BoxMesh_8rh4d"]
-size = Vector3(50, 1, 50)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_xi7e2"]
-size = Vector3(50, 1, 50)
+[ext_resource type="Script" path="res://Data Structures/Model.gd" id="4_lqgob"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_65434")
 
-[node name="floor_for_use" type="RigidBody3D" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="floor_for_use"]
-mesh = SubResource("BoxMesh_8rh4d")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="floor_for_use"]
-shape = SubResource("BoxShape3D_xi7e2")
-
-[node name="Mower" parent="." instance=ExtResource("1_tc1i2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55547, 0)
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.0559958, 0.998431, 0, -0.998431, -0.0559958, 0, 13.2204, 0)
-
 [node name="model" type="Node" parent="."]
-script = ExtResource("3_b0l4p")
+script = ExtResource("4_lqgob")

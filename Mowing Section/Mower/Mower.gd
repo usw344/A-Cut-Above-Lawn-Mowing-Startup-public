@@ -1,32 +1,48 @@
 extends CharacterBody3D
 
+
 ##Variables stored in model. THESE are defaults
 
 
 
 ##Variables localva
-var rotate_speed = 20
-var model
+var rotate_speed:int = 20
+
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var mouse_sensitivity = 0.002 
+var mouse_sensitivity:float = 0.002 
 
 ##Signals
 signal collided
 signal fuel_empty
 
+# variables to simulate mower engine running
+var max_scale = Vector3(1.0, 1.0, 1.0)
+var min_scale = Vector3(0.98, 0.98, 0.98)
+var cycle_duration:float = 0.08 # how fast it pulsates
+var elapsed_time:float = 0.0
+var incr:float = 0.0
+
+var decreasing:bool = false
+var moving: bool = false
+
+var show_dev_hud:bool = false
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	dev_hud() # can remove this 
+	
+	## mower animation ##
+	
+	# mower engine effect
+	engine_pulsation(delta)
+	
+	#mower blade rotation
+	$ring_bevelEdges.rotate_z(2)
+	
 
-#	if "rotate_speed" in get_node("."):
-#		print("has it")
-#	else:
-#		print("does not have it")
-		
 #	##if not on floor start moving downwards
 	velocity.y -= gravity * delta
 	
@@ -37,7 +53,11 @@ func _physics_process(delta):
 	velocity.x = user_input.x * model.get_speed()
 	velocity.z = user_input.z * model.get_speed()
 
-	
+	if velocity.x != 0 and velocity.z != 0:
+		moving = true
+	else:
+		moving = false
+		
 	move_and_slide()
 	##calculate how much fuel has been used
 	if not model.is_mower_fuel_idle_counter(): 		  ##value is still less than counter
@@ -51,24 +71,28 @@ func _physics_process(delta):
 		handle_collision("fuel_empty")
 	else:
 		handle_collision("collided")
-"""
+
+func handle_collision(signal_name):
+	"""
 	Function to handle collision and send correct signal
 	This code used to be in the _physics_process function but due to 
 	checking for empty fuel then there are 2 two signals
-"""
-func handle_collision(signal_name):
+	"""
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
 		emit_signal(signal_name, collision) ## send collision since if it is with block then a notification can be sent
 
-"""
+
+func _input(event):
+	"""
 	Rotates the mower around based on the mouse. T
 	TODO: change this to handle mobile input as well
-"""
-func _input(event):
+	"""
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
-#		$Camera3D.rotate_x(-event.relative.y * mouse_sensitivity)
+		$Camera3D.rotate_z(event.relative.y * mouse_sensitivity)
+	if Input.is_action_just_pressed("dev_hud"):
+		show_dev_hud = !show_dev_hud
 
 
 """
@@ -79,52 +103,54 @@ func _input(event):
 	return input_direction: Vector3 containg x, y, z movement input
 """
 func get_input():
+	"""
+		Main input function. This also handles wheel rotation
+	"""
 	var input_direction = Vector3()
 	var rotate_wheel = {"forward": 0, "backward": 0, "right": 0, "left": 0}
-	rotate_speed = model.get_speed() *4 ##update in case the speed changed from model
-	
+
 	var use_fuel = false
 	if Input.is_action_pressed("move_forward"):
-		input_direction += global_transform.basis.x
-		rotate_wheel["forward"] = rotate_speed
+		input_direction += -global_transform.basis.x
+#		rotate_wheel["forward"] = rotate_speed
 		use_fuel = true
 	if Input.is_action_pressed("move_back"):
-		input_direction += -global_transform.basis.x
-		rotate_wheel["backward"] = -rotate_speed
+		input_direction += global_transform.basis.x
+#		rotate_wheel["backward"] = -rotate_speed
 		use_fuel = true
 	if Input.is_action_pressed("move_left"):
-		input_direction += -global_transform.basis.z
-		rotate_wheel["left"] = rotate_speed
+		input_direction += global_transform.basis.z
+#		rotate_wheel["left"] = rotate_speed
 		use_fuel = true
 	if Input.is_action_pressed("move_right"):
-		input_direction += global_transform.basis.z
-		rotate_wheel["right"] = -rotate_speed
+		input_direction += -global_transform.basis.z
+#		rotate_wheel["right"] = -rotate_speed
 		use_fuel = true
 	
 	##if movement happened then increment fuel counter
 	if use_fuel:
 		model.increment_mower_fuel_idle_counter(1)
 
-	##function to rotate all wheel according to given values
-	rotate_wheels(rotate_wheel)
+#	##function to rotate all wheel according to given values
+#	rotate_wheels(rotate_wheel)
 	
 
 	return input_direction 
 
-"""
-	Function to rotate each wheel by the angle give. 
-	Use -> this function is used in the get_input() method. The angles are set by the movement input
-	side effects -> the wheels are rotated. if the node's name is changed this will break
-"""
-func rotate_wheels(angles):
-	##construct list of wheels
-	var wheels = [$Wheel_1_F_L, $Wheel_1_F_R,$Wheel_1_B_L,$Wheel_1_B_R]
-
-	for wheel in wheels:
-		wheel.rotate_x(angles["forward"])
-		wheel.rotate_x(angles["backward"])
-		wheel.rotate_z(angles["right"])
-		wheel.rotate_z(angles["left"])
+#"""
+#	Function to rotate each wheel by the angle give. 
+#	Use -> this function is used in the get_input() method. The angles are set by the movement input
+#	side effects -> the wheels are rotated. if the node's name is changed this will break
+#"""
+#func rotate_wheels(angles):
+#	##construct list of wheels
+#	var wheels = [$Wheel_1_F_L, $Wheel_1_F_R,$Wheel_1_B_L,$Wheel_1_B_R]
+#
+#	for wheel in wheels:
+#		wheel.rotate_x(angles["forward"])
+#		wheel.rotate_x(angles["backward"])
+#		wheel.rotate_z(angles["right"])
+#		wheel.rotate_z(angles["left"])
 	
 """
 	Function to set the size of the mesh and collision shape of the mower
@@ -137,8 +163,42 @@ func set_blade_width():
 	$"Cutter collision".shape.extents.z = model.get_blade_length() * 2.5
 
 
-func set_model(m):
-	model = m
-	set_blade_width()
+func engine_pulsation(one_frame:float):
+	# code to simulate engine running
+	incr = one_frame
 	
+	if moving:
+		incr /= 4
 	
+	if elapsed_time >= cycle_duration: # use cycle duration to increase or decrease speed
+		decreasing = true
+	if elapsed_time <= 0:
+		decreasing = false
+		incr = abs(incr)
+	
+	if decreasing == true:
+		incr *= -1
+
+	# code to pulsate the mower to imitate engine
+	elapsed_time += incr
+	var cycle_progress = elapsed_time / cycle_duration
+
+	var scale_val = lerp(min_scale, max_scale, cycle_progress)
+	$hull_body.scale = scale_val
+	$hull_front.scale = scale_val
+
+
+func lerp(a, b, t):
+	"""
+		To interpolate between two values.
+		This function is used to smoothly pulsate the engine
+	"""
+	return a + (b - a) * t
+
+func dev_hud():
+	if !show_dev_hud:
+		return
+	var string_to_print:String = ""
+	string_to_print += str(round(position)) + "\n"
+	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
+	$CanvasLayer/Label.text = string_to_print

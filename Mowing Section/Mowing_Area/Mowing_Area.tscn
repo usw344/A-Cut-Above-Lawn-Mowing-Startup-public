@@ -1,18 +1,57 @@
-[gd_scene load_steps=4 format=3 uid="uid://d31p3saka3ged"]
+[gd_scene load_steps=8 format=3 uid="uid://d31p3saka3ged"]
 
 [ext_resource type="Script" path="res://Mowing Section/Mowing_Area/Mowing_Area.gd" id="1_fhp54"]
+[ext_resource type="Material" uid="uid://c2b8c6giu2ubc" path="res://Assets/Other/green_albedo.tres" id="3_3kyhp"]
+[ext_resource type="PackedScene" uid="uid://dj0wbkxqirmgp" path="res://Sky/Basic Sky/Basic Sky.tscn" id="4_gso1m"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_lad8l"]
+[sub_resource type="BoxMesh" id="BoxMesh_c5caf"]
+size = Vector3(4, 1, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwxvw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lrbe1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_71awk"]
 
 [node name="Mowing Area" type="Node3D"]
 script = ExtResource("1_fhp54")
 
-[node name="Ground Area" type="StaticBody3D" parent="."]
+[node name="Grass Area" type="StaticBody3D" parent="."]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground Area"]
-mesh = SubResource("BoxMesh_lad8l")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Grass Area"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.676775, 0, -2.07408)
+mesh = SubResource("BoxMesh_c5caf")
+surface_material_override/0 = ExtResource("3_3kyhp")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground Area"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Grass Area"]
 shape = SubResource("BoxShape3D_hwxvw")
+
+[node name="Basic Sky" parent="." instance=ExtResource("4_gso1m")]
+pos = -123.109
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Label2" type="Label" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.001
+anchor_top = 0.031
+anchor_right = 0.001
+anchor_bottom = 0.031
+offset_left = 0.0799999
+offset_top = 0.519997
+offset_right = 70.08
+offset_bottom = 30.52
+text = "placeholder 2"
+
+[node name="Start Point For Mower" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Start Point For Mower"]
+mesh = SubResource("BoxMesh_lrbe1")
+surface_material_override/0 = ExtResource("3_3kyhp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Start Point For Mower"]
+shape = SubResource("BoxShape3D_71awk")

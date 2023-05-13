@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://xqq41vbxp1s1"]
+
+[ext_resource type="Script" path="res://Data Structures/Job Data Structure/Job_Data.gd" id="1_lasw3"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_lasw3")

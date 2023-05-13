@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://c3h6ukshjfanr"]
+
+[ext_resource type="Script" path="res://Mowing Section/Job/job.gd" id="1_a8lqy"]
+[ext_resource type="PackedScene" uid="uid://d31p3saka3ged" path="res://Mowing Section/Mowing_Area/Mowing_Area.tscn" id="3_a5ba0"]
+[ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="3_jcb6j"]
+
+[node name="Job" type="Node3D"]
+script = ExtResource("1_a8lqy")
+
+[node name="Mowing Area" parent="." instance=ExtResource("3_a5ba0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.8124, -0.584063, 0)
+
+[node name="Mower_Normal" parent="." instance=ExtResource("3_jcb6j")]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 50.009, 41.7962, 0)
