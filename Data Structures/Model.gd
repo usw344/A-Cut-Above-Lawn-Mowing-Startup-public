@@ -1,8 +1,13 @@
 extends Node
 class_name Model
 
+"""
+This is an autoload script that stores global game variables
+"""
+
+
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
-var speed = 10
+var speed = 10 + 50 #REMOVE TEMP ADDITION OF +
 var blade_length = 1
 
 ##mower fuel variables 
@@ -72,6 +77,81 @@ var current_jobs:Dictionary = {}
 var past_jobs:Dictionary = {}
 
 # store all jobs currently on offer
+var current_job_offers:Dictionary = {}
+
+# store the current selected mower (this should be updated when a selection is made in store)
+var current_mower:String = "Small Gas Mower" # key in the mower_scene_reference
+
+# store references to all mower scenes
+var mower_scene_references: Dictionary = {
+	"Hand Mower":null,
+	"Small Gas Mower": load("res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn"),
+	"Larger Grass Mower": null,
+	"Electric Mower":null,
+	"Large Electric Mower":null
+}
+
+
+# store the houses. To simplfy process first make dictionaries with houses
+var small_houses:Dictionary = {
+	1: load("res://Assets/House Scenes/small_1.tscn"),
+	2: load("res://Assets/House Scenes/small_2.tscn"),
+	3: load("res://Assets/House Scenes/small_3.tscn"),
+	"previous variant":0,
+	"mowing area size":[200,300]
+}
+
+var medium_houses:Dictionary = {
+	1: load("res://Assets/House Scenes/medium_1.tscn"),
+	2: load("res://Assets/House Scenes/medium_2.tscn"),
+	3: load("res://Assets/House Scenes/medium_3.tscn"),
+	"previous variant":0,
+	"mowing area size":[300,500]
+}
+
+var large_houses:Dictionary = {
+	1: load("res://Assets/House Scenes/large_1.tscn"),
+	2: load("res://Assets/House Scenes/large_2.tscn"),
+	3: load("res://Assets/House Scenes/large_3.tscn"),
+	"previous variant":0,
+	"mowing area size":[500,500]
+}
+
+var very_large_houses:Dictionary = {
+	1: load("res://Assets/House Scenes/very_large_1.tscn"),
+	2: null,
+	3: null,
+	"previous variant":0,
+	"mowing area size":[1500,1500]
+	
+}
+
+# in a dictionary of dictionaries where a key is a type of house (small, expensive ... )
+# and value is a dictionary (key = house_variant_id, value: reference to scene)
+var houses:Dictionary = {
+	"small":small_houses,
+	"medium":medium_houses,
+	"large":large_houses,
+	"very large":very_large_houses
+	
+}
+
+# function access this information
+func get_house(type:String, variant:int):
+	"""
+		Return the house type variant reference (path to object) to be used for given house tyoe
+		
+		NOTE: a way to ensure that the variants are cycled and say
+		that a player does not pick every 3rd job and keeps getting same variant
+		is to only update previous variant WHEN a job object is added to the queue of current jobs
+	"""
+	return houses[type][variant]
+
+func get_size_of_mowing_area_by_job_type(type:String):
+	return houses[type]["mowing area size"]
+
+
+
 
 """------------------------------------------- Model functions  -------------------------------------------"""
 func save_game_data(file_name):

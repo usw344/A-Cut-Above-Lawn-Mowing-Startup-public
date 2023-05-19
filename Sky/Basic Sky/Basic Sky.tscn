@@ -20,6 +20,7 @@ noise = SubResource("FastNoiseLite_ssbpb")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_71yc2"]
 frequency = 0.016
+fractal_type = 3
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_eovrg"]
 noise = SubResource("FastNoiseLite_71yc2")
@@ -68,5 +69,5 @@ environment = SubResource("Environment_drygw")
 script = ExtResource("3_ar74f")
 
 [node name="Sun_and_Moon" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.866025, -0.019805, -0.499607, 0, -0.999215, 0.0396099, -0.5, 0.0343032, 0.865345, 0, 25, 0)
+transform = Transform3D(-0.866025, -0.405207, 0.292928, 5.12172e-08, 0.585856, 0.810414, -0.5, 0.70184, -0.507366, 0, 25, 0)
 shadow_enabled = true

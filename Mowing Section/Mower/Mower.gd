@@ -8,7 +8,9 @@ extends CharacterBody3D
 ##Variables localva
 var rotate_speed:int = 20
 
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var base_gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+
+var gravity = base_gravity/64
 var mouse_sensitivity:float = 0.002 
 
 ##Signals
@@ -69,6 +71,8 @@ func _physics_process(delta):
 	##collision signal is based if fuel is full or not
 	if model.get_mower_fuel() <= 0:
 		handle_collision("fuel_empty")
+		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
+
 	else:
 		handle_collision("collided")
 
@@ -107,7 +111,7 @@ func get_input():
 		Main input function. This also handles wheel rotation
 	"""
 	var input_direction = Vector3()
-	var rotate_wheel = {"forward": 0, "backward": 0, "right": 0, "left": 0}
+#	var rotate_wheel = {"forward": 0, "backward": 0, "right": 0, "left": 0}
 
 	var use_fuel = false
 	if Input.is_action_pressed("move_forward"):
@@ -118,14 +122,14 @@ func get_input():
 		input_direction += global_transform.basis.x
 #		rotate_wheel["backward"] = -rotate_speed
 		use_fuel = true
-	if Input.is_action_pressed("move_left"):
-		input_direction += global_transform.basis.z
-#		rotate_wheel["left"] = rotate_speed
-		use_fuel = true
-	if Input.is_action_pressed("move_right"):
-		input_direction += -global_transform.basis.z
-#		rotate_wheel["right"] = -rotate_speed
-		use_fuel = true
+#	if Input.is_action_pressed("move_left"):
+#		input_direction += global_transform.basis.z
+##		rotate_wheel["left"] = rotate_speed
+#		use_fuel = true
+#	if Input.is_action_pressed("move_right"):
+#		input_direction += -global_transform.basis.z
+##		rotate_wheel["right"] = -rotate_speed
+#		use_fuel = true
 	
 	##if movement happened then increment fuel counter
 	if use_fuel:
@@ -201,4 +205,6 @@ func dev_hud():
 	var string_to_print:String = ""
 	string_to_print += str(round(position)) + "\n"
 	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
+	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
+	string_to_print += "Memory: " + str(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000) + "\n"
 	$CanvasLayer/Label.text = string_to_print

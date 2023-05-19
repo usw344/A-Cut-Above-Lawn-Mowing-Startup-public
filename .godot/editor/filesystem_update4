@@ -1,13 +1,2 @@
-res://Main.tscn
-res://Assets/Other/green_albedo.tres
-res://Mowing Section/Job/job.tscn
-res://Mowing Section/Mowing_Area/Mowing_Area.tscn
-res://Data Structures/Job Data Structure/Job Data Structure.tscn
-res://Assets/Foliage/Scenes/Some Grass.tscn
-res://Sky/Basic Sky/Basic Sky.tscn
-res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
-res://Mowing Section/Mowing_Area/Grass Area/Grass Area.tscn
-res://Mowing Section/Mowing_Area/Mowing_Area.gd
-res://Mowing Section/Job/job.gd
-res://Game.gd
-res://Sky/Basic Sky/Basic Sky.gd
+res://Mowing Section/Mowing_Area/Dirt Material.tres
+res://Assets/Level Scenes/very_large_1.tscn

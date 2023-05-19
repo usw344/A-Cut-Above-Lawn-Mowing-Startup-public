@@ -8,12 +8,17 @@ var length:int
 # unique identifier for the job
 var job_id:int
 
-# contains key = vector3 location of grass location value = scale
+# contains key = grass_object_name location of grass location value = scale
 var grass_data:Dictionary = {}
 
 # to store rocks or trees etc key = type value = vector3 location
 var other_objects_data:Dictionary = {}
 
+# store the house type (small, medium etc) and variant (1,2,3) that should be used with level
+var house_info:Dictionary = {
+	"type":null,
+	"variant":null
+}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -85,6 +90,10 @@ func set_grass_data(data:Dictionary)->void:
 func set_other_object_data(data:Dictionary) ->void:
 	other_objects_data = data
 
+func set_house_type(type:String):
+	house_info["type"] = type
+func set_house_variant(num:int):
+	house_info["variant"] = num
 
 # Getters
 func get_width() -> int:
@@ -128,6 +137,14 @@ func get_grass_data() ->Dictionary:
 
 func get_other_object_data() ->Dictionary:
 	return other_objects_data
+
+func get_house_type():
+	return house_info["type"] # small, medium etc as listed in model
+func get_house_variant():
+	return house_info["variant"] # 1,2,3 etc as listed in model
+
+
+
 
 func load_object(data:Dictionary) ->void:
 	"""

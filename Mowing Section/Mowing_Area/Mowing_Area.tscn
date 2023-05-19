@@ -1,17 +1,22 @@
-[gd_scene load_steps=8 format=3 uid="uid://d31p3saka3ged"]
+[gd_scene load_steps=11 format=3 uid="uid://d31p3saka3ged"]
 
 [ext_resource type="Script" path="res://Mowing Section/Mowing_Area/Mowing_Area.gd" id="1_fhp54"]
-[ext_resource type="Material" uid="uid://c2b8c6giu2ubc" path="res://Assets/Other/green_albedo.tres" id="3_3kyhp"]
+[ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_rxso4"]
 [ext_resource type="PackedScene" uid="uid://dj0wbkxqirmgp" path="res://Sky/Basic Sky/Basic Sky.tscn" id="4_gso1m"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_c5caf"]
-size = Vector3(4, 1, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hwxvw"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_lrbe1"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_71awk"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_625fm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_klin8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_an0md"]
 
 [node name="Mowing Area" type="Node3D"]
 script = ExtResource("1_fhp54")
@@ -21,7 +26,7 @@ script = ExtResource("1_fhp54")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Grass Area"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.676775, 0, -2.07408)
 mesh = SubResource("BoxMesh_c5caf")
-surface_material_override/0 = ExtResource("3_3kyhp")
+surface_material_override/0 = ExtResource("2_rxso4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Grass Area"]
 shape = SubResource("BoxShape3D_hwxvw")
@@ -51,7 +56,16 @@ text = "placeholder 2"
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Start Point For Mower"]
 mesh = SubResource("BoxMesh_lrbe1")
-surface_material_override/0 = ExtResource("3_3kyhp")
+surface_material_override/0 = ExtResource("2_rxso4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Start Point For Mower"]
 shape = SubResource("BoxShape3D_71awk")
+
+[node name="House Area" type="StaticBody3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="House Area"]
+mesh = SubResource("BoxMesh_625fm")
+surface_material_override/0 = SubResource("StandardMaterial3D_klin8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="House Area"]
+shape = SubResource("BoxShape3D_an0md")

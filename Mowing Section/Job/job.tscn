@@ -12,3 +12,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.8124, -0.584063, 0)
 
 [node name="Mower_Normal" parent="." instance=ExtResource("3_jcb6j")]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 50.009, 41.7962, 0)
+
+[connection signal="collided" from="Mower_Normal" to="." method="_on_mower_normal_collided"]

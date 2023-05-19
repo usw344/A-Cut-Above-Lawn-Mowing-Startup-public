@@ -1,40 +1,111 @@
 bdbec74c6e5bd72edee867077d70896c
-::res://::1683923621
+::res://::1684445881
 basic_sky_shader.gdshader::Shader::-1::1683667676::0::1::::<><>::
 default_env.tres::Environment::-1::1683486477::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1683482928::0::1::::<><>::
-Game.gd::GDScript::-1::1683852965::0::1::::<>Node3D<>::
+Game.gd::GDScript::-1::1684358864::0::1::::<>Node3D<>::
 icon.svg::CompressedTexture2D::5507345590917116630::1683482928::1683488125::1::::<><>::
-Main.tscn::PackedScene::6050645004164830725::1683853590::0::1::::<><>::res://Game.gd<>res://Data Structures/Model.gd
-::res://Assets/::1683516870
-::res://Assets/Foliage/::1683602793
+Main.tscn::PackedScene::6050645004164830725::1684374251::0::1::::<><>::res://Game.gd<>res://Data Structures/Model.gd
+some_grass.res::ArrayMesh::6853866962551335437::1684116362::0::1::::<><>::
+testing_mesh.tscn::PackedScene::4131346224735657625::1684374252::0::1::::<><>::
+::res://Assets/::1684444862
+testing.glb::PackedScene::1572921431372540560::1684444751::1684444813::1::::<><>::uid://csdciuxwuqp1m<>uid://dwa7ht6bf1trm<>uid://6107l1ujsb54<>uid://23p8ew5k1bjy<>uid://qve1k1opgm3e
+testing_1.png::CompressedTexture2D::8705373101327627930::1684444752::1684444753::1::::<><>::
+testing_2.png::CompressedTexture2D::2231103663451887933::1684444752::1684444753::1::::<><>::
+testing_Stone_greybricks.png::CompressedTexture2D::1953871286887453822::1684444752::1684444753::1::::<><>::
+testing_Stone_tiles.png::CompressedTexture2D::6042570493494194044::1684444752::1684444753::1::::<><>::
+testing_Wood_planks.png::CompressedTexture2D::1166663295711174476::1684444753::1684444753::1::::<><>::
+Very Large scene (1500x1500).glb::PackedScene::4317040458146075074::1684360450::1684360454::0::::<><>::
+Very Large scene (1500x1500)_1.png::CompressedTexture2D::2756288213097190415::1684360452::1684360454::1::::<><>::
+Very Large scene (1500x1500)_2.png::CompressedTexture2D::8892780063452748512::1684360453::1684360454::1::::<><>::
+Very Large scene (1500x1500)_Stone_greybricks.png::CompressedTexture2D::2198805185436676230::1684360453::1684360454::1::::<><>::
+Very Large scene (1500x1500)_Stone_tiles.png::CompressedTexture2D::7251154929091331401::1684360452::1684360454::1::::<><>::
+Very Large scene (1500x1500)_Wood_planks.png::CompressedTexture2D::586077389123879734::1684360453::1684360454::1::::<><>::
+::res://Assets/Foliage/::1684445881
 grass.glb::PackedScene::4739861401548966008::1653469228::1683511140::1::::<><>::
-grassLarge.glb::PackedScene::8306784374951489733::1653469228::1683511140::1::::<><>::
+grassLarge.glb::PackedScene::8306784374951489733::1653469228::1684116362::1::::<><>::uid://c4wcgm06lkl7b
+larger_single_mesh_grass.glb::PackedScene::4713719381517763044::1684123148::1684123152::1::::<><>::
+mowed_grass.glb::PackedScene::781299416337283397::1684187943::1684187946::1::::<><>::
+mowed_grass_thich.tscn::PackedScene::2415230847849866030::1684445833::0::1::::<><>::
+mowed_grass_thick.glb::PackedScene::5904591381791549591::1684190573::1684190575::1::::<><>::
 rockA.glb::PackedScene::8744973343664616764::1653469228::1683518560::1::::<><>::
 rockB.glb::PackedScene::6302286894032402371::1653469228::1683511140::1::::<><>::
 rockC.glb::PackedScene::7508979798359796173::1653469229::1683511140::1::::<><>::
 rockFlatGrass.glb::PackedScene::4134766101648732561::1653469229::1683511140::1::::<><>::
+single_mesh_grass.glb::PackedScene::709920043158101411::1684118985::1684118987::1::::<><>::
 tree.glb::PackedScene::767289646586847859::1653469230::1683511141::1::::<><>::
 treeFall.glb::PackedScene::2725180891355865425::1653469231::1683511141::1::::<><>::
 treeFallLarge.glb::PackedScene::2987166155784958800::1653469231::1683511141::1::::<><>::
 treeLarge.glb::PackedScene::3115339727066454777::1653469231::1683511141::1::::<><>::
-::res://Assets/Foliage/Scenes/::1683853591
-Some Grass.tscn::PackedScene::326089597066016412::1683853591::0::1::::<><>::uid://b8sa3bpgwykbo
-::res://Assets/Other/::1683826171
+::res://Assets/Foliage/Scenes/::1684374251
+Some Grass.tscn::PackedScene::326089597066016412::1684374251::0::1::::<><>::uid://b8sa3bpgwykbo
+::res://Assets/House Scenes/::1684374252
+large_1.tscn::PackedScene::2721935303494196389::1684374252::0::1::::<><>::uid://dp1ts1yagotce<>uid://dhfduvpkrom27<>uid://lsrp06jei3lp<>uid://c533qgb5d6f1<>uid://cvq3m8mmo1wlh
+large_2.tscn::PackedScene::6547036999091522486::1684019172::0::1::::<><>::uid://brnoqwum610nv<>uid://pautef4s7gya<>uid://hr2nt283roof<>uid://bjwin22dl6p1s<>uid://c5bxmc55edkvy
+large_3.tscn::PackedScene::3734269246553821661::1684019192::0::1::::<><>::uid://bnxwbjoat7f8n<>uid://cm8tw2t4sdurb<>uid://cjdgitmd0i7ww<>uid://ddgtkjk6it43<>uid://dch4tcck57tts
+medium_1.tscn::PackedScene::5682101429379582825::1684019017::0::1::::<><>::uid://bimf2ilok745c<>uid://bi0xmg0tk5e3k<>uid://cp1jgebq5d1qs<>uid://d2g6b7tj5o6s6<>uid://biw4xj3v1h562<>uid://c5f3cmd6kodbd
+medium_2.tscn::PackedScene::8963684335387249193::1684019049::0::1::::<><>::uid://bcjmowg70bmim<>uid://dgvcnr2rgd8g7<>uid://bpfrv24apgxm0<>uid://121mg3q048w2<>uid://cc52sq26txfvy<>uid://ckdnm576keu13
+medium_3.tscn::PackedScene::2749617046563251385::1684019067::0::1::::<><>::uid://lbwf0dk5aver<>uid://c611xao7x0asm<>uid://bkf12hh4yn1bj<>uid://5olvbffftxjb<>uid://dvraq032x3cdl
+small_1.tscn::PackedScene::3530893775606658187::1684016816::0::1::::<><>::uid://dud8s6xeoo58m<>uid://c8dwxha2y4xd7<>uid://byk03akoowkmy<>uid://dh7h85dx0h52q<>uid://dmxkte5t4d434
+small_2.tscn::PackedScene::6787157610250419842::1684016852::0::1::::<><>::uid://ocybs0qo415i<>uid://bpci8p8rwdflk<>uid://bw2fvwdhlxr7<>uid://cjur8gw8pc1qo<>uid://bjobyvkt0umqq
+small_3.tscn::PackedScene::7347959545140573018::1684016888::0::1::::<><>::uid://dawpeq621ibna<>uid://cs7bkerw5afuk<>uid://clutkgk5dbvp<>uid://b3w2tmlklmud2<>uid://otitddnlx0tk
+very_large_1.tscn::PackedScene::2608021018895622412::1684018941::0::1::::<><>::uid://dmw55od0ogau5<>uid://dalrtj7q0e70n<>uid://cpt17llu1w5yl<>uid://y8jt08akasgu<>uid://btalcxgxcjhxx
+::res://Assets/Level Scenes/::1684445881
+very_large_1.tscn::PackedScene::7941191350106870859::1684444873::0::1::::<><>::uid://wn61y2su2nca
+::res://Assets/Other/::1684350767
 Expensive_house_1_1.png::CompressedTexture2D::6671015167561833068::1683676456::1683676459::1::::<><>::
 Expensive_house_1_3.png::CompressedTexture2D::4177608653207550140::1683676457::1683676459::1::::<><>::
 Expensive_house_1_Stone_greybricks.png::CompressedTexture2D::3420140992653411865::1683676456::1683676459::1::::<><>::
 Expensive_house_1_Stone_tiles.png::CompressedTexture2D::8437671251474365008::1683676457::1683676459::1::::<><>::
 Expensive_house_1_Wood_planks.png::CompressedTexture2D::6515144423806212982::1683676457::1683676459::1::::<><>::
-green_albedo.tres::StandardMaterial3D::6672013393600214796::1683826171::0::1::::<><>::
+fence.glb::PackedScene::2811862920381952633::1684350736::1684350767::1::::<><>::
+green_albedo.tres::StandardMaterial3D::6672013393600214796::1684182761::0::1::::<><>::
 Store.glb::PackedScene::4354128621906314256::1683516873::1683516881::1::::<><>::
-::res://Assets/Other/Houses/::1683680652
+::res://Assets/Other/Houses/::1684016342
+entry_level_Expensive_house_1.glb::PackedScene::5433083108053503318::1683682828::1684016334::1::::<><>::uid://dud8s6xeoo58m<>uid://c8dwxha2y4xd7<>uid://byk03akoowkmy<>uid://dh7h85dx0h52q<>uid://dmxkte5t4d434
+entry_level_Expensive_house_1_2.png::CompressedTexture2D::4093164651698700200::1684016333::1684016342::1::::<><>::
+entry_level_Expensive_house_1_3.png::CompressedTexture2D::7717129576237320966::1684016334::1684016342::1::::<><>::
+entry_level_Expensive_house_1_Stone_greybricks.png::CompressedTexture2D::8571269526109104118::1684016333::1684016342::1::::<><>::
+entry_level_Expensive_house_1_Wood_panel.png::CompressedTexture2D::8049650220430636561::1684016334::1684016342::1::::<><>::
+entry_level_Expensive_house_1_Wood_planks.png::CompressedTexture2D::7096643556727570986::1684016333::1684016342::1::::<><>::
+entry_level_Expensive_house_2.glb::PackedScene::3937169754403524255::1683682870::1684016335::1::::<><>::uid://ocybs0qo415i<>uid://bpci8p8rwdflk<>uid://bw2fvwdhlxr7<>uid://cjur8gw8pc1qo<>uid://bjobyvkt0umqq
+entry_level_Expensive_house_2_2.png::CompressedTexture2D::117254579123736806::1684016335::1684016342::1::::<><>::
+entry_level_Expensive_house_2_3.png::CompressedTexture2D::5446919985930901814::1684016335::1684016342::1::::<><>::
+entry_level_Expensive_house_2_Stone_greybricks.png::CompressedTexture2D::988232544848132340::1684016334::1684016342::1::::<><>::
+entry_level_Expensive_house_2_Wood_panel.png::CompressedTexture2D::3047126260374592496::1684016335::1684016342::1::::<><>::
+entry_level_Expensive_house_2_Wood_planks.png::CompressedTexture2D::3443927600543423212::1684016334::1684016342::1::::<><>::
+entry_level_Expensive_house_3.glb::PackedScene::8356867629739678868::1683683109::1684016337::1::::<><>::uid://dawpeq621ibna<>uid://cs7bkerw5afuk<>uid://clutkgk5dbvp<>uid://b3w2tmlklmud2<>uid://otitddnlx0tk
+entry_level_Expensive_house_3_0.png::CompressedTexture2D::7205597149260091198::1684016335::1684016342::1::::<><>::
+entry_level_Expensive_house_3_3.png::CompressedTexture2D::4398798552778809569::1684016336::1684016342::1::::<><>::
+entry_level_Expensive_house_3_Stone_greybricks.png::CompressedTexture2D::164334647507136661::1684016336::1684016342::1::::<><>::
+entry_level_Expensive_house_3_Wood_panel.png::CompressedTexture2D::1022386817096671292::1684016336::1684016342::1::::<><>::
+entry_level_Expensive_house_3_Wood_planks.png::CompressedTexture2D::6102379453327264806::1684016336::1684016342::1::::<><>::
 Expensive_house_1.glb::PackedScene::6492067114558377147::1683674504::1683680646::1::::<><>::uid://dmw55od0ogau5<>uid://dalrtj7q0e70n<>uid://cpt17llu1w5yl<>uid://y8jt08akasgu<>uid://btalcxgxcjhxx
 Expensive_house_1_1.png::CompressedTexture2D::7183036848239646479::1683680645::1683680652::1::::<><>::
 Expensive_house_1_3.png::CompressedTexture2D::1753238460291524744::1683680645::1683680652::1::::<><>::
 Expensive_house_1_Stone_greybricks.png::CompressedTexture2D::8048820310041293750::1683680644::1683680652::1::::<><>::
 Expensive_house_1_Stone_tiles.png::CompressedTexture2D::5866533582194761923::1683680645::1683680652::1::::<><>::
 Expensive_house_1_Wood_planks.png::CompressedTexture2D::3720681389677887113::1683680646::1683680652::1::::<><>::
+less_Expensive_house_1.glb::PackedScene::2208779182635686684::1683681614::1684016338::1::::<><>::uid://bimf2ilok745c<>uid://bi0xmg0tk5e3k<>uid://cp1jgebq5d1qs<>uid://d2g6b7tj5o6s6<>uid://biw4xj3v1h562<>uid://c5f3cmd6kodbd
+less_Expensive_house_1_0.png::CompressedTexture2D::2973056205075743250::1684016337::1684016342::1::::<><>::
+less_Expensive_house_1_3.png::CompressedTexture2D::9068632818948285615::1684016337::1684016342::1::::<><>::
+less_Expensive_house_1_5.png::CompressedTexture2D::6890532849019773537::1684016338::1684016342::1::::<><>::
+less_Expensive_house_1_Stone_greybricks.png::CompressedTexture2D::3000959151647374338::1684016337::1684016342::1::::<><>::
+less_Expensive_house_1_Wood_panel.png::CompressedTexture2D::2995150126390589737::1684016338::1684016342::1::::<><>::
+less_Expensive_house_1_Wood_planks.png::CompressedTexture2D::5879905223665979986::1684016337::1684016342::1::::<><>::
+less_Expensive_house_2.glb::PackedScene::3208956461742093231::1683681768::1684016340::1::::<><>::uid://bcjmowg70bmim<>uid://dgvcnr2rgd8g7<>uid://bpfrv24apgxm0<>uid://121mg3q048w2<>uid://cc52sq26txfvy<>uid://ckdnm576keu13
+less_Expensive_house_2_0.png::CompressedTexture2D::2546132542053495012::1684016338::1684016342::1::::<><>::
+less_Expensive_house_2_3.png::CompressedTexture2D::1882248564443421187::1684016339::1684016341::1::::<><>::
+less_Expensive_house_2_5.png::CompressedTexture2D::5481735314017816448::1684016339::1684016342::1::::<><>::
+less_Expensive_house_2_Stone_greybricks.png::CompressedTexture2D::7623892630436297544::1684016338::1684016342::1::::<><>::
+less_Expensive_house_2_Wood_panel.png::CompressedTexture2D::4976822773897163390::1684016339::1684016342::1::::<><>::
+less_Expensive_house_2_Wood_planks.png::CompressedTexture2D::3450646380533008237::1684016339::1684016341::1::::<><>::
+less_Expensive_house_3.glb::PackedScene::4706368981136297695::1683681494::1684016341::1::::<><>::uid://lbwf0dk5aver<>uid://c611xao7x0asm<>uid://bkf12hh4yn1bj<>uid://5olvbffftxjb<>uid://dvraq032x3cdl
+less_Expensive_house_3_0.png::CompressedTexture2D::775487678795438285::1684016340::1684016342::1::::<><>::
+less_Expensive_house_3_3.png::CompressedTexture2D::2135272046772246999::1684016340::1684016342::1::::<><>::
+less_Expensive_house_3_4.png::CompressedTexture2D::8668352119596350121::1684016341::1684016341::1::::<><>::
+less_Expensive_house_3_Stone_greybricks.png::CompressedTexture2D::7003989079955415208::1684016340::1684016341::1::::<><>::
+less_Expensive_house_3_Wood_planks.png::CompressedTexture2D::3100258246918406363::1684016340::1684016341::1::::<><>::
 Medium_Expensive_house_1.glb::PackedScene::6311962382407448143::1683674848::1683680648::1::::<><>::uid://dp1ts1yagotce<>uid://dhfduvpkrom27<>uid://lsrp06jei3lp<>uid://c533qgb5d6f1<>uid://cvq3m8mmo1wlh
 Medium_Expensive_house_1_0.png::CompressedTexture2D::8266955697099194084::1683680646::1683680652::1::::<><>::
 Medium_Expensive_house_1_1.png::CompressedTexture2D::7661124838812282342::1683680647::1683680652::1::::<><>::
@@ -56,31 +127,43 @@ Medium_Expensive_house_3_Wood_planks.png::CompressedTexture2D::21715843584992753
 ::res://Assets/Other/Mowers/::1683778710
 mower_normal.glb::PackedScene::4484254539563633013::1683778599::1683778644::1::::<><>::
 mower_normal_unmerged.glb::PackedScene::1652230120027554020::1683778682::1683778710::1::::<><>::
+::res://Assets/Scenes/::1684374253
+fenceupdown.tscn::PackedScene::4696576592913153087::1684374253::0::1::::<><>::
+LargeSingleMeshGrass.tscn::PackedScene::6374107077073958010::1684276328::0::1::::<><>::
+SingleMeshGrass.tscn::PackedScene::7266939413902289549::1684374252::0::1::::<><>::
 ::res://Assets/UI/::1663366719
 ::res://Assets/UI/Main_Menu/::1663367288
-::res://Data Structures/::1683830129
-Model.gd::GDScript::-1::1683830129::0::1::::Model<>Node<>::
-::res://Data Structures/Job Data Structure/::1683853591
-Job Data Structure.tscn::PackedScene::1648398105771994542::1683853591::0::1::::<><>::res://Data Structures/Job Data Structure/Job_Data.gd
-Job_Data.gd::GDScript::-1::1683747643::0::1::::Job_Data_Container<>Node3D<>::
+::res://Data Structures/::1684347618
+Model.gd::GDScript::-1::1684347618::0::1::::Model<>Node<>::
+::res://Data Structures/Job Data Structure/::1684374251
+Job Data Structure.tscn::PackedScene::1648398105771994542::1684374251::0::1::::<><>::res://Data Structures/Job Data Structure/Job_Data.gd
+Job_Data.gd::GDScript::-1::1684020838::0::1::::Job_Data_Container<>Node3D<>::
+::res://Dev tools/::1684276328
+Mesurement.gd::GDScript::-1::1682652828::0::1::::Mesurment<>Node<>::
+Mesurement.tscn::PackedScene::4803629611407700834::1684276328::0::1::::<><>::res://Dev tools/Mesurement.gd
+Performance Monitor.gd::GDScript::-1::1684189125::0::1::::Performance_Monitor<>Control<>::
+Performance Monitor.tscn::PackedScene::4417058207688161942::1684276328::0::1::::<><>::res://Dev tools/Performance Monitor.gd
 ::res://Menus/::1669755404
 ::res://Menus/Pause_Menu/::1663363332
 ::res://Mowing Section/::1683692119
-::res://Mowing Section/Job/::1683853757
-job.gd::GDScript::-1::1683780039::0::1::::<>Node3D<>::
-job.tscn::PackedScene::6754498129553638499::1683853757::0::1::::<><>::res://Mowing Section/Job/job.gd<>uid://d31p3saka3ged<>uid://b5wii06emkg1c
-::res://Mowing Section/Mower/::1683830572
-Mower.gd::GDScript::-1::1683830572::0::1::::<>CharacterBody3D<>::
+::res://Mowing Section/Job/::1684374251
+job.gd::GDScript::-1::1684360815::0::1::::<>Node3D<>::
+job.tscn::PackedScene::6754498129553638499::1684374251::0::1::::<><>::res://Mowing Section/Job/job.gd<>uid://d31p3saka3ged<>uid://b5wii06emkg1c
+::res://Mowing Section/Mower/::1684362359
+Mower.gd::GDScript::-1::1684362359::0::1::::<>CharacterBody3D<>::
 Mower.tscn::PackedScene::8890898170342025735::1683826171::0::1::::<><>::res://Mowing Section/Mower/Mower.gd<>res://Mowing Section/Mower/testing_wheel.gdshader
 testing_wheel.gdshader::Shader::-1::1683482928::0::1::::<><>::
-::res://Mowing Section/Mower/Mower_Normal/::1683853591
-Mower_Normal.tscn::PackedScene::4538003686887627614::1683853591::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
-::res://Mowing Section/Mowing_Area/::1683858207
-Mowing_Area.gd::GDScript::-1::1683858207::0::1::::<>Node3D<>::
-Mowing_Area.tscn::PackedScene::9179185197546362563::1683853748::0::1::::<><>::res://Mowing Section/Mowing_Area/Mowing_Area.gd<>uid://c2b8c6giu2ubc<>uid://dj0wbkxqirmgp
+::res://Mowing Section/Mower/Mower_Normal/::1684374252
+Mower_Normal.tscn::PackedScene::4538003686887627614::1684374252::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
+::res://Mowing Section/Mowing_Area/::1684444873
+Dirt Material.tres::ShaderMaterial::722726275677297723::1684444873::0::1::::<><>::res://Mowing Section/Mowing_Area/Dirt.gdshader
+Dirt.gdshader::Shader::-1::1684374002::0::1::::<><>::
+Mowed_Grass_thick.tscn::PackedScene::1342838053021808152::1684374252::0::1::::<><>::
+Mowing_Area.gd::GDScript::-1::1684358917::0::1::::<>Node3D<>::
+Mowing_Area.tscn::PackedScene::9179185197546362563::1684374251::0::1::::<><>::res://Mowing Section/Mowing_Area/Mowing_Area.gd<>uid://kkdgw1hnpq32<>uid://dj0wbkxqirmgp
 Simple_camera.gd::GDScript::-1::1683574364::0::1::::<>Camera3D<>::
-::res://Mowing Section/Mowing_Area/Grass Area/::1683853591
-Grass Area.tscn::PackedScene::3445607452325253829::1683853591::0::1::::<><>::
+::res://Mowing Section/Mowing_Area/Grass Area/::1684115052
+Grass Area.tscn::PackedScene::3445607452325253829::1684115052::0::1::::<><>::
 ::res://New folder/::1683511122
 ::res://Sky/::1683667158
 moon.png::CompressedTexture2D::1212082536930243315::1682192698::1683507567::1::::<><>::
@@ -89,7 +172,7 @@ sky.gdshader::Shader::-1::1683592115::0::1::::<><>::
 Sky.tscn::PackedScene::6593751617060754838::1683666214::0::1::::<><>::res://Sky/sky.gdshader<>uid://rje27tro15v8<>res://Sky/sky.gd<>uid://y630he11hwt4<>uid://dbi0qq5xjxi0d
 starfield.png::CompressedTexture2D::1750273053392749331::1682192698::1683507568::1::::<><>::
 thunder.ogg::AudioStreamOggVorbis::7247513302047144349::1682192698::1683507567::1::::<><>::
-::res://Sky/Basic Sky/::1683853591
-Basic Sky.gd::GDScript::-1::1683852347::0::1::::<>WorldEnvironment<>::
-Basic Sky.tscn::PackedScene::7843909208810198867::1683853591::0::1::::<><>::res://Sky/Basic Sky/basic_sky_shader.gdshader<>uid://y630he11hwt4<>res://Sky/Basic Sky/Basic Sky.gd
-basic_sky_shader.gdshader::Shader::-1::1683683114::0::1::::<><>::
+::res://Sky/Basic Sky/::1684374251
+Basic Sky.gd::GDScript::-1::1683934197::0::1::::<>WorldEnvironment<>::
+Basic Sky.tscn::PackedScene::7843909208810198867::1684374251::0::1::::<><>::res://Sky/Basic Sky/basic_sky_shader.gdshader<>uid://y630he11hwt4<>res://Sky/Basic Sky/Basic Sky.gd
+basic_sky_shader.gdshader::Shader::-1::1684288362::0::1::::<><>::

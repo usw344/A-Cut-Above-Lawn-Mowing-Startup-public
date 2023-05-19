@@ -2,11 +2,15 @@ extends Node3D
 
 var data:Job_Data_Container = null
 
-var grid_size:Vector2
-var simple_grass_scene = load("res://Assets/Foliage/Scenes/Some Grass.tscn")
 
+# grass instance reference
+var repalce_grass_scene = load("res://Assets/Foliage/mowed_grass_thick.glb") 
+var simple_grass_scene = load("res://Assets/Scenes/LargeSingleMeshGrass.tscn")
+var fence_to_down = load("res://Assets/Scenes/fenceupdown.tscn")
+# store the grass object name and the object reference
 var grass_location:Dictionary = {}
 
+var mesure = Mesurment.new("Mowing Area")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,18 +27,111 @@ func setup(new_data:Job_Data_Container):
 	mowing objects and ground
 	"""
 	data = new_data
-	setup_ground_below_grass()
-	setup_ground_below_mower_start_position()
-	setup_house()
-	add_grass()
+	
+	# setup ground and house
+	var testing = load("res://Assets/testing.glb")
+	add_child(testing.instantiate())
+#	setup_ground_below_grass()
+#	setup_ground_below_mower_start_position()
+#	setup_house()
+#
+#	# TODO Figure out how to reduce to amount of grass added by using multimesh
+#	add_grass()
+#
+#	# add fence all around
+#	setup_fence()
+
 	$CanvasLayer/Label2.text = "From setup" + str(get_child_count()) + "\n"
 
-
+func setup_fence():
+	# add fence on left and right side first
+	
+	var start_point = (data.get_length()/2) - 10
+	var additional_length_for_mower_area:int = $"Start Point For Mower/MeshInstance3D".mesh.size.x
+	var end_point = start_point + additional_length_for_mower_area - 10
+	# for right side
+	var z_position:int = -data.get_width()/2 # for sides the z position (left - right) is same
+	
+	# due to pivot point of model there is a sligh misaligment for this side
+	var alignment:int = 20 # bigger means more pulled in
+	for x in range(-start_point,end_point,10):
+		var inst = fence_to_down.instantiate()
+		add_child(inst)
+		inst.transform.origin.x = x 
+		inst.transform.origin.y = 0
+		
+		inst.transform.origin.z = z_position + alignment
+		var scale_val:int = 20
+		inst.scale.x = scale_val
+		inst.scale.y = scale_val
+		inst.scale.z = scale_val
+	
+	# for left side
+	z_position = data.get_width()/2
+	
+	for x in range(-start_point,end_point,10):
+		var inst = fence_to_down.instantiate()
+		add_child(inst)
+		inst.transform.origin.x = x
+		inst.transform.origin.y = 0
+		
+		inst.transform.origin.z = z_position
+		
+		var scale_val:int = 20
+		
+		inst.scale.x = scale_val
+		inst.scale.y = scale_val
+		inst.scale.z = scale_val
 func setup_house():
-	pass
+	# get object reference of house
+	var ref_to_house = model.get_house(data.get_house_type(),data.get_house_variant())
+	var house = ref_to_house.instantiate()
+	add_child(house)
+	
+	
+	var static_body_of_ground:StaticBody3D = $"House Area"
+	var mesh_of_ground:MeshInstance3D = $"House Area/MeshInstance3D"
+	var collision_shape_for_ground:CollisionShape3D = $"House Area/CollisionShape3D"
+	
 
+	
+	var extents_to_size:int = 3 # extents are twice the value of the size. this can scale that
+	
+	# calculate where to place the start ground. the minus 2 due to some mis calculation issue somewhere
+	var x_position = data.get_width() - (data.get_width()/extents_to_size) 
+	
+	# add here instead of substract to get to opposite side
+	static_body_of_ground.transform.origin.x -= (x_position - 2 ) # minus 10 due to alignment issue BUG 
+	static_body_of_ground.transform.origin.y = 0
+	static_body_of_ground.transform.origin.z = 0
+	
 
+	
+	collision_shape_for_ground.shape.extents.x = data.get_width()/(extents_to_size*2) 
+	collision_shape_for_ground.shape.extents.z = data.get_length()/2
+	
+	mesh_of_ground.mesh.size.x = data.get_width()/extents_to_size
+	mesh_of_ground.mesh.size.z = data.get_length()
+	
+	# now set the house to correct area
+	# since the 3d model pivot orign is not set to center need to account for this
+	
+	var house_offset:int = 30
+	
+	house.transform.origin.x -= (x_position - house_offset) 
+	house.transform.origin.z += (data.get_length()/4)
+	var scale_val: int = 6
+	house.scale.x = scale_val *data.get_length()/250
+	house.scale.y = scale_val 
+	house.scale.z = scale_val 
+	
+	house.rotate_y(-1.57)
+	
 func setup_ground_below_mower_start_position():
+	"""
+		Internal function to setup the start position for the mower
+		From this function the other function [calculate_and_get_mower_start_position] gets its value
+	"""
 	# since the grass area is set to 0,0,0. this should be to the south side of that
 	# grass_area_width, 0, grass_area_length
 	var static_body_of_ground:StaticBody3D = $"Start Point For Mower"
@@ -42,20 +139,23 @@ func setup_ground_below_mower_start_position():
 	var collision_shape_for_ground:CollisionShape3D = $"Start Point For Mower/CollisionShape3D"
 	
 	# BUG. for some reason there is a very small ofset different. that is accounted 
-	# for with the alignment_margin 
-	
+	# for with the alignment_margin
 	var alignment_margin:int = 2
 	
+	var extents_to_size:int = 3 # extents are twice the value of the size. this can scale that
+	
 	# calculate where to place the start ground. the minus 2 due to some mis calculation issue somewhere
-	static_body_of_ground.transform.origin.x += data.get_width() -alignment_margin
+	var x_position = data.get_width() - data.get_width()/extents_to_size 
+	static_body_of_ground.transform.origin.x = x_position - alignment_margin
 	static_body_of_ground.transform.origin.y = 0
 	static_body_of_ground.transform.origin.z = - alignment_margin
 	
 	
-	collision_shape_for_ground.shape.extents.x = data.get_width()/2 
+	
+	collision_shape_for_ground.shape.extents.x = data.get_width()/(extents_to_size*2 )
 	collision_shape_for_ground.shape.extents.z = data.get_length()/2
 	
-	mesh_of_ground.mesh.size.x = data.get_width()
+	mesh_of_ground.mesh.size.x = data.get_width()/extents_to_size
 	mesh_of_ground.mesh.size.z = data.get_length()
 
 func setup_ground_below_grass():
@@ -87,48 +187,46 @@ func calculate_and_get_mower_start_position() -> Vector3:
 	return Vector3( start_point_position.x+10, start_point_position.y, start_point_position.z    )
 
 
-func setup_store():
-	"""
-		Instance and set the location and scale of the store
-	"""
-	pass
 
 func add_grass():
 	"""
 		Setup the x,z location and heights of the grass.
 		This function will add this dictionary (key = location) value: mesh to the job container
 	"""
-	var amount_of_grass:int = round((data.get_width()/6)-5)
-	var some_noise:FastNoiseLite = FastNoiseLite.new()
-	some_noise.frequency = 0.4
-		
-	# establish bounds on how much grass is desired
-	print(amount_of_grass)
-	amount_of_grass = max(50, amount_of_grass)
-	amount_of_grass = min(50, amount_of_grass)
-	
+	mesure.start_m("add grass")
 	var some_scale:int = 12
 	var reduction:int =5 # reduce the density of the grass
+
+	var start_end_position = data.get_width()/3
+
+	# due to multipling the x and z value for grass sometimes grass
+	# will go out of area to stop this a check is run inside of loop
+	# to reduce extra comuation calcuate the boudning area
+	var margin_on_edges =15
+	var smallest_x = -(data.get_width()/2) + margin_on_edges
+	var largest_x = (data.get_width()/2) -  margin_on_edges
 	
-	var margin_on_edges = 5
-	
-	# because we multiply x and z later sometimes the grass can go out of bounds
-	var margin_offset = 20 # 30 here is an estimate to get them all in the mowing area
-	
-	for x in range(-data.get_width()/2,data.get_width()/2-margin_on_edges,reduction):
-		for z in range(-data.get_length()/2+margin_on_edges, data.get_length()/2-margin_on_edges,reduction):
-				var grass = simple_grass_scene.instantiate()
-				add_child(grass)
-				var set_x = x + abs(randf_range(1,2) - reduction) # minus reduction to account for reduction offset
-				var set_z = z + abs(randf_range(1,2) - reduction)
-				
-				if set_x < -data.get_width() or set_x > data.get_width():
-					remove_child(grass)
-					print("true")
+	var smallest_z = -(data.get_length()/2) + margin_on_edges
+	var largest_z = (data.get_length()/2) -  margin_on_edges
+	for x in range(-start_end_position+margin_on_edges,start_end_position-margin_on_edges,reduction):
+		for z in range(-start_end_position, start_end_position,reduction):
+				var set_x = x * 2 
+				var set_z = z * 2
+
+				# check if this grass is outside of range. if so stop here and continue loop
+				if set_x < smallest_x  or set_x > largest_x or set_z < smallest_z or set_z > largest_z:
 					continue
+					
+				var grass = simple_grass_scene.instantiate()
+				var grass_beneth = repalce_grass_scene.instantiate() #general mowed grass
+				add_child(grass)
+				add_child(grass_beneth)
 				grass.position.x = set_x
 				grass.position.z = set_z
 				grass.position.y = 0
+				
+				grass_beneth.position.x = set_x
+				grass_beneth.position.z = set_z
 				
 				grass.rotation.y = randf_range(1,12)
 
@@ -136,11 +234,73 @@ func add_grass():
 				grass.scale.z = some_scale
 				grass.scale.y = randf_range(some_scale,some_scale+5)
 				
-				grass_location[Vector3(x,0,z)] = grass
+				grass_beneth.scale = grass.scale
+				grass_beneth.scale.y = some_scale
 				
-				
-func handle_collisons():
-	pass
+				grass_location[grass.name] = grass
+	mesure.stop_m()
+	data.set_grass_data(grass_location) # set for model
+
+#BROKEN
+func add_mowed_grass_cover():
+	var multi_mesh:MultiMesh = MultiMesh.new()
+	var multi_meshinstance:MultiMeshInstance3D= MultiMeshInstance3D.new()
+	multi_mesh.transform_format= MultiMesh.TRANSFORM_3D
+	
+	var mesh_to_instance:Mesh = $"Mowed Grass Thick".mesh
+	
+	multi_mesh.set_instance_count(400)
+	multi_mesh.set_mesh(mesh_to_instance)
+	
+	var instance_id:int = 0
+	var total_instances:int = 400
+	
+	var x_max:int = 20
+	var z_max:int = 20
+	
+	var x: int = 0
+	var z: int = 0
+	
+	while instance_id < total_instances:
+		if z > z_max: # similar to a for loop
+			z = 0
+			x += 1 # since z has reached end of row move to next col
+		var tranform_val = Transform3D(Basis(),Vector3(x,1,z))
+		tranform_val = tranform_val.scaled(Vector3(12,12,12))
+		multi_mesh.set_instance_transform(x,tranform_val)
+		
+		# update loop variables
+		instance_id += 1
+		z += 1
+	print(instance_id)
+	# this wont work since only the x is bneing updated
+#	for x in range(200):
+#		for z in range(200):
+#			var x_vec:Vector3 = Vector3(1,0,0)
+#			var y_vec:Vector3 = Vector3(0,1,0)
+#			var z_vec:Vector3 = Vector3(0,0,1)
+#
+#			var tranform_val = Transform3D(Basis(),Vector3(x,1,3))
+##			tranform_val = tranform_val.translated(Vector3(x,0,z))
+#			tranform_val = tranform_val.scaled(Vector3(12,0,12))
+##			tranform_val = tranform_val.translated(Vector3(x,0,z))
+#
+##			Transform3D(Basis(), Vector3(x * 20, 0, 0))
+#			multi_mesh.set_instance_transform(x,tranform_val)
+	multi_meshinstance.multimesh = multi_mesh
+	
+	add_child(multi_meshinstance)
+	multi_meshinstance.transform.origin.y = 2
+	print(multi_meshinstance.transform)
+
+func handle_collision(collision:KinematicCollision3D):
+	var name_of_collider = collision.get_collider().name
+	if grass_location.has(name_of_collider):
+		var current_grass =  grass_location[name_of_collider]
+		
+		remove_child(current_grass)
+		grass_location.erase(name_of_collider)
+		data.set_grass_data(grass_location) # this can then get updated to model
 
 
 func set_data(d:Job_Data_Container):

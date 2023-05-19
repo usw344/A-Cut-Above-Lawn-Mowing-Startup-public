@@ -31,5 +31,13 @@ func set_data(d:Job_Data_Container):
 	
 func set_mower_position():
 	var pos = mowing_area.calculate_and_get_mower_start_position()
+	pos.y += 18
 	mower.position = pos
+	
 
+
+
+func _on_mower_normal_collided(collision:KinematicCollision3D):
+	if collision.get_collider().name == "Start Point For Mower" or collision.get_collider().name == "Grass Area":
+		return
+	mowing_area.handle_collision(collision)
