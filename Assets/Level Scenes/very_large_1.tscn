@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dle1i5cw5atr4"]
+[gd_scene load_steps=7 format=3 uid="uid://dle1i5cw5atr4"]
 
 [ext_resource type="PackedScene" uid="uid://wn61y2su2nca" path="res://Assets/testing.glb" id="1_lb6w5"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_fh1f4"]
+[ext_resource type="MeshLibrary" uid="uid://dfcxix8l12mrt" path="res://Assets/Meshlibrary/GrassMeshLibrary_1.tres" id="3_he0of"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_r8u8g"]
 size = Vector2(12, 1)
@@ -30,3 +31,9 @@ surface_material_override/0 = ExtResource("2_fh1f4")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.365137, 0)
 shape = SubResource("BoxShape3D_horfg")
+
+[node name="GridMap" type="GridMap" parent="StaticBody3D" index="2"]
+mesh_library = ExtResource("3_he0of")
+cell_size = Vector3(1.5, 1.5, 1.5)
+cell_center_y = false
+cell_scale = 4.0

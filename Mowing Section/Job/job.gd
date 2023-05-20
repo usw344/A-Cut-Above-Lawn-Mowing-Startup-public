@@ -10,7 +10,7 @@ var data:Job_Data_Container
 
 
 # static rerference to mowing area 
-@onready var mowing_area:Node3D = $"Mowing Area"
+@onready var mowing_area:Node3D = $"Mowing Area2"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,16 +23,13 @@ func _process(delta):
 func set_data(d:Job_Data_Container):
 	data = d
 	mowing_area.setup(data)
-	mowing_area.set_data(data)
 
 	# now set mower start position based on current job area
 	set_mower_position()
 
 	
 func set_mower_position():
-	var pos = mowing_area.calculate_and_get_mower_start_position()
-	pos.y += 18
-	mower.position = pos
+	mower.position.y =10
 	
 
 

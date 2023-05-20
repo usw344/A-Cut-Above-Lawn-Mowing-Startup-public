@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://cit27jwaua580"]
+
+[ext_resource type="PackedScene" uid="uid://de247m0asd864" path="res://Assets/Meshlibrary/Scene/short_grass.tscn" id="1_tkcvv"]
+[ext_resource type="PackedScene" uid="uid://6lwo4of1uqni" path="res://Assets/Meshlibrary/Scene/long_grass.tscn" id="2_q3tmu"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ti6rl"]
+size = Vector3(0.51244, 0.260241, 0.515432)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dr2ub"]
+size = Vector3(0.440235, 0.17734, 0.46204)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Mowed Grass" parent="." instance=ExtResource("1_tkcvv")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Mowed Grass"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mowed Grass/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11997, 0.0781986)
+shape = SubResource("BoxShape3D_ti6rl")
+
+[node name="Long Grass" parent="." instance=ExtResource("2_q3tmu")]
+transform = Transform3D(2.2, 0, 0, 0, 4, 0, 0, 0, 2.2, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Long Grass"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Long Grass/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0319955, 0.0914127, 0.060852)
+shape = SubResource("BoxShape3D_dr2ub")

@@ -118,7 +118,7 @@ var large_houses:Dictionary = {
 }
 
 var very_large_houses:Dictionary = {
-	1: load("res://Assets/House Scenes/very_large_1.tscn"),
+	1: load("res://Assets/Level Scenes/very_large_1.tscn"), # this is correct
 	2: null,
 	3: null,
 	"previous variant":0,
@@ -137,7 +137,7 @@ var houses:Dictionary = {
 }
 
 # function access this information
-func get_house(type:String, variant:int):
+func get_level(type:String, variant:int):
 	"""
 		Return the house type variant reference (path to object) to be used for given house tyoe
 		
