@@ -7,7 +7,7 @@ This is an autoload script that stores global game variables
 
 
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
-var speed = 10 + 50 #REMOVE TEMP ADDITION OF +
+var speed = 10 + 5 #REMOVE TEMP ADDITION OF +
 var blade_length = 1
 
 ##mower fuel variables 
@@ -94,25 +94,25 @@ var mower_scene_references: Dictionary = {
 
 # store the houses. To simplfy process first make dictionaries with houses
 var small_houses:Dictionary = {
-	1: load("res://Assets/House Scenes/small_1.tscn"),
-	2: load("res://Assets/House Scenes/small_2.tscn"),
-	3: load("res://Assets/House Scenes/small_3.tscn"),
+	1: load("res://Assets/Level Scenes/very_large_1.tscn"),
+	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
+	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
 	"mowing area size":[200,300]
 }
 
 var medium_houses:Dictionary = {
-	1: load("res://Assets/House Scenes/medium_1.tscn"),
-	2: load("res://Assets/House Scenes/medium_2.tscn"),
-	3: load("res://Assets/House Scenes/medium_3.tscn"),
+	1: load("res://Assets/Level Scenes/very_large_1.tscn"),
+	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
+	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
 	"mowing area size":[300,500]
 }
 
 var large_houses:Dictionary = {
-	1: load("res://Assets/House Scenes/large_1.tscn"),
-	2: load("res://Assets/House Scenes/large_2.tscn"),
-	3: load("res://Assets/House Scenes/large_3.tscn"),
+	1: load("res://Assets/Level Scenes/very_large_1.tscn"),
+	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
+	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
 	"mowing area size":[500,500]
 }

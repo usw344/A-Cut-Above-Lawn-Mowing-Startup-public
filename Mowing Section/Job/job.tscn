@@ -8,7 +8,7 @@
 script = ExtResource("1_a8lqy")
 
 [node name="Mower_Normal" parent="." instance=ExtResource("3_jcb6j")]
-transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 50.009, 41.7962, 0)
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 400, 0)
 
 [node name="Mowing Area2" parent="." instance=ExtResource("3_lhcoo")]
 

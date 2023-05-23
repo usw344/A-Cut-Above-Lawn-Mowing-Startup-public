@@ -29,7 +29,7 @@ func set_data(d:Job_Data_Container):
 
 	
 func set_mower_position():
-	mower.position.y =10
+	mower.position.y =50
 	
 
 

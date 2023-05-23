@@ -2,38 +2,40 @@
 
 [ext_resource type="PackedScene" uid="uid://wn61y2su2nca" path="res://Assets/testing.glb" id="1_lb6w5"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_fh1f4"]
-[ext_resource type="MeshLibrary" uid="uid://dfcxix8l12mrt" path="res://Assets/Meshlibrary/GrassMeshLibrary_1.tres" id="3_he0of"]
+[ext_resource type="MeshLibrary" uid="uid://eo34y1nlm7fb" path="res://Mowing Section/Mowing_Area/Grass Area/grass_mesh_library_2.tres" id="3_7ur0v"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_r8u8g"]
-size = Vector2(12, 1)
+size = Vector2(10, 10)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_lk883"]
-size = Vector2(100, 95)
+size = Vector2(100, 100)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_horfg"]
 size = Vector3(100, 1, 96.6211)
 
 [node name="Very Large 1" instance=ExtResource("1_lb6w5")]
-transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
+transform = Transform3D(16, 0, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0)
 
 [node name="Truck Zone Pad" type="MeshInstance3D" parent="." index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.83313, 0.500179, -49.0841)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.80662, 0.863535, -44.2612)
 mesh = SubResource("PlaneMesh_r8u8g")
+surface_material_override/0 = ExtResource("2_fh1f4")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." index="2"]
 
 [node name="Mowing Area" type="MeshInstance3D" parent="StaticBody3D" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.345833, 0.527293, -0.954819)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.259696, 0.59331, -1.05144)
 mesh = SubResource("PlaneMesh_lk883")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_fh1f4")
 
+[node name="GridMap" type="GridMap" parent="StaticBody3D/Mowing Area" index="0"]
+transform = Transform3D(0.75, 0, 0, 0, 1.5, 0, 0, 0, 0.75, 0.345833, -0.527293, 0.954819)
+mesh_library = ExtResource("3_7ur0v")
+cell_size = Vector3(1, 1.8, 1)
+cell_center_y = false
+cell_scale = 4.0
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.365137, 0)
 shape = SubResource("BoxShape3D_horfg")
-
-[node name="GridMap" type="GridMap" parent="StaticBody3D" index="2"]
-mesh_library = ExtResource("3_he0of")
-cell_size = Vector3(1.5, 1.5, 1.5)
-cell_center_y = false
-cell_scale = 4.0

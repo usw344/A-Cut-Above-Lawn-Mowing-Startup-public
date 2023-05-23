@@ -20,6 +20,9 @@ var house_info:Dictionary = {
 	"variant":null
 }
 
+# contains amount of grass for the given level
+var amount_of_grass:int
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -95,6 +98,10 @@ func set_house_type(type:String):
 func set_house_variant(num:int):
 	house_info["variant"] = num
 
+
+func set_amount_of_grass(a:int):
+	amount_of_grass = a
+
 # Getters
 func get_width() -> int:
 	"""
@@ -142,6 +149,10 @@ func get_house_type():
 	return house_info["type"] # small, medium etc as listed in model
 func get_house_variant():
 	return house_info["variant"] # 1,2,3 etc as listed in model
+
+func get_amount_of_grass() -> int:
+	return amount_of_grass
+
 
 
 
