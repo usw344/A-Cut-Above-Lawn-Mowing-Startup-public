@@ -9,13 +9,12 @@ size = Vector3(0.440235, 0.17734, 0.46204)
 [node name="Node3D" type="Node3D"]
 
 [node name="Mowed Grass" parent="." instance=ExtResource("1_tkcvv")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Long Grass" parent="." instance=ExtResource("2_q3tmu")]
-transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Long Grass"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Long Grass/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0319955, 0.0914127, 0.060852)
 shape = SubResource("BoxShape3D_dr2ub")

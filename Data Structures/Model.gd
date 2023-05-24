@@ -7,25 +7,27 @@ This is an autoload script that stores global game variables
 
 
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
-var speed = 10 + 5 #REMOVE TEMP ADDITION OF +
+var speed = 10 + 25 #REMOVE TEMP ADDITION OF +
 var blade_length = 1
 
 ##mower fuel variables 
 var mower_fuel = 100			#total mower fuel
 var mower_fuel_idle_counter = 0 #keeps track of movements. Since fuel icnrements are in whole numbers
 var idle_fuel_use = 26			#After this much movement substract fuel. PLANNED: to allow this value to be increased
-"""
-	Get and Set for mower speed
-"""
+
 func get_speed():
+	"""
+	Get and Set for mower speed
+	"""
 	return speed
 func set_speed(s):
 	speed = s
 
-"""
-	Get and Set for blade length for mower
-"""
+
 func get_blade_length():
+	"""
+	Get and Set for blade length for mower
+	"""
 	return blade_length
 func set_blade_length(l):
 	blade_length = l
@@ -82,7 +84,8 @@ var current_job_offers:Dictionary = {}
 # store the current selected mower (this should be updated when a selection is made in store)
 var current_mower:String = "Small Gas Mower" # key in the mower_scene_reference
 
-# store references to all mower scenes
+# store references to all mower scenes (try to match dictionary keys with Node names in the mower scene)
+# this can help with collision with the truck zone (which uses the name of the collider)
 var mower_scene_references: Dictionary = {
 	"Hand Mower":null,
 	"Small Gas Mower": load("res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn"),
@@ -98,7 +101,7 @@ var small_houses:Dictionary = {
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"mowing area size":[200,300]
+	"amount of grass":60
 }
 
 var medium_houses:Dictionary = {
@@ -106,7 +109,7 @@ var medium_houses:Dictionary = {
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"mowing area size":[300,500]
+	"amount of grass":60
 }
 
 var large_houses:Dictionary = {
@@ -114,7 +117,7 @@ var large_houses:Dictionary = {
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"mowing area size":[500,500]
+	"amount of grass":60
 }
 
 var very_large_houses:Dictionary = {
@@ -122,7 +125,7 @@ var very_large_houses:Dictionary = {
 	2: null,
 	3: null,
 	"previous variant":0,
-	"mowing area size":[1500,1500]
+	"amount of grass":45
 	
 }
 
@@ -147,8 +150,8 @@ func get_level(type:String, variant:int):
 	"""
 	return houses[type][variant]
 
-func get_size_of_mowing_area_by_job_type(type:String):
-	return houses[type]["mowing area size"]
+func get_amount_of_grass(type:String):
+	return houses[type]["amount of grass"]
 
 
 

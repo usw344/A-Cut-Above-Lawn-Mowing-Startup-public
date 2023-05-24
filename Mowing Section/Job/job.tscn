@@ -7,9 +7,9 @@
 [node name="Job" type="Node3D"]
 script = ExtResource("1_a8lqy")
 
-[node name="Mower_Normal" parent="." instance=ExtResource("3_jcb6j")]
+[node name="Small Gas Mower" parent="." instance=ExtResource("3_jcb6j")]
 transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 400, 0)
 
 [node name="Mowing Area2" parent="." instance=ExtResource("3_lhcoo")]
 
-[connection signal="collided" from="Mower_Normal" to="." method="_on_mower_normal_collided"]
+[connection signal="collided" from="Small Gas Mower" to="." method="_on_mower_normal_collided"]

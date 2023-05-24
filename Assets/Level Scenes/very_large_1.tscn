@@ -1,27 +1,30 @@
-[gd_scene load_steps=7 format=3 uid="uid://dle1i5cw5atr4"]
+[gd_scene load_steps=9 format=3 uid="uid://dle1i5cw5atr4"]
 
 [ext_resource type="PackedScene" uid="uid://wn61y2su2nca" path="res://Assets/testing.glb" id="1_lb6w5"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_fh1f4"]
-[ext_resource type="MeshLibrary" uid="uid://eo34y1nlm7fb" path="res://Mowing Section/Mowing_Area/Grass Area/grass_mesh_library_2.tres" id="3_7ur0v"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_r8u8g"]
-size = Vector2(10, 10)
+[ext_resource type="MeshLibrary" uid="uid://dfcxix8l12mrt" path="res://Assets/Meshlibrary/GrassMeshLibrary_1.tres" id="3_ve3cx"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_lk883"]
 size = Vector2(100, 100)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_horfg"]
-size = Vector3(100, 1, 96.6211)
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qk52c"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gdn5u"]
+transparency = 1
+blend_mode = 3
+depth_draw_mode = 1
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2tctu"]
+points = PackedVector3Array(-5, -0.5, -5, -5, 0.5, -5, 5, -0.5, -5, -5, -0.5, 5, -5, 0.5, 5, 5, 0.5, -5, 5, -0.5, 5, 5, 0.5, 5)
 
 [node name="Very Large 1" instance=ExtResource("1_lb6w5")]
 transform = Transform3D(16, 0, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0)
 
-[node name="Truck Zone Pad" type="MeshInstance3D" parent="." index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.80662, 0.863535, -44.2612)
-mesh = SubResource("PlaneMesh_r8u8g")
-surface_material_override/0 = ExtResource("2_fh1f4")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="." index="2"]
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
 
 [node name="Mowing Area" type="MeshInstance3D" parent="StaticBody3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.259696, 0.59331, -1.05144)
@@ -30,12 +33,24 @@ skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_fh1f4")
 
 [node name="GridMap" type="GridMap" parent="StaticBody3D/Mowing Area" index="0"]
-transform = Transform3D(0.75, 0, 0, 0, 1.5, 0, 0, 0, 0.75, 0.345833, -0.527293, 0.954819)
-mesh_library = ExtResource("3_7ur0v")
-cell_size = Vector3(1, 1.8, 1)
+mesh_library = ExtResource("3_ve3cx")
+cell_size = Vector3(1, 2, 1)
 cell_center_y = false
 cell_scale = 4.0
+metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.365137, 0)
 shape = SubResource("BoxShape3D_horfg")
+
+[node name="Truck Zone" type="Area3D" parent="." index="2"]
+
+[node name="Truck Zone Pad" type="MeshInstance3D" parent="Truck Zone" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.52074, -0.330596, -43.8529)
+mesh = SubResource("BoxMesh_qk52c")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_gdn5u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Truck Zone" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.52074, 1.04931, -43.8529)
+shape = SubResource("ConvexPolygonShape3D_2tctu")

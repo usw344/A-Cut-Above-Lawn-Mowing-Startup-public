@@ -1,10 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://csg8ier3wmn30"]
+[gd_scene load_steps=2 format=3 uid="uid://csg8ier3wmn30"]
 
 [ext_resource type="Script" path="res://Game.gd" id="1_65434"]
-[ext_resource type="Script" path="res://Data Structures/Model.gd" id="4_lqgob"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_65434")
-
-[node name="model" type="Node" parent="."]
-script = ExtResource("4_lqgob")

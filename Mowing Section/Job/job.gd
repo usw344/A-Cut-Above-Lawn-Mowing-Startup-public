@@ -6,7 +6,7 @@ var data:Job_Data_Container
 
 # TODO make this dynamic so that the mower can be changed out.
 # This could be done via the model
-@onready var mower: CharacterBody3D = $Mower_Normal
+@onready var mower: CharacterBody3D = $"Small Gas Mower"
 
 
 # static rerference to mowing area 
@@ -23,7 +23,7 @@ func _process(delta):
 func set_data(d:Job_Data_Container):
 	data = d
 	mowing_area.setup(data)
-
+	
 	# now set mower start position based on current job area
 	set_mower_position()
 
@@ -35,6 +35,5 @@ func set_mower_position():
 
 
 func _on_mower_normal_collided(collision:KinematicCollision3D):
-	if collision.get_collider().name == "Start Point For Mower" or collision.get_collider().name == "Grass Area":
-		return
-	mowing_area.handle_collision(collision)
+	if collision.get_collider().name == "GridMap":
+		mowing_area.handle_collision(collision)

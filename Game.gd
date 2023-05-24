@@ -10,8 +10,8 @@ func _ready():
 	var type: String = "very large"
 	var variant: int = 1
 	
-	var size_of_job:Array = model.get_size_of_mowing_area_by_job_type(type)
-	job_data.init_default(1, size_of_job[0],size_of_job[1])
+
+	job_data.init_default(1, model.get_amount_of_grass(type))
 	job_data.set_house_type(type)
 	job_data.set_house_variant(variant)
 

@@ -13,9 +13,8 @@ var truck_area:MeshInstance3D = null
 func _ready():
 	pass
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+
 func _process(delta):
-#	$CanvasLayer/Label.text = str(get_child_count())
 	pass
 
 
@@ -47,34 +46,39 @@ func setup(new_data:Job_Data_Container):
 	data.set_width(mesh.mesh.size.x * scaling.x)
 	data.set_length(mesh.mesh.size.y * scaling.z)
 	
+	# get the truck zone area
+	var truck_zone = level.get_node("Truck Zone")
+	truck_zone.connect("body_entered",handle_truck_zone)
+	
 	# setup up the grid map using this function
 	setup_grass()
-
-#	$CanvasLayer/Label2.text = "From setup" + str(get_child_count()) + "\n"
 
 
 func setup_grass():
 	var rotations:Array = [0,10,16,22] # these are the only available rotations
 	
-	var start = -(data.get_width()/12)
-	var stop = data.get_width()/12
-	print(start)
-	for x in range(-start,stop,1):
-		for z in range(-start,stop,1):
-			
+	var start = -data.get_amount_of_grass()
+	var stop = data.get_amount_of_grass()
+	for x in range(start,stop,1):
+		for z in range(start,stop,1):
 			
 			gridmap_referene.set_cell_item(Vector3(x,0,z),1,rotations.pick_random())
 
 #OUT DATED. This func
 func handle_collision(collision:KinematicCollision3D):
 	var name_of_collider = collision.get_collider().name
-	if grass_location.has(name_of_collider):
-		var current_grass =  grass_location[name_of_collider]
-		
-		remove_child(current_grass)
-		grass_location.erase(name_of_collider)
-		data.set_grass_data(grass_location) # this can then get updated to model
+	var collision_position = collision.get_position()
+	var local_position:Vector3i = gridmap_referene.local_to_map(collision_position-collision.get_normal())
+	
+	local_position /= 22
+#	print(local_position)
+	local_position.y =0
+	gridmap_referene.set_cell_item(local_position,-1)
+	local_position.y =2
+	gridmap_referene.set_cell_item(local_position,0)
 
+func handle_truck_zone(node):
+	print(node.name)
 
 func set_data(d:Job_Data_Container):
 	data = d

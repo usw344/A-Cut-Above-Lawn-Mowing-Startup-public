@@ -637,7 +637,7 @@ shadow_mesh = SubResource("ArrayMesh_k86uq")
 [sub_resource type="BoxShape3D" id="BoxShape3D_y58uv"]
 size = Vector3(0.848448, 0.435141, 1.63482)
 
-[node name="Mower_Normal" type="CharacterBody3D"]
+[node name="Small Gas Mower" type="CharacterBody3D"]
 script = ExtResource("1_f570l")
 
 [node name="detail_light" type="MeshInstance3D" parent="."]

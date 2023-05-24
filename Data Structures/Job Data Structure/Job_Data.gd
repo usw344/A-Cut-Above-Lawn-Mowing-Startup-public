@@ -31,21 +31,20 @@ func _ready():
 func _init():
 	pass
 	
-func init_default(id:int,a_width:int, a_length:int):
+func init_default(id:int,amount:int):
 	"""
 		This function is a short cut to make a default empty job object with a given width, length
 		
 		param
-			Job_id: a unique identifier for this job
-			width: width of area to mow (x axis)
-			length: length of area to mow (z axis)
+			id: a unique identifier for this job
+			amount: amount of grass to be used for this level
 		
 		Return
 			None
 	"""
 	set_job_id(id)
-	set_width(a_width)
-	set_length(a_length)
+	set_amount_of_grass(amount)
+
 	
 	# data dictionaries are already empty
 	
