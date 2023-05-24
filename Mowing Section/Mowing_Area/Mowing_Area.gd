@@ -9,6 +9,7 @@ var mesure = Mesurment.new("Mowing Area")
 
 var gridmap_referene:GridMap = null
 var truck_area:MeshInstance3D = null
+var level = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
@@ -32,9 +33,9 @@ func setup(new_data:Job_Data_Container):
 	var level_reference = model.get_level(type,variant)
 	
 	# setup ground and house
-	var level = level_reference.instantiate()
-	add_child(level)
-	
+	var _level = level_reference.instantiate()
+	add_child(_level)
+	level = _level
 	# set the reference to the gridmap
 	gridmap_referene = level.get_node("StaticBody3D/Mowing Area/GridMap")
 	
@@ -66,16 +67,27 @@ func setup_grass():
 
 #OUT DATED. This func
 func handle_collision(collision:KinematicCollision3D):
-	var name_of_collider = collision.get_collider().name
-	var collision_position = collision.get_position()
-	var local_position:Vector3i = gridmap_referene.local_to_map(collision_position-collision.get_normal())
+#	var name_of_collider = collision.get_collider().name
 	
-	local_position /= 22
-#	print(local_position)
-	local_position.y =0
+	var string:String = ""
+	
+	# first need to convert global position to local position
+	var collision_position = collision.get_position()
+	
+	string += "Collision position unlocal:" + str(collision_position) +"\n"
+	
+	var local_position:Vector3i = level.get_node("StaticBody3D").to_local(collision_position)
+	string += "Local position:" + str(local_position) +"\n"
+	
+	local_position = gridmap_referene.local_to_map(local_position)
+	string += "Local position to gridmap:" + str(local_position) +"\n"
+	local_position.y =0 # since the collision occurs at some y > 0
+
 	gridmap_referene.set_cell_item(local_position,-1)
+	print("collision")
 	local_position.y =2
 	gridmap_referene.set_cell_item(local_position,0)
+	$CanvasLayer/Label.text = string
 
 func handle_truck_zone(node):
 	print(node.name)
