@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://wn61y2su2nca" path="res://Assets/testing.glb" id="1_lb6w5"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_fh1f4"]
-[ext_resource type="MeshLibrary" uid="uid://biog28bstxqkb" path="res://Assets/Grass/testing_mesh_libary2.tres" id="3_ac6ia"]
+[ext_resource type="MeshLibrary" uid="uid://hsx7vca0oyvk" path="res://Assets/Grass/testing_mesh_libary3.tres" id="3_0yala"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_lk883"]
 size = Vector2(100, 100)
@@ -33,10 +33,8 @@ skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_fh1f4")
 
 [node name="GridMap" type="GridMap" parent="StaticBody3D/Mowing Area" index="0"]
-mesh_library = ExtResource("3_ac6ia")
-cell_size = Vector3(4, 4, 4)
+mesh_library = ExtResource("3_0yala")
 cell_center_y = false
-cell_scale = 4.0
 metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]

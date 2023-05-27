@@ -63,7 +63,7 @@ func setup_grass():
 	for x in range(start,stop,1):
 		for z in range(start,stop,1):
 			
-			gridmap_referene.set_cell_item(Vector3(x,0,z),1,rotations.pick_random())
+			gridmap_referene.set_cell_item(Vector3(x,0,z),1,0)
 
 #OUT DATED. This func
 func handle_collision(collision:KinematicCollision3D):

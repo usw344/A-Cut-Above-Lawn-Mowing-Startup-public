@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cit27jwaua580"]
+[gd_scene load_steps=4 format=3 uid="uid://cit27jwaua580"]
 
 [ext_resource type="PackedScene" uid="uid://de247m0asd864" path="res://Assets/Meshlibrary/Scene/short_grass.tscn" id="1_tkcvv"]
 [ext_resource type="PackedScene" uid="uid://6lwo4of1uqni" path="res://Assets/Meshlibrary/Scene/long_grass.tscn" id="2_q3tmu"]
@@ -6,30 +6,16 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_dr2ub"]
 size = Vector3(0.440235, 0.17734, 0.46204)
 
-[sub_resource type="BoxMesh" id="BoxMesh_w437b"]
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_te3td"]
-data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
-
 [node name="Node3D" type="Node3D"]
 
 [node name="Mowed Grass" parent="." instance=ExtResource("1_tkcvv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="Long Grass" parent="." instance=ExtResource("2_q3tmu")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Long Grass"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Long Grass/StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0357667, 0.0878322, 0.0752345)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0439085, 0.0878322, 0.084959)
 shape = SubResource("BoxShape3D_dr2ub")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
-mesh = SubResource("BoxMesh_w437b")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_te3td")
