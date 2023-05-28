@@ -11,7 +11,7 @@ func _ready():
 	var variant: int = 1
 	
 
-	job_data.init_default(1, model.get_amount_of_grass(type))
+	job_data.init_default(1)
 	job_data.set_house_type(type)
 	job_data.set_house_variant(variant)
 

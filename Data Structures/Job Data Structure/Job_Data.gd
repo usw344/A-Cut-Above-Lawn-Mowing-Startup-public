@@ -8,7 +8,8 @@ var length:int
 # unique identifier for the job
 var job_id:int
 
-# contains key = grass_object_name location of grass location value = scale
+# this is a general dictionary. Its key can be some good name and
+# value = the data (could be an array of dictionaries for example)
 var grass_data:Dictionary = {}
 
 # to store rocks or trees etc key = type value = vector3 location
@@ -23,6 +24,11 @@ var house_info:Dictionary = {
 # contains amount of grass for the given level
 var amount_of_grass:int
 
+
+# to assist with saving and keeping track if this is a previously started game
+var is_inital_grass_grid_set:bool = false
+var is_width_height_set:bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -31,7 +37,7 @@ func _ready():
 func _init():
 	pass
 	
-func init_default(id:int,amount:int):
+func init_default(id:int):
 	"""
 		This function is a short cut to make a default empty job object with a given width, length
 		
@@ -43,7 +49,7 @@ func init_default(id:int,amount:int):
 			None
 	"""
 	set_job_id(id)
-	set_amount_of_grass(amount)
+
 
 	
 	# data dictionaries are already empty
@@ -98,8 +104,12 @@ func set_house_variant(num:int):
 	house_info["variant"] = num
 
 
-func set_amount_of_grass(a:int):
-	amount_of_grass = a
+func set_is_inital_grass_grid_set(p:bool) -> void:
+	is_inital_grass_grid_set = p
+
+func set_is_width_height_set(p:bool) -> void:
+	is_width_height_set = p
+
 
 # Getters
 func get_width() -> int:
@@ -139,6 +149,10 @@ func get_job_id() -> int:
 	return job_id
 
 func get_grass_data() ->Dictionary:
+	"""
+		the grass data can be in many forms.
+		However, for storage it should be a dictionary with key-> data value -> DATA
+	"""
 	return grass_data
 
 func get_other_object_data() ->Dictionary:
@@ -149,8 +163,14 @@ func get_house_type():
 func get_house_variant():
 	return house_info["variant"] # 1,2,3 etc as listed in model
 
-func get_amount_of_grass() -> int:
-	return amount_of_grass
+
+
+func get_is_inital_grass_grid_set() -> bool:
+	return is_inital_grass_grid_set
+
+func get_is_width_height_set() -> bool:
+	return is_width_height_set
+
 
 
 

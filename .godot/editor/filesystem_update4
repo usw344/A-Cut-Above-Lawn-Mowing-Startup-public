@@ -1,15 +1,17 @@
-res://Main.tscn
+res://Mowing Section/Mowing_Area/mowing_area_2.tscn
 res://Mowing Section/Mowing_Area/Dirt Material.tres
-res://Assets/Meshlibrary/GrassMeshLibrary_1.tres
+res://Assets/Grass/testing_mesh_libary3.tres
 res://Mowing Section/Mowing_Area/Mowing_Area.gd
+res://Mowing Section/Mowing_Area/Mowed_Grass_thick.tscn
+res://Main.tscn
 res://Mowing Section/Job/job.tscn
 res://Data Structures/Job Data Structure/Job Data Structure.tscn
-res://Mowing Section/Mowing_Area/mowing_area_2.tscn
 res://Assets/Level Scenes/very_large_1.tscn
 res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
-res://Mowing Section/Mowing_Area/Mowed_Grass_thick.tscn
 res://Assets/Meshlibrary/Scene/Meshlibrary.tscn
-res://Assets/Grass/testing_mesh_libary.tres
-res://Assets/Grass/testing_mesh_libary2.tres
-res://Mowing Section/Mower/Mower.gd
-res://Assets/Grass/testing_mesh_libary3.tres
+res://Assets/Meshlibrary/GrassMeshLibrary_1.tres
+res://Assets/Grass with LOD/Mowed Grass High LOD.tscn
+res://Assets/Grass with LOD/Unmowed Grass High LOD.tscn
+res://Data Structures/Job Data Structure/Job_Data.gd
+res://Game.gd
+res://Mowing Section/Job/job.gd

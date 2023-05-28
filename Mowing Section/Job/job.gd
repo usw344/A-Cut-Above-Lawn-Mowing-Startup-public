@@ -18,7 +18,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	mowing_area.calculate_grass_loading(mower.position)
 
 func set_data(d:Job_Data_Container):
 	data = d
