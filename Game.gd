@@ -7,7 +7,7 @@ var job_scene:PackedScene = load("res://Mowing Section/Job/job.tscn")
 func _ready():
 	# for testing. remove this and replace with a job generator
 	var job_data = Job_Data_Container.new()
-	var type: String = "large"
+	var type: String = "extremely large"
 	var variant: int = 1
 	
 	job_data.init_default(1)

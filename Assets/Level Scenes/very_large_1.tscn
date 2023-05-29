@@ -22,7 +22,7 @@ depth_draw_mode = 1
 points = PackedVector3Array(-5, -0.5, -5, -5, 0.5, -5, 5, -0.5, -5, -5, -0.5, 5, -5, 0.5, 5, 5, 0.5, -5, 5, -0.5, 5, 5, 0.5, 5)
 
 [node name="Very Large 1" instance=ExtResource("1_lb6w5")]
-transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -3.02124, 6.10352e-05, -0.123871)
+transform = Transform3D(32, 0, 0, 0, 32, 0, 0, 0, 32, -3.02124, 6.10352e-05, -0.123871)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
 
