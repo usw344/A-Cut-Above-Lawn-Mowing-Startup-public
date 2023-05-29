@@ -10,7 +10,7 @@ var rotate_speed:int = 20
 
 var base_gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-var gravity = base_gravity
+var gravity = base_gravity*2
 var mouse_sensitivity:float = 0.002 
 
 ##Signals
@@ -27,7 +27,7 @@ var incr:float = 0.0
 var decreasing:bool = false
 var moving: bool = false
 
-var show_dev_hud:bool = false
+var show_dev_hud:bool = true
 
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -202,9 +202,10 @@ func lerp(a, b, t):
 func dev_hud():
 	if !show_dev_hud:
 		return
+	
 	var string_to_print:String = ""
 	string_to_print += str(round(position)) + "\n"
 	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
 	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
-	string_to_print += "Memory: " + str(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000) + "\n"
+	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\n"
 	$CanvasLayer/Label.text = string_to_print

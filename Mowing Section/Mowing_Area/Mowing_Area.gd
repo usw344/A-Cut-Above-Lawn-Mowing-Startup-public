@@ -104,7 +104,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		This function should be called from an outside node. This will give control over stopping
 		the expensive calculations that occur here can be paused when not needed
 	"""
-	var grass_size = 16
+	var grass_size = data.get_grass_size()
 	if data.get_is_inital_grass_grid_set() == false:
 		data.set_is_inital_grass_grid_set(true)
 		# find the top right of the grid
@@ -130,13 +130,12 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		bottom_x += x_buffer
 		bottom_z += z_buffer
 		# setup inital grid
-		var grass_counter: int = 0
-#		print(top_x," top z is:" + str(top_z),"grass size" + str(grass_size))
+
 		for x in range(top_x,bottom_x,-grass_size):
 			for z in range(top_z,bottom_z,-grass_size):
 				
 				# calculate position
-				var position_ = Vector3(x,7,z) #FIX Y ISSUE (y is not always on ground)
+				var position_ = Vector3(x,0,z) #FIX Y ISSUE (y is not always on ground)
 				
 				#find distance between current grass and mower position
 				var grass_position:Vector2 = Vector2(position_.x,position_.z)
@@ -146,28 +145,28 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				
 				# due to branching, it throws an error if child_ is not declared before branching
 				var child_
-				var y_test = 7 # FOR TESTING REMOVE THIS LATER THIS IS TO SEE LOD
 				if distance_between_them < 120: # HIGH LOD TINKER AS NEEDED
-					y_test = 7 # FOR TESTING
-					position_.y = y_test
+					
 					child_ = grass_mowed_high_LOD.instantiate()
 					
-					grass_high_LOD[position_] = child_ # store in LOD
+					grass_high_LOD[round(position_/grass_size)] = child_ # store in LOD
 					grass_grid[round(position_/grass_size)] = child_ # store in grass grid
 				
 				else: #LOW LOD
 					child_ = grass_mowed_high_LOD.instantiate()
-#					print(round(position_/grass_size))
+
 					grass_grid[round(position_/grass_size)] = child_ # store in grass grid
 
 				# add it to scene
 				mowing_area.add_child(child_)
 				
-				position_.y = y_test
+				
 				child_.position = mowing_area.to_local(position_)
-		
-				# since later we will be doing a lot of looping though this.
-				# convert and do a one order of the a list of the keys (vector3) positions
+				child_.position.y = 0 # to make sure grass is on the ground
+				child_.scale = data.get_grass_scale()
+				
+		# since later we will be doing a lot of looping though this.
+		# convert and do a one order of the a list of the keys (vector3) positions
 		grass_grid_keys = grass_grid.keys() # REMEMBER keys is in grid coord not raw coord
 		grass_grid_keys.sort_custom(sort_by_x)
 		grass_grid_keys.reverse() # go from smaller x to largest x
@@ -183,8 +182,8 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		# set the y to 0 since in grid coord the y is zero for grass
 		mower_current_position.y = 0
 		if run == true:
-			var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,grass_size,12)
-			run = false
+			var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,12)
+			
 			for res in closest_grass_grid_cells:
 				grass_grid[res].position.y = 15
 		
@@ -192,44 +191,31 @@ func calculate_grass_loading(mower_current_position:Vector3):
 #		pass
 
 
-func get_n_nearest_grass(pos:Vector3, grass_size,n:int) -> Array:
+func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	"""
 		Takes in a vector3 containg GRID COORD and finds n nearest grass grid places from list
 		Returns an array of all of them
 		
 		TODO: to optimize return only the grass grid cells that need to be changed
 	"""
-	var found: int = 0 # keep track of how many where found
-	var to_find: int = (n*2) * (n*2)
-	var i: int = 0
-	
+
 
 	
 	var mower_position:Vector2 = Vector2(pos.x,pos.z)
 	
 	var return_array:Array = []
 	
-	mesure.start_m("Find n nearest")
+#	mesure.start_m("Find n nearest")
 	var mower_x: = pos.x
 	var mower_z: = pos.z
 	
-	for x in range(mower_x-12,mower_x+12,1):
-		for z in range(mower_z-12, mower_z+12, 1):
+	for x in range(mower_x-n,mower_x+n,1):
+		for z in range(mower_z-n, mower_z+n, 1):
 			if grass_grid.has(Vector3(x,0,z)):
 				return_array.append(Vector3(x,0,z))
-				found+=1
+
 		
-#	while found <  to_find and i < len(grass_grid_keys)-1:
-#		var current_vec:Vector2 = Vector2(grass_grid_keys[i].x,grass_grid_keys[i].z)
-#
-#		if get_distance_from_player(current_vec, mower_position, grass_size) <= 12:
-#			found += 1
-#			return_array.append(grass_grid_keys[i])
-#
-#
-#		i+= 1
-	mesure.stop_m()
-	print("Trying to find: " + str(to_find) + " Found: "+ str(found))
+#	mesure.stop_m()
 	return return_array
 
 

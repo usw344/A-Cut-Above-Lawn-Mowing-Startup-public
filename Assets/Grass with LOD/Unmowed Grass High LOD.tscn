@@ -66,17 +66,17 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_wnfjd")
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_3arfy"]
-points = PackedVector3Array(0.275019, 0.0439663, 0.0688569, 0.261128, 0, 0.0708812, 0.252388, 0.092824, -0.0114231, 0.236934, 0.145048, 0.13235, 0.174065, 0.0715476, 0.222998, 0.160807, 0, 0.218555, 0.142736, 0, -0.107502, 0.14071, 0.0439663, -0.121327, 0.098234, 0.19, -0.160776, 0.0542384, 0.151055, 0.271236, 0.137416, 0.0715476, 0.265311, 0.105623, 0.19, 0.027137, 0.13463, 0, 0.251585, 0.0155628, 0, -0.157566, 0.0155628, 0.0899971, -0.171539, -0.112455, 0.0899971, -0.105626, -0.14446, 0.19, -0.0286048, -0.0163572, 0.0966738, 0.332853, 0.0434295, 0, 0.27563, -0.100337, 0, -0.0986153, -0.156324, 0.0575989, 0.0444668, -0.148344, 0.0966738, 0.168343, -0.0982262, 0.045789, 0.316807, -0.0937506, 0, 0.303525, -0.144206, 0, 0.0374558)
+[sub_resource type="BoxShape3D" id="BoxShape3D_nhnsv"]
+size = Vector3(0.702436, 0.321527, 0.758187)
 
 [node name="Unmowed Grass High LOD" type="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1.5, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00693119, 0.00098753, -0.00688696)
 
 [node name="Mesh grass" type="MeshInstance3D" parent="."]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.286712, 0, -0.341393)
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -0.286712, 0, -0.341393)
 mesh = SubResource("ArrayMesh_uj4om")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.286712, 0, -0.341393)
-shape = SubResource("ConvexPolygonShape3D_3arfy")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.260046, 0.134957, -0.220219)
+shape = SubResource("BoxShape3D_nhnsv")

@@ -101,31 +101,39 @@ var small_houses:Dictionary = {
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"amount of grass":60
+	"grass information":{"size":2,"scale":Vector3(5,5,5)}
 }
 
-var medium_houses:Dictionary = {
+var medium_houses:Dictionary = { # for scale of level 4,4,4 (400x400)
 	1: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"amount of grass":60
+	"grass information":{"size":4,"scale":Vector3(4,4,4)}
 }
 
-var large_houses:Dictionary = {
+var large_houses:Dictionary = { # for scale of level of 8,8,8 ( 800x800)
 	1: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"amount of grass":60
+	"grass information":{"size":8,"scale":Vector3(3,3,3)}
 }
 
-var very_large_houses:Dictionary = {
+var very_large_houses:Dictionary = { # for scale of level of 16,16,16 ( 1600x1600)
 	1: load("res://Assets/Level Scenes/very_large_1.tscn"), # this is correct
 	2: null,
 	3: null,
 	"previous variant":0,
-	"amount of grass":45
+	"grass information":{"size":14,"scale":Vector3(2,2,2)}
+	
+}
+var extremely_large_houses:Dictionary = { # for scale of level 32, 32, 32 (3200x3200)
+	1: load("res://Assets/Level Scenes/very_large_1.tscn"), # this is correct
+	2: null,
+	3: null,
+	"previous variant":0,
+	"grass information":{"size":16,"scale":Vector3(1,1,1)}
 	
 }
 
@@ -135,7 +143,8 @@ var houses:Dictionary = {
 	"small":small_houses,
 	"medium":medium_houses,
 	"large":large_houses,
-	"very large":very_large_houses
+	"very large":very_large_houses,
+	"extremely large":extremely_large_houses
 	
 }
 
@@ -150,9 +159,8 @@ func get_level(type:String, variant:int):
 	"""
 	return houses[type][variant]
 
-func get_amount_of_grass(type:String):
-	return houses[type]["amount of grass"]
-
+func get_grass_info(type:String) -> Dictionary:
+	return houses[type]["grass information"] 
 
 
 

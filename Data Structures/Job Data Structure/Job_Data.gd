@@ -5,6 +5,12 @@ class_name Job_Data_Container
 var width:int
 var length:int
 
+# each level needs its own spacing (size) of grass and scaling
+var grass_size: int
+
+var grass_scale:Vector3
+
+
 # unique identifier for the job
 var job_id:int
 
@@ -110,6 +116,11 @@ func set_is_inital_grass_grid_set(p:bool) -> void:
 func set_is_width_height_set(p:bool) -> void:
 	is_width_height_set = p
 
+func set_grass_size(s:int) -> void:
+	grass_size =s
+func set_grass_scale(scal:Vector3) ->void:
+	grass_scale = scal
+
 
 # Getters
 func get_width() -> int:
@@ -162,7 +173,10 @@ func get_house_type():
 	return house_info["type"] # small, medium etc as listed in model
 func get_house_variant():
 	return house_info["variant"] # 1,2,3 etc as listed in model
-
+func get_grass_size() -> int:
+	return grass_size
+func get_grass_scale() -> Vector3:
+	return grass_scale
 
 
 func get_is_inital_grass_grid_set() -> bool:

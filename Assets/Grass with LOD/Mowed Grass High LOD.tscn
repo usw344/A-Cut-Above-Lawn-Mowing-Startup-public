@@ -67,6 +67,6 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_w3mah")
 
 [node name="Mowed Grass High LOD" type="MeshInstance3D"]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, -0.286712, 0, -0.46063)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.286712, 0, -0.46063)
 mesh = SubResource("ArrayMesh_2i68i")
 skeleton = NodePath("")
