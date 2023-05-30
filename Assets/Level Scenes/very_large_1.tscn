@@ -7,7 +7,7 @@
 size = Vector2(100, 100)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_horfg"]
-size = Vector3(100, 1, 100)
+size = Vector3(100, 1, 102.035)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qk52c"]
 size = Vector3(10, 1, 10)
@@ -21,9 +21,9 @@ depth_draw_mode = 1
 points = PackedVector3Array(-5, -0.5, -5, -5, 0.5, -5, 5, -0.5, -5, -5, -0.5, 5, -5, 0.5, 5, 5, 0.5, -5, 5, -0.5, 5, 5, 0.5, 5)
 
 [node name="Very Large 1" instance=ExtResource("1_lb6w5")]
-transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -3.02124, 6.10352e-05, -0.123871)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.076484, -0.333754, 0.00219727)
 
 [node name="Mowing Area" type="MeshInstance3D" parent="StaticBody3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.259696, 0.59331, -1.05144)
@@ -32,7 +32,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_fh1f4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.365137, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.033, 0.1, 0.009)
 shape = SubResource("BoxShape3D_horfg")
 
 [node name="Truck Zone" type="Area3D" parent="." index="2"]

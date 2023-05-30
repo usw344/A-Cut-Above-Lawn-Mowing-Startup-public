@@ -27,9 +27,8 @@ var house_info:Dictionary = {
 	"variant":null
 }
 
-# contains amount of grass for the given level
-var amount_of_grass:int
-
+# set the house scale (big level or smaller) TODO this might be changed later with new models
+var house_scale:Vector3
 
 # to assist with saving and keeping track if this is a previously started game
 var is_inital_grass_grid_set:bool = false
@@ -121,6 +120,9 @@ func set_grass_size(s:int) -> void:
 func set_grass_scale(scal:Vector3) ->void:
 	grass_scale = scal
 
+func set_house_scale(s:Vector3) -> void:
+	house_scale = s
+
 
 # Getters
 func get_width() -> int:
@@ -178,6 +180,8 @@ func get_grass_size() -> int:
 func get_grass_scale() -> Vector3:
 	return grass_scale
 
+func get_house_scale() -> Vector3:
+	return house_scale
 
 func get_is_inital_grass_grid_set() -> bool:
 	return is_inital_grass_grid_set

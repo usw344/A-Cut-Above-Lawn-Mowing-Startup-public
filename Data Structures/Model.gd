@@ -101,7 +101,9 @@ var small_houses:Dictionary = {
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"grass information":{"size":2,"scale":Vector3(5,5,5)}
+	"grass information":{"size":2,"scale":Vector3(5,5,5)},
+	"house scale": Vector3(2,2,2)
+	
 }
 
 var medium_houses:Dictionary = { # for scale of level 4,4,4 (400x400)
@@ -109,7 +111,8 @@ var medium_houses:Dictionary = { # for scale of level 4,4,4 (400x400)
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"grass information":{"size":4,"scale":Vector3(4,4,4)}
+	"grass information":{"size":4,"scale":Vector3(4,4,4)},
+	"house scale": Vector3(4,4,4)
 }
 
 var large_houses:Dictionary = { # for scale of level of 8,8,8 ( 800x800)
@@ -117,7 +120,8 @@ var large_houses:Dictionary = { # for scale of level of 8,8,8 ( 800x800)
 	2: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	3: load("res://Assets/Level Scenes/very_large_1.tscn"),
 	"previous variant":0,
-	"grass information":{"size":8,"scale":Vector3(3,3,3)}
+	"grass information":{"size":8,"scale":Vector3(3,3,3)},
+	"house scale": Vector3(8,8,8)
 }
 
 var very_large_houses:Dictionary = { # for scale of level of 16,16,16 ( 1600x1600)
@@ -125,7 +129,8 @@ var very_large_houses:Dictionary = { # for scale of level of 16,16,16 ( 1600x160
 	2: null,
 	3: null,
 	"previous variant":0,
-	"grass information":{"size":14,"scale":Vector3(2,2,2)}
+	"grass information":{"size":14,"scale":Vector3(2,2,2)},
+	"house scale": Vector3(16,16,16)
 	
 }
 var extremely_large_houses:Dictionary = { # for scale of level 32, 32, 32 (3200x3200)
@@ -133,7 +138,8 @@ var extremely_large_houses:Dictionary = { # for scale of level 32, 32, 32 (3200x
 	2: null,
 	3: null,
 	"previous variant":0,
-	"grass information":{"size":16,"scale":Vector3(1,1,1)}
+	"grass information":{"size":16,"scale":Vector3(1,1,1)},
+	"house scale": Vector3(32,32,32)
 	
 }
 
@@ -162,7 +168,8 @@ func get_level(type:String, variant:int):
 func get_grass_info(type:String) -> Dictionary:
 	return houses[type]["grass information"] 
 
-
+func get_house_scale(type:String) -> Vector3:
+	return houses[type]["house scale"]
 
 """------------------------------------------- Model functions  -------------------------------------------"""
 func save_game_data(file_name):

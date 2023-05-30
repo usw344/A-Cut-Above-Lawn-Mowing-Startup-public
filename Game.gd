@@ -16,9 +16,10 @@ func _ready():
 
 	# set the size and scale for the job
 	var grass_info = model.get_grass_info(type)
-	
+	job_data.set_house_scale(model.get_house_scale(type))
 	job_data.set_grass_size(grass_info["size"])
 	job_data.set_grass_scale(grass_info["scale"])
+
 
 	var job = job_scene.instantiate()
 	add_child(job)

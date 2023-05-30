@@ -76,6 +76,8 @@ func setup(new_data:Job_Data_Container):
 	
 	level = _level #  store the copy to a global variable
 	
+	# TESTING. WHEN proper 3d models are added then this won't be needed as much
+	level.scale = data.get_house_scale()
 	
 	# set reference to mowing area
 	mowing_area = level.get_node("StaticBody3D/Mowing Area")
@@ -86,7 +88,7 @@ func setup(new_data:Job_Data_Container):
 		data.set_width(mowing_area.mesh.size.x * scaling.x)
 		data.set_length(mowing_area.mesh.size.y * scaling.z)
 	
-	
+
 	
 	# get the truck zone area and connect the Area3D signal
 	truck_zone = level.get_node("Truck Zone")
@@ -310,7 +312,10 @@ func handle_collision(collision:KinematicCollision3D):
 	
 	
 func return_truck_zero_position() ->Vector3:
-	return truck_zone.to_global(Vector3(0,3,0))
+	var pos:Vector3 = Vector3()
+	pos.z = -(data.get_length()/2) + 10
+	pos.y = 50
+	return pos
 	
 
 func handle_truck_zone(node):
