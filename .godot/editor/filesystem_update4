@@ -1,7 +1,6 @@
 res://Main.tscn
 res://Mowing Section/Mowing_Area/Dirt Material.tres
 res://Assets/Grass/testing_mesh_libary3.tres
-res://Mowing Section/Mowing_Area/Mowing_Area.gd
 res://Mowing Section/Job/job.tscn
 res://Data Structures/Job Data Structure/Job Data Structure.tscn
 res://Mowing Section/Mowing_Area/mowing_area_2.tscn
@@ -12,3 +11,6 @@ res://Assets/Grass with LOD/Mowed Grass High LOD.tscn
 res://Assets/Grass with LOD/Unmowed Grass High LOD.tscn
 res://Assets/Grass with LOD/Mowed Grass Low LOD.tscn
 res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn
+res://Mowing Section/Mowing_Area/Mowing_Area.gd
+res://Mowing Section/Mower/Mower.gd
+res://Mowing Section/Job/job.gd

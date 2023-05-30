@@ -1,11 +1,11 @@
 bdbec74c6e5bd72edee867077d70896c
-::res://::1685389036
+::res://::1685413027
 basic_sky_shader.gdshader::Shader::-1::1684469224::0::1::::<><>::
 default_env.tres::Environment::-1::1684469219::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1684469224::0::1::::<><>::
 Game.gd::GDScript::-1::1685323958::0::1::::<>Node3D<>::
 icon.svg::CompressedTexture2D::5507345590917116630::1684469224::1684469363::1::::<><>::
-Main.tscn::PackedScene::6050645004164830725::1685334098::0::1::::<><>::res://Game.gd
+Main.tscn::PackedScene::6050645004164830725::1685396412::0::1::::<><>::res://Game.gd
 some_grass.res::ArrayMesh::6853866962551335437::1684469224::0::1::::<><>::
 ::res://Assets/::1685207869
 Mowed_Grass_thick.tscn::PackedScene::-1::1685207648::0::1::::<><>::
@@ -15,29 +15,30 @@ testing_2.png::CompressedTexture2D::2231103663451887933::1684469224::1684469363:
 testing_Stone_greybricks.png::CompressedTexture2D::1953871286887453822::1684469224::1684469363::1::::<><>::
 testing_Stone_tiles.png::CompressedTexture2D::6042570493494194044::1684469224::1684469363::1::::<><>::
 testing_Wood_planks.png::CompressedTexture2D::1166663295711174476::1684469224::1684469363::1::::<><>::
-::res://Assets/Grass/::1685294526
+::res://Assets/Grass/::1685389698
 long_grass_non_poly.glb::PackedScene::3643909230043877657::1685151656::1685151789::1::::<><>::
 short_grass_non_poly.glb::PackedScene::5842755292027618453::1685151656::1685151789::1::::<><>::
 testing_mesh_libary2.tres::MeshLibrary::2977246975405737981::1685151656::0::1::::<><>::
-testing_mesh_libary3.tres::MeshLibrary::529935447391836980::1685294526::0::1::::<><>::
+testing_mesh_libary3.tres::MeshLibrary::529935447391836980::1685389698::0::1::::<><>::
 testing_mesh_libary.tres::MeshLibrary::6107878010251884953::1685151656::0::1::::<><>::
-::res://Assets/Grass with LOD/::1685334099
-Mowed Grass High LOD.tscn::PackedScene::4259313624189686000::1685334099::0::1::::<><>::
-Mowed Grass Low LOD.tscn::PackedScene::4272497093560913421::1685334099::0::1::::<><>::
-Unmowed Grass High LOD.tscn::PackedScene::5320691833761093480::1685334099::0::1::::<><>::
+::res://Assets/Grass with LOD/::1685399171
+Mowed Grass High LOD.tscn::PackedScene::4259313624189686000::1685396413::0::1::::<><>::
+Mowed Grass Low LOD.tscn::PackedScene::4272497093560913421::1685396413::0::1::::<><>::
+Unmowed Grass High LOD.tscn::PackedScene::5320691833761093480::1685396413::0::1::::<><>::
+Unmowed Grass Low LOD.tscn::PackedScene::6167830877805790942::1685399171::0::1::::<><>::
 ::res://Assets/Grass with LOD/objects/::1685236678
 mowed_grass_low_LOD.glb::PackedScene::5873870150355141505::1685211287::1685211289::1::::<><>::
 unmowed_grass_low_LOD.glb::PackedScene::4720631978551184037::1685236648::1685236678::1::::<><>::
-::res://Assets/Level Scenes/::1685334098
+::res://Assets/Level Scenes/::1685396413
 mowed_grass_thich.tscn::PackedScene::2415230847849866030::1684469224::0::1::::<><>::
-very_large_1.tscn::PackedScene::7941191350106870859::1685334098::0::1::::<><>::uid://wn61y2su2nca<>uid://kkdgw1hnpq32<>uid://hsx7vca0oyvk
+very_large_1.tscn::PackedScene::7941191350106870859::1685396413::0::1::::<><>::uid://wn61y2su2nca<>uid://kkdgw1hnpq32<>uid://hsx7vca0oyvk
 ::res://Assets/Meshlibrary/::1685207871
 GrassMeshLibrary_1.tres::MeshLibrary::7515747061513661597::1685207871::0::1::::<><>::
 long_grass.glb::PackedScene::5933593351330631066::1684535536::1684535544::1::::<><>::
 short_grass.glb::PackedScene::7443618994906048372::1684521533::1684522557::1::::<><>::
-::res://Assets/Meshlibrary/Scene/::1685334098
+::res://Assets/Meshlibrary/Scene/::1685396413
 long_grass.tscn::PackedScene::2199924628096335074::1684546067::0::1::::<><>::
-Meshlibrary.tscn::PackedScene::5375272304749859123::1685334098::0::1::::<><>::uid://de247m0asd864<>uid://6lwo4of1uqni
+Meshlibrary.tscn::PackedScene::5375272304749859123::1685396413::0::1::::<><>::uid://de247m0asd864<>uid://6lwo4of1uqni
 short_grass.tscn::PackedScene::7497574232110754103::1684546067::0::1::::<><>::
 ::res://Assets/Other/::1684469224
 ::res://Assets/Other/Mowers/::1684469365
@@ -48,8 +49,8 @@ LargeSingleMeshGrass.tscn::PackedScene::6374107077073958010::1684469224::0::1:::
 SingleMeshGrass.tscn::PackedScene::7266939413902289549::1684469224::0::1::::<><>::
 ::res://Data Structures/::1685320733
 Model.gd::GDScript::-1::1685320733::0::1::::Model<>Node<>::
-::res://Data Structures/Job Data Structure/::1685334098
-Job Data Structure.tscn::PackedScene::1648398105771994542::1685334098::0::1::::<><>::res://Data Structures/Job Data Structure/Job_Data.gd
+::res://Data Structures/Job Data Structure/::1685396413
+Job Data Structure.tscn::PackedScene::1648398105771994542::1685396413::0::1::::<><>::res://Data Structures/Job Data Structure/Job_Data.gd
 Job_Data.gd::GDScript::-1::1685320480::0::1::::Job_Data_Container<>Node3D<>::
 ::res://Dev tools/::1684469224
 Mesurement.gd::GDScript::-1::1684469224::0::1::::Mesurment<>Node<>::
@@ -57,20 +58,20 @@ Mesurement.tscn::PackedScene::4803629611407700834::1684469224::0::1::::<><>::res
 Performance Monitor.gd::GDScript::-1::1684469224::0::1::::Performance_Monitor<>Control<>::
 Performance Monitor.tscn::PackedScene::4417058207688161942::1684469224::0::1::::<><>::res://Dev tools/Performance Monitor.gd
 ::res://Mowing Section/::1684469224
-::res://Mowing Section/Job/::1685334098
+::res://Mowing Section/Job/::1685396412
 job.gd::GDScript::-1::1685295125::0::1::::<>Node3D<>::
-job.tscn::PackedScene::6754498129553638499::1685334098::0::1::::<><>::res://Mowing Section/Job/job.gd<>uid://b5wii06emkg1c<>uid://c6nq5jrkuptwq
+job.tscn::PackedScene::6754498129553638499::1685396412::0::1::::<><>::res://Mowing Section/Job/job.gd<>uid://b5wii06emkg1c<>uid://c6nq5jrkuptwq
 ::res://Mowing Section/Mower/::1685315923
 Mower.gd::GDScript::-1::1685315923::0::1::::<>CharacterBody3D<>::
-::res://Mowing Section/Mower/Mower_Normal/::1685334098
-Mower_Normal.tscn::PackedScene::4538003686887627614::1685334098::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
+::res://Mowing Section/Mower/Mower_Normal/::1685396413
+Mower_Normal.tscn::PackedScene::4538003686887627614::1685396413::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
 ::res://Mowing Section/Mower/Old Mower/::1685207645
 Mower.tscn::PackedScene::8890898170342025735::1684469224::0::1::::<><>::res://Mowing Section/Mower/Mower.gd<>res://Mowing Section/Mower/testing_wheel.gdshader
-::res://Mowing Section/Mowing_Area/::1685334098
-Dirt Material.tres::ShaderMaterial::722726275677297723::1685294526::0::1::::<><>::res://Mowing Section/Mowing_Area/Dirt.gdshader
+::res://Mowing Section/Mowing_Area/::1685399171
+Dirt Material.tres::ShaderMaterial::722726275677297723::1685389698::0::1::::<><>::res://Mowing Section/Mowing_Area/Dirt.gdshader
 Dirt.gdshader::Shader::-1::1684469224::0::1::::<><>::
-Mowing_Area.gd::GDScript::-1::1685334098::0::1::::<>Node3D<>::
-mowing_area_2.tscn::PackedScene::6976557976122913024::1685334098::0::1::::<><>::res://Mowing Section/Mowing_Area/Mowing_Area.gd<>uid://dj0wbkxqirmgp
+Mowing_Area.gd::GDScript::-1::1685399171::0::1::::<>Node3D<>::
+mowing_area_2.tscn::PackedScene::6976557976122913024::1685396413::0::1::::<><>::res://Mowing Section/Mowing_Area/Mowing_Area.gd<>uid://dj0wbkxqirmgp
 Simple_camera.gd::GDScript::-1::1684469224::0::1::::<>Camera3D<>::
 ::res://Sky/::1684469364
 moon.png::CompressedTexture2D::1212082536930243315::1684469224::1684469363::1::::<><>::

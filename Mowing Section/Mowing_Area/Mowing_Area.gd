@@ -192,16 +192,23 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		mower_current_position /= grass_size 
 		mower_current_position = round(mower_current_position)
 		
+		
+		var n_dist:int = 14
+		
 		# set the y to 0 since in grid coord the y = 0 for grass
 		mower_current_position.y = 0
-		if run == true:
-			var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,4)
+		if run == true: # this is needed to run at least once, so that mower trakcer position is not "set" and thus n_nearest works
+			var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,n_dist)
 			mower_position_tracker = mower_current_position
 			run = false
-		var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,4)
+		var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,n_dist)
+		
+		# since we can get an empty array back no need to do the rest
+		if len(closest_grass_grid_cells) == 0:
+			return
+		
 		# check if this grass should be mowed or unmowed LOD
 		# keep track of which grass to un flip the LOD as well
-
 		for grass in closest_grass_grid_cells:
 
 			if grass in mowed_high_lod or grass in unmowed_high_lod:
@@ -215,7 +222,8 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				
 				mowing_area.add_child(new_grass)
 				mowing_area.remove_child(current_grass)
-				grass_grid[grass] = new_grass 
+				grass_grid[grass] = new_grass
+
 				
 			elif grass in unmowed_low_lod: # change it to high unmowed LOD
 				var grass_grid_cell = grass_grid.get(grass)
@@ -230,6 +238,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		# to do this compare the current n_closest and remove
 		# from high LOD levels any grass that is not in the n_closest
 		var remove_from_high_LOD = [] # to store what needs to be erased. Erasing in loop can cause problems
+
 		for high_mowed in mowed_high_lod:
 			if high_mowed not in closest_grass_grid_cells:
 				var grass_grid_cell = grass_grid.get(high_mowed)
@@ -244,9 +253,29 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				# swap dictionaries entries around
 				remove_from_high_LOD.append(high_mowed)
 				mowed_low_lod[high_mowed] = grass_grid_cell["mowed high LOD"]
-		
-			
+#		print("Unmowed keys" , unmowed_high_lod.keys())
+#		print()
+#		print("closest keys", closest_grass_grid_cells)
 
+		for high_unmowed in unmowed_high_lod.keys():
+			if high_unmowed in closest_grass_grid_cells:
+				continue
+			else:
+				var grass_grid_cell = grass_grid.get(high_unmowed)
+				grass_grid_cell["unmowed high LOD"].hide()
+				grass_grid_cell["unmowed low LOD"].show()
+				
+				# swap dictionaries entries around
+				remove_from_high_LOD.append(high_unmowed)
+				unmowed_low_lod[high_unmowed] = grass_grid_cell["unmowed high LOD"]
+		# now that looping is done remove the grass from the respective dictionaries
+
+		for remove_this in remove_from_high_LOD:
+			
+			if mowed_high_lod.has(remove_this):
+				mowed_high_lod.erase(remove_this)
+			if unmowed_high_lod.has(remove_this):
+				unmowed_high_lod.erase(remove_this)
 func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	"""
 		Takes in a vector3 containg GRID COORD and finds n nearest grass grid places from list
@@ -254,7 +283,6 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 		
 		TODO: to optimize return only the grass grid cells that need to be changed
 	"""
-
 
 	if pos == mower_position_tracker:
 		return [] # no checking needed
