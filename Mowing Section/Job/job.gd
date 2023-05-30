@@ -29,8 +29,9 @@ func set_data(d:Job_Data_Container):
 
 	
 func set_mower_position():
-	mower.position.y =50
-	mower.position.x = 100
+	mower.position = mowing_area.return_truck_zero_position()
+#	mower.position.y = 30
+#	mower.position.x = 100
 	
 
 

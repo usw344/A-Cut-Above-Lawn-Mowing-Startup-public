@@ -141,21 +141,6 @@ func get_input():
 
 	return input_direction 
 
-#"""
-#	Function to rotate each wheel by the angle give. 
-#	Use -> this function is used in the get_input() method. The angles are set by the movement input
-#	side effects -> the wheels are rotated. if the node's name is changed this will break
-#"""
-#func rotate_wheels(angles):
-#	##construct list of wheels
-#	var wheels = [$Wheel_1_F_L, $Wheel_1_F_R,$Wheel_1_B_L,$Wheel_1_B_R]
-#
-#	for wheel in wheels:
-#		wheel.rotate_x(angles["forward"])
-#		wheel.rotate_x(angles["backward"])
-#		wheel.rotate_z(angles["right"])
-#		wheel.rotate_z(angles["left"])
-	
 """
 	Function to set the size of the mesh and collision shape of the mower
 	This function uses the value set in the model

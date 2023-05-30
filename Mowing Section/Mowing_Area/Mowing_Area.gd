@@ -202,7 +202,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 			mower_position_tracker = mower_current_position
 			run = false
 		var closest_grass_grid_cells:Array = get_n_nearest_grass(mower_current_position,n_dist)
-		
+
 		# since we can get an empty array back no need to do the rest
 		if len(closest_grass_grid_cells) == 0:
 			return
@@ -230,6 +230,9 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				grass_grid_cell["unmowed low LOD"].hide()
 				grass_grid_cell["unmowed high LOD"].show()
 				
+				var this_grass = grass_grid_cell["unmowed high LOD"]
+				this_grass.get_node("CollisionShape3D").disabled = false
+				
 				# remove from the relevant dictionaries and add to correct one
 				unmowed_low_lod.erase(grass)
 				unmowed_high_lod[grass] = grass_grid_cell["unmowed high LOD"]
@@ -253,9 +256,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				# swap dictionaries entries around
 				remove_from_high_LOD.append(high_mowed)
 				mowed_low_lod[high_mowed] = grass_grid_cell["mowed high LOD"]
-#		print("Unmowed keys" , unmowed_high_lod.keys())
-#		print()
-#		print("closest keys", closest_grass_grid_cells)
+
 
 		for high_unmowed in unmowed_high_lod.keys():
 			if high_unmowed in closest_grass_grid_cells:
@@ -290,56 +291,34 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	var mower_position:Vector2 = Vector2(pos.x,pos.z)
 	
 	var return_array:Array = []
-	
-#	mesure.start_m("Find n nearest")
+
 	var mower_x: = pos.x
 	var mower_z: = pos.z
 	
+	# this is still pretty quick
 	for x in range(mower_x-n,mower_x+n,1):
 		for z in range(mower_z-n, mower_z+n, 1):
 			if grass_grid.has(Vector3(x,0,z)):
 				return_array.append(Vector3(x,0,z))
 
 		
-#	mesure.stop_m()
 	return return_array
-
-
-func sort_by_x(a:Vector3 , b:Vector3):
-	# go largest to smallest in this case
-	var dist_a = a.x
-
-	var dist_b = b.x
-
-	if dist_a > dist_b:
-		return true
-
-	return false
-
-
-func get_distance_from_player(a_point:Vector2,player:Vector2,grid_cell_size:int):
-	"""
-		For a_point (in grid cord using grid_cell_size) and player position in 
-		global coord and a given grid_cell_size find the distance and return it
-	"""
-	var x_pos: int = round(player.x/grid_cell_size)
-	var z_pos: int = round(player.y/grid_cell_size)
-
-	var a_pointx = abs(a_point.x - x_pos)
-	var a_pointy = abs(a_point.y - z_pos)
-
-	# a squared plus b squared = c (distance) squared
-	var dist_a = sqrt( (a_pointx * a_pointx) + (a_pointy*a_pointy)  )
-
-	return dist_a
-
 
 #OUT DATED. This func
 func handle_collision(collision:KinematicCollision3D):
 	pass
+	
+	
+func return_truck_zero_position() ->Vector3:
+	return truck_zone.to_global(Vector3(0,3,0))
+	
 
 func handle_truck_zone(node):
+	"""
+		Handle collision with truck zone. (this should open the refuel and cuttings deposit menu)
+	"""
 	print(node.name)
+
 
 func set_data(d:Job_Data_Container):
 	data = d

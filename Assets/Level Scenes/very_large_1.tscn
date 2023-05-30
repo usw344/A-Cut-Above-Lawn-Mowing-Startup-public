@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://dle1i5cw5atr4"]
+[gd_scene load_steps=8 format=3 uid="uid://dle1i5cw5atr4"]
 
 [ext_resource type="PackedScene" uid="uid://wn61y2su2nca" path="res://Assets/testing.glb" id="1_lb6w5"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_fh1f4"]
-[ext_resource type="MeshLibrary" uid="uid://hsx7vca0oyvk" path="res://Assets/Grass/testing_mesh_libary3.tres" id="3_0yala"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_lk883"]
 size = Vector2(100, 100)
@@ -22,7 +21,7 @@ depth_draw_mode = 1
 points = PackedVector3Array(-5, -0.5, -5, -5, 0.5, -5, 5, -0.5, -5, -5, -0.5, 5, -5, 0.5, 5, 5, 0.5, -5, 5, -0.5, 5, 5, 0.5, 5)
 
 [node name="Very Large 1" instance=ExtResource("1_lb6w5")]
-transform = Transform3D(32, 0, 0, 0, 32, 0, 0, 0, 32, -3.02124, 6.10352e-05, -0.123871)
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -3.02124, 6.10352e-05, -0.123871)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
 
@@ -31,11 +30,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.259696, 0.59331, -1.05144)
 mesh = SubResource("PlaneMesh_lk883")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_fh1f4")
-
-[node name="GridMap" type="GridMap" parent="StaticBody3D/Mowing Area" index="0"]
-mesh_library = ExtResource("3_0yala")
-cell_center_y = false
-metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.365137, 0)
