@@ -37,5 +37,4 @@ func set_mower_position():
 
 
 func _on_mower_normal_collided(collision:KinematicCollision3D):
-	if collision.get_collider().name == "GridMap":
-		mowing_area.handle_collision(collision)
+	mowing_area.handle_collision(collision)

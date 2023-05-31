@@ -3,13 +3,13 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w4see"]
 resource_name = "foliage"
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.260324, 0.849057, 0.60313, 1)
+albedo_color = Color(0.964706, 0.545098, 0.294118, 1)
 metallic = 1.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tayff"]
 resource_name = "foliage.001"
 vertex_color_use_as_albedo = true
-albedo_color = Color(0.260324, 0.849057, 0.60313, 1)
+albedo_color = Color(0.964706, 0.545098, 0.294118, 1)
 metallic = 1.0
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_w3mah"]
@@ -67,6 +67,5 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_w3mah")
 
 [node name="Mowed Grass High LOD" type="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.286712, 0, -0.46063)
 mesh = SubResource("ArrayMesh_2i68i")
 skeleton = NodePath("")
