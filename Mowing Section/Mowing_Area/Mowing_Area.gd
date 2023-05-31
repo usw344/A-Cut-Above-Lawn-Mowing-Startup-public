@@ -185,6 +185,8 @@ func calculate_grass_loading(mower_current_position:Vector3):
 					# set the position and scale
 					new_child.position = child_.position
 					new_child.scale = child_.scale
+					if i == 1 or i == 2:
+						new_child.scale.y /=2
 					var grass_grid_cell:Dictionary = grass_grid.get(grid_coord_for_this_grass)
 					grass_grid_cell[LODS_keys[i]] = new_child
 					grass_grid_for_collision[new_child.name] = grid_coord_for_this_grass
@@ -252,11 +254,6 @@ func calculate_grass_loading(mower_current_position:Vector3):
 			if high_mowed not in closest_grass_grid_cells:
 				var grass_grid_cell = grass_grid.get(high_mowed)
 				grass_grid_cell["mowed high LOD"].hide()
-				
-				# disable collision shape WHY IS THIS THE CASE
-				# THIS PLACE THROWS AN ERROR SINCE MOWED HAS NO COLLISION SHAPE
-				var current_grass_obj = grass_grid_cell.get("mowed high LOD")
-				current_grass_obj.get_node("CollisionShape3D").disable = true
 				
 				grass_grid_cell["mowed low LOD"].show()
 				

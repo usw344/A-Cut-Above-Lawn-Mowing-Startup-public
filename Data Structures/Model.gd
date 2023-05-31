@@ -7,7 +7,7 @@ This is an autoload script that stores global game variables
 
 
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
-var speed = 10 + 25 #REMOVE TEMP ADDITION OF +
+var speed = 10 + 1 #REMOVE TEMP ADDITION OF +
 var blade_length = 1
 
 ##mower fuel variables 
