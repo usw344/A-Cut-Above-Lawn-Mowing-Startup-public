@@ -1,0 +1,174 @@
+[gd_scene load_steps=9 format=3 uid="uid://b43o5sgqntr1a"]
+
+[ext_resource type="Script" path="res://Mowing Section/UI/Information UI.gd" id="1_3c31x"]
+[ext_resource type="Texture2D" uid="uid://q2rtte7fp7h2" path="res://Assets/Pictures/Fuel Icon.PNG" id="1_urdpx"]
+[ext_resource type="Texture2D" uid="uid://bobcfnnk8ypte" path="res://Assets/Pictures/Grass Cuttings.PNG" id="2_qf8vt"]
+[ext_resource type="Texture2D" uid="uid://6107l1ujsb54" path="res://Assets/testing_2.png" id="3_d8xb6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ahate"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_krl1u"]
+bg_color = Color(0.184314, 0.184314, 0.184314, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_svohe"]
+bg_color = Color(0.101961, 0.662745, 0.815686, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rn8eu"]
+bg_color = Color(0.6, 0.513726, 0.407843, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0, 0.92549, 0.811765, 1)
+border_blend = true
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="Information UI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3c31x")
+
+[node name="Fuel Progress Bar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.705
+anchor_bottom = 0.705
+offset_top = -438.4
+offset_right = 95.0
+offset_bottom = -0.400024
+grow_vertical = 2
+theme_override_font_sizes/font_size = 29
+fill_mode = 3
+
+[node name="Cuttings Progress Bar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.001
+anchor_top = 0.7
+anchor_right = 1.001
+anchor_bottom = 0.7
+offset_left = -102.92
+offset_top = -423.0
+offset_right = 0.0799561
+offset_bottom = -6.10352e-05
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 29
+
+[node name="Fuel Texture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.708
+anchor_bottom = 0.708
+offset_top = -3.64001
+offset_right = 97.0
+offset_bottom = 99.36
+texture = ExtResource("1_urdpx")
+
+[node name="Cuttings Texture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.703
+anchor_right = 1.0
+anchor_bottom = 0.703
+offset_left = -101.0
+offset_top = -1.23999
+offset_right = 3.0
+offset_bottom = 96.76
+texture = ExtResource("2_qf8vt")
+
+[node name="Top Bar" type="TextureRect" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.999
+offset_right = 0.919922
+offset_bottom = 110.0
+texture = ExtResource("3_d8xb6")
+expand_mode = 1
+stretch_mode = 1
+
+[node name="Time Left Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.626
+anchor_top = 0.019
+anchor_right = 0.626
+anchor_bottom = 0.019
+offset_left = 0.0799561
+offset_top = -0.52
+offset_right = 252.08
+offset_bottom = 57.48
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_ahate")
+text = "Time left for Job"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Time Left Progress Bar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.772
+anchor_top = 0.009
+anchor_right = 0.772
+anchor_bottom = 0.009
+offset_left = 0.76001
+offset_top = 0.28
+offset_right = 383.76
+offset_bottom = 84.28
+theme_override_styles/background = SubResource("StyleBoxFlat_krl1u")
+theme_override_styles/fill = SubResource("StyleBoxFlat_svohe")
+value = 100.0
+
+[node name="Press M to Manage" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.783
+anchor_top = 0.131
+anchor_right = 0.783
+anchor_bottom = 0.131
+offset_left = 0.639893
+offset_top = 0.519989
+offset_right = 357.64
+offset_bottom = 99.52
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_rn8eu")
+text = "Press M to Manage"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Press O to Manage" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.125
+anchor_right = 0.025
+anchor_bottom = 0.125
+offset_right = 357.0
+offset_bottom = 99.0
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_rn8eu")
+text = "Press O to Manage"
+horizontal_alignment = 1
+vertical_alignment = 1

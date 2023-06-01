@@ -313,6 +313,7 @@ func handle_collision(collision:KinematicCollision3D):
 	var collision_name = collision.get_collider().name
 	if collision_name == "StaticBody3D":
 		return
+
 	if collision_name in grass_grid_for_collision:
 		# take high lod grass and swtich it to lod LOD
 		var grass_coord:Vector3 = grass_grid_for_collision[collision_name]
@@ -325,7 +326,7 @@ func handle_collision(collision:KinematicCollision3D):
 		# remove form the relevant dictionaries
 		unmowed_high_lod.erase(grass_coord)
 		mowed_low_lod[grass_coord] = grass_grid_cell["mowed high LOD"]
-	
+
 	
 func return_truck_zero_position() ->Vector3:
 	var pos:Vector3 = Vector3()

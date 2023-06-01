@@ -20,11 +20,17 @@ func _ready():
 	job_data.set_grass_size(grass_info["size"])
 	job_data.set_grass_scale(grass_info["scale"])
 
-
 	var job = job_scene.instantiate()
 	add_child(job)
 	job.set_data(job_data)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# this is for testing to toggle 
 func _process(delta):
-	pass
+	if Input.is_action_just_pressed("Toggle Mouse Capture"):
+		var mouse_mode = Input.mouse_mode
+		if mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			
+		
