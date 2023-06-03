@@ -1,16 +1,28 @@
-res://Assets/Grass with LOD/Mowed Grass Low LOD.tscn
-res://Mowing Section/Mowing_Area/Dirt Material.tres
-res://Assets/Grass with LOD/Mowed Grass High LOD.tscn
 res://Main.tscn
+res://GodotSky/Presets/default/baseSkyColor.tres
+res://GodotSky/Presets/default/baseCloudColor.tres
+res://GodotSky/Presets/default/overcastCloudColor.tres
+res://GodotSky/Presets/default/horizonFogColor.tres
+res://GodotSky/Presets/default/sunLight.tres
+res://GodotSky/Presets/default/sunDiscColor.tres
+res://GodotSky/Presets/default/sunGlowColor.tres
+res://GodotSky/Presets/default/moonLight.tres
+res://GodotSky/Presets/default/moonGlowColor.tres
+res://Mowing Section/Mowing_Area/Dirt Material.tres
 res://Mowing Section/Mowing_Area/mowing_area_2.tscn
 res://Mowing Section/Job/job.tscn
 res://Data Structures/Job Data Structure/Job Data Structure.tscn
 res://Assets/Level Scenes/very_large_1.tscn
 res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
-res://Assets/Meshlibrary/Scene/Meshlibrary.tscn
-res://Assets/Grass with LOD/Unmowed Grass High LOD.tscn
-res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn
-res://Mowing Section/Mowing_Area/Mowing_Area.gd
-res://Game.gd
 res://Mowing Section/UI/Information UI.tscn
-res://Mowing Section/UI/Information UI.gd
+res://GodotSky/WorldEnvironment/default_sky.tres
+res://GodotSky/WorldEnvironment/default_environment.tres
+res://GodotSky/Presets/default/moonLightIntensity.tres
+res://GodotSky/Presets/alien/alien_baseCloudColor.tres
+res://GodotSky/Presets/alien/alien_baseSkyColor.tres
+res://GodotSky/Presets/alien/alien_horizonFogColor.tres
+res://GodotSky/Presets/alien/alien_moonGlowColor.tres
+res://GodotSky/Presets/alien/alien_moonLight.tres
+res://GodotSky/Presets/alien/alien_sunDiscColor.tres
+res://GodotSky/Presets/alien/alien_sunGlowColor.tres
+res://GodotSky/Presets/alien/alien_sunLight.tres

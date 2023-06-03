@@ -16,11 +16,13 @@ func _ready():
 	pass 
 
 func _process(delta):
-	pass
+	update_fuel_display()
 
 func update_fuel_display():
 	var current_fuel = model.get_mower_fuel()
-	
+	fuel_bar.value = current_fuel
+func update_cuttings_display():
+	var cuttings = model.get_cuttings()
 
 func set_job_data(d: Job_Data_Container):
 	"""

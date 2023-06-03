@@ -71,7 +71,7 @@ func _physics_process(delta):
 	##collision signal is based if fuel is full or not
 	if model.get_mower_fuel() <= 0:
 		handle_collision("fuel_empty")
-		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
+#		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
 
 	else:
 		handle_collision("collided")
@@ -122,15 +122,7 @@ func get_input():
 		input_direction += global_transform.basis.x
 #		rotate_wheel["backward"] = -rotate_speed
 		use_fuel = true
-#	if Input.is_action_pressed("move_left"):
-#		input_direction += global_transform.basis.z
-##		rotate_wheel["left"] = rotate_speed
-#		use_fuel = true
-#	if Input.is_action_pressed("move_right"):
-#		input_direction += -global_transform.basis.z
-##		rotate_wheel["right"] = -rotate_speed
-#		use_fuel = true
-	
+
 	##if movement happened then increment fuel counter
 	if use_fuel:
 		model.increment_mower_fuel_idle_counter(1)

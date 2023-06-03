@@ -1,12 +1,16 @@
 [gd_scene load_steps=3 format=3 uid="uid://c6nq5jrkuptwq"]
 
 [ext_resource type="Script" path="res://Mowing Section/Mowing_Area/Mowing_Area.gd" id="1_akhdy"]
-[ext_resource type="PackedScene" uid="uid://dj0wbkxqirmgp" path="res://Sky/Basic Sky/Basic Sky.tscn" id="2_jb5c7"]
+[ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="2_502it"]
 
 [node name="Mowing Area2" type="Node3D"]
 script = ExtResource("1_akhdy")
 
-[node name="Basic Sky" parent="." instance=ExtResource("2_jb5c7")]
+[node name="GodotSky" parent="." instance=ExtResource("2_502it")]
+timeOfDay = 1573.88
+simulateTime = true
+rateOfTime = 0.0
+cloudCoverage = 0.533
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

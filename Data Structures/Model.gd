@@ -15,6 +15,23 @@ var mower_fuel = 100			#total mower fuel
 var mower_fuel_idle_counter = 0 #keeps track of movements. Since fuel icnrements are in whole numbers
 var idle_fuel_use = 26			#After this much movement substract fuel. PLANNED: to allow this value to be increased
 
+# store the cuttings information
+
+var stored_cuttings:int = 0
+var cuttings_in_mower:int = 0
+
+func get_stored_cuttings() -> int:
+	return stored_cuttings
+func set_stored_cuttings(c:int) ->void:
+	stored_cuttings = c
+
+func set_cuttings_in_mower(c:int) -> void:
+	cuttings_in_mower = c
+	
+func get_cuttings_in_mower() -> int:
+	return cuttings_in_mower
+
+
 func get_speed():
 	"""
 	Get and Set for mower speed
