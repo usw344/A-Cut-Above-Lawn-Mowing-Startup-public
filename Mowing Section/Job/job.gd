@@ -16,10 +16,18 @@ var data:Job_Data_Container
 func _ready():
 	pass
 
+var avg = 0
+var calls = 0
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	mowing_area.calculate_grass_loading(mower.position)
-
+	if calls = 0:
+		calls += 1
+		mowing_area.calculate_grass_loading(mower.position)
+	else:
+		measure.start_get_m()
+		mowing_area.calculate_grass_loading(mower.position)
+	
 func set_data(d:Job_Data_Container):
 	data = d
 	mowing_area.setup(data)

@@ -7,10 +7,10 @@
 script = ExtResource("1_akhdy")
 
 [node name="GodotSky" parent="." instance=ExtResource("2_502it")]
-timeOfDay = 1573.88
+timeOfDay = 1439.75
 simulateTime = true
-rateOfTime = 0.0
-cloudCoverage = 0.533
+rateOfTime = 0.01
+cloudCoverage = 0.376
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

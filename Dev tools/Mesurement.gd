@@ -51,24 +51,7 @@ func stop_mi():
 	print()
 	print("-----------------                    -----------------")
 
-func test_func():
-	var arr: Array = []
-	var dict:Dictionary = {}
-	for x in range(10000000):
-		arr.append(x)
-		dict[x] = x*x
-	
-	filename = "Measurement"
-	
-	start_mi("Mesuring has() on an array")
-	var bo:bool = arr.has(10000000-500)
-	stop_mi()
-	
-	start_mi("Mesuring has() on an dict")
-	bo = dict.has(90000)
-	stop_mi()
-	
-	start_mi("Mesuring has() on an dict")
-	bo = dict.has(randi_range(9000000,10000000-700))
-	stop_mi()
-	
+func start_get_m():
+	before = Time.get_ticks_msec()
+func stop_get_m():
+	return Time.get_ticks_usec() - before

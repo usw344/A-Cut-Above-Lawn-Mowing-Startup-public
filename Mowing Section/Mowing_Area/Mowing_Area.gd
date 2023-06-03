@@ -202,7 +202,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		mower_current_position /= grass_size 
 		mower_current_position = round(mower_current_position)
 		
-		var n_dist:int = 14
+		var n_dist:int = 7
 		var closest_grass_grid_cells:Array = []
 		
 		# set the y to 0 since in grid coord the y = 0 for grass
@@ -313,7 +313,7 @@ func handle_collision(collision:KinematicCollision3D):
 	var collision_name = collision.get_collider().name
 	if collision_name == "StaticBody3D":
 		return
-
+	mesure.start_m("Collision")
 	if collision_name in grass_grid_for_collision:
 		# take high lod grass and swtich it to lod LOD
 		var grass_coord:Vector3 = grass_grid_for_collision[collision_name]
@@ -326,7 +326,7 @@ func handle_collision(collision:KinematicCollision3D):
 		# remove form the relevant dictionaries
 		unmowed_high_lod.erase(grass_coord)
 		mowed_low_lod[grass_coord] = grass_grid_cell["mowed high LOD"]
-
+	mesure.stop_m()
 	
 func return_truck_zero_position() ->Vector3:
 	var pos:Vector3 = Vector3()
