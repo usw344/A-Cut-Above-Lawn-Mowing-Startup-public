@@ -1,18 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://b14vnx1a5iegr"]
+[gd_scene load_steps=4 format=3 uid="uid://b14vnx1a5iegr"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r3ext"]
-resource_name = "foliage"
-cull_mode = 2
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.258824, 0.85098, 0.603922, 1)
-metallic = 1.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d0qqv"]
-resource_name = "foliage.001"
-cull_mode = 2
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.258824, 0.85098, 0.603922, 1)
-metallic = 1.0
+[ext_resource type="Material" uid="uid://bvp458oubx7i6" path="res://Assets/Grass with LOD/Grass_texture.tres" id="1_h3yib"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_xawwc"]
 _surfaces = [{
@@ -44,7 +32,7 @@ _surfaces = [{
 "format": 4119,
 "index_count": 9,
 "index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 5, 0, 3, 0, 4, 0, 6, 0, 4, 0, 3, 0),
-"material": SubResource("StandardMaterial3D_r3ext"),
+"material": ExtResource("1_h3yib"),
 "name": "foliage",
 "primitive": 3,
 "vertex_count": 7,
@@ -55,7 +43,7 @@ _surfaces = [{
 "format": 4119,
 "index_count": 18,
 "index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 5, 0, 3, 0, 4, 0, 4, 0, 6, 0, 5, 0, 9, 0, 7, 0, 8, 0, 12, 0, 10, 0, 11, 0, 13, 0, 11, 0, 10, 0),
-"material": SubResource("StandardMaterial3D_d0qqv"),
+"material": ExtResource("1_h3yib"),
 "name": "foliage.001",
 "primitive": 3,
 "vertex_count": 14,

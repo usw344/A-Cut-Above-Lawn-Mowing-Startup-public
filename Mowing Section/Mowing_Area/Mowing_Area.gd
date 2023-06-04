@@ -110,33 +110,20 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		This function should be called from an outside node. This will give control over stopping
 		the expensive calculations that occur here can be paused when not needed
 	"""
-	var grass_size = data.get_grass_size()
+	var grass_size = data.get_grass_size() # grass size is hard coded for each level size
 	
+	# inital grid generation is expensive. do it once
 	if data.get_is_inital_grass_grid_set() == false:
-		mesure.start_m("inital grid")
+
 		data.set_is_inital_grass_grid_set(true)
-		# find the top right of the grid
-		var top_x = mowing_area.position.x - (data.get_width()/2)
-		var top_z = mowing_area.position.z - (data.get_length()/2)
+		var positions:Vector4 = get_grid_edges()
+		var top_x = positions.x
+		var top_z = positions.y
 		
-		var bottom_x = -data.get_width()/2
-		var bottom_z = -data.get_length()/2
+		var bottom_x = positions.w
+		var bottom_z = positions.z
 		
-		# for some reason this points to the bottom right corner
-		# to fix this negate them
-		top_x = -top_x
-		top_z = -top_z
 		
-		# on current design of level the fence cuts of part of the mowing area
-		# to fix this add in a relative buffer. apply to both ends
-		var x_buffer = data.get_width()/24
-		var z_buffer = data.get_length()/24
-		top_x -= x_buffer
-		top_z -= z_buffer
-		
-		bottom_x += x_buffer
-		bottom_z += z_buffer
-		# setup inital grid ( to remove the need to add/remove children add a copy of each type)
 		var LODS:Array = [grass_unmowed_high_LOD_scene,grass_mowed_low_LOD_scene,grass_mowed_high_LOD_scene] # grass_mowed_low_LOD_scene,grass_mowed_high_LOD_scene
 		var LODS_keys:Array = ["unmowed high LOD","mowed low LOD","mowed high LOD"] # ""
 		
@@ -148,7 +135,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 
 				var child_ = grass_unmowed_low_LOD_scene.instantiate()
 				# store in grass grid ( so divide by grass size and round)
-				var grid_coord_for_this_grass = round(position_/grass_size)
+				var grid_coord_for_this_grass = to_grid_coord(position_,grass_size)
 				
 				var cell_dictionary:Dictionary = {"unmowed low LOD":child_}
 				
@@ -185,7 +172,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 					# set the position and scale
 					new_child.position = child_.position
 					new_child.scale = child_.scale
-					if i == 1 or i == 2:
+					if i == 1 or i == 2: # for mowed grass make it smaller
 						new_child.scale.y /=2
 					var grass_grid_cell:Dictionary = grass_grid.get(grid_coord_for_this_grass)
 					grass_grid_cell[LODS_keys[i]] = new_child
@@ -194,20 +181,19 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				# to aid with collision store the key and child.name
 				grass_grid_for_collision[child_.name] = grid_coord_for_this_grass
 				
-		mesure.stop_m()
 
 	else: # inital grid is setup already (meaning this a load from save) and the grid is loaded
 		# convert mower coord into grid coord
-#		mower_current_position = mowing_area.to_local(mower_current_position)
-		mower_current_position /= grass_size 
-		mower_current_position = round(mower_current_position)
+		mower_current_position = to_grid_coord(mower_current_position,grass_size)
+		
+		# set the y to 0 since in grid coord the y = 0 for grass
+		mower_current_position.y = 0
 		
 		var n_dist:int = 7
 		var closest_grass_grid_cells:Array = []
 		
-		# set the y to 0 since in grid coord the y = 0 for grass
-		mower_current_position.y = 0
-		if run == true: # this is needed to run at least once, so that mower trakcer position is not "set" and thus n_nearest works
+		# this is needed to run at least once, so that mower trakcer position is not "set" and thus n_nearest works
+		if run == true: 
 			closest_grass_grid_cells = get_n_nearest_grass(mower_current_position,n_dist)
 			mower_position_tracker = mower_current_position
 			run = false
@@ -222,18 +208,15 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		# check if this grass should be mowed or unmowed LOD
 		# keep track of which grass to un flip the LOD as well
 		for grass in closest_grass_grid_cells:
+			var grass_grid_cell = grass_grid.get(grass)
 			if grass in mowed_high_lod or grass in unmowed_high_lod: # already high LOD
 				continue
-			#BROKEN
 			elif grass in mowed_low_lod: # change it to high mowed LOD
-				var grass_grid_cell = grass_grid.get(grass)
 				grass_grid_cell["mowed low LOD"].hide()
 				grass_grid_cell["mowed high LOD"].show()
-				
 				mowed_high_lod[grass] = grass_grid_cell["mowed high LOD"]
 				
 			elif grass in unmowed_low_lod: # change it to high unmowed LOD
-				var grass_grid_cell = grass_grid.get(grass)
 				grass_grid_cell["unmowed low LOD"].hide()
 				grass_grid_cell["unmowed high LOD"].show()
 				
@@ -259,10 +242,10 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				
 				# swap dictionaries entries around
 				remove_from_high_LOD.append(high_mowed)
-				mowed_low_lod[high_mowed] = grass_grid_cell["mowed high LOD"]
+				mowed_low_lod[high_mowed] = grass_grid_cell["mowed low LOD"]
 
-
-		for high_unmowed in unmowed_high_lod.keys():
+		# PRE OPTIMIZATION averaging 120fps
+		for high_unmowed in unmowed_high_lod:
 			if high_unmowed in closest_grass_grid_cells:
 				continue
 			else:
@@ -272,11 +255,10 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				
 				# swap dictionaries entries around
 				remove_from_high_LOD.append(high_unmowed)
-				unmowed_low_lod[high_unmowed] = grass_grid_cell["unmowed high LOD"]
+				unmowed_low_lod[high_unmowed] = grass_grid_cell["unmowed low LOD"]
 				
 		# now that looping is done remove the grass from the respective dictionaries
 		for remove_this in remove_from_high_LOD:
-			
 			if mowed_high_lod.has(remove_this):
 				mowed_high_lod.erase(remove_this)
 			if unmowed_high_lod.has(remove_this):
@@ -309,24 +291,60 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	return return_array
 
 #OUT DATED. This func
-func handle_collision(collision:KinematicCollision3D):
-	var collision_name = collision.get_collider().name
-	if collision_name == "StaticBody3D":
-		return
-	mesure.start_m("Collision")
-	if collision_name in grass_grid_for_collision:
-		# take high lod grass and swtich it to lod LOD
-		var grass_coord:Vector3 = grass_grid_for_collision[collision_name]
+func handle_collision(collisions):
+	for collision in collisions:
+		var collision_name = collision.get_collider().name
+		if collision_name == "StaticBody3D":
+			return
+		if collision_name in grass_grid_for_collision:
+			# take high lod grass and swtich it to lod LOD
+			var grass_coord:Vector3 = grass_grid_for_collision[collision_name]
+			
+			var grass_grid_cell = grass_grid.get(grass_coord)
+			grass_grid_cell["unmowed high LOD"].hide()
+			grass_grid_cell["unmowed high LOD"].get_node("CollisionShape3D").disabled = true
+			grass_grid_cell["mowed high LOD"].show()
+			
+			# remove form the relevant dictionaries
+			unmowed_high_lod.erase(grass_coord)
+			mowed_low_lod[grass_coord] = grass_grid_cell["mowed high LOD"]
+
+
+# helper functions for the calculate_grass_loading function
+func get_grid_edges() -> Vector4:
+	"""
+		Returns the edges of the grid. top left and bottom right
+		This can then be used in a for loop to generate a grid
 		
-		var grass_grid_cell = grass_grid.get(grass_coord)
-		grass_grid_cell["unmowed high LOD"].hide()
-		grass_grid_cell["unmowed high LOD"].get_node("CollisionShape3D").disabled = true
-		grass_grid_cell["mowed high LOD"].show()
+		return a Vector 4 with x = topx, y = topy, w = bottomx, z = bottom z
+	"""
+	# find the top right of the grid
+	var top_x = mowing_area.position.x - (data.get_width()/2)
+	var top_z = mowing_area.position.z - (data.get_length()/2)
 		
-		# remove form the relevant dictionaries
-		unmowed_high_lod.erase(grass_coord)
-		mowed_low_lod[grass_coord] = grass_grid_cell["mowed high LOD"]
-	mesure.stop_m()
+	var bottom_x = -data.get_width()/2
+	var bottom_z = -data.get_length()/2
+		
+	# for some reason this points to the bottom right corner
+	# to fix this negate them
+	top_x = -top_x
+	top_z = -top_z
+		
+	# on current design of level the fence cuts of part of the mowing area
+	# to fix this add in a relative buffer. apply to both ends
+	var x_buffer = data.get_width()/24
+	var z_buffer = data.get_length()/24	
+	
+	top_x -= x_buffer
+	top_z -= z_buffer
+	
+	bottom_x += x_buffer
+	bottom_z += z_buffer
+	return Vector4(top_x,top_z,bottom_x,bottom_z)
+
+func to_grid_coord(pos:Vector3,grid_cell_size:int):
+	return round(pos/grid_cell_size)
+
 	
 func return_truck_zero_position() ->Vector3:
 	var pos:Vector3 = Vector3()

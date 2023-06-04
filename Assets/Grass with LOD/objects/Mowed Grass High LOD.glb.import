@@ -3,17 +3,17 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cpijlc48s4h5v"
-path="res://.godot/imported/short_grass_non_poly.glb-1c794893e9f96ed94feb945dd56226ba.scn"
+uid="uid://dn3eqaso04t5u"
+path="res://.godot/imported/Mowed Grass High LOD.glb-8aae5fc8aa2c299d7b987aff6ff08a9b.scn"
 
 [deps]
 
-source_file="res://Assets/Grass/short_grass_non_poly.glb"
-dest_files=["res://.godot/imported/short_grass_non_poly.glb-1c794893e9f96ed94feb945dd56226ba.scn"]
+source_file="res://Assets/Grass with LOD/objects/Mowed Grass High LOD.glb"
+dest_files=["res://.godot/imported/Mowed Grass High LOD.glb-8aae5fc8aa2c299d7b987aff6ff08a9b.scn"]
 
 [params]
 
-nodes/root_type="MeshInstance3D"
+nodes/root_type="Node3D"
 nodes/root_name="Scene Root"
 nodes/apply_root_scale=true
 nodes/root_scale=1.0

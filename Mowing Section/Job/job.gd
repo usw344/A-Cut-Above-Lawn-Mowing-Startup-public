@@ -8,7 +8,7 @@ var data:Job_Data_Container
 # This could be done via the model
 @onready var mower: CharacterBody3D = $"Small Gas Mower"
 
-
+var mesure = Mesurment.new("Job Scene peformance measure")
 # static rerference to mowing area 
 @onready var mowing_area:Node3D = $"Mowing Area2"
 
@@ -16,18 +16,14 @@ var data:Job_Data_Container
 func _ready():
 	pass
 
-var avg = 0
-var calls = 0
+var avg:float = 0
+var calls:float = 0.0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if calls = 0:
-		calls += 1
-		mowing_area.calculate_grass_loading(mower.position)
-	else:
-		measure.start_get_m()
-		mowing_area.calculate_grass_loading(mower.position)
-	
+	mowing_area.calculate_grass_loading(mower.position)
+
+
 func set_data(d:Job_Data_Container):
 	data = d
 	mowing_area.setup(data)
@@ -37,12 +33,12 @@ func set_data(d:Job_Data_Container):
 
 	
 func set_mower_position():
-	mower.position = mowing_area.return_truck_zero_position()
+	mower.position = mowing_area.return_truck_zero_position() # gives position of the truck pad
 #	mower.position.y = 30
 #	mower.position.x = 100
 	
 
 
 
-func _on_mower_normal_collided(collision:KinematicCollision3D):
-	mowing_area.handle_collision(collision)
+func _on_mower_normal_collided(collisions): # collision:KinematicCollision3D
+	mowing_area.handle_collision(collisions)

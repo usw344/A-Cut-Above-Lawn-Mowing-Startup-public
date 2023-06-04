@@ -54,4 +54,4 @@ func stop_mi():
 func start_get_m():
 	before = Time.get_ticks_msec()
 func stop_get_m():
-	return Time.get_ticks_usec() - before
+	return Time.get_ticks_msec() - before

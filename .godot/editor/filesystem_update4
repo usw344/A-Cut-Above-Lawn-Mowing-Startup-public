@@ -1,4 +1,4 @@
-res://Main.tscn
+res://Mowing Section/Mowing_Area/mowing_area_2.tscn
 res://GodotSky/Presets/default/baseSkyColor.tres
 res://GodotSky/Presets/default/baseCloudColor.tres
 res://GodotSky/Presets/default/overcastCloudColor.tres
@@ -11,10 +11,20 @@ res://GodotSky/Presets/default/moonGlowColor.tres
 res://GodotSky/WorldEnvironment/default_sky.tres
 res://GodotSky/WorldEnvironment/default_environment.tres
 res://Mowing Section/Mowing_Area/Dirt Material.tres
+res://Main.tscn
 res://Mowing Section/Job/job.tscn
 res://Data Structures/Job Data Structure/Job Data Structure.tscn
 res://Assets/Level Scenes/very_large_1.tscn
 res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
 res://Mowing Section/UI/Information UI.tscn
-res://Mowing Section/Mowing_Area/mowing_area_2.tscn
+res://Mowing Section/Job/job.gd
 res://Mowing Section/Mowing_Area/Mowing_Area.gd
+res://Dev tools/Mesurement.gd
+res://Assets/Grass with LOD/Mowed Grass Low LOD.tscn
+res://Assets/Grass with LOD/Mowed Grass High LOD.tscn
+res://Mowing Section/Mower/Mower.gd
+res://Assets/Grass with LOD/Unmowed Grass High LOD.tscn
+res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn
+res://Assets/Grass with LOD/Grass_texture.tres
+res://Sky/Basic Sky/basic_sky_shader.gdshader
+res://Sky/basic_sky_shader.gdshader

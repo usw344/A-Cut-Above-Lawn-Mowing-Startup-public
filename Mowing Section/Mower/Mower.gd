@@ -71,7 +71,7 @@ func _physics_process(delta):
 	##collision signal is based if fuel is full or not
 	if model.get_mower_fuel() <= 0:
 		handle_collision("fuel_empty")
-#		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
+		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
 
 	else:
 		handle_collision("collided")
@@ -82,9 +82,16 @@ func handle_collision(signal_name):
 	This code used to be in the _physics_process function but due to 
 	checking for empty fuel then there are 2 two signals
 	"""
-	for i in get_slide_collision_count():
-		var collision = get_slide_collision(i)
-		emit_signal(signal_name, collision) ## send collision since if it is with block then a notification can be sent
+	
+	# try to see if this causes the jittering
+	var collision_array:Array = []
+	for z in get_slide_collision_count():
+		collision_array.append(get_slide_collision(z))
+	emit_signal(signal_name, collision_array)
+	
+#	for i in get_slide_collision_count():
+#		var collision = get_slide_collision(i)
+#		emit_signal(signal_name, collision) ## send collision since if it is with block then a notification can be sent
 
 
 func _input(event):
