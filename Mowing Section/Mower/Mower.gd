@@ -10,7 +10,7 @@ var rotate_speed:int = 20
 
 var base_gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-var gravity = base_gravity
+var gravity = 0
 var mouse_sensitivity:float = 0.002 
 
 ##Signals
@@ -192,4 +192,5 @@ func dev_hud():
 	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
 	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
 	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\n"
+	string_to_print += "Vertices" + str(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
 	$CanvasLayer/Label.text = string_to_print

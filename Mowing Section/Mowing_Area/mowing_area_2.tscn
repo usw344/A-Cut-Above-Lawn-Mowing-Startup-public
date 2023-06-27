@@ -6,6 +6,7 @@
 [node name="Mowing Area2" type="Node3D"]
 script = ExtResource("1_akhdy")
 
-[node name="GodotSky" parent="." instance=ExtResource("2_502it")]
+[node name="Sky" parent="." instance=ExtResource("2_502it")]
 timeOfDay = 1062.66
 rateOfTime = 0.17
+cloudCoverage = 0.433

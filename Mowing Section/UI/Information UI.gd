@@ -1,13 +1,13 @@
 extends Control
 
 # store static references to the nodes
-@onready var fuel_bar = $"Fuel Progress Bar"
-@onready var grass_bar = $"Cuttings Progress Bar"
-@onready var time_remaing_bar = $"Time Left Progress Bar"
+@onready var fuel_bar:ProgressBar = $"Fuel Progress Bar"
+@onready var grass_bar:ProgressBar = $"Cuttings Progress Bar"
+@onready var time_remaing_bar:ProgressBar = $"Time Left Progress Bar"
 
 # buttons
-@onready var press_m_manage = $"Press M to Manage" # this remains visible throughout
-@onready var press_o_open = $"Press O to Manage"   # hide this unless on truck zone
+@onready var press_m_manage:Label = $"Press M to Manage" # this remains visible throughout
+@onready var press_o_open:Label = $"Press O to Manage"   # hide this unless on truck zone
 
 #store the reference to whatever is the current job data object
 var job_data:Job_Data_Container = null
@@ -18,13 +18,14 @@ func _ready():
 func _process(delta):
 	update_fuel_display()
 
-func update_fuel_display():
+func update_fuel_display() -> void:
 	var current_fuel = model.get_mower_fuel()
 	fuel_bar.value = current_fuel
-func update_cuttings_display():
+func update_cuttings_display() -> void:
 	var cuttings = model.get_cuttings()
-
-func set_job_data(d: Job_Data_Container):
+	grass_bar.value = cuttings
+	
+func set_job_data(d: Job_Data_Container) -> void:
 	"""
 	Set the job data.
 

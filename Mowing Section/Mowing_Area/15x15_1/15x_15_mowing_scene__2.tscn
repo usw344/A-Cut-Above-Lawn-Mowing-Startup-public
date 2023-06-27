@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://cflhu78qom24y"]
+
+[ext_resource type="PackedScene" uid="uid://ba2dbpjci8pm3" path="res://Assets/Level Scenes/15x15/15x15_mowing_scene_v2.glb" id="1_3vxj4"]
+[ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_mhxj6"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cnpxq"]
+size = Vector2(15, 15)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_i0gxn"]
+points = PackedVector3Array(-7.5, 0, -7.5, -7.5, 0, 7.5, 7.5, 0, -7.5, 7.5, 0, 7.5)
+
+[node name="15x15_mowing_scene_v2" instance=ExtResource("1_3vxj4")]
+
+[node name="mergedBlocks(Clone)" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.468678, -0.797303, 10.3792)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" index="0"]
+mesh = SubResource("PlaneMesh_cnpxq")
+surface_material_override/0 = ExtResource("2_mhxj6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
+shape = SubResource("ConvexPolygonShape3D_i0gxn")

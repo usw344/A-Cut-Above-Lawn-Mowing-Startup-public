@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://ch2nat2v1vauy"]
+[gd_scene load_steps=6 format=3 uid="uid://ch2nat2v1vauy"]
 
 [ext_resource type="Material" uid="uid://bvp458oubx7i6" path="res://Assets/Grass with LOD/Grass_texture.tres" id="1_d8jyl"]
+[ext_resource type="ArrayOccluder3D" uid="uid://b4a1s81g5rvx0" path="res://Assets/Grass with LOD/Unmowed Grass High LOD.occ" id="2_qa8qf"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_wnfjd"]
 _surfaces = [{
@@ -70,3 +71,6 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.205621, 0.134957, -0.220219)
 shape = SubResource("BoxShape3D_nhnsv")
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
+occluder = ExtResource("2_qa8qf")

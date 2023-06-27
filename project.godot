@@ -13,7 +13,6 @@ config_version=5
 config/name="A Cut Above"
 run/main_scene="res://Main.tscn"
 config/features=PackedStringArray("4.0", "Mobile")
-run/max_fps=144
 config/icon="res://icon.svg"
 
 [autoload]
@@ -25,6 +24,7 @@ model="*res://Data Structures/Model.gd"
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/handheld/orientation=1
+window/vsync/vsync_mode=0
 
 [input]
 
@@ -77,4 +77,5 @@ dev_hud={
 [rendering]
 
 textures/vram_compression/import_etc2_astc=true
+occlusion_culling/occlusion_rays_per_thread=400
 occlusion_culling/use_occlusion_culling=true

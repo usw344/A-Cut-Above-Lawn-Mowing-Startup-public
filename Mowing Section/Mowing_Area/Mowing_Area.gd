@@ -70,7 +70,7 @@ func setup(new_data:Job_Data_Container):
 	
 	#get the referene ( returns a load () ) of the level that is needed
 	var level_reference = model.get_level(type,variant)
-	
+
 	# setup ground and house
 	var _level = level_reference.instantiate()
 	add_child(_level)
@@ -81,19 +81,21 @@ func setup(new_data:Job_Data_Container):
 	level.scale = data.get_house_scale()
 	
 	# set reference to mowing area
-	mowing_area = level.get_node("StaticBody3D/Mowing Area")
+	mowing_area = _level.get_node("StaticBody3D/Mowing Area")
+
 
 	# if this is a new unstarted job do this calcuation for width and height
 	if data.get_is_width_height_set() != true:
 		var scaling = level.get_node(".").scale
 		data.set_width(mowing_area.mesh.size.x * scaling.x)
 		data.set_length(mowing_area.mesh.size.y * scaling.z)
+		
 	
 
 	
-	# get the truck zone area and connect the Area3D signal
-	truck_zone = level.get_node("Truck Zone")
-	truck_zone.connect("body_entered",handle_truck_zone) 
+#	# get the truck zone area and connect the Area3D signal
+#	truck_zone = level.get_node("Truck Zone")
+#	truck_zone.connect("body_entered",handle_truck_zone) 
 
 	# set the size of the different set of grasses in job container
 	var grass_instance = grass_unmowed_high_LOD_scene.instantiate()
@@ -117,22 +119,21 @@ func calculate_grass_loading(mower_current_position:Vector3):
 
 		data.set_is_inital_grass_grid_set(true)
 		var positions:Vector4 = get_grid_edges()
+
 		var top_x = positions.x
 		var top_z = positions.y
 		
 		var bottom_x = positions.w
 		var bottom_z = positions.z
 		
-		
 		var LODS:Array = [grass_unmowed_high_LOD_scene,grass_mowed_low_LOD_scene,grass_mowed_high_LOD_scene] # grass_mowed_low_LOD_scene,grass_mowed_high_LOD_scene
 		var LODS_keys:Array = ["unmowed high LOD","mowed low LOD","mowed high LOD"] # ""
-		
-		for x in range(top_x,bottom_x,-grass_size):
-			for z in range(top_z,bottom_z,-grass_size):
+		print(top_x, "topz",top_z)
+		for x in range(bottom_x,top_x,-grass_size):
+			for z in range(bottom_z,top_z,-grass_size):
 				
 				# calculate position
 				var position_ = Vector3(x,0,z) 
-
 				var child_ = grass_unmowed_low_LOD_scene.instantiate()
 				# store in grass grid ( so divide by grass size and round)
 				var grid_coord_for_this_grass = to_grid_coord(position_,grass_size)
@@ -148,8 +149,9 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				mowing_area.add_child(child_)
 				
 				# conver the position to local coord of the mowing area mesh
+#				child_.position = mowing_area.to_local(position_)
+				position_ = to_global(position_)
 				child_.position = mowing_area.to_local(position_)
-				
 				# to make sure grass is on the ground
 				child_.position.y = 0 
 				
@@ -321,7 +323,8 @@ func get_grid_edges() -> Vector4:
 	# find the top right of the grid
 	var top_x = mowing_area.position.x - (data.get_width()/2)
 	var top_z = mowing_area.position.z - (data.get_length()/2)
-		
+	
+	print(data.get_house_scale())
 	var bottom_x = -data.get_width()/2
 	var bottom_z = -data.get_length()/2
 		
@@ -348,7 +351,7 @@ func to_grid_coord(pos:Vector3,grid_cell_size:int):
 	
 func return_truck_zero_position() ->Vector3:
 	var pos:Vector3 = Vector3()
-	pos.z = -(data.get_length()/2) + 10
+	pos.z = -68
 	pos.y = 50
 	return pos
 	

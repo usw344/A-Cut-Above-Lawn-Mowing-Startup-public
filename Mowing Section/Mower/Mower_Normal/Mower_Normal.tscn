@@ -640,6 +640,10 @@ size = Vector3(0.848448, 0.435141, 1.63482)
 [node name="Small Gas Mower" type="CharacterBody3D"]
 script = ExtResource("1_f570l")
 
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.15029e-08, -0.313843, 0.949475, -1.37185e-08, 0.949475, 0.313843, -1, 2.4869e-14, -4.37114e-08, 3.33493, 1.80157, -0.0499125)
+fov = 106.3
+
 [node name="detail_light" type="MeshInstance3D" parent="."]
 transform = Transform3D(2.184, 0, 0, 0, 1.95, 0, 0, 0, 1, 0.2816, -0.1, -0.4)
 mesh = SubResource("ArrayMesh_qdm7g")
@@ -689,10 +693,6 @@ skeleton = NodePath("")
 transform = Transform3D(0, 0, 0.5508, 0, 0.6468, 0, -0.9801, 0, 0, 0.2841, -0.05, 0)
 mesh = SubResource("ArrayMesh_w2skw")
 skeleton = NodePath("")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-4.15029e-08, -0.313843, 0.949475, -1.37185e-08, 0.949475, 0.313843, -1, 0, -4.37114e-08, 3.33493, 1.80157, -0.0499125)
-fov = 106.3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.888817, 0.276116, -0.045765)
