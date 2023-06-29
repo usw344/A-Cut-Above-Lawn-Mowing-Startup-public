@@ -113,7 +113,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		the expensive calculations that occur here can be paused when not needed
 	"""
 	var grass_size = data.get_grass_size() # grass size is hard coded for each level size
-	
+	grass_size = 20
 	# inital grid generation is expensive. do it once
 	if data.get_is_inital_grass_grid_set() == false:
 
@@ -123,15 +123,14 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		var top_x = positions.x
 		var top_z = positions.y
 		
-		var bottom_x = positions.w
-		var bottom_z = positions.z
+		var bottom_x = positions.z
+		var bottom_z = positions.w
 		
 		var LODS:Array = [grass_unmowed_high_LOD_scene,grass_mowed_low_LOD_scene,grass_mowed_high_LOD_scene] # grass_mowed_low_LOD_scene,grass_mowed_high_LOD_scene
 		var LODS_keys:Array = ["unmowed high LOD","mowed low LOD","mowed high LOD"] # ""
-		print(top_x, "topz",top_z)
-		for x in range(bottom_x,top_x,-grass_size):
-			for z in range(bottom_z,top_z,-grass_size):
-				
+
+		for x in range(top_x,bottom_x,-grass_size):
+			for z in range(top_z,bottom_z,-grass_size):
 				# calculate position
 				var position_ = Vector3(x,0,z) 
 				var child_ = grass_unmowed_low_LOD_scene.instantiate()
@@ -146,20 +145,20 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				unmowed_low_lod[grid_coord_for_this_grass] = child_
 
 				# add it to scene
-				mowing_area.add_child(child_)
+				add_child(child_)
 				
 				# conver the position to local coord of the mowing area mesh
 #				child_.position = mowing_area.to_local(position_)
-				position_ = to_global(position_)
-				child_.position = mowing_area.to_local(position_)
+
 				# to make sure grass is on the ground
-				child_.position.y = 0 
+				child_.position.y = 20 
 				
 				# since the grass is a child of the level scene now. The scaling sets accordingly
 				# this can lead to scaling issues so adjust the scaling (these hard coded values)
 				# are stored in the model and are gotten from there by type of level (small, medium etc)
 				child_.scale = data.get_grass_scale()
-				
+				child_.scale = Vector3(12,12,12)
+				return
 				# now copy the position and scale over and add child for each LOD
 				for i in range(len(LODS)):
 					var new_child = LODS[i].instantiate()
@@ -183,9 +182,10 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				# to aid with collision store the key and child.name
 				grass_grid_for_collision[child_.name] = grid_coord_for_this_grass
 				
-
+	
 	else: # inital grid is setup already (meaning this a load from save) and the grid is loaded
 		# convert mower coord into grid coord
+		return ##FOR TESTING REMOVE ONCE DONE
 		mower_current_position = to_grid_coord(mower_current_position,grass_size)
 		
 		# set the y to 0 since in grid coord the y = 0 for grass
@@ -206,7 +206,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		# since we can get an empty array back no need to do the rest
 		if len(closest_grass_grid_cells) == 0:
 			return
-		
+
 		# check if this grass should be mowed or unmowed LOD
 		# keep track of which grass to un flip the LOD as well
 		for grass in closest_grass_grid_cells:
@@ -246,7 +246,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				remove_from_high_LOD.append(high_mowed)
 				mowed_low_lod[high_mowed] = grass_grid_cell["mowed low LOD"]
 
-		# PRE OPTIMIZATION averaging 120fps
+
 		for high_unmowed in unmowed_high_lod:
 			if high_unmowed in closest_grass_grid_cells:
 				continue
@@ -265,6 +265,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 				mowed_high_lod.erase(remove_this)
 			if unmowed_high_lod.has(remove_this):
 				unmowed_high_lod.erase(remove_this)
+	
 func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	"""
 		Takes in a vector3 containg GRID COORD and finds n nearest grass grid places from list
@@ -275,6 +276,7 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 
 	if pos == mower_position_tracker:
 		return [] # no checking needed
+
 	mower_position_tracker = pos
 	var mower_position:Vector2 = Vector2(pos.x,pos.z)
 	
@@ -318,41 +320,45 @@ func get_grid_edges() -> Vector4:
 		Returns the edges of the grid. top left and bottom right
 		This can then be used in a for loop to generate a grid
 		
-		return a Vector 4 with x = topx, y = topy, w = bottomx, z = bottom z
+		return a Vector 4 with x = topx, y = topy, w = bottomx, z = bottom z (in  global coords)
 	"""
+	# we can use the truck zero function to get the centre of start gate of mowing area
+	var centre_start_ref = return_truck_zero_position()
+	
+	# since the centre point is halfway on left-right then move it over by half of length
+	
 	# find the top right of the grid
-	var top_x = mowing_area.position.x - (data.get_width()/2)
-	var top_z = mowing_area.position.z - (data.get_length()/2)
+	var top_x = centre_start_ref.x + (data.get_width()/2)
+	var top_z = centre_start_ref.z + (data.get_length()) # length is 1 distance
 	
-	print(data.get_house_scale())
-	var bottom_x = -data.get_width()/2
-	var bottom_z = -data.get_length()/2
+	
+	var bottom_x = centre_start_ref.x - (data.get_width()/2)
+	var bottom_z = centre_start_ref.z
 		
-	# for some reason this points to the bottom right corner
-	# to fix this negate them
-	top_x = -top_x
-	top_z = -top_z
-		
-	# on current design of level the fence cuts of part of the mowing area
-	# to fix this add in a relative buffer. apply to both ends
-	var x_buffer = data.get_width()/24
-	var z_buffer = data.get_length()/24	
+
+	$MeshInstance3D.position = Vector3(top_x,25,top_z)
+	$MeshInstance3D2.position = Vector3(bottom_x,50,bottom_z)
 	
-	top_x -= x_buffer
-	top_z -= z_buffer
+#	print(" ** ")
+#	print(Vector3(top_x,25,top_z))
+#	print(Vector3(bottom_x,50,bottom_z))
 	
-	bottom_x += x_buffer
-	bottom_z += z_buffer
-	return Vector4(top_x,top_z,bottom_x,bottom_z)
+	#x,y,z,w
+	return round(Vector4(top_x,top_z,bottom_x,bottom_z))
 
 func to_grid_coord(pos:Vector3,grid_cell_size:int):
 	return round(pos/grid_cell_size)
 
 	
 func return_truck_zero_position() ->Vector3:
-	var pos:Vector3 = Vector3()
-	pos.z = -68
-	pos.y = 50
+	var road_size = 8.5 # this is from the 3D model
+	var road_size_scaled = road_size * data.get_house_scale().x # this m
+	
+	var centre_x = (data.get_width())/65 # for some reason this centres it
+	var centre_z = road_size_scaled/2.5 # calculate road width and then some buffer
+
+	var pos:Vector3 = Vector3(centre_x,25,centre_z)
+	
 	return pos
 	
 

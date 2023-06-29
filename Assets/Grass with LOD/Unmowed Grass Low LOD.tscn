@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://ct40jkc0epddu"]
+[gd_scene load_steps=4 format=3 uid="uid://ct40jkc0epddu"]
 
 [ext_resource type="Material" uid="uid://bvp458oubx7i6" path="res://Assets/Grass with LOD/Grass_texture.tres" id="1_ojsgd"]
-[ext_resource type="ArrayOccluder3D" uid="uid://vdnoq3fwty3o" path="res://Assets/Grass with LOD/Unmowed Grass Low LOD.occ" id="2_5diue"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_qqdiw"]
 _surfaces = [{
@@ -56,6 +55,3 @@ shadow_mesh = SubResource("ArrayMesh_qqdiw")
 [node name="Unmowed Grass Low LOD" type="MeshInstance3D"]
 mesh = SubResource("ArrayMesh_fu1ma")
 skeleton = NodePath("")
-
-[node name="OccluderInstance3D" type="OccluderInstance3D" parent="."]
-occluder = ExtResource("2_5diue")

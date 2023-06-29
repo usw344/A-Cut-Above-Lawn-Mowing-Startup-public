@@ -22,6 +22,8 @@ var calls:float = 0.0
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	mowing_area.calculate_grass_loading(mower.position)
+#	mowing_area.get_grid_edges()
+#	pass
 
 
 func set_data(d:Job_Data_Container):
@@ -33,9 +35,13 @@ func set_data(d:Job_Data_Container):
 
 	
 func set_mower_position():
-	mower.position = mowing_area.return_truck_zero_position() # gives position of the truck pad
-#	mower.position.y = 30
-#	mower.position.x = 100
+
+	var new_pos:Vector3 = mowing_area.return_truck_zero_position()
+	mower.position.x += new_pos.x # gives position of the truck pad
+	mower.position.z += new_pos.z
+	mower.position.y = 30
+	
+#	mower.position = Vector3(0,30,0)
 	
 
 

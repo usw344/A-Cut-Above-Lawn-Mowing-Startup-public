@@ -7,7 +7,7 @@ This is an autoload script that stores global game variables
 
 
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
-var speed = 10 + 20 #REMOVE TEMP ADDITION OF +
+var speed = 10 + 80 #REMOVE TEMP ADDITION OF +
 var blade_length = 1
 
 ##mower fuel variables 
@@ -113,7 +113,7 @@ var mower_scene_references: Dictionary = {
 
 
 # store the houses. To simplfy process first make dictionaries with houses
-var holder = "res://Mowing Section/Mowing_Area/15x15_1/15x15_mowing_scene_1.tscn"
+var holder = "res://Mowing Section/Mowing_Area/15x15_1/15x_15_mowing_scene__2.tscn"
 var small_houses:Dictionary = {
 	1: load(holder),
 	2: load(holder),
@@ -138,7 +138,7 @@ var large_houses:Dictionary = { # for scale of level of 8,8,8 ( 800x800)
 	2: load(holder),
 	3: load(holder),
 	"previous variant":0,
-	"grass information":{"size":8,"scale":Vector3(1,1,1)},
+	"grass information":{"size":8,"scale":Vector3(2,2,2)},
 	"house scale": Vector3(55,55,55)
 }
 

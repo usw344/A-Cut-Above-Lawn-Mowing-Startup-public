@@ -10,7 +10,7 @@ var rotate_speed:int = 20
 
 var base_gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
-var gravity = 0
+var gravity = base_gravity
 var mouse_sensitivity:float = 0.002 
 
 ##Signals
