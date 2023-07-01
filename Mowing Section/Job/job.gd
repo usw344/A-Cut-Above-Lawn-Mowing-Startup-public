@@ -14,6 +14,7 @@ var mesure = Mesurment.new("Job Scene peformance measure")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+
 	pass
 
 var avg:float = 0

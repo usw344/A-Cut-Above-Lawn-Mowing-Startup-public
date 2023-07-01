@@ -1,0 +1,21 @@
+[gd_scene load_steps=6 format=3 uid="uid://boigp643qng7l"]
+
+[ext_resource type="Script" path="res://Mowing Section/Mowing_Area/Grass Container/Grass Container.gd" id="1_8o2o5"]
+[ext_resource type="PackedScene" uid="uid://b1xijjx2himk3" path="res://Assets/Grass with LOD/Mowed Grass High LOD.tscn" id="2_67p2n"]
+[ext_resource type="PackedScene" uid="uid://b14vnx1a5iegr" path="res://Assets/Grass with LOD/Mowed Grass Low LOD.tscn" id="3_q376f"]
+[ext_resource type="PackedScene" uid="uid://ch2nat2v1vauy" path="res://Assets/Grass with LOD/Unmowed Grass High LOD.tscn" id="4_ck2l2"]
+[ext_resource type="PackedScene" uid="uid://ct40jkc0epddu" path="res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn" id="5_3kvf1"]
+
+[node name="Grass Container" type="Node3D"]
+script = ExtResource("1_8o2o5")
+
+[node name="Mowed Grass High LOD" parent="." instance=ExtResource("2_67p2n")]
+visible = false
+
+[node name="Mowed Grass LOW LOD" parent="." instance=ExtResource("3_q376f")]
+visible = false
+
+[node name="Unmowed Grass High LOD" parent="." instance=ExtResource("4_ck2l2")]
+visible = false
+
+[node name="Unmowed Grass Low LOD" parent="." instance=ExtResource("5_3kvf1")]
