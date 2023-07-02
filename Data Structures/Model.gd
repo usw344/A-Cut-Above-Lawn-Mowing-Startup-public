@@ -138,7 +138,7 @@ var large_houses:Dictionary = { # for scale of level of 8,8,8 ( 800x800)
 	2: load(holder),
 	3: load(holder),
 	"previous variant":0,
-	"grass information":{"size":8,"scale":Vector3(2,2,2)},
+	"grass information":{"size":12,"scale":Vector3(1.25,1.25,1.25)},
 	"house scale": Vector3(55,55,55)
 }
 

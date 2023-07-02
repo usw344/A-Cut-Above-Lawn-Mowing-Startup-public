@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cflhu78qom24y"]
+[gd_scene load_steps=6 format=3 uid="uid://cflhu78qom24y"]
 
 [ext_resource type="PackedScene" uid="uid://ba2dbpjci8pm3" path="res://Assets/Level Scenes/15x15/15x15_mowing_scene_v2.glb" id="1_3vxj4"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="2_mhxj6"]
+[ext_resource type="ArrayOccluder3D" uid="uid://3iq1hnp0tnig" path="res://Mowing Section/Mowing_Area/15x15_1/15x15_mowing_scene_1.occ" id="3_fgmec"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_cnpxq"]
 size = Vector2(15, 15)
@@ -23,3 +24,6 @@ surface_material_override/0 = ExtResource("2_mhxj6")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="1"]
 shape = SubResource("ConvexPolygonShape3D_i0gxn")
+
+[node name="OccluderInstance3D" type="OccluderInstance3D" parent="." index="2"]
+occluder = ExtResource("3_fgmec")

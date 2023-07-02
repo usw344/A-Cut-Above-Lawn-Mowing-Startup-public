@@ -115,10 +115,9 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		the expensive calculations that occur here can be paused when not needed
 	"""
 	var grass_size = data.get_grass_size() # grass size is hard coded for each level size
-	grass_size = 20
+
 	# inital grid generation is expensive. do it once
 	if data.get_is_inital_grass_grid_set() == false:
-
 		data.set_is_inital_grass_grid_set(true)
 		var positions:Vector4 = get_grid_edges()
 
@@ -128,21 +127,19 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		var bottom_x = positions.z
 		var bottom_z = positions.w
 		
-		top_x = 0
-		bottom_x = -400
-		
-		top_z = 0
-		bottom_z = -400
-		
 		for x_position in range(top_x,bottom_x,-grass_size):
 			for z_position in range(top_z,bottom_z,-grass_size):
-				var a_scene = grass_unmowed_low_LOD_scene.instantiate()
-#				a_scene.set_location(Vector3(x_position,20,z_position))
-				a_scene.position = Vector3(x_position,0,z_position)
-				a_scene.position = level.to_local(a_scene.position)
+				var a_scene = grass_container_scene.instantiate()
+				var current_position = Vector3(x_position,0,z_position)
 				
+				# this is needed otherwise. example global 4xx might become 7.xx local
+				current_position = level.to_local(current_position)
+
 				mowing_area.add_child(a_scene)
-				a_scene.scale = Vector3(1,1,1)
+				a_scene.setup_cell(current_position,data)
+	
+	else: # MAIN LOOP of this function 
+		pass
 
 func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	"""
@@ -200,27 +197,15 @@ func get_grid_edges() -> Vector4:
 		
 		return a Vector 4 with x = topx, y = topy, w = bottomx, z = bottom z (in  global coords)
 	"""
-	# we can use the truck zero function to get the centre of start gate of mowing area
-	var centre_start_ref = return_truck_zero_position()
-	
-	# since the centre point is halfway on left-right then move it over by half of length
-	
-	# find the top right of the grid
-	var top_x = centre_start_ref.x + (data.get_width()/2)
-	var top_z = centre_start_ref.z + (data.get_length()) # length is 1 distance
-	
-	
-	var bottom_x = centre_start_ref.x - (data.get_width()/2)
-	var bottom_z = centre_start_ref.z
-		
 
-	$MeshInstance3D.position = Vector3(top_x,25,top_z)
-	$MeshInstance3D2.position = Vector3(bottom_x,50,bottom_z)
+	# find the top right of the grid (0,0,0) is the centre of the mowing area
+	var top_x = data.get_width()/2
+	var top_z = data.get_length()/2
 	
-#	print(" ** ")
-#	print(Vector3(top_x,25,top_z))
-#	print(Vector3(bottom_x,50,bottom_z))
 	
+	var bottom_x = -data.get_width()/2
+	var bottom_z = -data.get_length()/2
+
 	#x,y,z,w
 	return round(Vector4(top_x,top_z,bottom_x,bottom_z))
 
