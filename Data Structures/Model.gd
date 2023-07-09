@@ -119,7 +119,7 @@ var small_houses:Dictionary = {
 	2: load(holder),
 	3: load(holder),
 	"previous variant":0,
-	"grass information":{"size":2,"scale":Vector3(5,5,5)},
+	"grass information":{"size":2,"scale":Vector3(1,1,1)},
 	"house scale": Vector3(100,50,100)
 	
 }

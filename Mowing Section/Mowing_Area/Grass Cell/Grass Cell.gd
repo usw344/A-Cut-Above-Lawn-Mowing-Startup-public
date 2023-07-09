@@ -49,6 +49,15 @@ func setup_cell(location_rounded_val:Vector3,job_data_obj:Job_Data_Container,):
 func flip_to_mow():
 	pass
 func flip_to_high_lod():
-	pass
+	grass_references[UNMOWED_LOW].hide()
+	grass_references[MOWED_HIGH].show()
+	grass_references[MOWED_HIGH].position.y += 2
+	
+	
 func flip_to_low_lod():
-	pass
+	grass_references[UNMOWED_LOW].show()
+	grass_references[MOWED_HIGH].hide()
+
+func hide_all():
+	for ref in grass_references:
+		ref.hide()

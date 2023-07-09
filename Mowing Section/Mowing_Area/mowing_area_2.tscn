@@ -26,3 +26,11 @@ mesh = SubResource("BoxMesh_fsl5y")
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_3fm30")
 surface_material_override/0 = SubResource("StandardMaterial3D_xwcvs")
+
+[node name="Debug" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 636.0
+offset_right = 259.0
+offset_bottom = 866.0
+theme_override_font_sizes/font_size = 32
+text = "Testing"

@@ -22,7 +22,7 @@ var calls:float = 0.0
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	mowing_area.calculate_grass_loading(mower.position)
+	mowing_area.calculate_grass_loading(mower.global_position)
 #	mowing_area.get_grid_edges()
 #	pass
 
