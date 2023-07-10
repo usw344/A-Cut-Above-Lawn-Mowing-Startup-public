@@ -61,3 +61,9 @@ func flip_to_low_lod():
 func hide_all():
 	for ref in grass_references:
 		ref.hide()
+func get_this_global_position():
+	"""
+	Because the actual node (grass cell) may not have a global position set
+	this function grabs the global position 
+	"""
+	return $"Mowed Grass High LOD".global_position

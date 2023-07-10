@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qve1k1opgm3e"
-path.s3tc="res://.godot/imported/testing_Wood_planks.png-38b4eaef5b45d8275950205cd9a9b3b3.s3tc.ctex"
-path.etc2="res://.godot/imported/testing_Wood_planks.png-38b4eaef5b45d8275950205cd9a9b3b3.etc2.ctex"
+uid="uid://6107l1ujsb54"
+path.s3tc="res://.godot/imported/Information UI Texture.png-a2e116a6518c1585a324840781d38488.s3tc.ctex"
+path.etc2="res://.godot/imported/Information UI Texture.png-a2e116a6518c1585a324840781d38488.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -13,8 +13,8 @@ generator_parameters={}
 
 [deps]
 
-source_file="res://Assets/testing_Wood_planks.png"
-dest_files=["res://.godot/imported/testing_Wood_planks.png-38b4eaef5b45d8275950205cd9a9b3b3.s3tc.ctex", "res://.godot/imported/testing_Wood_planks.png-38b4eaef5b45d8275950205cd9a9b3b3.etc2.ctex"]
+source_file="res://Assets/Information UI Texture.png"
+dest_files=["res://.godot/imported/Information UI Texture.png-a2e116a6518c1585a324840781d38488.s3tc.ctex", "res://.godot/imported/Information UI Texture.png-a2e116a6518c1585a324840781d38488.etc2.ctex"]
 
 [params]
 

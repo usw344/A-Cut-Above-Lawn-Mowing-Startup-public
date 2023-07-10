@@ -49,8 +49,9 @@ func _ready():
 
 
 func _process(delta):
-	pass
-
+	if Input.is_action_just_pressed("Testing"):
+		grass_grid[Vector3(-2,0,52)].position.y += 2
+		print("Global position in grid coord" , round((grass_grid[Vector3(-2,0,52)].global_position)/22))
 
 func setup(new_data:Job_Data_Container):
 	"""
@@ -113,52 +114,58 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		var top_z = positions.y
 		var bottom_x = positions.z
 		var bottom_z = positions.w
-		
-		print(level.to_local(Vector3(top_x,top_z,bottom_x)))
+	
 		
 		for x_position in range(top_x,bottom_x,-grass_size):
 			for z_position in range(top_z,bottom_z,-grass_size):
 				var a_scene = grass_container_scene.instantiate()
 				var current_position = Vector3(x_position,0,z_position)
 				
-				# calcuate correct global grid location [See NOTE 1 above why] 
-				var global_grid_position:Vector3 = to_grid_coord(current_position)
+#				for some reason this works with level.to_local but not with mowing_area.to_local
+				current_position = level.to_local(current_position)
 				
+				# add to mowing_area (even though we used level.to_local)
+				mowing_area.add_child(a_scene)
+				# similar to init() setup_cell sets up the object
+				a_scene.setup_cell(current_position,data)
+				
+
+				# calcuate correct global grid location [See NOTE 1 above why] 
+				var global_grid_position:Vector3 = round(a_scene.get_this_global_position()/grass_size)
+				
+				# it is not zeroed for some reason
+				global_grid_position.y = 0
+	
 				# add to dictionary of objects
 				grass_grid[global_grid_position] = a_scene
 				
-				# this is needed otherwise. example global 4xx might become 7.xx local
-				
-#				print("before ", str(current_position))
-				current_position = mowing_area.to_local(current_position)
-#
-#				print("To local result ", str(current_position))
-#				print("To global result ", str(mowing_area.to_global(current_position)))
-#				print("****")
-				mowing_area.add_child(a_scene)
-#				add_child(a_scene)
-				
-				# similar to init() setup_cell sets up the object
-				a_scene.setup_cell(current_position,data)
+
 				
 	else: # MAIN LOOP of this function 
 		var nearest_grass:Array = get_n_nearest_grass(mower_current_position,lod_limit)
 		if nearest_grass.is_empty(): # no change in mower position
 			return
-
 		# run main 
+
 		for grass_coord in nearest_grass:
 			if grass_coord in high_lod_grass:
 				continue
 			# if not then flip this into high LOD
 			grass_grid[grass_coord].flip_to_high_lod()
 			high_lod_grass[grass_coord] = true
-	$Debug.text = ""
-	$Debug.text = str(mowing_area.to_local(mower_current_position)) + "\n"
-	mower_current_position.y = 0
-	$Debug.text += str(mower_current_position)
 
-#	$Debug.text += str(mowing_area.to_local(to_grid_coord(mower_current_position)))
+
+func test1():
+#	print("*****")
+	pass
+#	var grass_keys = grass_grid.keys()
+#	grass_keys.sort_custom(func(a, b): return a[0] > b[0])
+#
+#	if Vector3(-4,0,24) in grass_keys:
+#		print("-4,0,24 is in there but not being found for some reason")
+	
+#	print(grass_keys)
+#	print("*****")
 		
 
 func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
@@ -243,7 +250,7 @@ func to_grid_coord(pos:Vector3):
 	pos.y = 0
 	
 	# translate the z over
-	pos.z += (data.get_length()/2)
+#	pos.z += (data.get_length()/2)
 	
 	return round(pos/data.get_grass_size())
 

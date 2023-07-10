@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Mowing Section/UI/Information UI.gd" id="1_3c31x"]
 [ext_resource type="Texture2D" uid="uid://q2rtte7fp7h2" path="res://Assets/Pictures/Fuel Icon.PNG" id="1_urdpx"]
 [ext_resource type="Texture2D" uid="uid://bobcfnnk8ypte" path="res://Assets/Pictures/Grass Cuttings.PNG" id="2_qf8vt"]
-[ext_resource type="Texture2D" uid="uid://6107l1ujsb54" path="res://Assets/testing_2.png" id="3_d8xb6"]
+[ext_resource type="Texture2D" uid="uid://6107l1ujsb54" path="res://Assets/Information UI Texture.png" id="3_d8xb6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ahate"]
 bg_color = Color(0, 0, 0, 1)

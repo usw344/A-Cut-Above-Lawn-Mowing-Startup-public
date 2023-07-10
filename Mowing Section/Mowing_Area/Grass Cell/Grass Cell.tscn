@@ -16,6 +16,7 @@ visible = false
 visible = false
 
 [node name="Unmowed Grass Low LOD" parent="." instance=ExtResource("3_3vgya")]
-visible = false
 
 [node name="Unmowed Grass High LOD" parent="." instance=ExtResource("4_y4jsk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+visible = false

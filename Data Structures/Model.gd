@@ -138,23 +138,23 @@ var large_houses:Dictionary = { # for scale of level of 8,8,8 ( 800x800)
 	2: load(holder),
 	3: load(holder),
 	"previous variant":0,
-	"grass information":{"size":12,"scale":Vector3(1.25,1.25,1.25)},
-	"house scale": Vector3(55,55,55)
+	"grass information":{"size":22,"scale":Vector3(1,1,1)},
+	"house scale": Vector3(55,55,55)*2
 }
 
 var very_large_houses:Dictionary = { # for scale of level of 16,16,16 ( 1600x1600)
-	1: load("res://Assets/Level Scenes/very_large_1.tscn"), # this is correct
-	2: null,
-	3: null,
+	1: load(holder),
+	2: load(holder),
+	3: load(holder),
 	"previous variant":0,
 	"grass information":{"size":14,"scale":Vector3(2,2,2)},
 	"house scale": Vector3(16,16,16)
 	
 }
 var extremely_large_houses:Dictionary = { # for scale of level 32, 32, 32 (3200x3200)
-	1: load("res://Assets/Level Scenes/very_large_1.tscn"), # this is correct
-	2: null,
-	3: null,
+	1: load(holder),
+	2: load(holder),
+	3: load(holder),
 	"previous variant":0,
 	"grass information":{"size":16,"scale":Vector3(1,1,1)},
 	"house scale": Vector3(32,32,32)

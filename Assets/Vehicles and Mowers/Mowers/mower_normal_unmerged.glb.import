@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://b45hat1pe0go0"
-path="res://.godot/imported/mower_normal.glb-3af5e1c7d67bf3328361b0e31b703b4a.scn"
+uid="uid://xsl8u6gx4k8c"
+path="res://.godot/imported/mower_normal_unmerged.glb-90677f295ae11b8d966b39f267612d5d.scn"
 
 [deps]
 
-source_file="res://Assets/Other/Mowers/mower_normal.glb"
-dest_files=["res://.godot/imported/mower_normal.glb-3af5e1c7d67bf3328361b0e31b703b4a.scn"]
+source_file="res://Assets/Vehicles and Mowers/Mowers/mower_normal_unmerged.glb"
+dest_files=["res://.godot/imported/mower_normal_unmerged.glb-90677f295ae11b8d966b39f267612d5d.scn"]
 
 [params]
 
