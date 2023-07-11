@@ -196,7 +196,7 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 #	print("****  ",start_x,"  ",end_x)
 	for x in range(start_x, end_x , 1):
 		for z in range(start_z, end_z, 1):
-			var coord:Vector3 = Vector3(start_x, 0, start_z)
+			var coord:Vector3 = Vector3(x, 0, z)
 			
 			if grass_grid.has(coord) and coord not in return_array:
 				return_array.append(coord)
