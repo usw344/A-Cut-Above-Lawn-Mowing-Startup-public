@@ -146,26 +146,20 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		if nearest_grass.is_empty(): # no change in mower position
 			return
 		# run main 
-
+		
+		# flip all relevant grass to high lod
 		for grass_coord in nearest_grass:
 			if grass_coord in high_lod_grass:
 				continue
 			# if not then flip this into high LOD
 			grass_grid[grass_coord].flip_to_high_lod()
-			high_lod_grass[grass_coord] = true
+			high_lod_grass[grass_coord] = grass_grid[grass_coord]
+		
+		for coord in high_lod_grass.keys():
+			if coord not in nearest_grass:
+				grass_grid[coord].flip_to_low_lod()
+		
 
-
-func test1():
-#	print("*****")
-	pass
-#	var grass_keys = grass_grid.keys()
-#	grass_keys.sort_custom(func(a, b): return a[0] > b[0])
-#
-#	if Vector3(-4,0,24) in grass_keys:
-#		print("-4,0,24 is in there but not being found for some reason")
-	
-#	print(grass_keys)
-#	print("*****")
 		
 
 func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
@@ -176,7 +170,8 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	"""
 
 	if pos == mower_position_tracker and first_check == false:
-		return [] # no checking needed
+		pass
+#		return [] # no checking needed
 		
 	first_check = false # since power position is now set
 	mower_position_tracker = pos

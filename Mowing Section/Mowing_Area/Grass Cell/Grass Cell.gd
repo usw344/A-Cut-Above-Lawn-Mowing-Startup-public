@@ -13,6 +13,7 @@ const UNMOWED_HIGH = 3
 # array to hold the Node references. Populated in the _ready function
 var grass_references = []
 
+var mowed = false
 
 func _ready():
 	# for easier access add the Node references to the dictionary
@@ -47,23 +48,28 @@ func setup_cell(location_rounded_val:Vector3,job_data_obj:Job_Data_Container,):
 		grass.scale = job_data.get_grass_scale() # value is derived from the model
 	
 func flip_to_mow():
-	pass
+	mowed = true
+	
 func flip_to_high_lod():
-	grass_references[UNMOWED_LOW].hide()
-	grass_references[MOWED_HIGH].show()
-	grass_references[MOWED_HIGH].position.y += 2
-	
-	
-func flip_to_low_lod():
-	grass_references[UNMOWED_LOW].show()
-	grass_references[MOWED_HIGH].hide()
+	if mowed:
+		grass_references[MOWED_LOW].hide()
+		grass_references[MOWED_HIGH].show()
+	else:
+		grass_references[UNMOWED_LOW].hide()
+		grass_references[UNMOWED_HIGH].show()
 
-func hide_all():
-	for ref in grass_references:
-		ref.hide()
+func flip_to_low_lod():
+	if mowed:
+		grass_references[MOWED_LOW].show()
+		grass_references[MOWED_HIGH].hide()
+	else:
+		grass_references[UNMOWED_LOW].show()
+		grass_references[UNMOWED_HIGH].hide()
+
 func get_this_global_position():
 	"""
 	Because the actual node (grass cell) may not have a global position set
 	this function grabs the global position 
 	"""
+	# only need to return one since they all have the same local position
 	return $"Mowed Grass High LOD".global_position
