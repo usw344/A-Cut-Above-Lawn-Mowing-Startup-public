@@ -83,9 +83,10 @@ func setup(new_data:Job_Data_Container):
 	# if this is a new unstarted job do this calcuation for width and height
 	if data.get_is_width_height_set() != true:
 		var scaling = level.get_node(".").scale
+#		var scaling:Vector3 = mowing_area.scale
 		data.set_width(mowing_area.mesh.size.x * scaling.x)
 		data.set_length(mowing_area.mesh.size.y * scaling.z)
-		
+#		print(data.get_width(),"  ",data.get_length())
 	
 
 	
@@ -158,7 +159,7 @@ func calculate_grass_loading(mower_current_position:Vector3):
 		for coord in high_lod_grass.keys():
 			if coord not in nearest_grass:
 				grass_grid[coord].flip_to_low_lod()
-		
+#
 
 		
 
@@ -170,8 +171,8 @@ func get_n_nearest_grass(pos:Vector3,n:int) -> Array:
 	"""
 
 	if pos == mower_position_tracker and first_check == false:
-		pass
-#		return [] # no checking needed
+#		print("happening")
+		return [] # no checking needed
 		
 	first_check = false # since power position is now set
 	mower_position_tracker = pos

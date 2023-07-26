@@ -1,4 +1,4 @@
-res://Mowing Section/Mowing_Area/Grass Cell/Grass Cell.tscn
+res://Main.tscn
 res://Assets/Grass with LOD/Grass_texture.tres
 res://GodotSky/WorldEnvironment/default_sky.tres
 res://GodotSky/WorldEnvironment/default_environment.tres
@@ -12,11 +12,9 @@ res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
 res://Mowing Section/Mowing_Area/Dirt Material.tres
-res://Mowing Section/Mowing_Area/Grass Cell/Grass Cell.gd
-res://Main.tscn
-res://Mowing Section/Mowing_Area/Mowing_Area.gd
 res://Mowing Section/Job/job.tscn
 res://Mowing Section/Mowing_Area/mowing_area_2.tscn
+res://Mowing Section/Mowing_Area/Grass Cell/Grass Cell.tscn
 res://Data Structures/Job Data Structure/Job Data Structure.tscn
 res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
 res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn
