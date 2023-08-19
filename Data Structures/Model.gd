@@ -198,7 +198,15 @@ func save_game_data(file_name):
 		"mower_fuel_idle_counter":get_mower_fuel_idle_counter(),
 		"idle_fuel_use":get_idle_fuel_use()
 	}
-	
+
+func _input(event):
+	if Input.is_action_just_pressed("ui_accept"):
+		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			
+
 func load_game_data(file_name):
 	pass
 
