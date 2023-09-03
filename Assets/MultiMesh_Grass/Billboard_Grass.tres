@@ -1,0 +1,125 @@
+[gd_resource type="ArrayMesh" load_steps=7 format=3 uid="uid://cfrx4dxiq8ic6"]
+
+[ext_resource type="Texture2D" uid="uid://cvqpkwwhiasuu" path="res://Testing Grounds/Meshes/GrassBillboard_Mesh_blender_Image_0.png" id="1_jw4ry"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n5teg"]
+resource_name = "Material_0.001"
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
+albedo_texture = ExtResource("1_jw4ry")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1rgaf"]
+resource_name = "Material_0.002"
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
+albedo_texture = ExtResource("1_jw4ry")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_62bck"]
+resource_name = "Material_0.003"
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
+albedo_texture = ExtResource("1_jw4ry")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_luomm"]
+resource_name = "Material_0.004"
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 1)
+albedo_texture = ExtResource("1_jw4ry")
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ybb2t"]
+_surfaces = [{
+"aabb": AABB(-0.5, -0.5, 0, 1.00001, 1, 1e-05),
+"format": 4097,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"name": "Material_0.001",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 0, 63, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 0, 63, 0, 0, 0, 0)
+}, {
+"aabb": AABB(-0.0370405, -0.5, -0.498626, 0.074091, 1, 0.997252),
+"format": 4097,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"name": "Material_0.002",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(197, 183, 23, 61, 0, 0, 0, 191, 236, 75, 255, 190, 197, 183, 23, 189, 0, 0, 0, 191, 236, 75, 255, 62, 197, 183, 23, 61, 0, 0, 0, 63, 236, 75, 255, 190, 197, 183, 23, 189, 0, 0, 0, 63, 236, 75, 255, 62)
+}, {
+"aabb": AABB(-0.380172, -0.505792, -0.340206, 0.760355, 1.01158, 0.680411),
+"format": 4097,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"name": "Material_0.003",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(244, 165, 194, 62, 148, 123, 1, 191, 170, 158, 161, 190, 170, 204, 191, 190, 86, 223, 252, 190, 110, 47, 174, 62, 170, 204, 191, 62, 86, 223, 252, 62, 110, 47, 174, 190, 244, 165, 194, 190, 148, 123, 1, 63, 170, 158, 161, 62)
+}, {
+"aabb": AABB(-0.3019, -0.511339, -0.412766, 0.6038, 1.02268, 0.825532),
+"format": 4097,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"name": "Material_0.004",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(96, 185, 151, 190, 21, 231, 2, 191, 73, 197, 198, 190, 170, 146, 154, 62, 84, 8, 250, 190, 13, 86, 211, 62, 170, 146, 154, 190, 84, 8, 250, 62, 13, 86, 211, 190, 96, 185, 151, 62, 21, 231, 2, 63, 73, 197, 198, 62)
+}]
+blend_shape_mode = 0
+
+[resource]
+resource_name = "GrassBillboard_Mesh_blender_Mesh_0_001"
+_surfaces = [{
+"aabb": AABB(-0.5, -0.5, 0, 1.00001, 1, 1e-05),
+"attribute_data": PackedByteArray(0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": 4119,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"material": SubResource("StandardMaterial3D_n5teg"),
+"name": "Material_0.001",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(0, 0, 0, 63, 0, 0, 0, 191, 0, 0, 0, 0, 255, 127, 255, 127, 255, 255, 255, 191, 0, 0, 0, 191, 0, 0, 0, 191, 0, 0, 0, 0, 255, 127, 255, 127, 255, 255, 255, 191, 0, 0, 0, 63, 0, 0, 0, 63, 0, 0, 0, 0, 255, 127, 255, 127, 255, 255, 255, 191, 0, 0, 0, 191, 0, 0, 0, 63, 0, 0, 0, 0, 255, 127, 255, 127, 255, 255, 255, 191)
+}, {
+"aabb": AABB(-0.0370405, -0.5, -0.498626, 0.074091, 1, 0.997252),
+"attribute_data": PackedByteArray(0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": 4119,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"material": SubResource("StandardMaterial3D_1rgaf"),
+"name": "Material_0.002",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(197, 183, 23, 61, 0, 0, 0, 191, 236, 75, 255, 190, 36, 247, 255, 127, 255, 255, 145, 251, 197, 183, 23, 189, 0, 0, 0, 191, 236, 75, 255, 62, 36, 247, 255, 127, 255, 255, 145, 251, 197, 183, 23, 61, 0, 0, 0, 63, 236, 75, 255, 190, 36, 247, 255, 127, 255, 255, 145, 251, 197, 183, 23, 189, 0, 0, 0, 63, 236, 75, 255, 62, 36, 247, 255, 127, 255, 255, 145, 251)
+}, {
+"aabb": AABB(-0.380172, -0.505792, -0.340206, 0.760355, 1.01158, 0.680411),
+"attribute_data": PackedByteArray(0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": 4119,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"material": SubResource("StandardMaterial3D_62bck"),
+"name": "Material_0.003",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(244, 165, 194, 62, 148, 123, 1, 191, 170, 158, 161, 190, 154, 186, 251, 129, 236, 254, 244, 161, 170, 204, 191, 190, 86, 223, 252, 190, 110, 47, 174, 62, 154, 186, 251, 129, 236, 254, 244, 161, 170, 204, 191, 62, 86, 223, 252, 62, 110, 47, 174, 190, 154, 186, 251, 129, 236, 254, 244, 161, 244, 165, 194, 190, 148, 123, 1, 63, 170, 158, 161, 62, 154, 186, 251, 129, 236, 254, 244, 161)
+}, {
+"aabb": AABB(-0.3019, -0.511339, -0.412766, 0.6038, 1.02268, 0.825532),
+"attribute_data": PackedByteArray(0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": 4119,
+"index_count": 6,
+"index_data": PackedByteArray(2, 0, 0, 0, 1, 0, 2, 0, 1, 0, 3, 0),
+"material": SubResource("StandardMaterial3D_luomm"),
+"name": "Material_0.004",
+"primitive": 3,
+"vertex_count": 4,
+"vertex_data": PackedByteArray(96, 185, 151, 190, 21, 231, 2, 191, 73, 197, 198, 190, 17, 255, 193, 72, 17, 2, 235, 154, 170, 146, 154, 62, 84, 8, 250, 190, 13, 86, 211, 62, 17, 255, 193, 72, 17, 2, 235, 154, 170, 146, 154, 190, 84, 8, 250, 62, 13, 86, 211, 190, 17, 255, 193, 72, 17, 2, 235, 154, 96, 185, 151, 62, 21, 231, 2, 63, 73, 197, 198, 62, 17, 255, 193, 72, 17, 2, 235, 154)
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_ybb2t")

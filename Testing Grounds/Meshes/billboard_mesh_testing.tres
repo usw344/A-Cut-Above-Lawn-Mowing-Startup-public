@@ -1,0 +1,9 @@
+[gd_resource type="QuadMesh" load_steps=3 format=3 uid="uid://wonkqh35ekf4"]
+
+[ext_resource type="Texture2D" uid="uid://bobcfnnk8ypte" path="res://Assets/Pictures/Grass Cuttings.PNG" id="1_byy3k"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8eh0p"]
+albedo_texture = ExtResource("1_byy3k")
+
+[resource]
+material = SubResource("StandardMaterial3D_8eh0p")

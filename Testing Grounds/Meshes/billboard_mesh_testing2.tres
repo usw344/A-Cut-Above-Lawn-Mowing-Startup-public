@@ -1,0 +1,6 @@
+[gd_resource type="PlaneMesh" load_steps=2 format=3 uid="uid://ixow3bvsnvqn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cywge"]
+
+[resource]
+material = SubResource("StandardMaterial3D_cywge")

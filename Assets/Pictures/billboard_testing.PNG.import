@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bobcfnnk8ypte"
-path.s3tc="res://.godot/imported/Grass Cuttings.PNG-d36032e12004adc661d91d781d452390.s3tc.ctex"
-path.etc2="res://.godot/imported/Grass Cuttings.PNG-d36032e12004adc661d91d781d452390.etc2.ctex"
+uid="uid://2hdyiilgx2d8"
+path.s3tc="res://.godot/imported/billboard_testing.PNG-cc85eedb534beecad1bb9df8e6e6507a.s3tc.ctex"
+path.etc2="res://.godot/imported/billboard_testing.PNG-cc85eedb534beecad1bb9df8e6e6507a.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://Assets/Pictures/Grass Cuttings.PNG"
-dest_files=["res://.godot/imported/Grass Cuttings.PNG-d36032e12004adc661d91d781d452390.s3tc.ctex", "res://.godot/imported/Grass Cuttings.PNG-d36032e12004adc661d91d781d452390.etc2.ctex"]
+source_file="res://Assets/Pictures/billboard_testing.PNG"
+dest_files=["res://.godot/imported/billboard_testing.PNG-cc85eedb534beecad1bb9df8e6e6507a.s3tc.ctex", "res://.godot/imported/billboard_testing.PNG-cc85eedb534beecad1bb9df8e6e6507a.etc2.ctex"]
 
 [params]
 

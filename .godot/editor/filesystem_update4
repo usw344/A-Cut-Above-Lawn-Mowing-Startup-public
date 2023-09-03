@@ -1,5 +1,6 @@
-res://Main.tscn
+res://Assets/Grass with LOD/Mowed Grass High LOD.tscn
 res://Assets/Grass with LOD/Grass_texture.tres
+res://Testing Grounds/Mowed Grass High LOD.tres
 res://GodotSky/WorldEnvironment/default_sky.tres
 res://GodotSky/WorldEnvironment/default_environment.tres
 res://GodotSky/Presets/default/baseCloudColor.tres
@@ -11,15 +12,6 @@ res://GodotSky/Presets/default/overcastCloudColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
-res://Mowing Section/Mowing_Area/Dirt Material.tres
-res://Mowing Section/Job/job.tscn
-res://Mowing Section/Mowing_Area/mowing_area_2.tscn
-res://Mowing Section/Mowing_Area/Grass Cell/Grass Cell.tscn
-res://Data Structures/Job Data Structure/Job Data Structure.tscn
-res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
-res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn
-res://Mowing Section/Mowing_Area/15x15_1/15x_15_mowing_scene__2.tscn
-res://Assets/Grass with LOD/Unmowed Grass High LOD.tscn
-res://Data Structures/Model.gd
-res://Testing Grounds/lod_system_with_multimesh.tscn
 res://Testing Grounds/lod_system_with_multimesh.gd
+res://Testing Grounds/lod_system_with_multimesh.tscn
+res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd

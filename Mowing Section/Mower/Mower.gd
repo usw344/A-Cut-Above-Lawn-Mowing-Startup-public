@@ -43,11 +43,11 @@ func _physics_process(delta):
 	
 	#mower blade rotation
 	$ring_bevelEdges.rotate_z(2)
-	
 
 #	##if not on floor start moving downwards
 	velocity.y -= gravity * delta
 	
+	model.set_mower_position(position)
 	##get the total user input. This function could also return from screen joystick
 	var user_input = get_input() 
 
@@ -61,6 +61,10 @@ func _physics_process(delta):
 		moving = false
 		
 	move_and_slide()
+	
+	
+	
+	## other input related functions
 	##calculate how much fuel has been used
 	if not model.is_mower_fuel_idle_counter(): 		  ##value is still less than counter
 		model.increment_mower_fuel_idle_counter(0.05) ##this is general fuel used due to idling
@@ -75,6 +79,9 @@ func _physics_process(delta):
 
 	else:
 		handle_collision("collided")
+		
+	
+
 
 func handle_collision(signal_name):
 	"""
@@ -96,9 +103,8 @@ func handle_collision(signal_name):
 
 func _input(event):
 	"""
-	Rotates the mower around based on the mouse. T
-	TODO: change this to handle mobile input as well
 	"""
+	## rotate the mower around
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		$Camera3D.rotate_z(event.relative.y * mouse_sensitivity)
