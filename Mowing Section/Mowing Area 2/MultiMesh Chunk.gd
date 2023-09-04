@@ -17,12 +17,6 @@ var mesh:Mesh
 var multimesh_instance:MultiMeshInstance3D = MultiMeshInstance3D.new()
 
 
-var lod_to_mesh_mapping:Dictionary = {
-	0: preload("res://Testing Grounds/Meshes/Mowed Grass High LOD.tres"),
-	1: null,
-	2: null,
-	3: null
-}
 
 
 

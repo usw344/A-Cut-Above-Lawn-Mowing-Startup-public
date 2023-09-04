@@ -198,6 +198,23 @@ func get_house_scale(type:String) -> Vector3:
 # store what the lod will be for each chunk at a given mower position (THIS SHOULD BE SET FOR EACH JOB)
 var lod_look_up:Dictionary = {} # key = mower_grid_position value = Dictionary{ key = grid_coord, value = LOD   }
 
+var mowed_meshes_refernce:Dictionary = {
+	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_100_0.mesh"),
+	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_085_1.mesh"),
+	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_050_2.mesh"),
+	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_030_3.mesh"),
+	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_015_4.mesh"),
+	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed Billboard.mesh")
+}
+var unmowed_meshes_refernce:Dictionary = {
+	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_100_0.mesh"),
+	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_085_1.mesh"),
+	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_050_2.mesh"),
+	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_030_3.mesh"),
+	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_015_4.mesh"),
+	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh")
+}
+
 func get_multi_mesh_LOD(chunk_grid_coord, testing_mower_position:Vector2 = Vector2()) ->int:
 	"""
 	For the current mower position in grid form, find the LOD for a given multimesh chunk
@@ -210,11 +227,7 @@ func get_multi_mesh_LOD(chunk_grid_coord, testing_mower_position:Vector2 = Vecto
 	if lod_look_up.is_empty():
 		print("Model function  'get_multi_mesh_LOD' called without a lod look up set ")
 		return 0
-	
-	## calculate the mower grid position
-	
-	##
-	
+
 	# for testing use a given position
 	var lod_val:int = lod_look_up[testing_mower_position][chunk_grid_coord]
 	return lod_val
