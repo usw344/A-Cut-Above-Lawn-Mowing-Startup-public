@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1693602495
+::res://::1693788122
 default_env.tres::Environment::-1::1684469219::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1687636727::0::1::::<><>::
 Game.gd::GDScript::-1::1685592872::0::1::::<>Node3D<>::
@@ -24,8 +24,32 @@ unmowed_grass_low_LOD.glb::PackedScene::4720631978551184037::1685236648::1685236
 ::res://Assets/Level Scenes/15x15/::1687657111
 15x15_mowingScene_1.glb::PackedScene::2661884956222096912::1687489893::1687489946::1::::<><>::
 15x15_mowing_scene_v2.glb::PackedScene::2442343621681287544::1687657088::1687657111::1::::<><>::
-::res://Assets/MultiMesh_Grass/::1693450229
-Billboard_Grass.tres::ArrayMesh::5160328479738974027::1693450229::0::1::::<><>::uid://cvqpkwwhiasuu::::res://Testing Grounds/Meshes/GrassBillboard_Mesh_blender_Image_0.png
+::res://Assets/MultiMesh_Grass/::1693790029
+Billboard_Grass.tres::ArrayMesh::5160328479738974027::1693450229::0::1::::<><>::uid://cvqpkwwhiasuu
+::res://Assets/MultiMesh_Grass/Extracted Meshes/::1693790040
+::res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/::1693791434
+Mowed High LOD_100_0.mesh::ArrayMesh::1397331901715225456::1693791235::0::1::::<><>::
+Mowed High LOD_085_1.mesh::ArrayMesh::1529446852214555871::1693791263::0::1::::<><>::
+Mowed High LOD_050_2.mesh::ArrayMesh::7166153708029504771::1693791361::0::1::::<><>::
+Mowed High LOD_030_3.mesh::ArrayMesh::7523525643679886507::1693791415::0::1::::<><>::
+Mowed High LOD_015_4.mesh::ArrayMesh::6959653683116301840::1693791434::0::1::::<><>::
+::res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/::1693790040
+::res://Assets/MultiMesh_Grass/Mowed/::1693791763
+Mowed billboard LOD_000_5.glb::PackedScene::7638804851569648840::1693791703::1693791797::1::::<><>::uid://d0is61bkutagl::::res://Assets/MultiMesh_Grass/Mowed/Mowed billboard LOD_000_5_Image_0.png
+Mowed High LOD_015_4.glb::PackedScene::1305913885321941117::1693789680::1693791159::1::::<><>::
+Mowed High LOD_050_2.glb::PackedScene::6282758472127468993::1693789629::1693789881::1::::<><>::
+Mowed High LOD_050_3.glb::PackedScene::1484412398608746533::1693789663::1693789881::1::::<><>::
+Mowed High LOD_085_1.glb::PackedScene::6067105711036005561::1693789603::1693789881::1::::<><>::
+Mowed High LOD_100_0.glb::PackedScene::7224777657163798474::1685852594::1693789881::1::::<><>::
+Mowed billboard LOD_000_5_Image_0.png::CompressedTexture2D::8931647797177175215::1693791797::1693791799::1::::<><>::
+::res://Assets/MultiMesh_Grass/Unmowed/::1693791773
+Unmowed_Billboard_000_0_Image_0.png::CompressedTexture2D::5985628816379492887::1693791798::1693791799::1::::<><>::
+Unmowed_Billboard_000_0.glb::::-1::1693449608::0::0::::<><>::
+Unmowed_High_015_4.glb::PackedScene::1344149947450002338::1693789484::1693789881::1::::<><>::
+Unmowed_High_030_3.glb::PackedScene::620255333427796005::1693789246::1693789881::1::::<><>::
+Unmowed_High_050_2.glb::PackedScene::6044893871069555196::1693789198::1693789881::1::::<><>::
+Unmowed_High_085_1.glb::PackedScene::5399607830493322165::1693789103::1693789881::1::::<><>::
+Unmowed_High_100_0.glb::PackedScene::5502904297410819994::1693788928::1693789881::1::::<><>::
 ::res://Assets/Pictures/::1693447931
 billboard grass image.png::CompressedTexture2D::1792528183868990857::1693447896::1693447931::1::::<><>::
 billboard_testing.PNG::CompressedTexture2D::1909774865591289195::1692820853::1692820874::1::::<><>::

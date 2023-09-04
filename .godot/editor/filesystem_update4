@@ -1,4 +1,5 @@
-res://Assets/Grass with LOD/Mowed Grass High LOD.tscn
+res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed Billboard.tres
+res://Mowing Section/Mowing Area 2/MultiMesh Chunk.tscn
 res://Assets/Grass with LOD/Grass_texture.tres
 res://Testing Grounds/Mowed Grass High LOD.tres
 res://GodotSky/WorldEnvironment/default_sky.tres
@@ -12,6 +13,4 @@ res://GodotSky/Presets/default/overcastCloudColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
-res://Testing Grounds/lod_system_with_multimesh.gd
-res://Testing Grounds/lod_system_with_multimesh.tscn
-res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd
+res://Assets/MultiMesh_Grass/Billboard_Grass.tres
