@@ -44,9 +44,10 @@ func _physics_process(delta):
 	#mower blade rotation
 	$ring_bevelEdges.rotate_z(2)
 
-#	##if not on floor start moving downwards
-	velocity.y -= gravity * delta
-	
+	##if not on floor start moving downwards
+	if is_on_floor():
+		velocity.y -= gravity * delta
+#
 	model.set_mower_position(position)
 	##get the total user input. This function could also return from screen joystick
 	var user_input = get_input() 
@@ -194,7 +195,7 @@ func dev_hud():
 		return
 	
 	var string_to_print:String = ""
-	string_to_print += str(round(position/22)) + "\n"
+	string_to_print += str(round(position/model.get_multimesh_size())) + "\n"
 	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
 	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
 	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\n"

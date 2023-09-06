@@ -13,7 +13,7 @@ var mesh_scene = preload("res://Assets/Grass with LOD/objects/Mowed Grass High L
 var mesh:Mesh
 
 # there will be half the length and width
-var grid_length_half_length:int = 8
+var grid_length_half_length:int = 3
 
 # for now store the multimesh instance 
 var chunk_instances:Array[Multi_Mesh_Chunk] = []
@@ -30,10 +30,11 @@ func _ready():
 	# check the performance
 	measure.start_m("testing with instancing")
 	
+	# calcualte the LOD lookup table
 	lod_look_up_table = make_lod_lookup_table()
 	measure.stop_m()
-#	print(lod_look_up_table[Vector2(0,0)])
-	
+
+	# set it in the model
 	model.set_lod_lookup(lod_look_up_table)
 	
 	# now setup the multimesh chunks 
@@ -49,8 +50,8 @@ var fps_min_5:Array = []
 var fps_min_10:Array = []
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-#	update_main()
-	pass
+	update_main()
+#	pass
 
 func _input(event):
 	if Input.is_action_just_pressed("ui_cancel"):
@@ -150,16 +151,26 @@ func main():
 	# make the grid of multimesh objects
 	for coord in chunk_coords:
 		var chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-		chunk.setup_chunk(coord,50,true)
+		chunk.setup_chunk(coord,model.get_multimesh_size(),model,true)
 		var mm_instance = chunk.get_for_rendering()
 		add_child(chunk.get_for_rendering())
 		mm_instance.global_position += chunk.get_chunk_global_position()
 		chunk_instances.append(chunk)
-		
-
+	
+	## get the information
+	var string:String = ""
+	var lods:Dictionary = {0:0, 1:0, 2:0, 3:0}
+	for chunk in chunk_instances:
+		lods[chunk.lod] += 1
+	string += " 0: "+str(lods[0]) + " \n"
+	string += " 1: "+str(lods[1]) + " \n"
+	string += " 2: "+str(lods[2]) + " \n"
+	string += " 3: "+str(lods[3]) + " \n"
+	$CanvasLayer/Label.text = string
+	
 func update_main():
 	for chunk in chunk_instances:
-		chunk.update_chunk()
+		chunk.update_chunk(model)
 
 
 func make_lod_lookup_table() -> Dictionary:
@@ -214,7 +225,7 @@ func calculate_LOD_gridspaces(mower_grid_position:Vector2) ->Dictionary:
 	var classifed_chunk_coords:Dictionary = {}
 	while current_lod_level != 3: # replace 3 with maximum LOD level minus 1
 		# find the maximum and minumum (do plus 1 since we start at LOD level 0
-		var left_x:int = int(mower_grid_position.x - current_lod_range)
+		var left_x:int = int(mower_grid_position.x - current_lod_range) # here why 1 is used init instead of 0, 0 - 0 == 0
 		var right_x:int = int(mower_grid_position.x + current_lod_range )
 		
 		var left_z:int = int(mower_grid_position.y - current_lod_range)
@@ -247,35 +258,9 @@ func make_2nx2n_a_grid(n:int) ->Array[Vector2]:
 	return chunk_coords
 
 
-func generate_multimesh():
-	var multi_meshinstance:MultiMeshInstance3D = $MultiMeshInstance3D
-	var multi_mesh:MultiMesh = MultiMesh.new()
-	
-	var points_to_render:Array = get_positions()
-	points_to_render = points_to_render[0]
-	
-	multi_mesh.set_mesh(load("res://Testing Grounds/Mowed Grass High LOD.tres"))
-	multi_mesh.set_transform_format(MultiMesh.TRANSFORM_3D)
-	multi_mesh.set_instance_count(len(points_to_render))
 
-	for i in range(multi_mesh.instance_count):
-		# get the point and translate it over to chunk space
-		var point:Vector3 = translate_to_local_space(points_to_render[i])
-		
-		# set the information of this instance
-		var scale_factor:float = 2.0
-		var basis_vector = Basis()*scale_factor
-#		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
-#		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
-		var transform_vector = Transform3D(basis_vector, point)
-		
-#		transform_vector = transform_vector.scaled(Vector3(scale_factor,scale_factor,scale_factor))
-		
-		
-		multi_mesh.set_instance_transform(i, transform_vector)
 
-	
-	multi_meshinstance.multimesh = multi_mesh
+################## OLD FUNCTIONS
 
 func get_positions() ->Array:
 	"""
@@ -307,3 +292,33 @@ func get_positions() ->Array:
 
 func translate_to_local_space(coord:Vector2) ->Vector3:
 	return Vector3(coord.x, 0, coord.y)
+
+func generate_multimesh():
+	var multi_meshinstance:MultiMeshInstance3D = $MultiMeshInstance3D
+	var multi_mesh:MultiMesh = MultiMesh.new()
+	
+	var points_to_render:Array = get_positions()
+	points_to_render = points_to_render[0]
+	
+	multi_mesh.set_mesh(load("res://Testing Grounds/Mowed Grass High LOD.tres"))
+	multi_mesh.set_transform_format(MultiMesh.TRANSFORM_3D)
+	multi_mesh.set_instance_count(len(points_to_render))
+
+	for i in range(multi_mesh.instance_count):
+		# get the point and translate it over to chunk space
+		var point:Vector3 = translate_to_local_space(points_to_render[i])
+		
+		# set the information of this instance
+		var scale_factor:float = 2.0
+		var basis_vector = Basis()*scale_factor
+#		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
+#		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
+		var transform_vector = Transform3D(basis_vector, point)
+		
+#		transform_vector = transform_vector.scaled(Vector3(scale_factor,scale_factor,scale_factor))
+		
+		
+		multi_mesh.set_instance_transform(i, transform_vector)
+
+	
+	multi_meshinstance.multimesh = multi_mesh

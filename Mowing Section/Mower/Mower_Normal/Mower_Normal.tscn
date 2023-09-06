@@ -695,7 +695,7 @@ mesh = SubResource("ArrayMesh_w2skw")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.888817, 0.276116, -0.045765)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.888817, 0.544824, -0.045765)
 shape = SubResource("BoxShape3D_y58uv")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

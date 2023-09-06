@@ -40,41 +40,41 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	# if this returns true that means a change in LOD has occured
-	if set_and_check_lod(): 
-		# write the code here to recalculate this chunk
-		
-		pass
+#	update_chunk() # will remake the multimesh if chunk LOD level changes
 	pass
 
-func setup_chunk(coord:Vector2, size:int, test_with_color:bool = false, lod_level:int = 0):
+func setup_chunk(coord:Vector2, size:int, mod:Model,test_with_color:bool = false, lod_level:int = 0):
 	"""
 	Function used to setup the chunk initally
 	"""
 	chunk_coord = coord*size ## bring them into screen space rather than grid
 	chunk_size = size
 	chunk_grid_coord = coord
-	
-	# store the lod
-	lod = lod_level
-	
-	mesh = load("res://Testing Grounds/Mowed Grass High LOD.tres")
-#	mesh = load("res://Testing Grounds/billboard_mesh_testing.tres")
 
+	lod = mod.get_multi_mesh_LOD(chunk_grid_coord)
+	if lod == -1:
+		print("this is chunk coord for mower coord")
+	mesh = mod.get_grass_mesh_for_lod(lod,false) # use mod not MODEL since model since model is not there
+	
+#	mesh = load("res://Testing Grounds/billboard_mesh_testing.tres")
+	# setup the LOD 
 	use_colours_bool = test_with_color
+	
+
 	
 	multimesh_instance.multimesh = make_multimesh()
 	
 
 func set_and_check_lod():
 	if model.get_multi_mesh_LOD(chunk_grid_coord) != lod:
-		lod = model.get_multi_mesh_LOD(chunk_grid_coord)
+		lod = model.get_multi_mesh_LOD(chunk_grid_coord) # update to new LOD level
 		return true
 	
 	return false
 
 
 func make_multimesh() ->MultiMesh:
-#	print("hello")
+#	print("For coord: " + str(chunk_coord) + " LOD: " + str(lod))
 	var multi_mesh:MultiMesh = MultiMesh.new()
 	var points:Array = []
 	
@@ -97,8 +97,30 @@ func make_multimesh() ->MultiMesh:
 		var point:Vector3 = points[i]
 		
 		# set the information of this instance
-		var scale_factor:float = 2.0
+		var scale_factor:float = 2.5
 		var basis_vector = Basis()*scale_factor # can tweak grass scaling
+		
+		if lod < 3: # REPLACE WITH SOFT CODED LOD VALUE REFERENCE
+			basis_vector.y *= 3
+
+		if lod == 4 or lod == 5:
+			print("found higher lod chunk")
+
+		if lod == -1:
+			a_color = Color(Color.BLACK)
+		elif lod == 0:
+			a_color = Color(Color.AQUA)
+		elif lod == 1:
+			a_color = Color(Color.BLUE)
+		elif lod == 2:
+			a_color = Color(Color.WEB_MAROON)
+		elif lod == 3:
+			a_color = Color(Color.WEB_GREEN)
+		elif lod == 4:
+			a_color = Color(Color.CHOCOLATE)
+		elif lod == 5:
+			a_color = Color(Color.DARK_GRAY)
+
 #		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
 #		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
 		var transform_vector = Transform3D(basis_vector, point)
@@ -114,11 +136,14 @@ func make_multimesh() ->MultiMesh:
 func get_chunk_global_position() ->Vector3:
 	return Vector3(chunk_coord.x, 0 , chunk_coord.y)
 
-func update_chunk():
+func update_chunk(model_var): # since this does not get added to scene tree pass in model
 	"""
 	If an LOD update needs to happen
 	"""
-	pass
+	if lod != model.get_multi_mesh_LOD(chunk_grid_coord):
+		lod = model.get_multi_mesh_LOD(chunk_grid_coord)
+		mesh = model.get_grass_mesh_for_lod(lod,false)
+		multimesh_instance.multimesh = make_multimesh()
 
 func get_for_rendering() -> MultiMeshInstance3D:
 	return multimesh_instance

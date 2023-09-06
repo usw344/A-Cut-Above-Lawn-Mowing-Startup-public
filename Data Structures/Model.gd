@@ -7,7 +7,7 @@ This is an autoload script that stores global game variables
 
 
 """------------------------------------------- Mower.tscn variables AND functions -------------------------------------------"""
-var speed = 10 + 80 - 80 #REMOVE TEMP ADDITION OF +
+var speed = 10 + 80 #REMOVE TEMP ADDITION OF +
 var blade_length = 1
 
 ##mower fuel variables 
@@ -16,7 +16,7 @@ var mower_fuel_idle_counter = 0 #keeps track of movements. Since fuel icnrements
 var idle_fuel_use = 26			#After this much movement substract fuel. PLANNED: to allow this value to be increased
 
 var mower_position:Vector3 = Vector3()
-
+var mower_grid_position:Vector2
 # store the cuttings information
 var stored_cuttings:int = 0
 var cuttings_in_mower:int = 0
@@ -34,6 +34,7 @@ func get_cuttings_in_mower() -> int:
 
 func set_mower_position(p:Vector3):
 	mower_position = p
+	mower_grid_position = Vector2(int(p.x/multimesh_size), int(p.y/multimesh_size))
 func get_mower_position() ->Vector3:
 	return mower_position
 
@@ -197,6 +198,7 @@ func get_house_scale(type:String) -> Vector3:
 """------------------------------------------- multimesh chunk functions  -------------------------------------------"""
 # store what the lod will be for each chunk at a given mower position (THIS SHOULD BE SET FOR EACH JOB)
 var lod_look_up:Dictionary = {} # key = mower_grid_position value = Dictionary{ key = grid_coord, value = LOD   }
+var multimesh_size:int = 25
 
 var mowed_meshes_refernce:Dictionary = {
 	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_100_0.mesh"),
@@ -206,14 +208,23 @@ var mowed_meshes_refernce:Dictionary = {
 	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_015_4.mesh"),
 	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed Billboard.mesh")
 }
+#var unmowed_meshes_refernce:Dictionary = {
+#	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_100_0.mesh"),
+#	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_085_1.mesh"),
+#	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_050_2.mesh"),
+#	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_030_3.mesh"),
+#	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_015_4.mesh"),
+#	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh")
+#}
 var unmowed_meshes_refernce:Dictionary = {
 	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_100_0.mesh"),
 	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_085_1.mesh"),
 	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_050_2.mesh"),
-	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_030_3.mesh"),
-	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_015_4.mesh"),
+	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh"),
+	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh"),
 	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh")
 }
+
 
 func get_multi_mesh_LOD(chunk_grid_coord, testing_mower_position:Vector2 = Vector2()) ->int:
 	"""
@@ -229,9 +240,24 @@ func get_multi_mesh_LOD(chunk_grid_coord, testing_mower_position:Vector2 = Vecto
 		return 0
 
 	# for testing use a given position
-	var lod_val:int = lod_look_up[testing_mower_position][chunk_grid_coord]
+	print("LOD -1 at: " + str(lod_look_up[mower_grid_position].get(-1)))
+	var lod_val:int = lod_look_up[mower_grid_position][chunk_grid_coord]
 	return lod_val
+
+func get_grass_mesh_for_lod(lod_level:int, mowed:bool):
+	"""
+	Return a MESH object for the given LOD and mowed status
 	
+	"""
+	if mowed:
+		return mowed_meshes_refernce[lod_level]
+	else:
+		return unmowed_meshes_refernce[lod_level]
+	
+func set_multimesh_size(s:int) ->void:
+	multimesh_size = s
+func get_multimesh_size() ->int:
+	return multimesh_size
 
 func set_lod_lookup(table:Dictionary):
 	"""
