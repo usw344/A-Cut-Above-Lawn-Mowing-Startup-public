@@ -1,17 +1,25 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvbowu15vcoyo"]
+[gd_scene load_steps=9 format=3 uid="uid://bvbowu15vcoyo"]
 
 [ext_resource type="MeshLibrary" uid="uid://db5j4a8j8eb11" path="res://Testing Grounds/unmowed_grass_meshlibrary.tres" id="1_mcsdv"]
 [ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="2_23pah"]
-[ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="3_ssmcw"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_kdpub"]
-size = Vector2(1500, 1500)
+size = Vector2(500, 500)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wr2bs"]
 albedo_color = Color(0.6, 0.576471, 0.470588, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pbxxx"]
-size = Vector3(1500, 1, 1500)
+size = Vector3(500, 1, 500)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cotfv"]
+
+[sub_resource type="Sky" id="Sky_k3ak3"]
+sky_material = SubResource("ProceduralSkyMaterial_cotfv")
+
+[sub_resource type="Environment" id="Environment_cin5g"]
+background_mode = 2
+sky = SubResource("Sky_k3ak3")
 
 [node name="Base" type="Node3D"]
 
@@ -30,10 +38,12 @@ mesh_library = ExtResource("1_mcsdv")
 cell_size = Vector3(1, 1, 1)
 cell_scale = 3.0
 data = {
-"cells": PackedInt32Array(6, 0, 3, 6, 65535, 3, 6, 65534, 3, 7, 0, 1, 7, 65535, 1, 7, 65534, 1, 6, 65533, 1, 7, 65533, 1, 5, 65533, 1, 5, 65534, 1, 5, 65535, 1, 5, 0, 1, 5, 1, 1, 6, 1, 1, 7, 1, 1, 8, 1, 1, 8, 0, 1, 8, 65535, 1, 8, 65534, 1, 8, 65533, 1, 8, 65532, 1, 8, 65531, 1, 7, 65531, 2, 6, 65531, 2, 6, 65530, 1, 5, 65530, 1, 4, 65530, 1, 4, 65531, 1, 3, 65531, 1, 3, 65532, 1, 3, 65533, 2, 2, 65533, 2, 2, 65534, 2, 3, 65534, 1, 3, 65535, 1, 3, 0, 1, 3, 1, 1, 4, 1, 1, 4, 2, 1, 5, 2, 1, 6, 2, 1, 7, 2, 1, 8, 2, 1, 7, 65532, 1, 6, 65532, 2, 5, 65532, 2, 4, 65532, 2, 4, 65533, 2, 4, 65534, 1, 4, 65535, 1, 4, 0, 1, 3, 2, 1, 3, 3, 1, 2, 3, 1, 1, 1, 1, 1, 0, 1, 1, 65535, 1, 1, 65534, 1, 1, 65533, 1, 1, 65532, 1, 1, 65531, 1, 1, 65530, 1, 2, 65530, 1, 2, 65529, 1, 3, 65530, 1, 2, 65532, 1, 2, 65531, 1, 5, 65531, 1, 3, 65529, 1, 2, 65528, 1, 1, 65528, 1, 3, 65528, 1, 4, 65529, 1, 5, 65529, 1, 6, 65529, 1, 7, 65530, 1, 8, 65530, 1, 7, 65529, 1, 65533, 65517, 1, 65535, 1, 1, 65535, 2, 1, 65535, 3, 1, 65535, 4, 1, 65535, 5, 1, 65534, 5, 1, 0, 65535, 1, 65535, 65530, 2)
+"cells": PackedInt32Array(6, 0, 3, 6, 65535, 3, 6, 65534, 3, 7, 0, 1, 7, 65535, 1, 7, 65534, 1, 6, 65533, 1, 7, 65533, 1, 5, 65533, 1, 5, 65534, 1, 5, 65535, 1, 5, 0, 1, 5, 1, 1, 6, 1, 1, 7, 1, 1, 8, 1, 1, 8, 0, 1, 8, 65535, 1, 8, 65534, 1, 8, 65533, 1, 8, 65532, 1, 8, 65531, 1, 7, 65531, 2, 6, 65531, 2, 6, 65530, 1, 5, 65530, 1, 4, 1, 1, 4, 2, 1, 5, 2, 1, 6, 2, 1, 7, 2, 1, 8, 2, 1, 7, 65532, 1, 6, 65532, 2, 5, 65532, 2, 4, 65533, 2, 3, 2, 1, 3, 3, 1, 2, 3, 1, 5, 65531, 1, 1, 65528, 1, 4, 65529, 1, 5, 65529, 1, 6, 65529, 1, 7, 65530, 1, 8, 65530, 1, 7, 65529, 1, 65535, 3, 1, 65535, 4, 1, 65535, 5, 1, 65534, 5, 1, 2, 0, 1, 65533, 1, 1, 1, 0, 1, 2, 65535, 1, 3, 65534, 1)
 }
+metadata/_editor_floor_ = Vector3(0, 0, 0)
 
 [node name="Small Gas Mower" parent="." instance=ExtResource("2_23pah")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.0328, 0.0135103, 0)
 
-[node name="GodotSky" parent="." instance=ExtResource("3_ssmcw")]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_cin5g")
