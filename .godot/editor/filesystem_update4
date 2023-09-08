@@ -1,23 +1,24 @@
-res://Gridmap.tscn
-res://GodotSky/Presets/default/baseSkyColor.tres
-res://GodotSky/Presets/default/baseCloudColor.tres
-res://GodotSky/Presets/default/overcastCloudColor.tres
-res://GodotSky/Presets/default/horizonFogColor.tres
-res://GodotSky/Presets/default/sunLight.tres
-res://GodotSky/Presets/default/sunDiscColor.tres
-res://GodotSky/Presets/default/sunGlowColor.tres
-res://GodotSky/Presets/default/moonLight.tres
-res://GodotSky/Presets/default/moonGlowColor.tres
-res://Assets/Grass with LOD/Grass_texture.tres
+res://Main.tscn
 res://Testing Grounds/Mowed Grass High LOD.tres
 res://GodotSky/WorldEnvironment/default_sky.tres
 res://GodotSky/WorldEnvironment/default_environment.tres
+res://GodotSky/Presets/default/baseCloudColor.tres
+res://GodotSky/Presets/default/baseSkyColor.tres
+res://GodotSky/Presets/default/horizonFogColor.tres
+res://GodotSky/Presets/default/moonGlowColor.tres
+res://GodotSky/Presets/default/moonLight.tres
+res://GodotSky/Presets/default/overcastCloudColor.tres
+res://GodotSky/Presets/default/sunLight.tres
+res://GodotSky/Presets/default/sunDiscColor.tres
+res://GodotSky/Presets/default/sunGlowColor.tres
 res://Testing Grounds/unmowed_grass_meshlibrary.tres
-res://Testing Grounds/Testing with gridmaps.gd
-res://Main.tscn
 res://Mowing Section/Job/job.tscn
 res://Data Structures/Job Data Structure/Job Data Structure.tscn
 res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
 res://Assets/Grass with LOD/Unmowed Grass Low LOD.tscn
 res://Testing Grounds/lod_system_with_multimesh.tscn
 res://Mowing Section/Mowing Area 2/MultiMesh Chunk.tscn
+res://Gridmap.tscn
+res://Testing Grounds/Grass Grid Item/Grass Grid Item.tscn
+res://Testing Grounds/Grass Grid Item/Grass Grid Item.gd
+res://Testing Grounds/Testing with gridmaps.gd
