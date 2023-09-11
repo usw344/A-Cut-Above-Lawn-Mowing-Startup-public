@@ -34,7 +34,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	dev_hud() # can remove this 
+#	dev_hud() # can remove this 
 	
 	## mower animation ##
 	
@@ -44,9 +44,7 @@ func _physics_process(delta):
 	#mower blade rotation
 	$ring_bevelEdges.rotate_z(2)
 
-	##if not on floor start moving downwards
-	if is_on_floor():
-		velocity.y -= gravity * delta
+	velocity.y -= gravity * delta
 #
 	model.set_mower_position(position)
 	##get the total user input. This function could also return from screen joystick

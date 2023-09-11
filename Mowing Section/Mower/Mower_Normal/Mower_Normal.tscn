@@ -635,9 +635,9 @@ blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_k86uq")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_y58uv"]
-size = Vector3(0.848448, 0.435141, 1.63482)
 
 [node name="Small Gas Mower" type="CharacterBody3D"]
+platform_on_leave = 2
 script = ExtResource("1_f570l")
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -650,7 +650,7 @@ mesh = SubResource("ArrayMesh_qdm7g")
 skeleton = NodePath("")
 
 [node name="detail_light2" type="MeshInstance3D" parent="."]
-transform = Transform3D(-2.184, 0, 8.74228e-08, 0, 1.95, 0, -1.90931e-07, 0, -1, 0.28, -0.1, 0.45)
+transform = Transform3D(-2.184, 0, 1.50996e-07, 0, 1.95, 0, -3.29775e-07, 0, -1, 0.28, -0.1, 0.45)
 mesh = SubResource("ArrayMesh_cismo")
 skeleton = NodePath("")
 
@@ -695,7 +695,7 @@ mesh = SubResource("ArrayMesh_w2skw")
 skeleton = NodePath("")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.888817, 0.544824, -0.045765)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.518107, 0.257224, -0.045765)
 shape = SubResource("BoxShape3D_y58uv")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
