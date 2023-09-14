@@ -12,6 +12,10 @@ func _ready():
 func _process(delta):
 	pass
 
+func test_custom_gridmap():
+	# setup the meshlibrary
+	pass
+
 ## custom gridmap variables
 var grid_length:int 
 var grid_width:int
