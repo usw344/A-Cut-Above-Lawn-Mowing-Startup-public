@@ -6,6 +6,9 @@ var total_grid_width_length:int # calcuated in ready function
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_inital_positions_and_sizes()
+	
+	# test the gridmap 
+	test_custom_gridmap()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -14,7 +17,9 @@ func _process(delta):
 
 func test_custom_gridmap():
 	# setup the meshlibrary
-	pass
+	var grid_size:int = 16
+	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
+	make_grid()
 
 ## custom gridmap variables
 var grid_length:int 
@@ -70,10 +75,56 @@ func make_grid():
 	Note 3: if width and height values are not set. This function will print error message
 	and output to error log (todo this)
 	"""
-	# make an empty 2d array
-	pass
+	# make an empty 2d array  [ x[yyy], x2[yyy]...   ]
+	var left: int = -int(grid_width/2)
+	var right: int = int(grid_width/2)
+	
+	var left_z: int = -int(grid_length/2)
+	var right_z: int = int(grid_length/2)
+	
+	var grid:Array = []
+	for z in range(left_z,right_z,1):
+		var row:Array = []
+		for x in range(left, right, 1):
+			row.append( x )
+		grid.append(row)
+	# at this point we have 
+	#[-16, -15 .... 15, 16]
+	#[-16, -15 .... 15, 16]
+	#[-16, -15 .... 15, 16]
+	# assuming a grid of 32x32
+	# now convert to Vector3i grid positions
+	var grid_positions:Array = []
+	# go from negative to position for ordering ( so that left side is negative)
+	for z in range(int(grid_length/2), -int(grid_length/2), -1): 
+		var row:Array = []
+		for x in range(len(grid[z])):
+			var pos = Vector3i(grid[z][x],0,z)
+			row.append(pos)
+		grid_positions.append(row)
+	
+	var first_half:Array = grid_positions.slice(0,len(grid_positions)/2)
+	var second_half:Array = grid_positions.slice(len(grid_positions)/2, len(grid_positions))
+	
+	# to get them in the correct order we need to invert the grid from the centre
+	# this way the top left is the -x,-z, and bottom right is x,z
+	first_half.reverse()
+	second_half.reverse()
+	
+	grid_positions = first_half + second_half
+	# test this out
+	for i in range(-int(grid_width/2), int(grid_width/2), 1):
+		print()
+		print(grid_positions[i])
+		print()
 
-func update_grid():
+func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
+	"""
+	Make an update to a gridspace in the grid. The orignal grid data is not modified
+	and grid can revert to inital state by calling make_grid()
+	
+	Note: precondition is that set_grid_paramters() was used correctl
+	"""
 	pass
 
 ## testing ground functions
