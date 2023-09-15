@@ -1,6 +1,6 @@
 extends Node3D
-class_name Mesh_Library
-## this is a custom representation of a mesh_library class
+class_name Mesh_List
+## this is a custom representation of a Mesh_List class
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
