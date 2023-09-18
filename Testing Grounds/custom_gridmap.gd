@@ -75,6 +75,19 @@ func make_grid():
 	Note 3: if width and height values are not set. This function will print error message
 	and output to error log (todo this)
 	"""
+	# get all possibile coordinates first
+	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
+	
+	# partition this into chunks
+
+
+func make_an_array_of_arrays_of_coordinates() ->Array:
+	"""
+	will return an array of array where each array contains Vector3i position coordintes for the whole grid
+	[ (-1,0,1), (0,0,1),  (1,0,1)]
+	[ (-1,0,0), (0,0,0,), (1,0,0)]
+	[ (-1,0,-1), (0,0,-1), (1,0,-1)]
+	"""
 	# make an empty 2d array  [ x[yyy], x2[yyy]...   ]
 	var left: int = -int(grid_width/2)
 	var right: int = int(grid_width/2)
@@ -112,11 +125,12 @@ func make_grid():
 	second_half.reverse()
 	
 	grid_positions = first_half + second_half
-	# test this out
-	for i in range(-int(grid_width/2), int(grid_width/2), 1):
-		print()
-		print(grid_positions[i])
-		print()
+#	# test this out
+#	for i in range(-int(grid_width/2), int(grid_width/2), 1):
+#		print()
+#		print(grid_positions[i])
+#		print()
+	return grid_positions
 
 func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
 	"""
