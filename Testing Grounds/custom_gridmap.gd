@@ -21,6 +21,8 @@ func test_custom_gridmap():
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
 	make_grid()
 	
+	test_it()
+	
 	# test saving as csv 
 #	saveArrayAsCSV(data, path) #this function works
 
@@ -29,9 +31,15 @@ var grid_length:int
 var grid_width:int
 
 var batching_size:int # how many meshes togather in a multimesh
-var mesh_list: Mesh_List
+var mesh_list: Mesh_List # a container of mesh references
+
 # for the given widthxlength make a grid with a key represendting global coord of that item
 var grid_mapping:Dictionary = {} # key = 
+
+# store the data of chunks and coordinates in different ways
+var chunk_to_coordinates_dictionary:Dictionary = {}
+var coordinates_to_chunk_dictionary:Dictionary = {}
+
 ## custom gridmap api functions
 func set_grid_paramters(width:int, length:int, a_mesh_list:Mesh_List,batching:int = 16):
 	"""
@@ -80,8 +88,16 @@ func make_grid():
 	"""
 	# get all possibile coordinates first
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
+#	saveArrayAsCSV(array_of_coordinates, path) # for testing
 	
 	# partition this into chunks
+	var chunk_size_x:int = int(sqrt(batching_size))
+	var chunks_size_y:int = chunk_size_x
+	var array_of_partitioned_chunks:Array = partition_grid_into_chunks(array_of_coordinates, chunk_size_x, chunk_size_x)
+	
+	# now convert these into a dictionary key = chunk_number value=array of coordinates
+	# and also store it as a dictionary key = coordinate value = chunk_number
+	
 
 
 func make_an_array_of_arrays_of_coordinates() ->Array:
@@ -124,15 +140,19 @@ func make_an_array_of_arrays_of_coordinates() ->Array:
 	
 	# to get them in the correct order we need to invert the grid from the centre
 	# this way the top left is the -x,-z, and bottom right is x,z
-	first_half.reverse()
-	second_half.reverse()
+#	first_half.reverse()
+#	second_half.reverse()
 	
-	grid_positions = first_half + second_half
+#	grid_positions = first_half + second_half
 #	# test this out
 #	for i in range(-int(grid_width/2), int(grid_width/2), 1):
 #		print()
 #		print(grid_positions[i])
 #		print()
+	
+#	for i in range(len(grid_positions)):
+#		print()
+#		print(str(grid_positions[i]))
 	return grid_positions
 
 func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
@@ -169,7 +189,7 @@ func set_inital_positions_and_sizes():
 	$"Small Gas Mower".position = $"Start Area".position
 
 # test this function with the following data
-var path = "res://output.csv"
+var path = "C:/Users/usw87/Desktop/Godot outside of project store/output_grid.csv"
 func saveArrayAsCSV(dataArray, filePath):
 
 	var file = FileAccess.open(filePath, 2)
@@ -178,14 +198,62 @@ func saveArrayAsCSV(dataArray, filePath):
 		for row in dataArray:
 			var rowString = ""
 			for item in row:
-				rowString += str(item) +","
-			
-
+				# convert to format that can be handled in csv (, inside the 
+				var str_compat_form:String = ""
+				for char in str(item):
+					if char == ",":
+						str_compat_form += ":"
+					else:
+						str_compat_form += char
+				rowString += str_compat_form + ","
+#				rowString += """ " """ + str(item).c_escape() + """ " """ + ","
 				
 			rowString += "\n"
-			print(rowString)
+
 			file.store_string(rowString)
 		file.close()
 		print("CSV file saved to:", filePath)
 	else:
 		print("Failed to open the file for writing.")
+
+### testing grounds
+# Sample grid initialization
+var grid := [
+	[Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(2, 0, 0), Vector3(3, 0, 0)],
+	[Vector3(0, 1, 0), Vector3(1, 1, 0), Vector3(2, 1, 0), Vector3(3, 1, 0)],
+	[Vector3(0, 2, 0), Vector3(1, 2, 0), Vector3(2, 2, 0), Vector3(3, 2, 0)],
+	[Vector3(0, 3, 0), Vector3(1, 3, 0), Vector3(2, 3, 0), Vector3(3, 3, 0)]
+]
+func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: int) -> Array:
+	var chunks := []
+	
+	for y in range(0, grid.size(), chunk_size_y):
+		for x in range(0, grid[0].size(), chunk_size_x):
+			var chunk := []
+			
+			for j in range(y, min(y + chunk_size_y, grid.size())):
+				var row := []
+				
+				for i in range(x, min(x + chunk_size_x, grid[0].size())):
+					row.append(grid[j][i])
+				
+				chunk.append(row)
+			
+			chunks.append(chunk)
+	
+	# since each chunk is currently represented in array of arrays 
+	# we can combine them from  [ [x,x,x], [y,y,y] ] -> [x,x,x,y,y,y] where x,y are Vector3
+	var output_chunks:Array = []
+	for chunk in chunks:
+		var combined_row:Array
+		for arr in chunk:
+			combined_row += arr
+		output_chunks.append(combined_row)
+	return output_chunks
+
+func test_it():
+	var chunkSizeX = 2
+	var chunkSizeY = 2
+	var gridChunks = partition_grid_into_chunks(grid, chunkSizeX, chunkSizeY)
+	for chunk in gridChunks:
+		print(chunk)
