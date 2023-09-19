@@ -20,6 +20,9 @@ func test_custom_gridmap():
 	var grid_size:int = 16
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
 	make_grid()
+	
+	# test saving as csv 
+#	saveArrayAsCSV(data, path) #this function works
 
 ## custom gridmap variables
 var grid_length:int 
@@ -164,3 +167,25 @@ func set_inital_positions_and_sizes():
 	
 	# set the mower to the start position
 	$"Small Gas Mower".position = $"Start Area".position
+
+# test this function with the following data
+var path = "res://output.csv"
+func saveArrayAsCSV(dataArray, filePath):
+
+	var file = FileAccess.open(filePath, 2)
+	# Open the file for writing
+	if file!= null:
+		for row in dataArray:
+			var rowString = ""
+			for item in row:
+				rowString += str(item) +","
+			
+
+				
+			rowString += "\n"
+			print(rowString)
+			file.store_string(rowString)
+		file.close()
+		print("CSV file saved to:", filePath)
+	else:
+		print("Failed to open the file for writing.")

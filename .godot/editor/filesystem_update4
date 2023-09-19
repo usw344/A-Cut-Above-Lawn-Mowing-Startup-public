@@ -12,9 +12,9 @@ res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
 res://Testing Grounds/Mowed Grass High LOD.tres
+res://Testing Grounds/custom_gridmap.gd
 res://Mowing Section/Mowing Area 2/MultiMesh Chunk.tscn
 res://Gridmap.tscn
 res://Testing Grounds/Grass Grid Item/Grass Grid Item.tscn
-res://Testing Grounds/custom_gridmap.tscn
 res://Testing Grounds/Custom Gridmap solution/mesh_library.tscn
-res://Testing Grounds/custom_gridmap.gd
+res://Testing Grounds/custom_gridmap.tscn
