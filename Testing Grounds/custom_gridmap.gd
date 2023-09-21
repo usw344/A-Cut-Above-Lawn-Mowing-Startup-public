@@ -21,7 +21,7 @@ func test_custom_gridmap():
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
 	make_grid()
 	
-	test_it()
+#	test_it() # test grid paritions
 	
 	# test saving as csv 
 #	saveArrayAsCSV(data, path) #this function works
@@ -91,13 +91,15 @@ func make_grid():
 #	saveArrayAsCSV(array_of_coordinates, path) # for testing
 	
 	# partition this into chunks
-	var chunk_size_x:int = int(sqrt(batching_size))
+	var chunk_size_x:int = int(sqrt(batching_size)) #batch 16 = 4x4 which is sqrt(16)
 	var chunks_size_y:int = chunk_size_x
 	var array_of_partitioned_chunks:Array = partition_grid_into_chunks(array_of_coordinates, chunk_size_x, chunk_size_x)
 	
-	# now convert these into a dictionary key = chunk_number value=array of coordinates
-	# and also store it as a dictionary key = coordinate value = chunk_number
 	
+	# now convert these into a dictionary key = chunk_number value=array of coordinates
+	chunk_to_coordinates_dictionary
+	# and also store it as a dictionary key = coordinate value = chunk_number
+	coordinates_to_chunk_dictionary
 
 
 func make_an_array_of_arrays_of_coordinates() ->Array:
@@ -229,16 +231,14 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 	
 	for y in range(0, grid.size(), chunk_size_y):
 		for x in range(0, grid[0].size(), chunk_size_x):
-			var chunk := []
+			var chunk:Array = []
 			
 			for j in range(y, min(y + chunk_size_y, grid.size())):
 				var row := []
 				
 				for i in range(x, min(x + chunk_size_x, grid[0].size())):
 					row.append(grid[j][i])
-				
 				chunk.append(row)
-			
 			chunks.append(chunk)
 	
 	# since each chunk is currently represented in array of arrays 
@@ -252,8 +252,8 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 	return output_chunks
 
 func test_it():
-	var chunkSizeX = 2
-	var chunkSizeY = 2
-	var gridChunks = partition_grid_into_chunks(grid, chunkSizeX, chunkSizeY)
+	var chunk_sizex = 2
+	var chunk_sizey = 2
+	var gridChunks = partition_grid_into_chunks(grid, chunk_sizex, chunk_sizey)
 	for chunk in gridChunks:
 		print(chunk)
