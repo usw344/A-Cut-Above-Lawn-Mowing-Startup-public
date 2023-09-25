@@ -91,11 +91,11 @@ func make_grid():
 #	saveArrayAsCSV(array_of_coordinates, path) # for testing
 	
 	# partition this into chunks
-	var chunk_size_x:int = int(sqrt(batching_size)) #batch 16 = 4x4 which is sqrt(16)
+	var chunk_size_x:int = int(sqrt(batching_size)) #example batch 16 = 4x4 which is sqrt(16)
 	var chunks_size_y:int = chunk_size_x
-	var array_of_partitioned_chunks:Array = partition_grid_into_chunks(array_of_coordinates, chunk_size_x, chunk_size_x)
+	var array_of_partitioned_chunks:Array = partition_grid_into_chunks(array_of_coordinates, chunk_size_x, chunks_size_y)
 	
-	# now fill those dictionaries
+	# now fill those dictionaries (both mapping chunks to coords and coords to chunk)
 	fill_dictionaries(array_of_partitioned_chunks)
 	
 	# at this point we have the base grid information ready. Now begin rendering 
@@ -103,11 +103,23 @@ func make_grid():
 	fill_multimesh_grid()
 
 func fill_multimesh_grid():
+	# find the grid coords of the multimesh chunks
+	var grid_coords_of_chunks:Array
+	var increment_size_x: int = int(grid_width/sqrt(batching_size)) #example batch 16 = 4x4 which is sqrt(16)
+	var increment_size_z: int = int(grid_length/sqrt(batching_size))
+	
+	for z_coord in range(-int(grid_length/2), int(grid_length/2) , increment_size_x  ):
+		for x_coord in range(-int(grid_width/2) , int(grid_width/2), increment_size_x):
+			print( Vector2i(x_coord, z_coord) )
+	
+
+
 	pass
 	
 func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
 	"""
 	Fill out dicts of chunk id to coord and coord to chunk id maping 
+	# tested
 	"""
 	# now convert these into a dictionary key = chunk_number value=array of coordinates
 	var i:int = 0
