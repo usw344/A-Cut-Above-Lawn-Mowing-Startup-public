@@ -95,12 +95,29 @@ func make_grid():
 	var chunks_size_y:int = chunk_size_x
 	var array_of_partitioned_chunks:Array = partition_grid_into_chunks(array_of_coordinates, chunk_size_x, chunk_size_x)
 	
+	# now fill those dictionaries
+	fill_dictionaries(array_of_partitioned_chunks)
 	
-	# now convert these into a dictionary key = chunk_number value=array of coordinates
-	chunk_to_coordinates_dictionary
-	# and also store it as a dictionary key = coordinate value = chunk_number
-	coordinates_to_chunk_dictionary
+	# at this point we have the base grid information ready. Now begin rendering 
+	# make the grid of multimesh chunks 
+	fill_multimesh_grid()
 
+func fill_multimesh_grid():
+	pass
+	
+func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
+	"""
+	Fill out dicts of chunk id to coord and coord to chunk id maping 
+	"""
+	# now convert these into a dictionary key = chunk_number value=array of coordinates
+	var i:int = 0
+	for chunk_arr in grid_partitioned_in_grid:
+		chunk_to_coordinates_dictionary[i] = chunk_arr
+		
+		# also store it as a dictionary key = coordinate value = chunk_number
+		for coord in chunk_arr:
+			coordinates_to_chunk_dictionary[coord] = i
+		i += 1
 
 func make_an_array_of_arrays_of_coordinates() ->Array:
 	"""

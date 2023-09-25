@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://t0gjdme5n50k"]
 
-[ext_resource type="Script" path="res://Testing Grounds/custom_gridmap.gd" id="1_bllg0"]
+[ext_resource type="Script" path="res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd" id="1_bllg0"]
 [ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="2_31xvh"]
 [ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="3_wj5il"]
 
