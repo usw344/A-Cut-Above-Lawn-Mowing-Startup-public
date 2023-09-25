@@ -109,7 +109,7 @@ func fill_multimesh_grid():
 	var increment_size_z: int = int(grid_length/sqrt(batching_size))
 	
 	for z_coord in range(-int(grid_length/2), int(grid_length/2) , increment_size_x  ):
-		for x_coord in range(-int(grid_width/2) , int(grid_width/2), increment_size_x):
+		for x_coord in range(-int(grid_width/2) , int(grid_width/2), increment_size_z):
 			print( Vector2i(x_coord, z_coord) )
 	
 
