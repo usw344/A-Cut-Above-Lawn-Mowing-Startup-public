@@ -84,7 +84,7 @@ func make_multimesh() ->MultiMesh:
 	for x in range(0,chunk_size, 1): # remeber that indivial instances are in LOCAL space with relation to multimeshInstance3D
 		for z in range(0,chunk_size , 1): # so it is 0-size for each mm_instance and then each mm_instance3D is moved
 			points.append(Vector3(x, 0, z))
-	print(len(points))
+
 	multi_mesh.set_mesh(mesh)
 	multi_mesh.set_transform_format(MultiMesh.TRANSFORM_3D)
 	multi_mesh.set_use_colors(use_colours_bool)
@@ -95,9 +95,10 @@ func make_multimesh() ->MultiMesh:
 	for i in range(multi_mesh.instance_count):
 		# get the point and translate it over to chunk space
 		var point:Vector3 = points[i]
+		point.x *= i+1.5
 		
 		# set the information of this instance
-		var scale_factor:float = 2.5
+		var scale_factor:float = 3
 		var basis_vector = Basis()*scale_factor # can tweak grass scaling
 		
 		if lod < 3: # REPLACE WITH SOFT CODED LOD VALUE REFERENCE

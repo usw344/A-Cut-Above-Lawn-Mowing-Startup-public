@@ -2,7 +2,7 @@ extends Node3D
 
 @onready var gridmap:GridMap = $"Mowing Area/Grass Grid"
 
-var width_and_length:int = 200
+var width_and_length:int = 32
 var total_grid_width_length:int # calcuated in ready function
 
 # Called when the node enters the scene tree for the first time.
@@ -30,7 +30,7 @@ func make_inital_gridmap():
 	
 	for x in range(-total_grid_width_length, total_grid_width_length, 1):
 		for z in range(-total_grid_width_length, total_grid_width_length, 1):
-			gridmap.set_cell_item(Vector3i(x, 0, z), 6)
+			gridmap.set_cell_item(Vector3i(x, 0, z), 3)
 	
 func update_gridmap():
 	"""

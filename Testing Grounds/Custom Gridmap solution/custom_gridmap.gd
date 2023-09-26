@@ -113,14 +113,22 @@ func fill_multimesh_grid():
 			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
 	var chunks:Array  = []
 	for coord in grid_coords_of_chunks:
-		var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-		a_chunk.setup_chunk(coord,4,true)
-		var pos = a_chunk.get_chunk_global_position()
-		var mm = a_chunk.get_for_rendering() 
-		add_child(mm)
-		mm.position = pos
+		chunks.append(add_mm(coord))
+		
 
-
+func add_mm(coord:Vector2i):
+	"""
+	sub function to add a multimesh chunk. 
+	
+	CURRENTLY using multimesh chunk system.
+	TODO: change to using rendering server directly
+	"""
+	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
+	a_chunk.setup_chunk(coord,4,true)
+	var pos = a_chunk.get_chunk_global_position()
+	var mm = a_chunk.get_for_rendering() 
+	add_child(mm)
+	mm.position = pos
 	
 func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
 	"""
