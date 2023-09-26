@@ -56,7 +56,7 @@ func setup_chunk(coord:Vector2, size:int,test_with_color:bool = false, lod_level
 		print("this is chunk coord for mower coord")
 #	mesh = mod.get_grass_mesh_for_lod(lod,false) # use mod not MODEL since model since model is not there
 	
-	mesh = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_030_3.mesh")
+	mesh = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_050_2.mesh")
 	# setup the LOD 
 	use_colours_bool = test_with_color
 	
@@ -87,15 +87,15 @@ func make_multimesh() ->MultiMesh:
 
 	multi_mesh.set_mesh(mesh)
 	multi_mesh.set_transform_format(MultiMesh.TRANSFORM_3D)
-	multi_mesh.set_use_colors(use_colours_bool)
+#	multi_mesh.set_use_colors(use_colours_bool)
 	multi_mesh.set_instance_count(len(points)) # make as many instances as there are points
 
-	var a_color = Color(randf(), randf(), randf())
+#	var a_color = Color(randf(), randf(), randf())
 
 	for i in range(multi_mesh.instance_count):
 		# get the point and translate it over to chunk space
 		var point:Vector3 = points[i]
-		point.x *= i+1.5
+#		point.x *= i+1.5
 		
 		# set the information of this instance
 		var scale_factor:float = 3
@@ -107,28 +107,28 @@ func make_multimesh() ->MultiMesh:
 		if lod == 4 or lod == 5:
 			print("found higher lod chunk")
 
-		if lod == -1:
-			a_color = Color(Color.BLACK)
-		elif lod == 0:
-			a_color = Color(Color.AQUA)
-		elif lod == 1:
-			a_color = Color(Color.BLUE)
-		elif lod == 2:
-			a_color = Color(Color.WEB_MAROON)
-		elif lod == 3:
-			a_color = Color(Color.WEB_GREEN)
-		elif lod == 4:
-			a_color = Color(Color.CHOCOLATE)
-		elif lod == 5:
-			a_color = Color(Color.DARK_GRAY)
-		a_color = Color(randf(), randf(), randf())
+#		if lod == -1:
+#			a_color = Color(Color.BLACK)
+#		elif lod == 0:
+#			a_color = Color(Color.AQUA)
+#		elif lod == 1:
+#			a_color = Color(Color.BLUE)
+#		elif lod == 2:
+#			a_color = Color(Color.WEB_MAROON)
+#		elif lod == 3:
+#			a_color = Color(Color.WEB_GREEN)
+#		elif lod == 4:
+#			a_color = Color(Color.CHOCOLATE)
+#		elif lod == 5:
+#			a_color = Color(Color.DARK_GRAY)
+#		a_color = Color(randf(), randf(), randf())
 #		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
 #		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
 		var transform_vector = Transform3D(basis_vector, point)
 		
 #		transform_vector = transform_vector.scaled(Vector3(scale_factor,scale_factor,scale_factor))
-		if use_colours_bool:
-			multi_mesh.set_instance_color(i,a_color)
+#		if use_colours_bool:
+#			multi_mesh.set_instance_color(i,a_color)
 		
 		multi_mesh.set_instance_transform(i, transform_vector)
 	return multi_mesh

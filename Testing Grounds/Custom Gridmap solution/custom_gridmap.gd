@@ -10,6 +10,8 @@ func _ready():
 	# test the gridmap 
 	test_custom_gridmap()
 
+	# test vs built in gridmap
+#	test_built_in_gridmap()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -68,7 +70,7 @@ func set_gridspace_item(item:Grass_Grid_Item):
 	# check if this a valid point in the given grid
 	grid_mapping[position_vector] = item
 	pass
-
+var global_array_of_coordinates:Array = []
 func make_grid():
 	"""
 	Based on all set values render the multimesh instances to their location based on 
@@ -89,7 +91,7 @@ func make_grid():
 	# get all possibile coordinates first
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
 #	saveArrayAsCSV(array_of_coordinates, path) # for testing
-	
+	global_array_of_coordinates = array_of_coordinates
 	# partition this into chunks
 	var chunk_size_x:int = int(sqrt(batching_size)) #example batch 16 = 4x4 which is sqrt(16)
 	var chunks_size_y:int = chunk_size_x
@@ -232,6 +234,21 @@ func set_inital_positions_and_sizes():
 	
 	# set the mower to the start position
 	$"Small Gas Mower".position = $"Start Area".position
+
+func test_built_in_gridmap():
+	var grid_size:int = 16
+	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
+	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
+
+	global_array_of_coordinates = array_of_coordinates
+	var gridmap = $"Testing Gridmap"
+	for list_of_coord in global_array_of_coordinates:
+		for coord in list_of_coord:
+			var coord_corrected = Vector3i(coord.x, 0, coord.z)
+
+			gridmap.set_cell_item(coord_corrected, 1)
+
+
 
 # test this function with the following data
 var path = "C:/Users/usw87/Desktop/Godot outside of project store/output_grid.csv"

@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://t0gjdme5n50k"]
+[gd_scene load_steps=11 format=3 uid="uid://t0gjdme5n50k"]
 
 [ext_resource type="Script" path="res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd" id="1_bllg0"]
 [ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="2_31xvh"]
 [ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="3_wj5il"]
+[ext_resource type="MeshLibrary" uid="uid://c8v830xjlv3ka" path="res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres" id="4_g6o55"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_shfj6"]
 size = Vector2(50, 50)
@@ -50,3 +51,9 @@ shape = SubResource("BoxShape3D_yldoj")
 [node name="Small Gas Mower" parent="." instance=ExtResource("3_wj5il")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.0328, 18.389, 0)
 collision_priority = 4.0
+
+[node name="Testing Gridmap" type="GridMap" parent="."]
+mesh_library = ExtResource("4_g6o55")
+cell_size = Vector3(1, 1, 1)
+cell_center_z = false
+cell_scale = 5.0
