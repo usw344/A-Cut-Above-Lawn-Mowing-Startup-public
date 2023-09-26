@@ -34,7 +34,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-#	dev_hud() # can remove this 
+	dev_hud() # can remove this 
 	
 	## mower animation ##
 	

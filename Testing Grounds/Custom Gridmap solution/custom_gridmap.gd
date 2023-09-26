@@ -105,16 +105,22 @@ func make_grid():
 func fill_multimesh_grid():
 	# find the grid coords of the multimesh chunks
 	var grid_coords_of_chunks:Array
-	var increment_size_x: int = int(grid_width/sqrt(batching_size)) #example batch 16 = 4x4 which is sqrt(16)
-	var increment_size_z: int = int(grid_length/sqrt(batching_size))
+	var increment_size_x: int = int(grid_width/sqrt(batching_size))*2 #example batch 16 = 4x4 which is sqrt(16)
+	var increment_size_z: int = int(grid_length/sqrt(batching_size))*2
 	
-	for z_coord in range(-int(grid_length/2), int(grid_length/2) , increment_size_x  ):
-		for x_coord in range(-int(grid_width/2) , int(grid_width/2), increment_size_z):
-			print( Vector2i(x_coord, z_coord) )
-	
+	for z_coord in range(-int(grid_length/increment_size_x ), int(grid_length/ increment_size_x ) , 1  ):
+		for x_coord in range(-int(grid_width/ increment_size_x ) , int(grid_width/ increment_size_x ), 1):
+			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
+	var chunks:Array  = []
+	for coord in grid_coords_of_chunks:
+		var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
+		a_chunk.setup_chunk(coord,4,true)
+		var pos = a_chunk.get_chunk_global_position()
+		var mm = a_chunk.get_for_rendering() 
+		add_child(mm)
+		mm.position = pos
 
 
-	pass
 	
 func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
 	"""

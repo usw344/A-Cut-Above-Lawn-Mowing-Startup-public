@@ -43,20 +43,20 @@ func _process(delta):
 #	update_chunk() # will remake the multimesh if chunk LOD level changes
 	pass
 
-func setup_chunk(coord:Vector2, size:int, mod:Model,test_with_color:bool = false, lod_level:int = 0):
+func setup_chunk(coord:Vector2, size:int,test_with_color:bool = false, lod_level:int = 0):
 	"""
 	Function used to setup the chunk initally
 	"""
 	chunk_coord = coord*size ## bring them into screen space rather than grid
 	chunk_size = size
 	chunk_grid_coord = coord
-
-	lod = mod.get_multi_mesh_LOD(chunk_grid_coord)
+#
+#	lod = mod.get_multi_mesh_LOD(chunk_grid_coord)
 	if lod == -1:
 		print("this is chunk coord for mower coord")
-	mesh = mod.get_grass_mesh_for_lod(lod,false) # use mod not MODEL since model since model is not there
+#	mesh = mod.get_grass_mesh_for_lod(lod,false) # use mod not MODEL since model since model is not there
 	
-#	mesh = load("res://Testing Grounds/billboard_mesh_testing.tres")
+	mesh = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_030_3.mesh")
 	# setup the LOD 
 	use_colours_bool = test_with_color
 	
@@ -84,7 +84,7 @@ func make_multimesh() ->MultiMesh:
 	for x in range(0,chunk_size, 1): # remeber that indivial instances are in LOCAL space with relation to multimeshInstance3D
 		for z in range(0,chunk_size , 1): # so it is 0-size for each mm_instance and then each mm_instance3D is moved
 			points.append(Vector3(x, 0, z))
-	
+	print(len(points))
 	multi_mesh.set_mesh(mesh)
 	multi_mesh.set_transform_format(MultiMesh.TRANSFORM_3D)
 	multi_mesh.set_use_colors(use_colours_bool)
@@ -120,7 +120,7 @@ func make_multimesh() ->MultiMesh:
 			a_color = Color(Color.CHOCOLATE)
 		elif lod == 5:
 			a_color = Color(Color.DARK_GRAY)
-
+		a_color = Color(randf(), randf(), randf())
 #		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
 #		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
 		var transform_vector = Transform3D(basis_vector, point)
