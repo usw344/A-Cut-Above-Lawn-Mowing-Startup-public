@@ -11,7 +11,7 @@ func _ready():
 	test_custom_gridmap()
 
 	# test vs built in gridmap
-	test_built_in_gridmap()
+#	test_built_in_gridmap(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -20,7 +20,7 @@ func _process(delta):
 func test_custom_gridmap():
 	# setup the meshlibrary
 	var grid_size:int = 144
-	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
+	set_grid_paramters(grid_size,grid_size,Mesh_List.new(),16)
 	make_grid()
 	
 #	test_it() # test grid paritions
@@ -90,14 +90,14 @@ func make_grid():
 	"""
 	# get all possibile coordinates first
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
-	print(len(array_of_coordinates))
+#	print(len(array_of_coordinates))
 #	saveArrayAsCSV(array_of_coordinates, path) # for testing
 	global_array_of_coordinates = array_of_coordinates
 	# partition this into chunks
 	var chunk_size_x:int = int(sqrt(batching_size)) #example batch 16 = 4x4 which is sqrt(16)
 	var chunks_size_y:int = chunk_size_x
 	var array_of_partitioned_chunks:Array = partition_grid_into_chunks(array_of_coordinates, chunk_size_x, chunks_size_y)
-	
+
 	# now fill those dictionaries (both mapping chunks to coords and coords to chunk)
 	fill_dictionaries(array_of_partitioned_chunks)
 	
@@ -108,19 +108,22 @@ func make_grid():
 func fill_multimesh_grid():
 	# find the grid coords of the multimesh chunks
 	var grid_coords_of_chunks:Array
-	var increment_size_x: int = int(grid_width/sqrt(batching_size))*2 #example batch 16 = 4x4 which is sqrt(16)
-	var increment_size_z: int = int(grid_length/sqrt(batching_size))*2
-	
-	for z_coord in range(-int(grid_length/increment_size_x ), int(grid_length/ increment_size_x ) , 1  ):
-		for x_coord in range(-int(grid_width/ increment_size_x ) , int(grid_width/ increment_size_x ), 1):
+	var chunk_size_x: int = sqrt(batching_size) *2 #example batch 16 = 4x4 which is sqrt(16)
+	var chunk_size_z: int = sqrt(batching_size) *2 # and we do *2 since in the loop we go from negative to positive. so either do *2 now or /2 later
+
+	for z_coord in range(-int(grid_length/chunk_size_x ), int(grid_length/ chunk_size_z ) , 1  ):
+		for x_coord in range(-int(grid_width/ chunk_size_x ) , int(grid_width/ chunk_size_z ), 1):
 			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
+	
 	var chunks:Array  = []
-	print("Making these many instances: " + str( len(grid_coords_of_chunks) *12 ))
+#	print("Making these many instances: " + str( len(grid_coords_of_chunks) *12 ))
+
+#	print(grid_coords_of_chunks)
 	for coord in grid_coords_of_chunks:
-		chunks.append(add_mm(coord))
+		chunks.append(add_mm(coord,chunk_size_x)) #for now chunks are assumed to be same length and width
 		
 
-func add_mm(coord:Vector2i):
+func add_mm(coord:Vector2i,chunk_size):
 	"""
 	sub function to add a multimesh chunk. 
 	
@@ -128,7 +131,7 @@ func add_mm(coord:Vector2i):
 	TODO: change to using rendering server directly
 	"""
 	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-	a_chunk.setup_chunk(coord,12,true)
+	a_chunk.setup_chunk(coord,chunk_size,true)
 	
 	var pos = a_chunk.get_chunk_global_position()
 	var mm = a_chunk.get_for_rendering() 
@@ -238,24 +241,29 @@ func set_inital_positions_and_sizes():
 	# set the mower to the start position
 	$"Small Gas Mower".position = $"Start Area".position
 
-func test_built_in_gridmap():
+func test_built_in_gridmap(grounded:bool = false):
 	var grid_size:int = 144
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
-
+	print("array of coordinates size from built in " + str(len(array_of_coordinates)))
 	global_array_of_coordinates = array_of_coordinates
 	var gridmap = $"Testing Gridmap"
 	var i = 0
+	var y:int = 2 # to have gridmap on ground or raised (to compare to custom gridmap)
+	if grounded:
+		y = 0
+
+	
 	for list_of_coord in global_array_of_coordinates:
 		for coord in list_of_coord:
-			var coord_corrected = Vector3i(coord.x, 2, coord.z)
+			var coord_corrected = Vector3i(coord.x, y, coord.z)
 			i+=1
 			gridmap.set_cell_item(coord_corrected, 1)
 	print(i)
 
 
 # test this function with the following data
-var path = "C:/Users/usw87/Desktop/Godot outside of project store/output_grid.csv"
+var path = "C:/Users/usw87/Desktop/Godot outside of project store/output_grid2.csv"
 func saveArrayAsCSV(dataArray, filePath):
 
 	var file = FileAccess.open(filePath, 2)
