@@ -11,7 +11,7 @@ func _ready():
 	test_custom_gridmap()
 
 	# test vs built in gridmap
-#	test_built_in_gridmap()
+	test_built_in_gridmap()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -19,7 +19,7 @@ func _process(delta):
 
 func test_custom_gridmap():
 	# setup the meshlibrary
-	var grid_size:int = 16
+	var grid_size:int = 144
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
 	make_grid()
 	
@@ -90,6 +90,7 @@ func make_grid():
 	"""
 	# get all possibile coordinates first
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
+	print(len(array_of_coordinates))
 #	saveArrayAsCSV(array_of_coordinates, path) # for testing
 	global_array_of_coordinates = array_of_coordinates
 	# partition this into chunks
@@ -114,6 +115,7 @@ func fill_multimesh_grid():
 		for x_coord in range(-int(grid_width/ increment_size_x ) , int(grid_width/ increment_size_x ), 1):
 			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
 	var chunks:Array  = []
+	print("Making these many instances: " + str( len(grid_coords_of_chunks) *12 ))
 	for coord in grid_coords_of_chunks:
 		chunks.append(add_mm(coord))
 		
@@ -126,7 +128,8 @@ func add_mm(coord:Vector2i):
 	TODO: change to using rendering server directly
 	"""
 	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-	a_chunk.setup_chunk(coord,4,true)
+	a_chunk.setup_chunk(coord,12,true)
+	
 	var pos = a_chunk.get_chunk_global_position()
 	var mm = a_chunk.get_for_rendering() 
 	add_child(mm)
@@ -236,18 +239,19 @@ func set_inital_positions_and_sizes():
 	$"Small Gas Mower".position = $"Start Area".position
 
 func test_built_in_gridmap():
-	var grid_size:int = 16
+	var grid_size:int = 144
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
 
 	global_array_of_coordinates = array_of_coordinates
 	var gridmap = $"Testing Gridmap"
+	var i = 0
 	for list_of_coord in global_array_of_coordinates:
 		for coord in list_of_coord:
-			var coord_corrected = Vector3i(coord.x, 0, coord.z)
-
+			var coord_corrected = Vector3i(coord.x, 2, coord.z)
+			i+=1
 			gridmap.set_cell_item(coord_corrected, 1)
-
+	print(i)
 
 
 # test this function with the following data
