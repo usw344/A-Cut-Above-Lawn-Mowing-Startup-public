@@ -43,22 +43,19 @@ func _process(delta):
 #	update_chunk() # will remake the multimesh if chunk LOD level changes
 	pass
 
-func setup_chunk(coord:Vector2, size:int,test_with_color:bool = false, lod_level:int = 0):
+func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,test_with_color:bool = false, lod_level:int = 0):
 	"""
 	Function used to setup the chunk initally
 	"""
 	chunk_coord = coord*size ## bring them into screen space rather than grid
 	chunk_size = size
 	chunk_grid_coord = coord
-#
-#	lod = mod.get_multi_mesh_LOD(chunk_grid_coord)
-	if lod == -1:
-		print("this is chunk coord for mower coord")
+
 #	mesh = mod.get_grass_mesh_for_lod(lod,false) # use mod not MODEL since model since model is not there
 	
 	mesh = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_050_2.mesh")
 	# setup the LOD 
-	use_colours_bool = test_with_color
+#	use_colours_bool = test_with_color
 	
 
 	
@@ -101,30 +98,11 @@ func make_multimesh() ->MultiMesh:
 		var scale_factor:float = 3
 		var basis_vector = Basis()*scale_factor # can tweak grass scaling
 		
-		if lod < 3: # REPLACE WITH SOFT CODED LOD VALUE REFERENCE
-			basis_vector.y *= 3
-
-		if lod == 4 or lod == 5:
-			print("found higher lod chunk")
-
-#		if lod == -1:
-#			a_color = Color(Color.BLACK)
-#		elif lod == 0:
-#			a_color = Color(Color.AQUA)
-#		elif lod == 1:
-#			a_color = Color(Color.BLUE)
-#		elif lod == 2:
-#			a_color = Color(Color.WEB_MAROON)
-#		elif lod == 3:
-#			a_color = Color(Color.WEB_GREEN)
-#		elif lod == 4:
-#			a_color = Color(Color.CHOCOLATE)
-#		elif lod == 5:
-#			a_color = Color(Color.DARK_GRAY)
-#		a_color = Color(randf(), randf(), randf())
 #		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
 #		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
 		var transform_vector = Transform3D(basis_vector, point)
+		
+		
 		
 #		transform_vector = transform_vector.scaled(Vector3(scale_factor,scale_factor,scale_factor))
 #		if use_colours_bool:

@@ -19,7 +19,7 @@ func _process(delta):
 
 func test_custom_gridmap():
 	# setup the meshlibrary
-	var grid_size:int = 144
+	var grid_size:int = 16
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new(),16)
 	make_grid()
 	
@@ -118,12 +118,21 @@ func fill_multimesh_grid():
 	var chunks:Array  = []
 #	print("Making these many instances: " + str( len(grid_coords_of_chunks) *12 ))
 
+	# get the grid ids in a list (this will be passed into add_mm and used to get the cords)
+	var grid_chunk_ids:Array = chunk_to_coordinates_dictionary.keys()
+	# order them from largest to smallest. Since the for loop will pop off the end
+	# this will in effect mean the list is process 0 -> n instead of n -> 
+	# but poping at end is less intenstive operation wise
+	grid_chunk_ids.sort_custom(func(a, b): return a > b) # decending order 
+
+#	print("testing grid ids" + str(grid_chunk_ids))
+
 #	print(grid_coords_of_chunks)
 	for coord in grid_coords_of_chunks:
-		chunks.append(add_mm(coord,chunk_size_x)) #for now chunks are assumed to be same length and width
+		chunks.append(add_multimesh_chunk(coord,chunk_size_x,grid_chunk_ids.pop_back())) #for now chunks are assumed to be same length and width
 		
 
-func add_mm(coord:Vector2i,chunk_size):
+func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int):
 	"""
 	sub function to add a multimesh chunk. 
 	
@@ -131,10 +140,11 @@ func add_mm(coord:Vector2i,chunk_size):
 	TODO: change to using rendering server directly
 	"""
 	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-	a_chunk.setup_chunk(coord,chunk_size,true)
+#	print(chunk_to_coordinates_dictionary[chunk_id])
+	a_chunk.setup_chunk(coord,chunk_size,chunk_to_coordinates_dictionary[chunk_id],true)
 	
 	var pos = a_chunk.get_chunk_global_position()
-	var mm = a_chunk.get_for_rendering() 
+	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server
 	add_child(mm)
 	mm.position = pos
 	
@@ -177,7 +187,7 @@ func make_an_array_of_arrays_of_coordinates() ->Array:
 	#[-16, -15 .... 15, 16]
 	#[-16, -15 .... 15, 16]
 	#[-16, -15 .... 15, 16]
-	# assuming a grid of 32x32
+	# assuming a grid of 16x16
 	# now convert to Vector3i grid positions
 	var grid_positions:Array = []
 	# go from negative to position for ordering ( so that left side is negative)
