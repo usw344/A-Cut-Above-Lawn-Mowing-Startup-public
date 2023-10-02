@@ -255,7 +255,19 @@ func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
 	"""
 	pass
 func remove_item(item_name:String):
-	pass
+	# find the coordinates of this item
+	var static_body:StaticBody3D = collision_name_to_object_dictionary.get(item_name)
+	# if not transformed to Vector3i it wont work with dictionary
+	var position_coordinate:Vector3i = static_body.global_position
+	
+	
+	# due to correction made from item coordinate to collision shape coordinate
+	# correct that translate (TODO: find out why this is happeing)
+	position_coordinate.z += 1
+	
+	# now grab the chunk this is in 
+	var chunk_id:int = coordinates_to_chunk_dictionary[position_coordinate]
+	
 
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
@@ -370,7 +382,7 @@ func custom_grid_map_collision_handler(collision_objects:Array):
 			continue
 		else:
 			remove_item(name_of_collision_object)
-			print(name_of_collision_object)
+#			
 
 func test_it():
 	"""
