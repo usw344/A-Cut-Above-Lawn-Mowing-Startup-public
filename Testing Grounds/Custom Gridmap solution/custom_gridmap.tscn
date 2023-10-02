@@ -1,11 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://t0gjdme5n50k"]
+[gd_scene load_steps=11 format=3 uid="uid://t0gjdme5n50k"]
 
 [ext_resource type="Script" path="res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd" id="1_bllg0"]
 [ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="2_31xvh"]
 [ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="3_wj5il"]
 [ext_resource type="MeshLibrary" uid="uid://c8v830xjlv3ka" path="res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres" id="4_g6o55"]
-[ext_resource type="ArrayMesh" uid="uid://bvg7l8iwb73pl" path="res://Assets/MultiMesh_Grass/Resized Meshes/Unmowed_Grass_OBJ.obj" id="5_148b4"]
-[ext_resource type="Shape3D" uid="uid://q4vyrbrkrnsg" path="res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres" id="6_sds37"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_shfj6"]
 size = Vector2(50, 50)
@@ -25,8 +23,6 @@ albedo_color = Color(0.27451, 1, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_yldoj"]
 size = Vector3(25, 1, 25)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_0elbg"]
 
 [node name="Custom Gridmap" type="Node3D"]
 script = ExtResource("1_bllg0")
@@ -62,14 +58,4 @@ cell_size = Vector3(1, 1, 1)
 cell_center_z = false
 cell_scale = 5.0
 
-[node name="Collision_Test" type="StaticBody3D" parent="."]
-visible = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Collision_Test"]
-shape = SubResource("BoxShape3D_0elbg")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Collision_Test"]
-mesh = ExtResource("5_148b4")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="Collision_Test"]
-shape = ExtResource("6_sds37")
+[connection signal="collided" from="Small Gas Mower" to="." method="custom_grid_map_collision_handler"]

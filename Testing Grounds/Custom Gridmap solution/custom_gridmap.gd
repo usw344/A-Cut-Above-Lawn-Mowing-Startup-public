@@ -18,18 +18,29 @@ func _ready():
 func _process(delta):
 	pass
 
-var collision_object_shape:Array = []
+var collision_name_to_object_dictionary:Dictionary = {}
 func test_collision_placement() ->void:
-	var static_body:StaticBody3D = StaticBody3D.new()
-	var collision_body:CollisionShape3D = CollisionShape3D.new()
-	
-	add_child(static_body)
-	static_body.add_child(collision_body)
-	collision_body.shape = grass_collision_shape
-
-	static_body.global_position = Vector3(6,0,-7)
-	static_body.scale*= 3
-
+	for row in global_array_of_coordinates:
+		for coord in row:
+			var static_body:StaticBody3D = StaticBody3D.new()
+			var collision_body:CollisionShape3D = CollisionShape3D.new()
+			
+			add_child(static_body)
+			static_body.add_child(collision_body)
+			collision_body.shape = grass_collision_shape
+			
+			coord.z -= 1 # for some reason there needs to a correction 1 over to line up collision with grid
+			static_body.global_position = coord
+			static_body.scale*= 3
+			
+			# test to see which one is the name that is returned via collision
+			# untranslate coord 
+			coord.z += 1
+			var name_var = str(coord)
+			static_body.name = name_var
+			collision_body.name = name_var
+			
+			collision_name_to_object_dictionary[name_var] = static_body
 #	$Collision_Test.global_position = Vector3(-8,1,7)
 #	$Collision_Test.scale *= 3
 
@@ -349,6 +360,14 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 			combined_row += arr
 		output_chunks.append(combined_row)
 	return output_chunks
+
+func custom_grid_map_collision_handler(collision_objects:Array):
+	for collision in collision_objects:
+		var name_of_collision_object  = collision.get_collider().name
+		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
+			continue
+		else:
+			print(name_of_collision_object)
 
 func test_it():
 	"""
