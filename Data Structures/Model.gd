@@ -200,14 +200,14 @@ func get_house_scale(type:String) -> Vector3:
 var lod_look_up:Dictionary = {} # key = mower_grid_position value = Dictionary{ key = grid_coord, value = LOD   }
 var multimesh_size:int = 25
 
-var mowed_meshes_refernce:Dictionary = {
-	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_100_0.mesh"),
-	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_085_1.mesh"),
-	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_050_2.mesh"),
-	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_030_3.mesh"),
-	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_015_4.mesh"),
-	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed Billboard.mesh")
-}
+var mowed_meshes_refernce:Dictionary = {}
+#	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_100_0.mesh"),
+#	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_085_1.mesh"),
+#	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_050_2.mesh"),
+#	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_030_3.mesh"),
+#	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed High LOD_015_4.mesh"),
+#	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Mowed Billboard.mesh")
+#}
 #var unmowed_meshes_refernce:Dictionary = {
 #	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_100_0.mesh"),
 #	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_085_1.mesh"),
@@ -216,14 +216,14 @@ var mowed_meshes_refernce:Dictionary = {
 #	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_015_4.mesh"),
 #	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh")
 #}
-var unmowed_meshes_refernce:Dictionary = {
-	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_100_0.mesh"),
-	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_085_1.mesh"),
-	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_050_2.mesh"),
-	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh"),
-	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh"),
-	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh")
-}
+var unmowed_meshes_refernce:Dictionary = { }
+#	0: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_100_0.mesh"),
+#	1: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_085_1.mesh"),
+#	2: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed High LOD_050_2.mesh"),
+#	3: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh"),
+#	4: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh"),
+#	5: preload("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Billboard.mesh")
+#}
 
 
 func get_multi_mesh_LOD(chunk_grid_coord, testing_mower_position:Vector2 = Vector2()) ->int:

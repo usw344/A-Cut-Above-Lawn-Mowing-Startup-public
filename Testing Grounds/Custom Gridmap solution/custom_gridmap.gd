@@ -3,13 +3,14 @@ extends Node3D
 var width_and_length:int = 200
 var total_grid_width_length:int # calcuated in ready function
 
+var grass_collision_shape:Resource = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	set_inital_positions_and_sizes()
 	
 	# test the gridmap 
 	test_custom_gridmap()
-
+	test_collision_placement()
 	# test vs built in gridmap
 #	test_built_in_gridmap(true)
 
@@ -17,7 +18,22 @@ func _ready():
 func _process(delta):
 	pass
 
-func test_custom_gridmap():
+var collision_object_shape:Array = []
+func test_collision_placement() ->void:
+	var static_body:StaticBody3D = StaticBody3D.new()
+	var collision_body:CollisionShape3D = CollisionShape3D.new()
+	
+	add_child(static_body)
+	static_body.add_child(collision_body)
+	collision_body.shape = grass_collision_shape
+
+	static_body.global_position = Vector3(6,0,-7)
+	static_body.scale*= 3
+
+#	$Collision_Test.global_position = Vector3(-8,1,7)
+#	$Collision_Test.scale *= 3
+
+func test_custom_gridmap() ->void:
 	# setup the meshlibrary
 	var grid_size:int = 16
 	set_grid_paramters(grid_size,grid_size,Mesh_List.new(),16)
@@ -43,7 +59,7 @@ var chunk_to_coordinates_dictionary:Dictionary = {}
 var coordinates_to_chunk_dictionary:Dictionary = {}
 
 ## custom gridmap api functions
-func set_grid_paramters(width:int, length:int, a_mesh_list:Mesh_List,batching:int = 16):
+func set_grid_paramters(width:int, length:int, a_mesh_list:Mesh_List,batching:int = 16) ->void:
 	"""
 	Setup the grid outline. This function replaces the _init() function.
 	Call this function before using make_grid_function()
@@ -59,7 +75,7 @@ func set_grid_paramters(width:int, length:int, a_mesh_list:Mesh_List,batching:in
 	batching_size = batching # default is 16 (so 4x4 mesh instances)
 
 	mesh_list = a_mesh_list
-func set_gridspace_item(item:Grass_Grid_Item):
+func set_gridspace_item(item:Grass_Grid_Item) ->void:
 	"""
 	Set a item into gridmap. Provide a grass grid item with at least the position and mesh_id set
 	
@@ -71,7 +87,7 @@ func set_gridspace_item(item:Grass_Grid_Item):
 	grid_mapping[position_vector] = item
 	pass
 var global_array_of_coordinates:Array = []
-func make_grid():
+func make_grid() ->void:
 	"""
 	Based on all set values render the multimesh instances to their location based on 
 	INITAL grid items values and placements.
@@ -105,7 +121,7 @@ func make_grid():
 	# make the grid of multimesh chunks 
 	fill_multimesh_grid()
 
-func fill_multimesh_grid():
+func fill_multimesh_grid() ->void:
 	# find the grid coords of the multimesh chunks
 	var grid_coords_of_chunks:Array
 	var chunk_size_x: int = sqrt(batching_size) *2 #example batch 16 = 4x4 which is sqrt(16)
@@ -129,10 +145,10 @@ func fill_multimesh_grid():
 
 #	print(grid_coords_of_chunks)
 	for coord in grid_coords_of_chunks:
-		chunks.append(add_multimesh_chunk(coord,chunk_size_x,grid_chunk_ids.pop_back())) #for now chunks are assumed to be same length and width
+		chunks.append(add_multimesh_chunk(coord,sqrt(batching_size),grid_chunk_ids.pop_back())) #for now chunks are assumed to be same length and width
 		
 
-func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int):
+func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int) ->Multi_Mesh_Chunk:
 	"""
 	sub function to add a multimesh chunk. 
 	
@@ -147,6 +163,7 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int):
 	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server
 	add_child(mm)
 	mm.position = pos
+	return a_chunk
 	
 func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
 	"""
@@ -228,7 +245,7 @@ func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
 	pass
 
 ## testing ground functions
-func set_inital_positions_and_sizes():
+func set_inital_positions_and_sizes() ->void:
 	"""
 	Set the position of the mower in the level and set the position of the start zone based on level 
 	width and height
@@ -334,6 +351,9 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 	return output_chunks
 
 func test_it():
+	"""
+	Testing partition grid
+	"""
 	var chunk_sizex = 2
 	var chunk_sizey = 2
 	var gridChunks = partition_grid_into_chunks(grid, chunk_sizex, chunk_sizey)

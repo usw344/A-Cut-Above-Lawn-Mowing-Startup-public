@@ -19,3 +19,7 @@ res://Testing Grounds/Grass Grid Item/Grass Grid Item.tscn
 res://Testing Grounds/Custom Gridmap solution/mesh_library.tscn
 res://Mowing Section/Mowing Area 2/MultiMesh Chunk.tscn
 res://Testing Grounds/Custom Gridmap solution/custom_gridmap.tscn
+res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd
+res://Assets/MultiMesh_Grass/Extracted Meshes/Mowed/Unmowed Grass resized unknown LOD.mesh
+res://Data Structures/Model.gd
+res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed_Grass_resized_unknown_LOD.tres
