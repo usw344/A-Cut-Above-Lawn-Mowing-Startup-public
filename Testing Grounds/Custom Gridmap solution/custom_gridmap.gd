@@ -254,6 +254,8 @@ func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
 	Note: precondition is that set_grid_paramters() was used correctl
 	"""
 	pass
+func remove_item(item_name:String):
+	pass
 
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
@@ -367,6 +369,7 @@ func custom_grid_map_collision_handler(collision_objects:Array):
 		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
 			continue
 		else:
+			remove_item(name_of_collision_object)
 			print(name_of_collision_object)
 
 func test_it():
