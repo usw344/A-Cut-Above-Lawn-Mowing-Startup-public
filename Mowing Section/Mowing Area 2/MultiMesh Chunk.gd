@@ -52,6 +52,7 @@ func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,test_with_color:b
 	Function used to setup the chunk initally
 	"""
 	chunk_coord = coord*size ## bring them into screen space rather than grid
+
 	chunk_size = size
 	chunk_grid_coord = coord
 
@@ -82,6 +83,7 @@ func mow_item_by_global_position(global_position_coord:Vector3i):
 	multi_mesh_instances_coords.erase(instance_position)
 	instance_position.y = 4
 	multi_mesh_instances_coords.append(instance_position)
+	global_item_position_to_instance_position[global_position_coord] = instance_position
 #	multimesh_instance.multimesh = MultiMesh.new()
 #	print("removing")
 	# remake the multimesh
@@ -105,6 +107,8 @@ func make_multimesh() ->MultiMesh:
 		# get the point and translate it over to chunk space
 		var point:Vector3 = multi_mesh_instances_coords[i]
 #		point.x *= i+1.5
+		if point.y == 4:
+			print("Here is point that is moved: " + str(point))
 		
 		# set the information of this instance
 		var scale_factor:float = 3

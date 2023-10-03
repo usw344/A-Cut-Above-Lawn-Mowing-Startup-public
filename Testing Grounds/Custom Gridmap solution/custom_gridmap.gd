@@ -20,27 +20,44 @@ func _process(delta):
 
 var collision_name_to_object_dictionary:Dictionary = {}
 func test_collision_placement() ->void:
-	for coord in coordinates_to_chunk_dictionary.keys():
+	var static_body:StaticBody3D = StaticBody3D.new()
+	var collision_body:CollisionShape3D = CollisionShape3D.new()
 
-		var static_body:StaticBody3D = StaticBody3D.new()
-		var collision_body:CollisionShape3D = CollisionShape3D.new()
-			
-		add_child(static_body)
-		static_body.add_child(collision_body)
-		collision_body.shape = grass_collision_shape
+	add_child(static_body)
+	static_body.add_child(collision_body)
+	collision_body.shape = grass_collision_shape
+	var coord = Vector3(-8,0,8)
+	coord.z -= 1
+	static_body.position = coord
+	static_body.scale*= 3
+	coord.z += 1
+	static_body.name = str(coord)
+	
+	
+	
+	collision_name_to_object_dictionary[str(coord)] = static_body
 
+#	for coord in coordinates_to_chunk_dictionary.keys():
+#
+#		var static_body:StaticBody3D = StaticBody3D.new()
+#		var collision_body:CollisionShape3D = CollisionShape3D.new()
+#
+#		add_child(static_body)
+#		static_body.add_child(collision_body)
+#		collision_body.shape = grass_collision_shape
+#
 #		coord.z -= 1 # for some reason there needs to a correction 1 over to line up collision with grid
-		static_body.position = coord
-		static_body.scale*= 3
-			
-		# test to see which one is the name that is returned via collision
-		# untranslate coord 
-
+#		static_body.position = coord
+#		static_body.scale*= 3
+#
+#		# test to see which one is the name that is returned via collision
+#		# untranslate coord 
+#
 #		coord.z += 1
-		var name_var = str(coord)
-		static_body.name = name_var
-			
-		collision_name_to_object_dictionary[name_var] = static_body
+#		var name_var = str(coord)
+#		static_body.name = name_var
+#
+#		collision_name_to_object_dictionary[name_var] = static_body
 
 #	$Collision_Test.global_position = Vector3(-8,1,7)
 #	$Collision_Test.scale *= 3
@@ -141,11 +158,13 @@ func fill_multimesh_grid() ->void:
 	var chunk_size_x: int = sqrt(batching_size) *2 #example batch 16 = 4x4 which is sqrt(16)
 	var chunk_size_z: int = sqrt(batching_size) *2 # and we do *2 since in the loop we go from negative to positive. so either do *2 now or /2 later
 
-	for z_coord in range(-int(grid_length/chunk_size_x ), int(grid_length/ chunk_size_z ) , 1  ):
-		for x_coord in range(-int(grid_width/ chunk_size_x ) , int(grid_width/ chunk_size_z ), 1):
+	for z_coord in range(int(-grid_length/chunk_size_x ), int(grid_length/ chunk_size_z ) , 1  ):
+		for x_coord in range(int(-grid_width/ chunk_size_x ) , int(grid_width/ chunk_size_z ), 1):
 			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
 
 #	print("Making these many instances: " + str( len(grid_coords_of_chunks) *12 ))
+
+
 
 	# get the grid ids in a list (this will be passed into add_mm and used to get the cords)
 	var grid_chunk_ids:Array = chunk_to_coordinates_dictionary.keys()
@@ -153,8 +172,8 @@ func fill_multimesh_grid() ->void:
 	# this will in effect mean the list is process 0 -> n instead of n -> 
 	# but poping at end is less intenstive operation wise
 	grid_chunk_ids.sort_custom(func(a, b): return a > b) # decending order 
-
-#	print("testing grid ids" + str(grid_chunk_ids))
+	print(str(grid_coords_of_chunks))
+	print(str(grid_chunk_ids))
 
 #	print(grid_coords_of_chunks)
 	for coord in grid_coords_of_chunks:
@@ -169,9 +188,10 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int) ->Multi_Mesh_Ch
 	TODO: change to using rendering server directly
 	"""
 	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-#	print(chunk_to_coordinates_dictionary[chunk_id])
+#	print()
+#	print(" MM position"+str(coord) + "Chunk ID: " + str(chunk_id) + " coords" +str(chunk_to_coordinates_dictionary[chunk_id]))
 	a_chunk.setup_chunk(coord,chunk_size,chunk_to_coordinates_dictionary[chunk_id],true)
-	
+#	print()
 	var pos = a_chunk.get_chunk_global_position()
 	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server
 	add_child(mm)
@@ -244,6 +264,7 @@ func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
 func mow_item(item_name:String):
 	if collision_name_to_object_dictionary.has(item_name) == false:
 		return
+
 	# find the coordinates of this item
 	var static_body:StaticBody3D = collision_name_to_object_dictionary.get(item_name)
 	# if not transformed to Vector3i it wont work with dictionary
@@ -252,7 +273,7 @@ func mow_item(item_name:String):
 	
 	# due to correction made from item coordinate to collision shape coordinate
 	# correct that translate (TODO: find out why this is happeing)
-#	position_coordinate.z += 1
+	position_coordinate.z += 1
 	
 	# now grab the chunk this is in 
 	var chunk_id:int = coordinates_to_chunk_dictionary[position_coordinate]
@@ -290,6 +311,8 @@ func set_inital_positions_and_sizes() ->void:
 	
 	# set the mower to the start position
 	$"Small Gas Mower".position = $"Start Area".position
+	## for testing
+	$"Small Gas Mower".position = Vector3(-10,0,5)
 
 func test_built_in_gridmap(grounded:bool = false):
 	var grid_size:int = 144
