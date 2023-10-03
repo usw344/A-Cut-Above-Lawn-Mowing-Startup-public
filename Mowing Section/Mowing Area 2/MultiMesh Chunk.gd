@@ -74,13 +74,18 @@ func fill_dictionaries(global_coords_of_items:Array):
 			global_item_position_to_instance_position[global_coords_of_items[i]] = Vector3(x, 0, z)
 			i+=1
 	
-#	print(global_item_position_to_instance_position)
-func set_and_check_lod():
-	if model.get_multi_mesh_LOD(chunk_grid_coord) != lod:
-		lod = model.get_multi_mesh_LOD(chunk_grid_coord) # update to new LOD level
-		return true
-	
-	return false
+
+func mow_item_by_global_position(global_position_coord:Vector3i):
+	# get the instance postition of this item
+	var instance_position:Vector3 = global_item_position_to_instance_position.get(global_position_coord)
+#	print("Global Coordinate is: " + str(global_position_coord) + " Local: " + str(instance_position) )
+	multi_mesh_instances_coords.erase(instance_position)
+	instance_position.y = 4
+	multi_mesh_instances_coords.append(instance_position)
+#	multimesh_instance.multimesh = MultiMesh.new()
+#	print("removing")
+	# remake the multimesh
+	multimesh_instance.multimesh = make_multimesh()
 
 
 func make_multimesh() ->MultiMesh:

@@ -11,8 +11,10 @@ res://GodotSky/Presets/default/overcastCloudColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
+res://Assets/Grass with LOD/Grass_texture.tres
 res://Testing Grounds/Mowed Grass High LOD.tres
 res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd
+res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd
 res://Gridmap.tscn
 res://Testing Grounds/Grass Grid Item/Grass Grid Item.tscn
 res://Testing Grounds/Custom Gridmap solution/mesh_library.tscn
