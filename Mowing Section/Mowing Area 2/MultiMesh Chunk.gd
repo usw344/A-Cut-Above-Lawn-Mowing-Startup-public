@@ -80,12 +80,14 @@ func mow_item_by_global_position(global_position_coord:Vector3i):
 	# get the instance postition of this item
 	var instance_position:Vector3 = global_item_position_to_instance_position.get(global_position_coord)
 #	print("Global Coordinate is: " + str(global_position_coord) + " Local: " + str(instance_position) )
-	multi_mesh_instances_coords.erase(instance_position)
-	instance_position.y = 4
-	multi_mesh_instances_coords.append(instance_position)
-	global_item_position_to_instance_position[global_position_coord] = instance_position
-#	multimesh_instance.multimesh = MultiMesh.new()
-#	print("removing")
+#	multi_mesh_instances_coords.erase(instance_position)
+#	instance_position.y = 4
+#	multi_mesh_instances_coords.append(instance_position)
+	var index_pos:int = multi_mesh_instances_coords.find(instance_position)
+	multi_mesh_instances_coords[index_pos].y += 4
+	
+	global_item_position_to_instance_position[global_position_coord] = multi_mesh_instances_coords[index_pos]
+
 	# remake the multimesh
 	multimesh_instance.multimesh = make_multimesh()
 
@@ -109,6 +111,7 @@ func make_multimesh() ->MultiMesh:
 #		point.x *= i+1.5
 		if point.y == 4:
 			print("Here is point that is moved: " + str(point))
+			print("i counter: " + str(i))
 		
 		# set the information of this instance
 		var scale_factor:float = 3
