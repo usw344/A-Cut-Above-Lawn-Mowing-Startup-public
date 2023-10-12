@@ -27,10 +27,10 @@ func test_collision_placement() ->void:
 	static_body.add_child(collision_body)
 	collision_body.shape = grass_collision_shape
 	var coord = Vector3(-8,0,8)
-	coord.z -= 1
+#	coord.z -= 1
 	static_body.position = coord
 	static_body.scale*= 3
-	coord.z += 1
+#	coord.z += 1
 	static_body.name = str(coord)
 	
 	
@@ -172,13 +172,19 @@ func fill_multimesh_grid() ->void:
 	# this will in effect mean the list is process 0 -> n instead of n -> 
 	# but poping at end is less intenstive operation wise
 	grid_chunk_ids.sort_custom(func(a, b): return a > b) # decending order 
-	print(str(grid_coords_of_chunks))
-	print(str(grid_chunk_ids))
 
+	var id_test = grid_chunk_ids.pop_back()
+	grid_coords_of_chunks.reverse()
+	
+	print(grid_coords_of_chunks)
+	print(grid_chunk_ids)
+
+#	print("here is coord" + str(grid_coords_of_chunks[0]) +"here is id" + str(id_test))
+	chunk_id_to_chunk_dictionary[id_test] = add_multimesh_chunk(Vector2i(-2,0),sqrt(batching_size),id_test)
 #	print(grid_coords_of_chunks)
-	for coord in grid_coords_of_chunks:
-		var id:int = grid_chunk_ids.pop_back()
-		chunk_id_to_chunk_dictionary[id] = add_multimesh_chunk(coord,sqrt(batching_size),id)
+#	for coord in grid_coords_of_chunks:
+#		var id:int = grid_chunk_ids.pop_back()
+#		chunk_id_to_chunk_dictionary[id] = add_multimesh_chunk(coord,sqrt(batching_size),id)
 
 func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int) ->Multi_Mesh_Chunk:
 	"""
@@ -273,7 +279,7 @@ func mow_item(item_name:String):
 	
 	# due to correction made from item coordinate to collision shape coordinate
 	# correct that translate (TODO: find out why this is happeing)
-	position_coordinate.z += 1
+#	position_coordinate.z += 1
 	
 	# now grab the chunk this is in 
 	var chunk_id:int = coordinates_to_chunk_dictionary[position_coordinate]

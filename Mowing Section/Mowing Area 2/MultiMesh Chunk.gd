@@ -110,8 +110,7 @@ func make_multimesh() ->MultiMesh:
 		var point:Vector3 = multi_mesh_instances_coords[i]
 #		point.x *= i+1.5
 		if point.y == 4:
-			print("Here is point that is moved: " + str(point))
-			print("i counter: " + str(i))
+			point = Vector3(-8,4,8)
 		
 		# set the information of this instance
 		var scale_factor:float = 3
