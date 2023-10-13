@@ -10,7 +10,7 @@ func _ready():
 	
 	# test the gridmap 
 	test_custom_gridmap()
-	test_collision_placement()
+#	test_collision_placement()
 	# test vs built in gridmap
 #	test_built_in_gridmap(true)
 
@@ -180,7 +180,7 @@ func fill_multimesh_grid() ->void:
 
 	print("here is coord " + str(grid_coords_of_chunks[0]) +"here is id" + str(id_test))
 	chunk_id_to_chunk_dictionary[id_test] = add_multimesh_chunk(grid_coords_of_chunks[0],sqrt(batching_size),id_test)
-
+	chunk_id_to_chunk_dictionary[id_test].generate_collision()
 #
 #	for coord in grid_coords_of_chunks:
 #		var id:int = grid_chunk_ids.pop_back()
@@ -196,7 +196,7 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int,test=false) ->Mu
 	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
 #	print()
 #	print(" MM position"+str(coord) + "Chunk ID: " + str(chunk_id) + " coords" +str(chunk_to_coordinates_dictionary[chunk_id]))
-	a_chunk.setup_chunk(coord,chunk_size,chunk_to_coordinates_dictionary[chunk_id],true)
+	a_chunk.setup_chunk(coord,chunk_size,chunk_to_coordinates_dictionary[chunk_id],chunk_id,true)
 #	print()
 	var pos = a_chunk.get_chunk_global_position()
 	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server

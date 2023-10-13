@@ -47,7 +47,60 @@ func _process(delta):
 #	update_chunk() # will remake the multimesh if chunk LOD level changes
 	pass
 
-func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,test_with_color:bool = false, lod_level:int = 0):
+var grass_collision_shape:Resource = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres")
+var rendered:bool = false
+var collisions_static_bodies:Dictionary # key = local coord # value = staticbody
+var collision_global_to_local_coord_reference:Dictionary # key = global, # value = local
+var chunk_id:int
+
+func generate_collision():
+	"""
+	Make individual collison shapes for each item instance
+	Precondition 1 : the multimesh must be inside the scene
+	Precondition 2 : the setup_chunk function must have been called
+	"""
+	
+	var static_body:StaticBody3D = StaticBody3D.new()
+	var collision_body:CollisionShape3D = CollisionShape3D.new()
+	multimesh_instance.add_child(static_body)
+	
+	static_body.add_child(collision_body)
+	collision_body.shape = grass_collision_shape
+	var coord = Vector3(0,0,0)
+	
+	static_body.position = coord
+	static_body.scale*= 3
+	
+	var str:String = get_str_represenation_of_collision_data(coord)
+	print(str_to_vector4i(str))
+
+func str_to_vector4i(str) -> Vector4i:
+	""" Take in a string in format ' (x,y,z,w)  ' and return that as a Vector4i """
+	var vector4i:Vector4i = Vector4i()
+#	var vec_str:String = str.substr(1, str.length() - 2)
+	print(str)
+	var vec_arr = str.split(",")
+	vector4i.x = vec_arr[0].to_int()
+	vector4i.y = vec_arr[1].to_int()
+	vector4i.z = vec_arr[2].to_int()
+	vector4i.w = vec_arr[3].to_int()
+
+	return vector4i
+
+func get_str_represenation_of_collision_data(pos:Vector3i) ->String:
+	"""
+	Return a string in format (chunk_id, x ,y ,z)
+	"""
+	var retr_str:String = ""
+	retr_str += (str(chunk_id)) + ","
+	retr_str += str(pos.x) + ","
+	retr_str += str(pos.y) + ","
+	retr_str += str(pos.z) + ","
+
+	
+	return retr_str
+
+func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,id:int,test_with_color:bool = false, lod_level:int = 0):
 	"""
 	Function used to setup the chunk initally
 	"""
@@ -78,7 +131,7 @@ func fill_dictionaries(global_coords_of_items:Array):
 
 func mow_item_by_global_position(global_position_coord:Vector3i):
 	# get the instance postition of this item
-	print(global_item_position_to_instance_position)
+#	print(global_item_position_to_instance_position)
 	var instance_position:Vector3 = global_item_position_to_instance_position.get(global_position_coord)
 #	print("Global Coordinate is: " + str(global_position_coord) + " Local: " + str(instance_position) )
 #	multi_mesh_instances_coords.erase(instance_position)
@@ -86,7 +139,7 @@ func mow_item_by_global_position(global_position_coord:Vector3i):
 #	multi_mesh_instances_coords.append(instance_position)
 	var index_pos:int = multi_mesh_instances_coords.find(instance_position)
 	multi_mesh_instances_coords[index_pos].y += 4
-	print(instance_position)
+#	print(instance_position)
 	global_item_position_to_instance_position[global_position_coord] = multi_mesh_instances_coords[index_pos]
 
 	# remake the multimesh
