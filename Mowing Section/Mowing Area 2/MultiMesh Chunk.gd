@@ -78,6 +78,7 @@ func fill_dictionaries(global_coords_of_items:Array):
 
 func mow_item_by_global_position(global_position_coord:Vector3i):
 	# get the instance postition of this item
+	print(global_item_position_to_instance_position)
 	var instance_position:Vector3 = global_item_position_to_instance_position.get(global_position_coord)
 #	print("Global Coordinate is: " + str(global_position_coord) + " Local: " + str(instance_position) )
 #	multi_mesh_instances_coords.erase(instance_position)
@@ -85,7 +86,7 @@ func mow_item_by_global_position(global_position_coord:Vector3i):
 #	multi_mesh_instances_coords.append(instance_position)
 	var index_pos:int = multi_mesh_instances_coords.find(instance_position)
 	multi_mesh_instances_coords[index_pos].y += 4
-	
+	print(instance_position)
 	global_item_position_to_instance_position[global_position_coord] = multi_mesh_instances_coords[index_pos]
 
 	# remake the multimesh
@@ -109,8 +110,8 @@ func make_multimesh() ->MultiMesh:
 		# get the point and translate it over to chunk space
 		var point:Vector3 = multi_mesh_instances_coords[i]
 #		point.x *= i+1.5
-		if point.y == 4:
-			point = Vector3(-8,4,8)
+#		if point.y == 4:
+#			point = Vector3(-8,4,8)
 		
 		# set the information of this instance
 		var scale_factor:float = 3

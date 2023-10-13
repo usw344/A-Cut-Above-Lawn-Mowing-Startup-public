@@ -23,19 +23,22 @@ func test_collision_placement() ->void:
 	var static_body:StaticBody3D = StaticBody3D.new()
 	var collision_body:CollisionShape3D = CollisionShape3D.new()
 
-	add_child(static_body)
+	var mm_test = testing_arr_storing_mm_objects[0]
+	mm_test.add_child(static_body)
 	static_body.add_child(collision_body)
 	collision_body.shape = grass_collision_shape
-	var coord = Vector3(-8,0,8)
-#	coord.z -= 1
+#	var coord = Vector3(-8,0,8)
+	var coord = Vector3(0,0,0)
+	coord.z -= 1
 	static_body.position = coord
 	static_body.scale*= 3
-#	coord.z += 1
-	static_body.name = str(coord)
+	coord.z += 1
+	static_body.name = str(Vector3(-8,0,8))
+	
+	print(to_global(static_body.position))
 	
 	
-	
-	collision_name_to_object_dictionary[str(coord)] = static_body
+	collision_name_to_object_dictionary[str(Vector3(-8,0,8))] = static_body
 
 #	for coord in coordinates_to_chunk_dictionary.keys():
 #
@@ -172,21 +175,18 @@ func fill_multimesh_grid() ->void:
 	# this will in effect mean the list is process 0 -> n instead of n -> 
 	# but poping at end is less intenstive operation wise
 	grid_chunk_ids.sort_custom(func(a, b): return a > b) # decending order 
-
-	var id_test = grid_chunk_ids.pop_back()
 	grid_coords_of_chunks.reverse()
-	
-	print(grid_coords_of_chunks)
-	print(grid_chunk_ids)
+	var id_test = grid_chunk_ids.pop_back()
 
-#	print("here is coord" + str(grid_coords_of_chunks[0]) +"here is id" + str(id_test))
-	chunk_id_to_chunk_dictionary[id_test] = add_multimesh_chunk(Vector2i(-2,0),sqrt(batching_size),id_test)
-#	print(grid_coords_of_chunks)
+	print("here is coord " + str(grid_coords_of_chunks[0]) +"here is id" + str(id_test))
+	chunk_id_to_chunk_dictionary[id_test] = add_multimesh_chunk(grid_coords_of_chunks[0],sqrt(batching_size),id_test)
+
+#
 #	for coord in grid_coords_of_chunks:
 #		var id:int = grid_chunk_ids.pop_back()
 #		chunk_id_to_chunk_dictionary[id] = add_multimesh_chunk(coord,sqrt(batching_size),id)
-
-func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int) ->Multi_Mesh_Chunk:
+var testing_arr_storing_mm_objects:Array = []
+func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int,test=false) ->Multi_Mesh_Chunk:
 	"""
 	sub function to add a multimesh chunk. 
 	
@@ -202,6 +202,7 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int) ->Multi_Mesh_Ch
 	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server
 	add_child(mm)
 	mm.position = pos
+	testing_arr_storing_mm_objects.append(mm)
 	return a_chunk
 	
 func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
@@ -211,6 +212,7 @@ func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
 	"""
 	# now convert these into a dictionary key = chunk_number value=array of coordinates
 	var i:int = 0
+	grid_partitioned_in_grid.reverse()
 	for chunk_arr in grid_partitioned_in_grid:
 		chunk_to_coordinates_dictionary[i] = chunk_arr
 		
@@ -270,7 +272,8 @@ func update_grid(global_grid_position:Vector3, new_item:Grass_Grid_Item):
 func mow_item(item_name:String):
 	if collision_name_to_object_dictionary.has(item_name) == false:
 		return
-
+	
+	
 	# find the coordinates of this item
 	var static_body:StaticBody3D = collision_name_to_object_dictionary.get(item_name)
 	# if not transformed to Vector3i it wont work with dictionary
@@ -279,11 +282,14 @@ func mow_item(item_name:String):
 	
 	# due to correction made from item coordinate to collision shape coordinate
 	# correct that translate (TODO: find out why this is happeing)
-#	position_coordinate.z += 1
+	position_coordinate.z += 1
 	
 	# now grab the chunk this is in 
 	var chunk_id:int = coordinates_to_chunk_dictionary[position_coordinate]
+	print("current keys in chunk dictionary" + str(chunk_id_to_chunk_dictionary.keys()))
 	var chunk_to_remove_item_from:Multi_Mesh_Chunk = chunk_id_to_chunk_dictionary.get(chunk_id)
+	print("This is the chunk id getting " + str(chunk_id))
+
 	# remove item
 	chunk_to_remove_item_from.mow_item_by_global_position(position_coordinate)
 	
