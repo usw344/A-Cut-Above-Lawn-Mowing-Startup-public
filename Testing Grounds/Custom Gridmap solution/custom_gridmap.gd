@@ -277,9 +277,9 @@ func mow_item(item_name:String):
 	# find the coordinates of this item
 	var static_body:StaticBody3D = collision_name_to_object_dictionary.get(item_name)
 	# if not transformed to Vector3i it wont work with dictionary
-	var position_coordinate:Vector3i = static_body.global_position
+	var position_coordinate:Vector3i = to_global(static_body.position)
 	
-	
+	print("here is the collison position that is being listened for: " + str(position_coordinate))
 	# due to correction made from item coordinate to collision shape coordinate
 	# correct that translate (TODO: find out why this is happeing)
 	position_coordinate.z += 1
