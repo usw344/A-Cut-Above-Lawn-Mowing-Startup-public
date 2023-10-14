@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://t0gjdme5n50k"]
+[gd_scene load_steps=16 format=3 uid="uid://t0gjdme5n50k"]
 
 [ext_resource type="Script" path="res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd" id="1_bllg0"]
 [ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="2_31xvh"]
@@ -33,6 +33,9 @@ albedo_color = Color(0.137255, 0.196078, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6w8dh"]
 albedo_color = Color(0, 1, 0.0588235, 1)
+
+[sub_resource type="MultiMesh" id="MultiMesh_chlid"]
+transform_format = 1
 
 [node name="Custom Gridmap" type="Node3D"]
 script = ExtResource("1_bllg0")
@@ -81,5 +84,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2, -7)
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Bottom right"]
 mesh = SubResource("BoxMesh_gvhw2")
 surface_material_override/0 = SubResource("StandardMaterial3D_6w8dh")
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_chlid")
 
 [connection signal="collided" from="Small Gas Mower" to="." method="custom_grid_map_collision_handler"]
