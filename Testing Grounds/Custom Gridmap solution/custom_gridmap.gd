@@ -22,7 +22,7 @@ func _process(delta):
 func test_custom_gridmap() ->void:
 	# setup the meshlibrary
 	var grid_size:int = 144
-	set_grid_paramters(grid_size,grid_size,Mesh_List.new(),16)
+	set_grid_paramters(grid_size,grid_size,16)
 	make_grid()
 
 
@@ -31,7 +31,6 @@ var grid_length:int
 var grid_width:int
 
 var batching_size:int # how many meshes togather in a multimesh
-var mesh_list: Mesh_List # a container of mesh references
 
 # for the given widthxlength make a grid with a key represendting global coord of that item
 var grid_mapping:Dictionary = {} # key = 
@@ -41,9 +40,9 @@ var chunk_to_coordinates_dictionary:Dictionary = {}
 var coordinates_to_chunk_dictionary:Dictionary = {}
 
 var chunk_id_to_chunk_dictionary:Dictionary = {}
-var unmowed_multimeshes:Dictionary = {}
+
 ## custom gridmap api functions
-func set_grid_paramters(width:int, length:int, a_mesh_list:Mesh_List,batching:int = 16) ->void:
+func set_grid_paramters(width:int, length:int,batching:int = 16) ->void:
 	"""
 	Setup the grid outline. This function replaces the _init() function.
 	Call this function before using make_grid_function()
@@ -58,7 +57,6 @@ func set_grid_paramters(width:int, length:int, a_mesh_list:Mesh_List,batching:in
 	grid_width = width
 	batching_size = batching # default is 16 (so 4x4 mesh instances)
 
-	mesh_list = a_mesh_list
 func set_gridspace_item(item:Grass_Grid_Item) ->void:
 	"""
 	Set a item into gridmap. Provide a grass grid item with at least the position and mesh_id set
@@ -69,7 +67,7 @@ func set_gridspace_item(item:Grass_Grid_Item) ->void:
 	
 	# check if this a valid point in the given grid
 	grid_mapping[position_vector] = item
-	pass
+
 var global_array_of_coordinates:Array = []
 func make_grid() ->void:
 	"""
@@ -126,7 +124,7 @@ func fill_multimesh_grid() ->void:
 		chunk_id_to_chunk_dictionary[id] = add_multimesh_chunk(coord,sqrt(batching_size),id)
 		chunk_id_to_chunk_dictionary[id].generate_collision()
 
-var testing_arr_storing_mm_objects:Array = []
+
 func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int,test=false) ->Multi_Mesh_Chunk:
 	"""
 	sub function to add a multimesh chunk. 
@@ -140,7 +138,7 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int,test=false) ->Mu
 	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server
 	add_child(mm)
 	mm.position = pos
-	testing_arr_storing_mm_objects.append(mm)
+
 	return a_chunk
 	
 func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
@@ -149,7 +147,7 @@ func fill_dictionaries(grid_partitioned_in_grid:Array) ->void:
 	# tested
 	"""
 	# now convert these into a dictionary key = chunk_number value=array of coordinates
-	var i:int = 0
+	var i:int = 0 # this is the chunk id
 	grid_partitioned_in_grid.reverse()
 	for chunk_arr in grid_partitioned_in_grid:
 		chunk_to_coordinates_dictionary[i] = chunk_arr
@@ -232,6 +230,42 @@ func str_to_vector4i(str) -> Vector4i:
 
 	return vector4i
 
+func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: int) -> Array:
+	"""
+	Take the grid of coordiante and partition it into chunks. 
+	"""
+	var chunks := []
+	
+	for y in range(0, grid.size(), chunk_size_y):
+		for x in range(0, grid[0].size(), chunk_size_x):
+			var chunk:Array = []
+			for j in range(y, min(y + chunk_size_y, grid.size())):
+				var row := []
+				for i in range(x, min(x + chunk_size_x, grid[0].size())):
+					row.append(grid[j][i])
+				chunk.append(row)
+			chunks.append(chunk)
+	
+	# since each chunk is currently represented in array of arrays 
+	# we can combine them from  [ [x,x,x], [y,y,y] ] -> [x,x,x,y,y,y] where x,y are Vector3
+	var output_chunks:Array = []
+	for chunk in chunks:
+		var combined_row:Array
+		for arr in chunk:
+			combined_row += arr
+		output_chunks.append(combined_row)
+	return output_chunks
+
+func custom_grid_map_collision_handler(collision_objects:Array):
+	for collision in collision_objects:
+		var name_of_collision_object  = collision.get_collider().name
+		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
+			continue
+		else:
+			mow_item(name_of_collision_object)
+
+
+
 	
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
@@ -261,7 +295,7 @@ func set_inital_positions_and_sizes() ->void:
 
 func test_built_in_gridmap(grounded:bool = false):
 	var grid_size:int = 144
-	set_grid_paramters(grid_size,grid_size,Mesh_List.new())
+	set_grid_paramters(grid_size,grid_size)
 	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
 	print("array of coordinates size from built in " + str(len(array_of_coordinates)))
 	global_array_of_coordinates = array_of_coordinates
@@ -308,39 +342,36 @@ func saveArrayAsCSV(dataArray, filePath):
 	else:
 		print("Failed to open the file for writing.")
 
-### testing grounds
-# Sample grid initialization
+#var chunk_to_coordinates_dictionary:Dictionary = {}
+#var coordinates_to_chunk_dictionary:Dictionary = {}
 
-func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: int) -> Array:
-	var chunks := []
+func save_object() ->Dictionary:
+	"""
+	Save this instance of the custom gridmap data into a form that can be loaded later
 	
-	for y in range(0, grid.size(), chunk_size_y):
-		for x in range(0, grid[0].size(), chunk_size_x):
-			var chunk:Array = []
-			
-			for j in range(y, min(y + chunk_size_y, grid.size())):
-				var row := []
-				
-				for i in range(x, min(x + chunk_size_x, grid[0].size())):
-					row.append(grid[j][i])
-				chunk.append(row)
-			chunks.append(chunk)
+	"""
+	var save_dictionary:Dictionary = {} ## main save dictionary
+	# first grab each multimeshinstance and save its state
+	var chunk_save_objects:Dictionary = {}
+	for id in chunk_id_to_chunk_dictionary.keys():
+		chunk_save_objects[id] = chunk_id_to_chunk_dictionary[id].save_object()
 	
-	# since each chunk is currently represented in array of arrays 
-	# we can combine them from  [ [x,x,x], [y,y,y] ] -> [x,x,x,y,y,y] where x,y are Vector3
-	var output_chunks:Array = []
-	for chunk in chunks:
-		var combined_row:Array
-		for arr in chunk:
-			combined_row += arr
-		output_chunks.append(combined_row)
-	return output_chunks
+	# also save the grid params
+	var grid_params:Dictionary = {"grid_width":grid_width,"grid_length":grid_length,"batching_size":batching_size}
 
-func custom_grid_map_collision_handler(collision_objects:Array):
-	for collision in collision_objects:
-		var name_of_collision_object  = collision.get_collider().name
-		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
-			continue
-		else:
-			mow_item(name_of_collision_object)
+	# add all these save objects to the save_dictionary
+	save_dictionary["chunk_save_objects"] = chunk_save_objects
+	save_dictionary["grid_params"] = grid_params
+	save_dictionary["chunk_to_coordinates_dictionary"] = chunk_to_coordinates_dictionary
+	save_dictionary["coordinates_to_chunk_dictionary"] = coordinates_to_chunk_dictionary
+	return save_dictionary
+	
+func load_object() ->void:
+	"""
+	Take a dictionary contaning a dictionary packed by custom_gridmap.save_object() and 
+	loads current custom_gridmap object with the same data
+	"""
+	pass
 
+func test_save_loading():
+	pass
