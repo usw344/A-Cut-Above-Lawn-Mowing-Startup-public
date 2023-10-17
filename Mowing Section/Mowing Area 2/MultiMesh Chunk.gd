@@ -102,7 +102,7 @@ func get_str_represenation_of_collision_data(pos:Vector3i) ->String:
 	
 	return retr_str
 
-func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,id:int,test_with_color:bool = false, lod_level:int = 0):
+func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,id:int):
 	"""
 	Function used to setup the chunk initally
 	"""
@@ -206,3 +206,23 @@ func update_chunk(model_var): # since this does not get added to scene tree pass
 
 func get_for_rendering() -> MultiMeshInstance3D:
 	return multimesh_instance
+
+func save_object() ->Dictionary:
+	"""
+	Return information needed to reload this object using the multi_mesh_chunk.load_object()
+	"""
+	var data:Dictionary = {}
+	var chunk_params:Dictionary = {
+		"chunk_coord":chunk_coord,
+		"chunk_grid_coord":chunk_grid_coord,
+		"chunk_id":chunk_id,
+		"chunk_size":chunk_size
+	}
+	data["chunk_params"] = chunk_params
+	return data
+func load_object(data:Dictionary) -> void:
+	"""
+	Load the empty object using the data stored using the save_object() function 
+	"""
+	
+	pass
