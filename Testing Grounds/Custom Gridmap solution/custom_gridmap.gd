@@ -133,7 +133,7 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int,test=false) ->Mu
 	TODO: change to using rendering server directly
 	"""
 	var a_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
-	a_chunk.setup_chunk(coord,chunk_size,chunk_to_coordinates_dictionary[chunk_id],chunk_id,true)
+	a_chunk.setup_chunk(coord,chunk_size,chunk_to_coordinates_dictionary[chunk_id],chunk_id)
 	var pos = a_chunk.get_chunk_global_position()
 	var mm = a_chunk.get_for_rendering() # returns a multimesh instance and renders it, TODO change to Rendering server
 	add_child(mm)
