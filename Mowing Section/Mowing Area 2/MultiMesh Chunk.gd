@@ -18,7 +18,7 @@ var multimesh_instance_unmowed:MultiMeshInstance3D = MultiMeshInstance3D.new()
 
 
 var multimesh_instances_coords_mowed:Array = []
-
+var multimesh_instances_coords_unmowed:Array = []
 
 
 # for testing this will assign a new color to the grass for this chunk
@@ -54,10 +54,10 @@ func generate_collision():
 	Precondition 1 : the multimesh must be inside the scene
 	Precondition 2 : the setup_chunk function must have been called
 	"""
-	for coordinate in multimesh_instances_coords_mowed:
+	for coordinate in multimesh_instances_coords_unmowed:
 		var static_body:StaticBody3D = StaticBody3D.new()
 		var collision_body:CollisionShape3D = CollisionShape3D.new()
-		multimesh_instance.add_child(static_body)
+		multimesh_instance_unmowed.add_child(static_body)
 		
 		static_body.add_child(collision_body)
 		collision_body.shape = grass_collision_shape
@@ -99,7 +99,8 @@ func get_str_represenation_of_collision_data(pos:Vector3i) ->String:
 
 func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,id:int):
 	"""
-	Function used to setup the chunk initally
+	Function used to setup the chunk initally. NOTE this function should not be used
+	if thsi chunk is being made from a load file.
 	"""
 	chunk_coord = coord*size ## bring them into screen space rather than grid
 
@@ -110,11 +111,11 @@ func setup_chunk(coord:Vector2, size:int,coords_of_items:Array,id:int):
 	fill_dictionaries(coords_of_items)
 	
 	# currently testing
-	mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Unmowed_Grass_OBJ.obj")
 	chunk_id = id
 	
-	# assume all are mowed
-	multimesh_instance_mowed.multimesh = make_multimesh()
+	# assume all are unmowed
+	multimesh_instance_unmowed.multimesh = make_multimesh(multimesh_instances_coords_unmowed)
+	multimesh_instance_mowed.multimesh = make_multimesh(multimesh_instances_coords_mowed)
 
 func fill_dictionaries(global_coords_of_items:Array):
 	# make the relevant references dictionaries to allow efficent access to individal meshes
@@ -123,7 +124,7 @@ func fill_dictionaries(global_coords_of_items:Array):
 	# this is in local position so go from 0 to chunk_size (width and length). multiply by 2 to space them out more. Still same number of instances
 	for x in range(0,chunk_size*2, 2): # remeber that indivial instances are in LOCAL space with relation to multimeshInstance3D
 		for z in range(0,chunk_size*2 , 2): # so it is 0-size for each mm_instance and then each mm_instance3D is moved
-			multimesh_instances_coords_mowed.append(Vector3i(x, 0, z))
+			multimesh_instances_coords_unmowed.append(Vector3i(x, 0, z))
 			global_item_position_to_instance_position[global_coords_of_items[i]] = Vector3i(x, 0, z)
 			i+=1
 
@@ -137,47 +138,54 @@ func mow_item_by_name(item_name:String,coord:Vector3i):
 	# remove the static body
 	if collisions_static_bodies.has(item_name): # prevent any case where staticbody is not there
 		var static_body:StaticBody3D = collisions_static_bodies[item_name]
-		multimesh_instance_mowed.remove_child(static_body)
+		multimesh_instance_unmowed.remove_child(static_body) # since the collision is the child of the multimesh instance
 		collisions_static_bodies.erase(item_name)
+		
 		# update the multimesh
-#		var index_pos:int = multi_mesh_instances_coords.find(coord) 
-#		print("Got this coord from the arg: " + str(coord) + " using find on the list got this vector: " + str(multi_mesh_instances_coords[index_pos]))
-#		print("This is the current multimesh instance coords: " + str(multi_mesh_instances_coords))
-#		print("Got the index position as follows: " + str(index_pos))
-#		multi_mesh_instances_coords[index_pos].y += 4
-		multimesh_instances_coords_mowed.erase(coord)
+		multimesh_instances_coords_unmowed.erase(coord)
+		multimesh_instances_coords_mowed.append(coord)
 	else:
 		return
 	
-#	print("instnance coordinates are: " + str(multi_mesh_instances_coords))
-#	for i in range(len(multi_mesh_instances_coords)):
-#		multi_mesh_instances_coords[i].y += 4
+
+	# regenerate the meshes
+	multimesh_instance_mowed.multimesh = make_multimesh(multimesh_instances_coords_mowed,1)
+	multimesh_instance_unmowed.multimesh = make_multimesh(multimesh_instances_coords_unmowed)
+
+func make_multimesh(instance_coords:Array,type:int=0) ->MultiMesh:
+	"""
+	Generate a multimesh based on the given local position coordinates and an 
+	optinal paramter to control what mesh is generated.
 	
-	multimesh_instance_mowed.multimesh = make_multimesh()
-
-
-func make_multimesh() ->MultiMesh:
+	0: unmowed grass
+	1: mowed grass
+	"""
 #	print("For coord: " + str(chunk_coord) + " LOD: " + str(lod))
 	var multi_mesh:MultiMesh = MultiMesh.new()
+
+	if type == 0: # unmowed grass
+		mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Unmowed_Grass_OBJ.obj")
+	elif type == 1: # mowed grass
+		mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Mowed_Grass_OBJ.obj")
 
 
 	multi_mesh.set_mesh(mesh)
 	multi_mesh.set_transform_format(MultiMesh.TRANSFORM_3D)
 #	multi_mesh.set_use_colors(true)
-	multi_mesh.set_instance_count(len(multimesh_instances_coords_mowed)) # make as many instances as there are points
+	multi_mesh.set_instance_count(len(instance_coords)) # make as many instances as there are points
 
 #	var a_color = Color(randf(), randf(), randf())
 
 	for i in range(multi_mesh.get_instance_count()):
 #		var a_color = Color(randf(), randf(), randf())
 		# get the point and translate it over to chunk space
-		var point:Vector3 = multimesh_instances_coords_mowed[i]
+		var point:Vector3 = instance_coords[i]
 		
-
 		# set the information of this instance
 		var scale_factor:float = 3
 		var basis_vector = Basis()*scale_factor # can tweak grass scaling
 		
+		# TODO implement rotation for grass. (need to rotate the collision shape as well)
 #		basis_vector = basis_vector.rotated(Vector3(0,0,1),randf_range(12.5,90.0))
 #		basis_vector = basis_vector.rotated(Vector3(0,1,0),90)
 		var transform_vector = Transform3D(basis_vector, point)
@@ -192,17 +200,9 @@ func make_multimesh() ->MultiMesh:
 func get_chunk_global_position() ->Vector3:
 	return Vector3(chunk_coord.x, 0 , chunk_coord.y)
 
-func update_chunk(model_var): # since this does not get added to scene tree pass in model
-	"""
-	If an LOD update needs to happen
-	"""
-	if lod != model.get_multi_mesh_LOD(chunk_grid_coord):
-		lod = model.get_multi_mesh_LOD(chunk_grid_coord)
-		mesh = model.get_grass_mesh_for_lod(lod,false)
-		multimesh_instance.multimesh = make_multimesh()
 
-func get_for_rendering() -> MultiMeshInstance3D:
-	return multimesh_instance_mowed
+func get_for_rendering() -> Array:
+	return [multimesh_instance_mowed,multimesh_instance_unmowed]
 
 func save_object() ->Dictionary:
 	"""
@@ -215,7 +215,12 @@ func save_object() ->Dictionary:
 		"chunk_id":chunk_id,
 		"chunk_size":chunk_size
 	}
+	
+	
+	# fill the dta object
 	data["chunk_params"] = chunk_params
+	data["mowed_coordinates"] = multimesh_instances_coords_mowed
+	data["unmowed_coordinates"] = multimesh_instances_coords_unmowed
 	
 	# now store the static global_to_local reference
 	return data
