@@ -1,12 +1,12 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1697566335
+::res://::1697568628
 default_env.tres::Environment::-1::1684623789::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1690343895::0::1::::<><>::
 Game.gd::GDScript::-1::1685765576::0::1::::<>Node3D<>::
-Gridmap.tscn::PackedScene::3863341195233618198::1697566335::0::1::::<><>::res://Testing Grounds/Testing with gridmaps.gd<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn<>uid://c8v830xjlv3ka::::res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn
+Gridmap.tscn::PackedScene::3863341195233618198::1697567012::0::1::::<><>::res://Testing Grounds/Testing with gridmaps.gd<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn<>uid://c8v830xjlv3ka::::res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn
 Gridmap_Grass.gd::GDScript::-1::1694016960::0::1::::<>Node3D<>::
 icon.svg::CompressedTexture2D::5507345590917116630::1684623846::1684624016::1::::<><>::
-Main.tscn::PackedScene::6050645004164830725::1697566335::0::1::::<><>::res://Game.gd
+Main.tscn::PackedScene::6050645004164830725::1697567012::0::1::::<><>::res://Game.gd
 ::res://Assets/::1694540272
 Information UI Texture.png::CompressedTexture2D::2231103663451887933::1690343895::1694017048::1::::<><>::
 ::res://Assets/Grass with LOD/::1694106549
@@ -64,7 +64,7 @@ Mowed High LOD_050_2.glb::PackedScene::6282758472127468993::1694016959::16940170
 Mowed High LOD_050_3.glb::PackedScene::1484412398608746533::1694016959::1694017053::1::::<><>::
 Mowed High LOD_085_1.glb::PackedScene::6067105711036005561::1694016959::1694017052::1::::<><>::
 Mowed High LOD_100_0.glb::PackedScene::7224777657163798474::1694016959::1694017052::1::::<><>::
-::res://Assets/MultiMesh_Grass/Resized Meshes/::1697566891
+::res://Assets/MultiMesh_Grass/Resized Meshes/::1697566901
 Mowed Grass.glb::PackedScene::4960778514859428332::1696262679::1696262699::1::::<><>::
 Mowed_Grass_OBJ.obj::Mesh::2900758128719330729::1697566891::1697566901::1::::<><>::
 Unmowed Grass.glb::PackedScene::1537856271942151238::1696262679::1696262699::1::::<><>::
@@ -139,8 +139,8 @@ starmap_8k.jpg::CompressedTexture2D::2705215692772567721::1685765576::1685765779
 Stars_Noise.TGA::CompressedTexture2D::3622898064617848699::1685765576::1685765732::1::::<><>::
 StaticCloudsAlpha.tga::CompressedTexture2D::5710063143071602288::1685765576::1685765749::1::::<><>::
 StaticCloudsXY.tga::CompressedTexture2D::5286439033012208714::1685765576::1685765741::1::::<><>::
-::res://GodotSky/WorldEnvironment/::1697566337
-default_environment.tres::Environment::1590598010687615476::1697566337::0::1::::<><>::uid://bq7217qbtqsdc::::res://GodotSky/WorldEnvironment/default_sky.tres
+::res://GodotSky/WorldEnvironment/::1697567712
+default_environment.tres::Environment::1590598010687615476::1697567712::0::1::::<><>::uid://bq7217qbtqsdc::::res://GodotSky/WorldEnvironment/default_sky.tres
 default_sky.tres::Sky::3577189765013304704::1697565777::0::1::::<><>::res://GodotSky/Shaders/GodotSky.gdshader<>uid://dnj6ylyuxc6w3::::res://GodotSky/Textures/scatteringLUT.HDR<>uid://cnl852air6g7q::::res://GodotSky/Textures/StaticCloudsAlpha.tga<>uid://chk144tfviq2e::::res://GodotSky/Textures/StaticCloudsXY.tga<>uid://bru7upxvlt3kp::::res://GodotSky/Textures/Stars_Noise.TGA<>uid://besoril5mkfd6::::res://GodotSky/Textures/starmap_8k.jpg
 ::res://Mowing Section/::1694016960
 ::res://Mowing Section/Job/::1694106549
@@ -150,9 +150,9 @@ job.tscn::PackedScene::6754498129553638499::1694106549::0::1::::<><>::res://Mowi
 Mower.gd::GDScript::-1::1695743538::0::1::::<>CharacterBody3D<>::
 ::res://Mowing Section/Mower/Mower_Normal/::1694540272
 Mower_Normal.tscn::PackedScene::4538003686887627614::1694540272::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
-::res://Mowing Section/Mowing Area 2/::1697566336
-MultiMesh Chunk.gd::GDScript::-1::1697566335::0::1::::Multi_Mesh_Chunk<>Node3D<>::
-MultiMesh Chunk.tscn::PackedScene::5291430207470945736::1697566336::0::1::::<><>::res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd
+::res://Mowing Section/Mowing Area 2/::1697567712
+MultiMesh Chunk.gd::GDScript::-1::1697567712::0::1::::Multi_Mesh_Chunk<>Node3D<>::
+MultiMesh Chunk.tscn::PackedScene::5291430207470945736::1697567012::0::1::::<><>::res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd
 ::res://Mowing Section/Mowing_Area/::1690343895
 Dirt Material.tres::ShaderMaterial::722726275677297723::1685765948::0::1::::<><>::res://Mowing Section/Mowing_Area/Dirt.gdshader
 Dirt.gdshader::Shader::-1::1684623846::0::1::::<><>::
@@ -189,15 +189,15 @@ lod_system_with_multimesh.tscn::PackedScene::7059944100099015209::1694111373::0:
 Mowed Grass High LOD.tres::ArrayMesh::4408226497501725786::1697565777::0::1::::<><>::uid://bvp458oubx7i6::::res://Assets/Grass with LOD/Grass_texture.tres
 Testing with gridmaps.gd::GDScript::-1::1695749841::0::1::::<>Node3D<>::
 unmowed_grass_meshlibrary.tres::MeshLibrary::7291980519728991906::1694540272::0::1::::<><>::uid://crjqoxrbm2h88
-::res://Testing Grounds/Custom Gridmap solution/::1697566337
+::res://Testing Grounds/Custom Gridmap solution/::1697567712
 custom_gridmap.gd::GDScript::-1::1697566254::0::1::::<>Node3D<>::
-custom_gridmap.tscn::PackedScene::1385578023405934236::1697566337::0::1::::<><>::res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn<>uid://c8v830xjlv3ka::::res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres
+custom_gridmap.tscn::PackedScene::1385578023405934236::1697567712::0::1::::<><>::res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn<>uid://c8v830xjlv3ka::::res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres
 mesh_library.gd::GDScript::-1::1694794721::0::1::::Mesh_List<>Node3D<>::
-mesh_library.tscn::PackedScene::7071558603592553268::1697566336::0::1::::<><>::res://Testing Grounds/Custom Gridmap solution/mesh_library.gd
+mesh_library.tscn::PackedScene::7071558603592553268::1697567012::0::1::::<><>::res://Testing Grounds/Custom Gridmap solution/mesh_library.gd
 Mowed Grass_unknownLod.tres::ArrayMesh::1608272194862678942::1696262679::0::1::::<><>::
-::res://Testing Grounds/Grass Grid Item/::1697566336
+::res://Testing Grounds/Grass Grid Item/::1697567012
 Grass Grid Item.gd::GDScript::-1::1694540272::0::1::::Grass_Grid_Item<>Node3D<>::
-Grass Grid Item.tscn::PackedScene::3191271372660305354::1697566336::0::1::::<><>::res://Testing Grounds/Grass Grid Item/Grass Grid Item.gd
+Grass Grid Item.tscn::PackedScene::3191271372660305354::1697567012::0::1::::<><>::res://Testing Grounds/Grass Grid Item/Grass Grid Item.gd
 ::res://Testing Grounds/Meshes/::1696262699
 billboard_mesh_testing2.tres::PlaneMesh::609882235989614313::1694016960::0::1::::<><>::
 billboard_mesh_testing.tres::QuadMesh::1573863879938246447::1694017121::0::1::::<><>::uid://bobcfnnk8ypte

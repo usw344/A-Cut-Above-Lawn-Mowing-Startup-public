@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://t0gjdme5n50k"]
+[gd_scene load_steps=12 format=3 uid="uid://t0gjdme5n50k"]
 
 [ext_resource type="Script" path="res://Testing Grounds/Custom Gridmap solution/custom_gridmap.gd" id="1_bllg0"]
 [ext_resource type="PackedScene" uid="uid://1gfropwtqfbn" path="res://GodotSky/GodotSky.tscn" id="2_31xvh"]
@@ -23,16 +23,6 @@ albedo_color = Color(0.27451, 1, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_yldoj"]
 size = Vector3(25, 1, 25)
-
-[sub_resource type="BoxMesh" id="BoxMesh_obfmo"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pmogj"]
-albedo_color = Color(0.137255, 0.196078, 1, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_gvhw2"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6w8dh"]
-albedo_color = Color(0, 1, 0.0588235, 1)
 
 [sub_resource type="MultiMesh" id="MultiMesh_chlid"]
 transform_format = 1
@@ -70,20 +60,6 @@ mesh_library = ExtResource("4_g6o55")
 cell_size = Vector3(1, 1, 1)
 cell_center_z = false
 cell_scale = 5.0
-
-[node name="Top left" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 8)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Top left"]
-mesh = SubResource("BoxMesh_obfmo")
-surface_material_override/0 = SubResource("StandardMaterial3D_pmogj")
-
-[node name="Bottom right" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2, -7)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Bottom right"]
-mesh = SubResource("BoxMesh_gvhw2")
-surface_material_override/0 = SubResource("StandardMaterial3D_6w8dh")
 
 [node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
 multimesh = SubResource("MultiMesh_chlid")

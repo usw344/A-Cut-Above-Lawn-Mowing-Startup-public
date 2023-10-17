@@ -222,11 +222,24 @@ func save_object() ->Dictionary:
 	data["mowed_coordinates"] = multimesh_instances_coords_mowed
 	data["unmowed_coordinates"] = multimesh_instances_coords_unmowed
 	
-	# now store the static global_to_local reference
+	data["global_to_instance_reference"] = global_item_position_to_instance_position
+	
 	return data
 func load_object(data:Dictionary) -> void:
 	"""
 	Load the empty object using the data stored using the save_object() function 
 	"""
+	var chunk_param:Dictionary = data["chunk_params"]
+	chunk_coord = chunk_param["chunk_coord"]
+	chunk_grid_coord = chunk_param["chunk_grid_coord"]
+	chunk_id = chunk_param["chunk_id"]
+	chunk_size = chunk_param['chunk_size']
 	
-	pass
+	multimesh_instances_coords_mowed = data["mowed_coordinates"]
+	multimesh_instances_coords_unmowed = data["unmowed_coordinates"]
+
+	global_item_position_to_instance_position = data["global_to_instance_reference"]
+	
+	# now load the multimeshes
+	multimesh_instance_mowed.multimesh = make_multimesh(multimesh_instances_coords_mowed,1)
+	multimesh_instance_unmowed.multimesh = make_multimesh(multimesh_instances_coords_unmowed)
