@@ -58,10 +58,8 @@ func _physics_process(delta):
 		moving = true
 	else:
 		moving = false
-		
+	
 	move_and_slide()
-	
-	
 	
 	## other input related functions
 	##calculate how much fuel has been used
@@ -103,7 +101,6 @@ func handle_collision(signal_name):
 func _input(event):
 	"""
 	"""
-	## rotate the mower around
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		$Camera3D.rotate_z(event.relative.y * mouse_sensitivity)

@@ -87,9 +87,9 @@ Testing={
 
 [physics]
 
-common/physics_ticks_per_second=256
-common/max_physics_steps_per_frame=32
-common/physics_jitter_fix=1.0
+common/physics_ticks_per_second=576
+common/max_physics_steps_per_frame=100
+common/physics_jitter_fix=1.25
 3d/physics_engine="GodotPhysics3D"
 jolt_3d/limits/max_bodies=60240
 

@@ -43,6 +43,10 @@ func _process(delta):
 	pass
 
 var grass_collision_shape:Resource = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres")
+var mowed_grass_mesh:Mesh=  load("res://Assets/MultiMesh_Grass/Resized Meshes/Mowed_Grass_OBJ.obj")
+var unmowed_grass_mesh:Mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Unmowed_Grass_OBJ.obj")
+
+
 var rendered:bool = false
 var collisions_static_bodies:Dictionary # key = name # value = staticbody
 var collision_global_to_local_coord_reference:Dictionary # key = global, # value = local
@@ -164,9 +168,9 @@ func make_multimesh(instance_coords:Array,type:int=0) ->MultiMesh:
 	var multi_mesh:MultiMesh = MultiMesh.new()
 
 	if type == 0: # unmowed grass
-		mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Unmowed_Grass_OBJ.obj")
+		mesh = unmowed_grass_mesh
 	elif type == 1: # mowed grass
-		mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Mowed_Grass_OBJ.obj")
+		mesh = mowed_grass_mesh
 
 
 	multi_mesh.set_mesh(mesh)
@@ -227,7 +231,9 @@ func save_object() ->Dictionary:
 	return data
 func load_object(data:Dictionary) -> void:
 	"""
-	Load the empty object using the data stored using the save_object() function 
+	Load the empty object using the data stored using the save_object() function>
+	Note design decision made to NOT add collision using this function. That has to be done outside of this 
+	class
 	"""
 	var chunk_param:Dictionary = data["chunk_params"]
 	chunk_coord = chunk_param["chunk_coord"]

@@ -369,11 +369,37 @@ func save_object() ->Dictionary:
 	save_dictionary["coordinates_to_chunk_dictionary"] = coordinates_to_chunk_dictionary
 	return save_dictionary
 	
-func load_object() ->void:
+func load_object(data:Dictionary) ->void:
 	"""
 	Take a dictionary contaning a dictionary packed by custom_gridmap.save_object() and 
 	loads current custom_gridmap object with the same data
+	
+	params:
 	"""
+	var grid_params:Dictionary = data["chunk_save_objects"]
+	grid_width = grid_params["grid_width"]
+	grid_length = grid_params["grid_length"]
+	batching_size = grid_params["batching_size"]
+	
+	chunk_to_coordinates_dictionary = grid_params["chunk_to_coordinates_dictionary"]
+	coordinates_to_chunk_dictionary = grid_params["coordinates_to_chunk_dictionary"]
+	
+	# now resetup the multimesh chunks
+	var multimesh_chunk_saves:Dictionary = data["chunk_save_objects"]
+	
+	for mm_chunk_data in multimesh_chunk_saves:
+		var mm_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
+		mm_chunk.load_object(mm_chunk_data)
+		
+		# now render these
+		var multimeshe_instances:Array = mm_chunk.get_for_rendering()
+		var pos = mm_chunk.get_chunk_global_position()
+		for mm_instance in multimeshe_instances: # render all multimeshes in it
+			add_child(mm_instance)
+			mm_instance.position = pos
+		
+		pass
+	
 	pass
 
 func test_save_loading():
