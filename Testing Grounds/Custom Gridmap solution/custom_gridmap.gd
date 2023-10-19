@@ -397,10 +397,13 @@ func load_object(data:Dictionary) ->void:
 		for mm_instance in multimeshe_instances: # render all multimeshes in it
 			add_child(mm_instance)
 			mm_instance.position = pos
-		
-		pass
-	
-	pass
-
+		mm_chunk.generate_collision() # add collision shapes in 
+var load_save_test_mode:int = 0 # save mode (save a game before testing loading)
 func test_save_loading():
-	pass
+	var file
+	if load_save_test_mode == 0:
+		if Input.is_action_just_pressed("Save"):
+			var data_to_save:Dictionary = save_object()
+			file = FileAccess.open("res://Saves/testing/load_save_testing.txt",FileAccess.WRITE)
+	else:
+		pass
