@@ -377,13 +377,13 @@ func load_object(data:Dictionary) ->void:
 	
 	params:
 	"""
-	var grid_params:Dictionary = data["chunk_save_objects"]
+	var grid_params:Dictionary = data["grid_params"]
 	grid_width = grid_params["grid_width"]
 	grid_length = grid_params["grid_length"]
 	batching_size = grid_params["batching_size"]
 	
-	chunk_to_coordinates_dictionary = grid_params["chunk_to_coordinates_dictionary"]
-	coordinates_to_chunk_dictionary = grid_params["coordinates_to_chunk_dictionary"]
+	chunk_to_coordinates_dictionary = data["chunk_to_coordinates_dictionary"]
+	coordinates_to_chunk_dictionary = data["coordinates_to_chunk_dictionary"]
 	
 	# now resetup the multimesh chunks
 	var multimesh_chunk_saves:Dictionary = data["chunk_save_objects"]
@@ -402,13 +402,18 @@ func load_object(data:Dictionary) ->void:
 
 var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func test_save_loading():
-	var file = FileAccess.open("res://Saves/testing/load_save_testing.txt",FileAccess.WRITE_READ)
+	
 	if load_save_test_mode == 0:
 		if Input.is_action_just_pressed("Save"):
+			var file = FileAccess.open("res://Saves/testing/load_save_testing.txt",FileAccess.WRITE)
 			var data_to_save:Dictionary = save_object()
-			print("saving game")
-			file.store_var(save_object(), true) # store the file
+			print("saving game")			
+			var data:Dictionary = save_object()
+
+			file.store_var(data,true) # store the file
+			file.close()
 	else: # in load mode
+		var file = FileAccess.open("res://Saves/testing/load_save_testing.txt",FileAccess.READ)
 		load_save_test_mode = 0 # prevent reloading
 		var data_loaded = file.get_var(true)
 		load_object(data_loaded)
