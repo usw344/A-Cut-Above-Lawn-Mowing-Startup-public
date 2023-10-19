@@ -9,14 +9,15 @@ func _ready():
 	set_inital_positions_and_sizes()
 	
 	# test the gridmap 
-	test_custom_gridmap()
+#	test_custom_gridmap()
+	test_save_loading()
 #	test_collision_placement()
 	# test vs built in gridmap
 #	test_built_in_gridmap(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	test_save_loading()
 
 
 func test_custom_gridmap() ->void:
@@ -398,12 +399,16 @@ func load_object(data:Dictionary) ->void:
 			add_child(mm_instance)
 			mm_instance.position = pos
 		mm_chunk.generate_collision() # add collision shapes in 
-var load_save_test_mode:int = 0 # save mode (save a game before testing loading)
+
+var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func test_save_loading():
-	var file
+	var file = FileAccess.open("res://Saves/testing/load_save_testing.txt",FileAccess.WRITE_READ)
 	if load_save_test_mode == 0:
 		if Input.is_action_just_pressed("Save"):
 			var data_to_save:Dictionary = save_object()
-			file = FileAccess.open("res://Saves/testing/load_save_testing.txt",FileAccess.WRITE)
-	else:
-		pass
+			print("saving game")
+			file.store_var(save_object(), true) # store the file
+	else: # in load mode
+		load_save_test_mode = 0 # prevent reloading
+		var data_loaded = file.get_var(true)
+		load_object(data_loaded)
