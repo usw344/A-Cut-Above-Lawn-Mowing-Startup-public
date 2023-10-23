@@ -42,6 +42,7 @@ func _process(delta):
 #	update_chunk() # will remake the multimesh if chunk LOD level changes
 	pass
 
+# TODO move this to the model
 var grass_collision_shape:Resource = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres")
 var mowed_grass_mesh:Mesh=  load("res://Assets/MultiMesh_Grass/Resized Meshes/Mowed_Grass_OBJ.obj")
 var unmowed_grass_mesh:Mesh = load("res://Assets/MultiMesh_Grass/Resized Meshes/Unmowed_Grass_OBJ.obj")

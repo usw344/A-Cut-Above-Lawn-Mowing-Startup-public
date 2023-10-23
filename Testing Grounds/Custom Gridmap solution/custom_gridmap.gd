@@ -12,14 +12,16 @@ func _ready():
 	# test the gridmap 
 #	test_custom_gridmap()
 	test_save_loading()
+	
+	
 #	test_collision_placement()
 	# test vs built in gridmap
 #	test_built_in_gridmap(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	test_save_loading()
-
+#	test_save_loading()
+	pass
 
 func test_custom_gridmap() ->void:
 	# setup the meshlibrary
