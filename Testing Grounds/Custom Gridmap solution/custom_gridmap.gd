@@ -5,6 +5,7 @@ var total_grid_width_length:int # calcuated in ready function
 
 var grass_collision_shape:Resource = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres")
 # Called when the node enters the scene tree for the first time.
+var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func _ready():
 	set_inital_positions_and_sizes()
 	
@@ -388,7 +389,8 @@ func load_object(data:Dictionary) ->void:
 	# now resetup the multimesh chunks
 	var multimesh_chunk_saves:Dictionary = data["chunk_save_objects"]
 	
-	for mm_chunk_data in multimesh_chunk_saves:
+	for mm_chunk_data_id in multimesh_chunk_saves:
+		var mm_chunk_data = multimesh_chunk_saves[mm_chunk_data_id]
 		var mm_chunk:Multi_Mesh_Chunk = Multi_Mesh_Chunk.new()
 		mm_chunk.load_object(mm_chunk_data)
 		
@@ -399,8 +401,8 @@ func load_object(data:Dictionary) ->void:
 			add_child(mm_instance)
 			mm_instance.position = pos
 		mm_chunk.generate_collision() # add collision shapes in 
+		chunk_id_to_chunk_dictionary[mm_chunk_data_id] = mm_chunk
 
-var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func test_save_loading():
 	
 	if load_save_test_mode == 0:
