@@ -1,3 +1,6 @@
-[gd_scene format=3 uid="uid://b0knc7nybh32y"]
+[gd_scene load_steps=2 format=3 uid="uid://b0knc7nybh32y"]
+
+[ext_resource type="Script" path="res://Testing Grounds/Job manager/job_manager.gd" id="1_v1cni"]
 
 [node name="Job Manager" type="Node3D"]
+script = ExtResource("1_v1cni")

@@ -1,6 +1,5 @@
 res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres
 res://GodotSky/WorldEnvironment/default_sky.tres
-res://GodotSky/WorldEnvironment/default_environment.tres
 res://GodotSky/Presets/default/baseCloudColor.tres
 res://GodotSky/Presets/default/baseSkyColor.tres
 res://GodotSky/Presets/default/horizonFogColor.tres
@@ -11,4 +10,8 @@ res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
 res://Testing Grounds/Mowed Grass High LOD.tres
-res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd
+res://Testing Grounds/Job manager/job_manager.gd
+res://Testing Grounds/Job manager/Job Generator/Job Generator.tscn
+res://Testing Grounds/Job manager/Job Generator/Job Generator.gd
+res://GodotSky/WorldEnvironment/default_environment.tres
+res://Testing Grounds/Job manager/job_manager.tscn
