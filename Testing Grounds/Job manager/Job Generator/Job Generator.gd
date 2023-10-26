@@ -9,6 +9,9 @@ class_name Job_Generator
 
 """
 
+## contains job offer objects
+var jobs_offer:Dictionary = {}
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -18,6 +21,8 @@ func _ready():
 func _process(delta):
 	pass
 
+func _init():
+	pass
 
 func if_new_job_is_to_be_added() ->bool:
 	"""
