@@ -9,6 +9,14 @@ class_name Job_Generator
 
 """
 
+# define job range to stats mapping
+var job_range_to_stats:Dictionary = {}
+
+# keep the different job ranges stored
+var job_ranges:Array[String] = []
+
+var current_range:String
+
 ## contains job offer objects ( key unique_job_id, value = Job Offer Object)
 var jobs_offer:Dictionary = {}
 
@@ -22,6 +30,21 @@ func _process(delta):
 	pass
 
 func _init():
+	pass
+
+func make_new_job_offer(): 
+	"""
+	Abstraction function to return a new job offer.
+	The purpose of this function is to abstract away the calculation 
+	that is used to control the diffculty and stats of a job offer
+	
+	Currently: return a job offer randome within 1 predfined diffculty range
+	these ranges are temporarly defined here. 
+	
+	TODO: add in a job offer stats generator so that each job offer is slighty different
+	in terms of time limit, size etc. 
+	"""
+	
 	pass
 
 func if_new_job_is_to_be_added() ->bool:
