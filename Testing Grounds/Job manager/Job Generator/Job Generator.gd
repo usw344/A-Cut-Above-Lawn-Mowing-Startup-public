@@ -9,7 +9,7 @@ class_name Job_Generator
 
 """
 
-## contains job offer objects
+## contains job offer objects ( key unique_job_id, value = Job Offer Object)
 var jobs_offer:Dictionary = {}
 
 # Called when the node enters the scene tree for the first time.
