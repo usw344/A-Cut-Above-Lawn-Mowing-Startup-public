@@ -1,19 +1,11 @@
-extends Node3D
-class_name Job_Offer
-
-"""
-Most basic of the job containers. contains offer information.
-
-EXTENDED BY: Job, Job_Declined (todo) 
-"""
+extends Job_Offer
+class_name Job
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	pass # Replace with function body.
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
-
-func this_is_a_test():
 	pass
