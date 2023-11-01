@@ -47,3 +47,15 @@ func setup_job_offer(job_id_:int, job_size_:Vector2i,time_limit_:Dictionary,base
 	display_name = display_name_
 	time_to_accept = time_to_accept_
 
+func get_id() -> int:
+	return job_id
+func get_job_size() ->Vector2i :
+	return job_size
+func get_time_limit() -> Dictionary:
+	return time_limit
+func get_base_pay():
+	return base_pay
+func get_display_name() -> String:
+	return display_name
+func get_time_to_accept() -> int:
+	return time_to_accept

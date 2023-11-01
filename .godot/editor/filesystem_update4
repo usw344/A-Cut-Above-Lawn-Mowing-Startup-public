@@ -1,14 +1,16 @@
 res://Testing Grounds/Job manager/job_offer.tscn
-res://GodotSky/WorldEnvironment/default_sky.tres
-res://GodotSky/Presets/default/baseCloudColor.tres
 res://GodotSky/Presets/default/baseSkyColor.tres
-res://GodotSky/Presets/default/horizonFogColor.tres
-res://GodotSky/Presets/default/moonGlowColor.tres
-res://GodotSky/Presets/default/moonLight.tres
+res://GodotSky/Presets/default/baseCloudColor.tres
 res://GodotSky/Presets/default/overcastCloudColor.tres
+res://GodotSky/Presets/default/horizonFogColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
-res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres
+res://GodotSky/Presets/default/moonLight.tres
+res://GodotSky/Presets/default/moonGlowColor.tres
+res://Assets/Grass with LOD/Grass_texture.tres
 res://Testing Grounds/Mowed Grass High LOD.tres
+res://GodotSky/WorldEnvironment/default_sky.tres
+res://GodotSky/WorldEnvironment/default_environment.tres
+res://Assets/Meshlibrary/grass_lod_meshlibraryv5.tres
 res://Job Offer.gd
