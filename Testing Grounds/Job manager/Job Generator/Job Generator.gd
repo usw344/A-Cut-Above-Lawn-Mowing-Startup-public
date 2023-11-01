@@ -43,11 +43,79 @@ func make_new_job_offer():
 	
 	TODO: add in a job offer stats generator so that each job offer is slighty different
 	in terms of time limit, size etc. 
+	
+	Current params
+	job_id = 
+	job_size = 
+	time_limit = 
+	base_pay = 
+	display_name = 
+	time_to_accept = 
 	"""
+	
+	
 	
 	pass
 
-func if_new_job_is_to_be_added() ->bool:
+func generate_job_id(type:Job_Type) -> int:
+	"""
+	Param type: Type of the Job must be of type Job_Type datastructure
+	This contains whether this is a easy, medium, hard job and whether it is 
+	a small, medium or large job etc. 
+	
+	Abstraction that returns a job_id that is unique to this 
+	request
+	"""
+	return 0
+
+func generate_job_size(type:Job_Type) -> Vector2i:
+	"""
+	Param type: Type of the Job must be of type Job_Type datastructure
+	This contains whether this is a easy, medium, hard job and whether it is 
+	a small, medium or large job etc.
+	
+	Abstraction that returns the actual width,length of the mowing area
+	based on the size in the Job_Type object. The actual size has  a
+	variable range. 
+	
+	Note: The return from this function complies with the implementation 
+	restriction of the Custom Gridmap object
+	"""
+	return Vector2i()
+func generate_job_time_limit(type:Job_Type) -> Dictionary:
+	"""
+	Param type: Type of the Job must be of type Job_Type datastructure
+	This contains whether this is a easy, medium, hard job and whether it is 
+	a small, medium or large job etc.
+	
+	Abstraction that returns how long the player has to complete this job. This
+	a range based on the Job_Type object.
+	
+	Note: This should be fine tuned so that is is phyiscally possible to complete
+	every job. 
+	"""
+	return {}
+func generate_job_base_pay(type:Job_Type) -> int:
+	"""
+	Param type: Type of the Job must be of type Job_Type datastructure
+	This contains whether this is a easy, medium, hard job and whether it is 
+	a small, medium or large job etc.
+	
+	Abstraction to return how much is the base pay (Excluding any bonuses) that 
+	a player gets. The idea is to set the base based on different variables EVEN outside
+	of the Job_Type object. (example tough ecnonmic situation, player ratings etc)
+	
+	Currently: Just return a basic range method. TODO implement economic implications 
+	
+	"""
+	return 0
+func generate_job_display_name(type:Job_Type) -> String:
+	return ""
+	
+func generate_time_accept(type:Job_Type) -> int:
+	return 0
+
+func if_new_job_is_to_be_added(type:Job_Type) ->bool:
 	"""
 	Abstraction function to see if a new job should be added
 	The purpose of this function is to abstract away the calculation 
