@@ -53,9 +53,10 @@ func make_new_job_offer():
 	
 	var job_type:Job_Type = generate_job_type()
 	var job_id:int = generate_job_id(job_type)
+	var job_size:Vector2i = generate_job_size(job_type)
+	var time_limit:Dictionary = generate_job_time_limit(job_type,job_size)
+	var base_pay:int = generate_job_base_pay(job_type,job_size)
 	
-	
-
 func generate_job_type() -> Job_Type:
 	"""
 	Abstraction function to calculate which type of Job this should be. 
@@ -142,22 +143,32 @@ func generate_job_size(type:Job_Type) -> Vector2i:
 	elif size_type == size_types[2]: # large
 		size_multiplier = randi_range(12,22)
 	
+	var size:Vector2i = Vector2i(16*size_multiplier, 16*size_multiplier)
 	
 	return Vector2i()
-func generate_job_time_limit(type:Job_Type) -> Dictionary:
+func generate_job_time_limit(type:Job_Type,job_size_vector:Vector2i) -> Dictionary:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
 	This contains whether this is a easy, medium, hard job and whether it is 
 	a small, medium or large job etc.
 	
+	Param Job size 
+	
 	Abstraction that returns how long the player has to complete this job. This
 	a range based on the Job_Type object.
 	
-	Note: This should be fine tuned so that is is phyiscally possible to complete
+	Note TODO: This should be fine tuned so that is is phyiscally possible to complete
 	every job. 
 	"""
-	return {}
-func generate_job_base_pay(type:Job_Type) -> int:
+	# first get the general (median) time limit for the given job size. Then the size 
+	# of the given job is taken into account to make sure the job can be completed in time
+	# Although the job can be completed 
+	
+	# TODO calibrate this. For now just return from a range from 10 to 50
+	
+	
+	return {"D":0,"H":0,"M":randi_range(10,50)}
+func generate_job_base_pay(type:Job_Type,job_size_vector:Vector2i) -> int:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
 	This contains whether this is a easy, medium, hard job and whether it is 
@@ -167,10 +178,41 @@ func generate_job_base_pay(type:Job_Type) -> int:
 	a player gets. The idea is to set the base based on different variables EVEN outside
 	of the Job_Type object. (example tough ecnonmic situation, player ratings etc)
 	
-	Currently: Just return a basic range method. TODO implement economic implications 
+	Currently: Just return a basic range method. 
+	TODO implement economic implications 
 	
 	"""
-	return 0
+	var diff:String = type.get_diffculty()
+	var diff_values:Array = type.get_diffculty_values()
+	
+	# due to haveing += in the conditionals, if one wants to scale the values
+	# simple set these to a number higher or lower than 1.0 to reduce all of them
+	# instead of having to reset the ranges
+	var lower:float = 1.0 
+	var upper:float = 1.0
+	var multiplier:float = 1 # to scale up the jobs
+	
+	if diff == diff_values[0]: # easy
+		lower += 1.1
+		upper += 2.5
+		multiplier += randf_range(2.0,5.0)
+	elif diff == diff_values[1]: # medium
+		lower += 2.6
+		upper += 4.5
+		multiplier += randf_range(2.1,7.5)
+	elif diff == diff_values[2]: # hard
+		lower += 4.6
+		upper += 8.5
+		multiplier += randf_range(7.5,8.5)
+	
+	# note we take the x of the size vector since it is assumed that both x and y are the same size
+	# if one wants to add in a non-square mowing area then this assumption would have to be changed
+	# TODO
+	var base_pay:int = int((job_size_vector.x*multiplier) * log(randf_range(lower,upper)))
+
+	
+	return base_pay
+
 func generate_job_display_name(type:Job_Type) -> String:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
@@ -179,7 +221,14 @@ func generate_job_display_name(type:Job_Type) -> String:
 	
 	Abstractions to come up with somewhat-nique job display names. These are the 
 	names that player will see (not the job id)
+	
+	TODO: make a file that contains job names that can be assigned to this
+	For now just select at random with preventing duplication
 	"""
+	
+	var diff:String = type.get_diffculty()
+	
+	
 	return ""
 	
 func generate_time_accept(type:Job_Type) -> int:
