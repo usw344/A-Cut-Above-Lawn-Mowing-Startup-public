@@ -14,8 +14,6 @@ const MAX_ACTIVE_JOB_OFFERS = 100
 ## contains job offer objects ( key unique_job_id, value = Job Offer Object)
 var job_offers:Dictionary = {}
 
-# keep track of the last generated job id. 
-var last_generated_job_id:int = -1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,7 +28,15 @@ func _process(delta):
 func _init():
 	pass
 
-func make_new_job_offer(): 
+func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
+	if action == "add":
+		job_offers[job_offer.get_id()] = job_offer
+	elif action == "remove":
+		job_offers.erase(job_offer.get_id())
+	
+	
+
+func make_new_job_offer() -> Job_Offer: 
 	"""
 	Abstraction function to return a new job offer.
 	The purpose of this function is to abstract away the calculation 
@@ -56,6 +62,13 @@ func make_new_job_offer():
 	var job_size:Vector2i = generate_job_size(job_type)
 	var time_limit:Dictionary = generate_job_time_limit(job_type,job_size)
 	var base_pay:int = generate_job_base_pay(job_type,job_size)
+	var display_name:String = generate_job_display_name(job_type)
+	var time_to_accept:int = generate_job_time_accept(job_type)
+	
+	var offer:Job_Offer = Job_Offer.new()
+	offer.setup_job_offer(job_id, job_size, time_limit, base_pay, display_name, time_to_accept)
+	
+	return offer
 	
 func generate_job_type() -> Job_Type:
 	"""
@@ -229,9 +242,9 @@ func generate_job_display_name(type:Job_Type) -> String:
 	var diff:String = type.get_diffculty()
 	
 	
-	return ""
-	
-func generate_time_accept(type:Job_Type) -> int:
+	return "A job name " + str(randi())
+
+func generate_job_time_accept(type:Job_Type) -> int:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
 	This contains whether this is a easy, medium, hard job and whether it is 
@@ -239,14 +252,22 @@ func generate_time_accept(type:Job_Type) -> int:
 	
 	Abstraction to calculate how long the player should have to accept the job offer.
 	This 
+	
+	CURRENTLY: returns a value in a range
+	
+	TODO: factor in econmic situation (how many other companies are there are etc)
+	
+	RETURN: IN MINUTES not seconds. Note this for when using this with Timer
 	"""
-	return 0
+	return randi_range(5,30)*60
 
-func if_new_job_is_to_be_added(type:Job_Type) ->bool:
+
+
+func signal_to_add_new_job(type:Job_Type) -> void:
 	"""
 	Abstraction function to see if a new job should be added
 	The purpose of this function is to abstract away the calculation 
-	that is used to control the flow of jobs. 
+	that is used to control the flow of jobs. (this is done via timer)
 	
 	Exmaple: this function can later use a complex equation that factors in 
 	customer satisfaction, market state, Game difficulty setting etc.
@@ -256,10 +277,18 @@ func if_new_job_is_to_be_added(type:Job_Type) ->bool:
 	
 	Returns true if a new job should be added
 	Returns false if a new job should not be added
+	
+	NOTE: this is the function called by the timer signal
 	"""
-	var timer:Timer = $"Add Job Timer"
-	if timer.is_stopped():
-		# reset the timer (calculate the new time to be used)
-		return true
-	return false
-
+	var max_time_to_next_job = 100 # max time is 100 seconds
+	# check if there is space (under max limit)
+	if job_offers.size() <= MAX_ACTIVE_JOB_OFFERS:
+		var job_offer:Job_Offer = make_new_job_offer()
+		add_remove_job_offer(job_offer,"add") # store it
+		
+		# recalculate timer. 
+		
+	else:
+		# reset timer to the max time limit
+		pass
+	# now calculate 
