@@ -1,8 +1,11 @@
 extends Node3D
+class_name Job_Manager
 """
 Manages jobs. Loads the the job the users picks and loads the relevent.
 This handles storing and loading either when the game starts up OR when screen are swtiched.
 Should allow for multiple jobs to be started at once of different sizes
+
+EXPECTS: to be added to scene tree
 """
 var job_generator:Job_Generator
 

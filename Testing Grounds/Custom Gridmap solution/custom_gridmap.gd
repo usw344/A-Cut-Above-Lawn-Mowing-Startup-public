@@ -1,6 +1,6 @@
 extends Node3D
 
-var width_and_length:int = 200
+var width_and_length:int = 1500
 var total_grid_width_length:int # calcuated in ready function
 
 var grass_collision_shape:Resource = load("res://Assets/MultiMesh_Grass/Extracted Meshes/Unmowed/Unmowed Grass Collision Shape polygon.tres")
@@ -10,8 +10,8 @@ func _ready():
 	set_inital_positions_and_sizes()
 	
 	# test the gridmap 
-#	test_custom_gridmap()
-	test_save_loading()
+	test_custom_gridmap()
+#	test_save_loading()
 	
 	
 #	test_collision_placement()
@@ -25,7 +25,7 @@ func _process(delta):
 
 func test_custom_gridmap() ->void:
 	# setup the meshlibrary
-	var grid_size:int = 64
+	var grid_size:int = 200
 	set_grid_paramters(grid_size,grid_size,16)
 	make_grid()
 
