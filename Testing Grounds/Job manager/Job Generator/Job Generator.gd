@@ -129,7 +129,19 @@ func generate_job_size(type:Job_Type) -> Vector2i:
 	restriction of the Custom Gridmap object
 	"""
 	
-	#while not yet tested. Try to make sure the size is a multiple of 16
+	# while not yet tested. Try to make sure the size is a multiple of 16 (or whatever the chunking size is)
+	# later replace this to also take into account things like market conditions and such
+	# for now just return a value withing a predefined range
+	var size_type:String = type.get_size()
+	var size_types:Array = type.get_size_values()
+	var size_multiplier:int = 0
+	if size_type == size_types[0]: # for now small
+		size_multiplier = randi_range(3,6)
+	elif size_type == size_types[1]: # for now medium
+		size_multiplier = randi_range(7,11)
+	elif size_type == size_types[2]: # large
+		size_multiplier = randi_range(12,22)
+	
 	
 	return Vector2i()
 func generate_job_time_limit(type:Job_Type) -> Dictionary:
