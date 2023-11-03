@@ -7,4 +7,4 @@ script = ExtResource("1_ed7e1")
 
 [node name="Add Job Timer" type="Timer" parent="."]
 
-[connection signal="timeout" from="Add Job Timer" to="." method="if_new_job_is_to_be_added"]
+[connection signal="timeout" from="Add Job Timer" to="." method="signal_to_add_new_job_offer"]

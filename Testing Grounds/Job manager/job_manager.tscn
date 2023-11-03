@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://b0knc7nybh32y"]
+[gd_scene load_steps=3 format=3 uid="uid://b0knc7nybh32y"]
 
 [ext_resource type="Script" path="res://Testing Grounds/Job manager/job_manager.gd" id="1_v1cni"]
+[ext_resource type="PackedScene" uid="uid://b2dkdy5yu38e5" path="res://Testing Grounds/Job manager/Job Generator/Job Generator.tscn" id="2_afe60"]
 
 [node name="Job Manager" type="Node3D"]
 script = ExtResource("1_v1cni")
+
+[node name="Job Generator" parent="." instance=ExtResource("2_afe60")]
+
+[connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]

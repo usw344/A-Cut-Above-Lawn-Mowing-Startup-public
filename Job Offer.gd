@@ -48,6 +48,25 @@ func setup_job_offer(job_id_:int, job_size_:Vector2i,time_limit_:Dictionary,base
 	display_name = display_name_
 	time_to_accept = time_to_accept_
 
+func get_as_string():
+	"""
+	Debugging function to get this job offer as a string that can be printed
+	
+	"""
+	
+	var str:String = ""
+	
+	str += "********* Start **********"+ "\n"
+	str += "Job Display Name: " + str(display_name) + "\n"
+	str += "Job ID: " + str(job_id) + "\n"
+	str += "Job Size: " + str(job_size.x) + "x" + str(job_size.y)+ "\n"
+	str += "Base Pay: " + str(base_pay)+ "\n"
+	str += "Duration: Days" + str(time_limit["D"]) + " Hours: " + str(time_limit["H"]) + " Minute:" + str(time_limit["M"])+ "\n"
+	str += "Time Left To Accept: " + str(time_to_accept)+ "\n"
+	str += "*********  End  **********"
+	
+	return str
+
 func get_id() -> int:
 	return job_id
 func get_job_size() ->Vector2i :

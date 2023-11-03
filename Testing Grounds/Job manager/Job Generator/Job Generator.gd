@@ -14,11 +14,18 @@ const MAX_ACTIVE_JOB_OFFERS = 100
 ## contains job offer objects ( key unique_job_id, value = Job Offer Object)
 var job_offers:Dictionary = {}
 
+# when there is a new job offer waiting to be displayed via job manager
+signal job_offer_waiting
+
+# the timer that cycles to trigger new jobs being added
+@onready var timer:Timer = $"Add Job Timer"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
-	pass # Replace with function body.
+	var wt: int = randi_range(2,4)
+	timer.set_wait_time(wt) # a random first job start time of 2-10 seconds
+	timer.start()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -31,9 +38,12 @@ func _init():
 func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
 	if action == "add":
 		job_offers[job_offer.get_id()] = job_offer
+		push_to_manager(job_offer)
 	elif action == "remove":
 		job_offers.erase(job_offer.get_id())
 	
+func push_to_manager(o:Job_Offer) ->void:
+	emit_signal("job_offer_waiting",o)
 	
 
 func make_new_job_offer() -> Job_Offer: 
@@ -96,6 +106,8 @@ func generate_job_type() -> Job_Type:
 		diff = diffculties[1] # medium
 	elif rand_float < 100.1: # 20%
 		diff = diffculties[2] # hard
+	else:
+		print("Error in get type for diffculty")
 	
 	# sample rand_float again for size
 	rand_float = randf_range(0.0,100.0)
@@ -106,7 +118,8 @@ func generate_job_type() -> Job_Type:
 		size_pick = sizes[1] # medium 
 	elif rand_float < 100.1: # 20%
 		size_pick = sizes[2] # large
-	
+	else:
+		print("Error in get type for picking size")
 	type.set_size(size_pick)
 	type.set_diffculty(diff)
 	
@@ -155,10 +168,12 @@ func generate_job_size(type:Job_Type) -> Vector2i:
 		size_multiplier = randi_range(7,11)
 	elif size_type == size_types[2]: # large
 		size_multiplier = randi_range(12,22)
+	else:
+		print("Will get 0 as multiplier")
 	
 	var size:Vector2i = Vector2i(16*size_multiplier, 16*size_multiplier)
 	
-	return Vector2i()
+	return size
 func generate_job_time_limit(type:Job_Type,job_size_vector:Vector2i) -> Dictionary:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
@@ -262,8 +277,15 @@ func generate_job_time_accept(type:Job_Type) -> int:
 	return randi_range(5,30)*60
 
 
+func get_wait_time_until_next_job() ->int:
+	"""
+	Return the amount of time until the next job will be rendered.
+	"""
+	return timer.get_wait_time()
 
-func signal_to_add_new_job(type:Job_Type) -> void:
+
+
+func signal_to_add_new_job_offer() -> void:
 	"""
 	Abstraction function to see if a new job should be added
 	The purpose of this function is to abstract away the calculation 
@@ -280,15 +302,32 @@ func signal_to_add_new_job(type:Job_Type) -> void:
 	
 	NOTE: this is the function called by the timer signal
 	"""
-	var max_time_to_next_job = 100 # max time is 100 seconds
+	
+	var max_time_to_next_job:int = 100 # max time is 100 seconds
+	var wait_time:int = 0 # set the timer to this
 	# check if there is space (under max limit)
 	if job_offers.size() <= MAX_ACTIVE_JOB_OFFERS:
 		var job_offer:Job_Offer = make_new_job_offer()
 		add_remove_job_offer(job_offer,"add") # store it
 		
-		# recalculate timer. 
+		# to debug print that job offer out
+#		print()
+#		print(job_offer.get_as_string())
+#		print()
+		
+		
+		wait_time = (max_time_to_next_job + (randf_range(job_offers.size(), MAX_ACTIVE_JOB_OFFERS)) ) * (float(job_offers.size())/float(MAX_ACTIVE_JOB_OFFERS)) +5
 		
 	else:
 		# reset timer to the max time limit
-		pass
-	# now calculate 
+		wait_time = max_time_to_next_job
+	
+	# now set the timer 
+	
+	
+	# account for * 0 
+#	print()
+#	print("Wait time " + str(wait_time))
+#	print()
+	timer.set_wait_time(wait_time)
+	timer.start()

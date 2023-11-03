@@ -11,12 +11,19 @@ var job_generator:Job_Generator
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	job_generator = Job_Generator.new()
-	# also add this to the scene tree
-	add_child(job_generator)
+	job_generator = $"Job Generator"
 	
-
-
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	pass
+
+func recieve_job_offer(offer:Job_Offer):
+	"""
+	Get a new job offer from the Job generator and display it.
+	Also store it in an Dictionary for further processing
+	"""
+	pass
+	
+func delete_job_offer():
 	pass
