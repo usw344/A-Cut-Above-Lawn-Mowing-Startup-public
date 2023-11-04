@@ -5,16 +5,39 @@
 [node name="Job Display" type="Node3D"]
 script = ExtResource("1_l366f")
 
-[node name="Control" type="Control" parent="."]
+[node name="Base" type="Control" parent="."]
 layout_mode = 3
-anchor_left = 0.49
-anchor_top = 0.481
-anchor_right = 0.698
-anchor_bottom = 0.631
-offset_left = -0.800049
-offset_top = 0.519958
-offset_right = -0.160034
-offset_bottom = -0.480042
+anchor_right = 0.315
+anchor_bottom = 0.477
+offset_top = -1.0
+offset_right = 0.199951
+offset_bottom = -0.160034
+
+[node name="Background" type="ColorRect" parent="Base"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
+color = Color(0.333333, 0.670588, 0.541176, 1)
+
+[node name="Top" type="ColorRect" parent="Base"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.172
+offset_right = 1.0
+offset_bottom = 0.247993
+grow_horizontal = 2
+color = Color(0.664063, 0.917969, 0.652344, 1)
+
+[node name="Bottom" type="ColorRect" parent="Base"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.172
+offset_top = 425.0
+offset_right = 1.0
+offset_bottom = 425.248
+color = Color(0.609375, 0.882813, 0.609375, 1)

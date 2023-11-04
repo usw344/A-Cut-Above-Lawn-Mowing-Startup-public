@@ -1,11 +1,36 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0knc7nybh32y"]
+[gd_scene load_steps=4 format=3 uid="uid://b0knc7nybh32y"]
 
 [ext_resource type="Script" path="res://Testing Grounds/Job manager/job_manager.gd" id="1_v1cni"]
 [ext_resource type="PackedScene" uid="uid://b2dkdy5yu38e5" path="res://Testing Grounds/Job manager/Job Generator/Job Generator.tscn" id="2_afe60"]
+[ext_resource type="PackedScene" uid="uid://b7avosqg4dti" path="res://Testing Grounds/Job manager/Job Display/job_display.tscn" id="3_u2jsq"]
 
 [node name="Job Manager" type="Node3D"]
 script = ExtResource("1_v1cni")
 
 [node name="Job Generator" parent="." instance=ExtResource("2_afe60")]
+
+[node name="Job Display List" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="Job Display List"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Job Display List/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.157
+anchor_right = 0.923
+anchor_bottom = 0.998
+offset_left = 0.559998
+offset_right = 0.839966
+offset_bottom = 0.159912
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Job Display" parent="Job Display List/Control/VBoxContainer" instance=ExtResource("3_u2jsq")]
 
 [connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]
