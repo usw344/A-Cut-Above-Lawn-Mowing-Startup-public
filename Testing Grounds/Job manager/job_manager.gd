@@ -12,6 +12,8 @@ var job_generator:Job_Generator
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	job_generator = $"Job Generator"
+#	var control_rect:ColorRect = $"Job Display/Background shadow"
+#	control_rect.size = Vector2(200,200)
 	
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -27,3 +29,4 @@ func recieve_job_offer(offer:Job_Offer):
 	
 func delete_job_offer():
 	pass
+

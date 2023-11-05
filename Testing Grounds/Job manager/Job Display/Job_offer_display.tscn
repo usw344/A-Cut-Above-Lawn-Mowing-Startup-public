@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqu3g6ylilnec"]
+
+[ext_resource type="Texture2D" uid="uid://bwdgxft8swypq" path="res://Assets/Pictures/temp_place_holder_job_image.PNG" id="1_u76vk"]
+
+[node name="Job Offer Display" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background shadow" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.247059, 0.490196, 0.219608, 1)
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.009
+anchor_top = 0.016
+anchor_right = 0.992
+anchor_bottom = 0.98
+offset_left = 0.719999
+offset_top = -0.280001
+offset_right = 0.359863
+offset_bottom = -0.400024
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.408482, 0.802515, 0.364824, 1)
+
+[node name="Information Display" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.268
+anchor_top = 0.101
+anchor_right = 0.683
+anchor_bottom = 0.749
+offset_left = -0.559998
+offset_top = -0.0800018
+offset_right = 0.639893
+offset_bottom = 0.0799561
+
+[node name="TextureRect" type="TextureRect" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.514
+anchor_bottom = 0.513
+offset_left = -284.0
+offset_top = -216.0
+offset_right = 294.828
+offset_bottom = 224.9
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_u76vk")
+expand_mode = 1
