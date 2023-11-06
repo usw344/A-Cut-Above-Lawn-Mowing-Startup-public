@@ -1,6 +1,44 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqu3g6ylilnec"]
+[gd_scene load_steps=10 format=3 uid="uid://cqu3g6ylilnec"]
 
 [ext_resource type="Texture2D" uid="uid://bwdgxft8swypq" path="res://Assets/Pictures/temp_place_holder_job_image.PNG" id="1_u76vk"]
+[ext_resource type="Texture2D" uid="uid://f2npnpspr7ya" path="res://Assets/Pictures/Clock sprite.png" id="2_5vho1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_caupr"]
+bg_color = Color(0.245583, 0.490762, 0.218239, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_odpkp"]
+bg_color = Color(0.408482, 0.802515, 0.364824, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7im5c"]
+bg_color = Color(0.788183, 0.589018, 0.307577, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a1f1f"]
+bg_color = Color(0.513726, 0.592157, 0.819608, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hmvoe"]
+bg_color = Color(0.364706, 0.541176, 0.211765, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jcck4"]
+bg_color = Color(0.388235, 0.65098, 0.678431, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1a440"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="Job Offer Display" type="Control"]
 layout_mode = 3
@@ -10,53 +48,241 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background shadow" type="ColorRect" parent="."]
+[node name="Background shadow" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.025
+anchor_top = 0.049
+anchor_right = 0.967
+anchor_bottom = 0.967
+offset_top = 0.079998
+offset_right = 0.359863
+offset_bottom = -0.360107
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_caupr")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.032
+anchor_top = 0.06
+anchor_right = 0.961
+anchor_bottom = 0.956
+offset_left = -0.440002
+offset_top = 0.199997
+offset_right = -0.119995
+offset_bottom = -0.47998
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_odpkp")
+
+[node name="Information Display" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 0.279
+anchor_top = 0.119
+anchor_right = 0.707
+anchor_bottom = 0.814
+offset_left = -0.680054
+offset_top = -0.520004
+offset_right = 0.559937
+offset_bottom = -0.119995
+
+[node name="Information Display Background" type="Panel" parent="Information Display"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.247059, 0.490196, 0.219608, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_7im5c")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Placeholder Image" type="TextureRect" parent="Information Display"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.009
-anchor_top = 0.016
-anchor_right = 0.992
-anchor_bottom = 0.98
-offset_left = 0.719999
-offset_top = -0.280001
-offset_right = 0.359863
-offset_bottom = -0.400024
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.408482, 0.802515, 0.364824, 1)
-
-[node name="Information Display" type="Control" parent="."]
-layout_mode = 1
-anchor_left = 0.268
-anchor_top = 0.101
-anchor_right = 0.683
-anchor_bottom = 0.749
-offset_left = -0.559998
-offset_top = -0.0800018
-offset_right = 0.639893
-offset_bottom = 0.0799561
-
-[node name="TextureRect" type="TextureRect" parent="Information Display"]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.514
-anchor_bottom = 0.513
-offset_left = -284.0
-offset_top = -216.0
-offset_right = 294.828
-offset_bottom = 224.9
+anchor_left = 0.067
+anchor_top = 0.029
+anchor_right = 0.947
+anchor_bottom = 0.704
+offset_left = -0.141003
+offset_top = 0.220999
+offset_right = -0.381042
+offset_bottom = 0.295959
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_u76vk")
 expand_mode = 1
+
+[node name="Job Name" type="Label" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.49
+anchor_top = 0.698
+anchor_right = 0.49
+anchor_bottom = 0.698
+offset_left = -298.27
+offset_top = 9.802
+offset_right = 299.73
+offset_bottom = 69.802
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_a1f1f")
+text = "Job Name place holder"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Time Left To Accept" type="Label" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.021
+anchor_top = 0.792
+anchor_right = 0.021
+anchor_bottom = 0.792
+offset_left = -0.283001
+offset_top = 0.207947
+offset_right = 215.717
+offset_bottom = 48.2079
+theme_override_font_sizes/font_size = 22
+text = "Time Left To Accept:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Timeout Progressbar" type="ProgressBar" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.296
+anchor_top = 0.804
+anchor_right = 0.296
+anchor_bottom = 0.804
+offset_left = 0.391998
+offset_top = 0.195984
+offset_right = 522.392
+offset_bottom = 36.196
+show_percentage = false
+
+[node name="Progress Label" type="Label" parent="Information Display/Timeout Progressbar"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.998
+anchor_bottom = 1.0
+offset_right = 0.0440063
+grow_horizontal = 2
+grow_vertical = 2
+text = "show remaining time"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Clock Sprite" type="TextureRect" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.03
+anchor_top = 0.867
+anchor_right = 0.03
+anchor_bottom = 0.867
+offset_left = 0.309999
+offset_top = -0.117004
+offset_right = 95.31
+offset_bottom = 89.883
+texture = ExtResource("2_5vho1")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.159
+anchor_top = 0.913
+anchor_right = 0.159
+anchor_bottom = 0.913
+offset_left = 0.14299
+offset_top = 0.336975
+offset_right = 85.143
+offset_bottom = 42.337
+theme_override_font_sizes/font_size = 22
+text = "5H30"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Base Pay Background" type="Panel" parent="Information Display"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.295
+anchor_top = 0.903
+anchor_right = 0.295
+anchor_bottom = 0.903
+offset_left = 0.214981
+offset_top = -0.153015
+offset_right = 196.215
+offset_bottom = 57.847
+theme_override_styles/panel = SubResource("StyleBoxFlat_hmvoe")
+
+[node name="Base Pay" type="Label" parent="Information Display/Base Pay Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+text = "Base Pay"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Background For Left_Right  Buttons" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.286
+anchor_top = 0.833
+anchor_right = 0.699
+anchor_bottom = 0.931
+offset_left = 0.880005
+offset_top = 0.359924
+offset_right = -0.0800781
+offset_bottom = 0.519958
+theme_override_styles/panel = SubResource("StyleBoxFlat_jcck4")
+
+[node name="Left Button" type="Button" parent="Background For Left_Right  Buttons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.051
+anchor_top = 0.5
+anchor_right = 0.051
+anchor_bottom = 0.5
+offset_left = -0.392002
+offset_top = -34.0
+offset_right = 133.608
+offset_bottom = 37.0
+grow_vertical = 2
+text = "Left"
+
+[node name="Right Button" type="Button" parent="Background For Left_Right  Buttons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.947
+anchor_top = 0.505
+anchor_right = 0.947
+anchor_bottom = 0.505
+offset_left = -148.024
+offset_top = -38.53
+offset_right = -12.024
+offset_bottom = 37.47
+grow_horizontal = 0
+grow_vertical = 2
+text = "Right"
+
+[node name="Job Number" type="Label" parent="Background For Left_Right  Buttons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.408
+anchor_top = 0.226
+anchor_right = 0.585
+anchor_bottom = 0.868
+offset_left = -0.135956
+offset_top = 0.0439987
+offset_right = -0.319946
+offset_bottom = -0.00800323
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_1a440")
+text = "100/100"
+horizontal_alignment = 1
+vertical_alignment = 1
