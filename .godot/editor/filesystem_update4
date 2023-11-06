@@ -21,3 +21,6 @@ res://Testing Grounds/Job manager/job_manager.tscn
 res://Testing Grounds/Job manager/Job Generator/Job Generator.tscn
 res://Testing Grounds/Job manager/job_offer.tscn
 res://Testing Grounds/Job manager/Job/job.tscn
+res://Testing Grounds/Job manager/job_manager.gd
+res://Testing Grounds/Job manager/Job Display/Job_offer_display.gd
+res://Testing Grounds/Job manager/Job Generator/Job Generator.gd

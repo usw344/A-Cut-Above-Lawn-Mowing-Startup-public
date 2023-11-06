@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1699230602
+::res://::1699287099
 default_env.tres::Environment::-1::1684469219::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1687636727::0::1::::<><>::
 Game.gd::GDScript::-1::1685592872::0::1::::<>Node3D<>::
@@ -213,8 +213,8 @@ job_offer.tscn::PackedScene::1529938003045981293::1699226635::0::1::::<><>::res:
 ::res://Testing Grounds/Job manager/Job/::1699226635
 job.gd::GDScript::-1::1698731715::0::1::::Job<>Job_Offer<>::
 job.tscn::PackedScene::277627911881860335::1699226635::0::1::::<><>::res://Testing Grounds/Job manager/Job/job.gd
-::res://Testing Grounds/Job manager/Job Display/::1699226635
-Job_offer_display.tscn::PackedScene::5938862877046894454::1699226635::0::1::::<><>::uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG
+::res://Testing Grounds/Job manager/Job Display/::1699248917
+Job_offer_display.tscn::PackedScene::5938862877046894454::1699248917::0::1::::<><>::uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG<>uid://f2npnpspr7ya::::res://Assets/Pictures/Clock sprite.png
 ::res://Testing Grounds/Job manager/Job Generator/::1699226635
 Job Generator.gd::GDScript::-1::1698975392::0::1::::Job_Generator<>Node3D<>::
 Job Generator.tscn::PackedScene::4288326430514385738::1699226635::0::1::::<><>::res://Testing Grounds/Job manager/Job Generator/Job Generator.gd

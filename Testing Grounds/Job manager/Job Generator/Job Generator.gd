@@ -36,6 +36,11 @@ func _init():
 	pass
 
 func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
+	"""
+	This function is triggered by the timer running out. That calls the 
+	signal_to_add_new_job_offer which makes the job offer
+	and thenc calls this function in this mode`
+	"""
 	if action == "add":
 		job_offers[job_offer.get_id()] = job_offer
 		push_to_manager(job_offer)

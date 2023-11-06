@@ -23,9 +23,10 @@ func _process(delta):
 func recieve_job_offer(offer:Job_Offer):
 	"""
 	Get a new job offer from the Job generator and display it.
-	Also store it in an Dictionary for further processing
+	Also store it in an Dictionary for further processing.
+	Also store it in the model to allow for global access
 	"""
-	pass
+	model.push_job_offer(offer)
 	
 func delete_job_offer():
 	pass
