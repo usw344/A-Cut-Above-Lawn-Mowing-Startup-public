@@ -11,9 +11,6 @@ class_name Job_Generator
 
 const MAX_ACTIVE_JOB_OFFERS = 100 
 
-## contains job offer objects ( key unique_job_id, value = Job Offer Object)
-var job_offers:Dictionary = {}
-
 # when there is a new job offer waiting to be displayed via job manager
 signal job_offer_waiting
 
@@ -42,12 +39,16 @@ func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
 	and thenc calls this function in this mode`
 	"""
 	if action == "add":
-		job_offers[job_offer.get_id()] = job_offer
+		model.add_job_offer(job_offer)
 		push_to_manager(job_offer)
 	elif action == "remove":
-		job_offers.erase(job_offer.get_id())
+		model.remove_job_offer(job_offer)
 	
 func push_to_manager(o:Job_Offer) ->void:
+	"""
+	Signal to anyone listening that a new job offer has arrived.
+	Currently this is connected in the Job Manager object
+	"""
 	emit_signal("job_offer_waiting",o)
 	
 
@@ -143,7 +144,7 @@ func generate_job_id(type:Job_Type) -> int:
 	var id:int = randi()
 	
 	# check to see if this id is already assigned to a job
-	while job_offers.has(id):
+	while model.get_all_job_offers().has(id):
 		id = randi()
 	return id
 
@@ -311,7 +312,7 @@ func signal_to_add_new_job_offer() -> void:
 	var max_time_to_next_job:int = 100 # max time is 100 seconds
 	var wait_time:int = 0 # set the timer to this
 	# check if there is space (under max limit)
-	if job_offers.size() <= MAX_ACTIVE_JOB_OFFERS:
+	if model.get_all_job_offers().size() <= MAX_ACTIVE_JOB_OFFERS:
 		var job_offer:Job_Offer = make_new_job_offer()
 		add_remove_job_offer(job_offer,"add") # store it
 		
@@ -320,8 +321,8 @@ func signal_to_add_new_job_offer() -> void:
 #		print(job_offer.get_as_string())
 #		print()
 		
-		
-		wait_time = (max_time_to_next_job + (randf_range(job_offers.size(), MAX_ACTIVE_JOB_OFFERS)) ) * (float(job_offers.size())/float(MAX_ACTIVE_JOB_OFFERS)) +5
+		var total_current_jobs:int = model.get_all_job_offers().size()
+		wait_time = (max_time_to_next_job + (randf_range(total_current_jobs, MAX_ACTIVE_JOB_OFFERS)) ) * (float(total_current_jobs)/float(MAX_ACTIVE_JOB_OFFERS)) +5
 		
 	else:
 		# reset timer to the max time limit

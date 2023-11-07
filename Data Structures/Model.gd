@@ -95,14 +95,14 @@ func increment_mower_fuel_idle_counter(add):
 	mower_fuel_idle_counter += add
 """------------------------------------------- Job function and variables  -------------------------------------------"""
 
-# store all current jobs. key = id and value = Job Data container
-var current_jobs:Dictionary = {}
-
-# store list of all completed jobs key = id and value = Job Data container
-var past_jobs:Dictionary = {}
-
-# store all jobs currently on offer
-var current_job_offers:Dictionary = {}
+## store all current jobs. key = id and value = Job Data container
+#var current_jobs:Dictionary = {}
+#
+## store list of all completed jobs key = id and value = Job Data container
+#var past_jobs:Dictionary = {}
+#
+## store all jobs currently on offer
+#var current_job_offers:Dictionary = {}
 
 # store the current selected mower (this should be updated when a selection is made in store)
 var current_mower:String = "Small Gas Mower" # key in the mower_scene_reference
@@ -194,6 +194,18 @@ func get_grass_info(type:String) -> Dictionary:
 
 func get_house_scale(type:String) -> Vector3:
 	return houses[type]["house scale"]
+
+
+"""------------------------------------------- Functions from 'testing grounds' job system  -------------------------------------------"""
+# store all current job offers
+var job_offers:Dictionary = {}
+
+func add_job_offer(o:Job_Offer) ->void:
+	job_offers[o.get_id()] = o
+func remove_job_offer(o:Job_Offer) -> void:
+	job_offers.erase(o.get_id())
+func get_all_job_offers() ->Dictionary:
+	return job_offers
 
 """------------------------------------------- multimesh chunk functions  -------------------------------------------"""
 # store what the lod will be for each chunk at a given mower position (THIS SHOULD BE SET FOR EACH JOB)
