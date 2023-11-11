@@ -12,7 +12,7 @@ Swaps different UI items in and out
 EXPECTS: to be added to scene tree
 """
 var job_generator:Job_Generator
-@onready var job_offer_display:Job_Offer_Display =$"Job Offer Display Overlay/Job Offer Display"
+@onready var job_offer_display:Job_Offer_Display =$"Display/Job Offer Display"
 
 var is_job_offer_display_visible:bool = false
 
@@ -35,7 +35,14 @@ func recieve_job_offer(offer:Job_Offer):
 	
 	Also notify the job_offer_display to update display (if the job offer display is 
 	currently displayed )
+	
+	The reason this signal is not directly sent to the job offer display is
+	since that job_offer_display can sometimes be OUT of the scene tree and inactive
+	when the user is on other parts of the game.
+	
+	NOTE: by this time the offer has already been added to the model
 	"""
-	model.push_job_offer(offer)
+	
+	pass
 
 

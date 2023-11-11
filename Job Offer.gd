@@ -47,6 +47,9 @@ func setup_job_offer(job_id_:int, job_size_:Vector2i,time_limit_:Dictionary,base
 	base_pay = base_pay_
 	display_name = display_name_
 	time_to_accept = time_to_accept_
+	
+	# set the wait time for the timer node
+	$"Accept By".wait_time = time_to_accept
 
 func get_as_string():
 	"""
@@ -79,3 +82,4 @@ func get_display_name() -> String:
 	return display_name
 func get_time_to_accept() -> int:
 	return time_to_accept
+

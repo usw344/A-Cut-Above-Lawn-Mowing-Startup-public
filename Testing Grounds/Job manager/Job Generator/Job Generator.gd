@@ -13,6 +13,7 @@ const MAX_ACTIVE_JOB_OFFERS = 100
 
 # when there is a new job offer waiting to be displayed via job manager
 signal job_offer_waiting
+signal remove_job_offer
 
 # the timer that cycles to trigger new jobs being added
 @onready var timer:Timer = $"Add Job Timer"
@@ -40,17 +41,22 @@ func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
 	"""
 	if action == "add":
 		model.add_job_offer(job_offer)
-		push_to_manager(job_offer)
+		push_to_manager(job_offer,"add") # notify the manager that there is a new job offer
 	elif action == "remove":
+		# this should be triggered when another function listening for 
+		# the timer from the Job Offer node goes off
 		model.remove_job_offer(job_offer)
+		push_to_manager(job_offer,"remove") # tell mangaer to update display to remove job offer
 	
-func push_to_manager(o:Job_Offer) ->void:
+func push_to_manager(o:Job_Offer,type:String) ->void:
 	"""
 	Signal to anyone listening that a new job offer has arrived.
 	Currently this is connected in the Job Manager object
 	"""
-	emit_signal("job_offer_waiting",o)
-	
+	if type == "add":
+		emit_signal("job_offer_waiting",o)
+	elif type =="remove":
+		emit_signal("remove_job_offer",o)
 
 func make_new_job_offer() -> Job_Offer: 
 	"""

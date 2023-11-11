@@ -9,8 +9,8 @@ script = ExtResource("1_v1cni")
 
 [node name="Job Generator" parent="." instance=ExtResource("2_afe60")]
 
-[node name="Job Offer Display Overlay" type="CanvasLayer" parent="."]
+[node name="Display" type="CanvasLayer" parent="."]
 
-[node name="Job Offer Display" parent="Job Offer Display Overlay" instance=ExtResource("3_y1q7y")]
+[node name="Job Offer Display" parent="Display" instance=ExtResource("3_y1q7y")]
 
 [connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]
