@@ -30,19 +30,21 @@ func _process(delta):
 func recieve_job_offer(offer:Job_Offer):
 	"""
 	Get a new job offer from the Job generator and display it.
-	Also store it in an Dictionary for further processing.
-	Also store it in the model to allow for global access
 	
-	Also notify the job_offer_display to update display (if the job offer display is 
+	Notify the job_offer_display to update display (if the job offer display is 
 	currently displayed )
 	
 	The reason this signal is not directly sent to the job offer display is
 	since that job_offer_display can sometimes be OUT of the scene tree and inactive
 	when the user is on other parts of the game.
 	
+	Similary add job offer to scene here and not in the display scene since the job_offer_display 
+	can sometimes be outside of the scene
+	
 	NOTE: by this time the offer has already been added to the model
 	"""
-	
-	pass
+	var job_offer_display:Job_Offer_Display = $"Display/Job Offer Display"
+	add_child(offer)
+	job_offer_display.update_display() # this will pull from the model
 
 
