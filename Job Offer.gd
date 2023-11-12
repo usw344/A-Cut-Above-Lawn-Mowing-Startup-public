@@ -13,7 +13,7 @@ var job_id: int
 # store the size (Must comply to custom gridmap restrictions. If not)
 var job_size:Vector2i
 
-# key:hour, key:minute, key:second
+# key:D (days), key:H (hours), key:M (minutes)
 var time_limit:Dictionary 
 
 # how much money the job offer 
@@ -23,12 +23,15 @@ var base_pay:float
 var display_name:String
 
 # in seconds
-var time_to_accept:int
-
+var time_to_accept:int = -1
+var timer:Timer
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
-
+	# set the wait time for the timer node
+	timer = Timer.new()
+	print("number of children: " + str(get_child_count()))
+	timer.wait_time = max(time_to_accept,0) # max just in case this is called when wait time is not set
+	add_child(timer)
 func init():
 	pass
 
@@ -48,8 +51,7 @@ func setup_job_offer(job_id_:int, job_size_:Vector2i,time_limit_:Dictionary,base
 	display_name = display_name_
 	time_to_accept = time_to_accept_
 	
-	# set the wait time for the timer node
-	$"Accept By".wait_time = time_to_accept
+	
 
 func get_as_string():
 	"""

@@ -22,6 +22,7 @@ signal remove_job_offer
 func _ready():
 	randomize()
 	var wt: int = randi_range(2,4)
+	print("set inital wait time: " + str(wt))
 	timer.set_wait_time(wt) # a random first job start time of 2-10 seconds
 	timer.start()
 
@@ -206,9 +207,18 @@ func generate_job_time_limit(type:Job_Type,job_size_vector:Vector2i) -> Dictiona
 	# Although the job can be completed 
 	
 	# TODO calibrate this. For now just return from a range from 10 to 50
+	var days:int = 0
+	var hours:int = 0
+	var minutes:int = randi_range(10,50)
+	var string_rep:String = ""
+	# to allow for later displaying this information in a label. Write a string representation
+	# and store that in the dictionary as well
+	if days > 0:
+		string_rep += "Days: " + str(days) +" "
+	string_rep += str(hours) +"H"
+	string_rep += str(minutes)
 	
-	
-	return {"D":0,"H":0,"M":randi_range(10,50)}
+	return {"D":days,"H":hours,"M":minutes,"string":string_rep}
 func generate_job_base_pay(type:Job_Type,job_size_vector:Vector2i) -> int:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
@@ -327,7 +337,8 @@ func signal_to_add_new_job_offer() -> void:
 #		print()
 #		print(job_offer.get_as_string())
 #		print()
-		
+		print()
+		print("new job")
 		var total_current_jobs:int = model.get_all_job_offers().size()
 		wait_time = (max_time_to_next_job + (randf_range(total_current_jobs, MAX_ACTIVE_JOB_OFFERS)) ) * (float(total_current_jobs)/float(MAX_ACTIVE_JOB_OFFERS)) +5
 		
