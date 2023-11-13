@@ -197,7 +197,7 @@ func make_an_array_of_arrays_of_coordinates() ->Array:
 	
 	return grid_positions
 
-func mow_item(item_name:String):
+func mow_item(item_name:String) ->void:
 	"""
 	Expect an name object in form 'chunk_id,x,y,z'
 	"""
@@ -248,7 +248,7 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 		output_chunks.append(combined_row)
 	return output_chunks
 
-func custom_grid_map_collision_handler(collision_objects:Array):
+func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 	for collision in collision_objects:
 		var name_of_collision_object  = collision.get_collider().name
 		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
@@ -284,26 +284,6 @@ func set_inital_positions_and_sizes() ->void:
 	$"Small Gas Mower".position = $"Start Area".position
 	## for testing
 	$"Small Gas Mower".position = Vector3(-10,0,5)
-
-func test_built_in_gridmap(grounded:bool = false):
-	var grid_size:int = 144
-	set_grid_paramters(grid_size,grid_size)
-	var array_of_coordinates:Array = make_an_array_of_arrays_of_coordinates()
-	print("array of coordinates size from built in " + str(len(array_of_coordinates)))
-	global_array_of_coordinates = array_of_coordinates
-	var gridmap = $"Testing Gridmap"
-	var i = 0
-	var y:int = 2 # to have gridmap on ground or raised (to compare to custom gridmap)
-	if grounded:
-		y = 0
-
-	
-	for list_of_coord in global_array_of_coordinates:
-		for coord in list_of_coord:
-			var coord_corrected = Vector3i(coord.x, y, coord.z)
-			i+=1
-			gridmap.set_cell_item(coord_corrected, 1)
-	print(i)
 
 
 # test this function with the following data

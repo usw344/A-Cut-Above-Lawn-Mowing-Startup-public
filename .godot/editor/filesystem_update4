@@ -1,5 +1,5 @@
+res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.tscn
 res://GodotSky/WorldEnvironment/default_sky.tres
-res://GodotSky/WorldEnvironment/default_environment.tres
 res://GodotSky/Presets/default/baseCloudColor.tres
 res://GodotSky/Presets/default/baseSkyColor.tres
 res://GodotSky/Presets/default/horizonFogColor.tres
@@ -9,7 +9,8 @@ res://GodotSky/Presets/default/overcastCloudColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
-res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.tscn
 res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.gd
-res://Main.tscn
 res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
+res://GodotSky/WorldEnvironment/default_environment.tres
+res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd
+res://Main.tscn
