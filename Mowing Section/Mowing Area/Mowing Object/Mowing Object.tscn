@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5wj1cgelr2e7"]
+
+[ext_resource type="Script" path="res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.gd" id="1_bnkt0"]
+
+[node name="Mowing Object" type="Node3D"]
+script = ExtResource("1_bnkt0")
