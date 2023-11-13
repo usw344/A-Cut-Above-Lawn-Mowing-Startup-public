@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1xijjx2himk3"]
-
-[ext_resource type="ArrayMesh" uid="uid://b32m31nqs0ee1" path="res://Testing Grounds/Meshes/Mowed Grass High LOD.tres" id="1_f065g"]
-
-[node name="Mowed Grass High LOD" type="MeshInstance3D"]
-mesh = ExtResource("1_f065g")
-skeleton = NodePath("")

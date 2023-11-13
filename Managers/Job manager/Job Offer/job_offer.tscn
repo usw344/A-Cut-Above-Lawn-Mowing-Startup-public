@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://v2d4c28wymyn"]
+
+[ext_resource type="Script" path="res://Managers/Job manager/Job Offer/Job Offer.gd" id="1_bhvlc"]
+
+[node name="Job Offer" type="Node3D"]
+script = ExtResource("1_bhvlc")
+
+[node name="Accept By" type="Timer" parent="."]

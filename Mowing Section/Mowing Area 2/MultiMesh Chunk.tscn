@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://chnhc2j2ns5ge"]
-
-[ext_resource type="Script" path="res://Mowing Section/Mowing Area 2/MultiMesh Chunk.gd" id="1_bcayt"]
-
-[node name="MultiMesh Chunk" type="Node3D"]
-script = ExtResource("1_bcayt")

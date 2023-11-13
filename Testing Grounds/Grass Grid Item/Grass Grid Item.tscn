@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://blp41j5dlxcsw"]
-
-[ext_resource type="Script" path="res://Testing Grounds/Grass Grid Item/Grass Grid Item.gd" id="1_5ekcp"]
-
-[node name="Grass Grid Item" type="Node3D"]
-script = ExtResource("1_5ekcp")
