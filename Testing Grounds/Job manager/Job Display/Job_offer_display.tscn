@@ -402,3 +402,6 @@ theme_override_font_sizes/font_size = 56
 text = "No job offers for now. Check again later"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="pressed" from="Background For Left_Right  Buttons/Left Button" to="." method="get_previous_job_offer_in_order"]
+[connection signal="pressed" from="Background For Left_Right  Buttons/Right Button" to="." method="get_next_job_offer_in_order"]

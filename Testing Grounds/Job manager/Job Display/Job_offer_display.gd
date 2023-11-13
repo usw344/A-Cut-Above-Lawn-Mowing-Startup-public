@@ -92,7 +92,7 @@ func remove_old_offers(current_offers:Dictionary) -> void:
 			job_id_for_displayed_offer = -1
 		else:
 			job_id_for_displayed_offer = job_offer_display_order.keys()[0]
-		refresh_display()
+#		refresh_display()
 		return 
 
 
@@ -112,11 +112,13 @@ func refresh_display() ->void:
 		# now grab the job offer object and laod its data into the relevent labels
 		var job_offer:Job_Offer = job_offer_display_order[job_id_for_displayed_offer]
 		
+		var ids:Array = job_offer_display_order.keys()
+		var index_for_current_id:int = ids.find(job_id_for_displayed_offer) + 1 # +1 since index starts at 0
 		# set the job name
 		$"Information Display/Job Name".text = str(job_offer.get_display_name())
-		$"Information Display/Base Pay Background/Base Pay".text = str(job_offer.get_base_pay())
+		$"Information Display/Base Pay Background/Base Pay".text = "Pay: " + str(job_offer.get_base_pay())
 		$"Information Display/Total Time To Do Job".text = str(job_offer.get_time_limit()["string"])
-		$"Background For Left_Right  Buttons/Job Counter".text = str(job_offer_display_order.size())
+		$"Background For Left_Right  Buttons/Job Counter".text = str(index_for_current_id) + "/" + str(job_offer_display_order.size())
 
 
 func get_diff(current_offers:Dictionary) ->Array:
@@ -169,7 +171,28 @@ func add_new_offers(current_offers:Dictionary) ->void:
 	if job_id_for_displayed_offer == -1:
 		# now set it to the first job offer there is
 		job_id_for_displayed_offer = job_offer_display_order.keys()[0]
-		refresh_display()
+#		refresh_display()
 	
+func get_next_job_offer_in_order() ->void:
+	"""
+	Update the job_id_for_displayed_offer to the next job offer in order:
+	If at the last job in order then wrap around to begining
+	"""
+	var ids:Array = job_offer_display_order.keys()
+	
+	# check if need to wrap around
+	if job_id_for_displayed_offer == ids[ids.size()-1]: # -1 since size return number of items 1-n not 0-n
+		job_id_for_displayed_offer = ids[0]
+	else:
+		var index_place:int = ids.find(job_id_for_displayed_offer)
+		job_id_for_displayed_offer = ids[index_place+1] 
 
-
+func get_previous_job_offer_in_order() ->void:
+	var ids:Array = job_offer_display_order.keys()
+	
+	# check if need to wrap around
+	if job_id_for_displayed_offer == ids[0]: # -1 since size return number of items 1-n not 0-n
+		job_id_for_displayed_offer = ids[ids.size()-1]
+	else:
+		var index_place:int = ids.find(job_id_for_displayed_offer)
+		job_id_for_displayed_offer = ids[index_place-1] 
