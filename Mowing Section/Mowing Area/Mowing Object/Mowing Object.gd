@@ -7,8 +7,10 @@ the mowing UI.
 This object has a save_object() and load_object() method
 
 """
-
+## Job object with the information of this given job (size etc.)
 var job:Job 
+
+var custom_gridmap:Custom_Gridmap
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

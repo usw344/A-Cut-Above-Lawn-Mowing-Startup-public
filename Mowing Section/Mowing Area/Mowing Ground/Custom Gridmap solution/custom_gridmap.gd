@@ -1,14 +1,16 @@
 extends Node3D
+class_name  Custom_Gridmap
 
-var width_and_length:int = 1000 # remember this gets multiplied by 2
-var total_grid_width_length:int # calcuated in ready function
+
+var width_and_length_radius:int = 750 # remember this gets multiplied by 2
+
 
 var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func _ready():
 	set_inital_positions_and_sizes()
 	
 	# test the gridmap 
-	test_custom_gridmap()
+#	test_custom_gridmap()
 #	test_save_loading()
 
 func _process(delta):
@@ -212,7 +214,10 @@ func mow_item(item_name:String) ->void:
 
 
 func str_to_vector4i(str) -> Vector4i:
-	""" Take in a string in format ' (x,y,z,w)  ' and return that as a Vector4i """
+	""" Take in a string in format ' (x,y,z,w)  ' and return that as a Vector4i
+		This is used in setting the name of each grass item. This is used in the 
+		collision shape
+	"""
 	var vector4i:Vector4i = Vector4i()
 	var vec_arr = str.split(",")
 	vector4i.x = vec_arr[0].to_int()
@@ -248,6 +253,7 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 		output_chunks.append(combined_row)
 	return output_chunks
 
+
 func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 	for collision in collision_objects:
 		var name_of_collision_object  = collision.get_collider().name
@@ -267,16 +273,13 @@ func set_inital_positions_and_sizes() ->void:
 	this function can be used with a saved mower position or the default
 	"""
 	# set the width and length of the mowing area
-	var multiply_width_length_by_2 = width_and_length*2 # since in code it does not auto scale to twice the value
+	var multiply_width_length_by_2 = width_and_length_radius*2 # since in code it does not auto scale to twice the value
 	$"Mowing Area/MeshInstance3D".mesh.size = Vector2(multiply_width_length_by_2,multiply_width_length_by_2)
 	$"Mowing Area/CollisionShape3D".shape.size = Vector3(multiply_width_length_by_2,1,multiply_width_length_by_2)
-
-	# calculate how much grass is needed
-	total_grid_width_length = int(width_and_length/2)
 	
 	# set the start position area
 	var pos:Vector3 = Vector3()
-	pos.x += width_and_length + ($"Start Area/MeshInstance3D".mesh.size.x/2)
+	pos.x += width_and_length_radius + ($"Start Area/MeshInstance3D".mesh.size.x/2)
 	pos.y = 0
 	$"Start Area".position = pos
 	
