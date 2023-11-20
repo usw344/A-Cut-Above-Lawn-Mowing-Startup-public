@@ -85,3 +85,8 @@ func get_display_name() -> String:
 func get_time_to_accept() -> int:
 	return time_to_accept
 
+func accept_job() ->Job:
+	"""
+	Make and return a Job object containing the following information
+	"""
+	return Job.new()

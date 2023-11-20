@@ -16,7 +16,7 @@ var job_generator:Job_Generator
 
 var is_job_offer_display_visible:bool = false
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	job_generator = $"Job Generator"
 #	var control_rect:ColorRect = $"Job Display/Background shadow"
