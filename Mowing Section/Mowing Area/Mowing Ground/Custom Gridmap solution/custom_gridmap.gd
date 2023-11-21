@@ -263,7 +263,8 @@ func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 			mow_item(name_of_collision_object)
 
 
-
+func get_mower_inital_position() ->Vector3:
+	return  $"Start Area".position
 	
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
@@ -283,10 +284,10 @@ func set_inital_positions_and_sizes() ->void:
 	pos.y = 0
 	$"Start Area".position = pos
 	
-	# set the mower to the start position
-	$"Small Gas Mower".position = $"Start Area".position
-	## for testing
-	$"Small Gas Mower".position = Vector3(-10,0,5)
+#	# set the mower to the start position
+#	$"Small Gas Mower".position = $"Start Area".position
+#	## for testing
+#	$"Small Gas Mower".position = Vector3(-10,0,5)
 
 
 # test this function with the following data

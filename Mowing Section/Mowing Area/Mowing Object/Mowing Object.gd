@@ -32,16 +32,22 @@ func initialize_game():
 	
 	If the objective is to start a game again (say the user left to another job or went back to another scene)
 	This can be done with load_from_model() which will only load the object.
+	
+	CONDITION: this function should only be called when it is in the scene tree. 
+	ELSE: null errors will most likey occur.
 	"""
 	# to set the custom gridparam first get the data from the Job Object
+	if self.is_inside_tree() == false:
+		print(" ERROR initialize_game in Mowing Object. Not in scene tree")
+		return
 	var width:int = job.get_job_size().x
 	var length:int = job.get_job_size().y
 	
-	# now get the mower start position calculated
-	## TODO
-	
 	# set the custom gridmap
 	custom_gridmap.set_grid_paramters(width,length)
+	
+	
+	
 	pass
 
 
