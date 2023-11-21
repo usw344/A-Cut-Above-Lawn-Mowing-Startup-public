@@ -28,15 +28,34 @@ func initialize_game():
 	default mowing job based on the params set in the Job object.
 	
 	If the objective is to load a saved game this can be done using the save/load functions. Those functions
-	will also load the Job object into the job array
+	will also load the Job object. 
 	
 	If the objective is to start a game again (say the user left to another job or went back to another scene)
 	This can be done with load_from_model() which will only load the object.
 	"""
+	# to set the custom gridparam first get the data from the Job Object
+	var width:int = job.get_job_size().x
+	var length:int = job.get_job_size().y
+	
+	# now get the mower start position calculated
+	## TODO
+	
+	# set the custom gridmap
+	custom_gridmap.set_grid_paramters(width,length)
 	pass
 
 
 func save_object():
+	"""
+	Return a save state of this object. This action can be reversed using the data from this 
+	function passed into the load_object.  
+	
+	The idea is that the the Job Manager will be responsible for the final save (to file)
+	"""
 	pass
 func load_object():
+	"""
+	Provided data (in form of the return from save_object()) this function will load an empty 
+	Mowing Object function
+	"""
 	pass
