@@ -333,12 +333,8 @@ func signal_to_add_new_job_offer() -> void:
 		var job_offer:Job_Offer = make_new_job_offer()
 		add_remove_job_offer(job_offer,"add") # store it
 		
-		# to debug print that job offer out
-#		print()
-#		print(job_offer.get_as_string())
-#		print()
-		print()
-		print("new job")
+#		print_string(job_offer)
+
 		var total_current_jobs:int = model.get_all_job_offers().size()
 		wait_time = (max_time_to_next_job + (randf_range(total_current_jobs, MAX_ACTIVE_JOB_OFFERS)) ) * (float(total_current_jobs)/float(MAX_ACTIVE_JOB_OFFERS)) +5
 		
@@ -349,9 +345,13 @@ func signal_to_add_new_job_offer() -> void:
 	# now set the timer 
 	
 	
-	# account for * 0 
-#	print()
-#	print("Wait time " + str(wait_time))
-#	print()
 	timer.set_wait_time(wait_time)
 	timer.start()
+
+func print_string(offer):
+	# to debug print that job offer out
+	print()
+	print(offer.get_as_string())
+	print()
+	print()
+	print("new job")
