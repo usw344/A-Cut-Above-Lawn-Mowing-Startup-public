@@ -4,6 +4,9 @@ class_name Job_Offer
 """
 Most basic of the job containers. contains offer information.
 
+Note: This gets added to the scene tree in the Job Manager (recieve_job_offer) function
+This way the timer can be used to trigger if this job is to be declined
+
 EXTENDED BY: Job, Job_Declined (todo) 
 """
 
@@ -25,13 +28,19 @@ var display_name:String
 # in seconds
 var time_to_accept:int = -1
 var timer:Timer
+
+signal remove_offer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# set the wait time for the timer node
 	timer = Timer.new()
-	print("number of children: " + str(get_child_count()))
 	timer.wait_time = max(time_to_accept,0) # max just in case this is called when wait time is not set
+
+	timer.connect("timeout",remove_job_offer)
 	add_child(timer)
+	timer.start()
+	
+	
 func init():
 	pass
 
@@ -51,9 +60,10 @@ func setup_job_offer(job_id_:int, job_size_:Vector2i,time_limit_:Dictionary,base
 	display_name = display_name_
 	time_to_accept = time_to_accept_
 	
-	
 
-func get_as_string():
+
+
+func get_as_string() ->String:
 	"""
 	Debugging function to get this job offer as a string that can be printed
 	
@@ -72,6 +82,7 @@ func get_as_string():
 	
 	return str
 
+# get and set methods for the various variables in this object
 func get_id() -> int:
 	return job_id
 func get_job_size() ->Vector2i :
@@ -85,8 +96,37 @@ func get_display_name() -> String:
 func get_time_to_accept() -> int:
 	return time_to_accept
 
+### functions relating to accepting/declining and updating
+
 func accept_job() ->Job:
 	"""
-	Make and return a Job object containing the following information
+	Make and return a Job object containing the following information.
+	
+	This function would be called in the Job_Offer_Display object. Since that is 
+	where the job offer is rep
 	"""
 	return Job.new()
+
+func remove_job_offer() ->void:
+	"""
+	If the timer to accept expires then remove offer.
+	To encapsulate the timer (in case some other mechanism is used later) have this 
+	function send another signal
+	"""
+	print("Emiting signal")
+	emit_signal("remove_offer")
+func get_remaining_time_to_accept_as_percentage() -> int:
+	"""
+	EXPECTS: to be called only when this object is inside the scene tree
+	
+	This function provides a 0-100 representation of how much time 
+	is left in accepting 
+	"""
+	var inital_time_in_timer:int = time_to_accept
+	var time_left_in_timer:int = timer.time_left
+	var percentage:float = float(time_left_in_timer)/float(inital_time_in_timer)
+
+	return int(percentage*100)
+func get_remaining_time_to_accept_as_string_format() -> String:
+	var time_in_seconds = timer.HORIZONTAL_ALIGNMENT_LEFT
+	return ""

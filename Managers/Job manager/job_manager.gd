@@ -45,6 +45,10 @@ func recieve_job_offer(offer:Job_Offer):
 	"""
 	var job_offer_display:Job_Offer_Display = $"Display/Job Offer Display"
 	add_child(offer)
+	offer.connect("remove_offer",remove_job_offer)
 	job_offer_display.update_display() # this will pull from the model
 
 
+func remove_job_offer() -> void:
+	print("testing connection of signal")
+	

@@ -119,8 +119,12 @@ func refresh_display() ->void:
 		$"Information Display/Base Pay Background/Base Pay".text = "Pay: " + str(job_offer.get_base_pay())
 		$"Information Display/Total Time To Do Job".text = str(job_offer.get_time_limit()["string"])
 		$"Background For Left_Right  Buttons/Job Counter".text = str(index_for_current_id) + "/" + str(job_offer_display_order.size())
+		$"Information Display/Size Information".text = str(job_offer.get_job_size())
 
-
+		# find the remaining time in the timer
+		var time_left_in_timer:int = job_offer.get_remaining_time_to_accept_as_percentage()
+		$"Information Display/Timeout Progressbar".value = time_left_in_timer
+		$"Information Display/Timeout Progressbar/Progress Label".text = str(time_left_in_timer)
 func get_diff(current_offers:Dictionary) ->Array:
 	"""
 	Get which offers are new as compared to the current offers on displau

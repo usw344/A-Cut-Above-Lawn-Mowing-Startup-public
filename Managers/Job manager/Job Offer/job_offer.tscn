@@ -4,5 +4,3 @@
 
 [node name="Job Offer" type="Node3D"]
 script = ExtResource("1_bhvlc")
-
-[node name="Accept By" type="Timer" parent="."]
