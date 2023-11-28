@@ -26,7 +26,7 @@ var base_pay:float
 var display_name:String
 
 # in seconds
-var time_to_accept:int = -1
+var time_to_accept:float = -1
 var timer:Timer
 
 signal remove_offer
@@ -34,6 +34,9 @@ signal remove_offer
 func _ready():
 	# set the wait time for the timer node
 	timer = Timer.new()
+	
+	# TEST: remove the float after done testing
+	time_to_accept = float(time_to_accept)/2
 	timer.wait_time = max(time_to_accept,0) # max just in case this is called when wait time is not set
 
 	timer.connect("timeout",remove_job_offer)
@@ -118,7 +121,7 @@ func remove_job_offer() ->void:
 	
 	Currently, this is connected in the 
 	"""
-	emit_signal("remove_offer")
+	emit_signal("remove_offer", model.get_all_job_offers().get(job_id))
 	
 func get_remaining_time_to_accept_as_percentage() -> int:
 	"""

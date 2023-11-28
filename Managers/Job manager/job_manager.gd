@@ -72,6 +72,9 @@ func remove_job_offer(offer:Job_Offer) -> void:
 		4. Remove the Job Offer child from this object.
 	
 	"""
+	## remove from the model
+	model.remove_job_offer(offer)
+	
 	# update the display
 	job_offer_display.update_display()
 	
@@ -79,5 +82,8 @@ func remove_job_offer(offer:Job_Offer) -> void:
 	
 	# remove child node 
 	remove_child(offer)
-	print("testing connection of signal")
+	
+	print("Removing the job offer with ID: " + str(offer.get_id()))
+	offer.queue_free()
+	
 	
