@@ -43,12 +43,23 @@ func recieve_job_offer(offer:Job_Offer):
 	
 	NOTE: by this time the offer has already been added to the model
 	"""
-	var job_offer_display:Job_Offer_Display = $"Display/Job Offer Display"
+#	var job_offer_display:Job_Offer_Display = $"Display/Job Offer Display"
 	add_child(offer)
 	offer.connect("remove_offer",remove_job_offer)
 	job_offer_display.update_display() # this will pull from the model
 
 
-func remove_job_offer() -> void:
+func remove_job_offer(offer:Job_Offer) -> void:
+	"""
+	The offer comining is already removed from the model. That is done by the 
+	the Job Generator class. The 
+	"""
+	# update the display
+	job_offer_display.update_display()
+	
+	# TODO: in case later descision is taken to save rejected or time ran out then save as a rejected job offer
+	
+	# remove child node 
+	remove_child(offer)
 	print("testing connection of signal")
 	

@@ -113,7 +113,6 @@ func remove_job_offer() ->void:
 	To encapsulate the timer (in case some other mechanism is used later) have this 
 	function send another signal
 	"""
-	print("Emiting signal")
 	emit_signal("remove_offer")
 func get_remaining_time_to_accept_as_percentage() -> int:
 	"""

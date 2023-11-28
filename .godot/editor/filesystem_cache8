@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1700938737
+::res://::1701192955
 default_env.tres::Environment::-1::1684623789::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1690343895::0::1::::<><>::
 Game.gd::GDScript::-1::1685765576::0::1::::<>Node3D<>::
@@ -32,10 +32,10 @@ Mesurement.tscn::PackedScene::4803629611407700834::1684623846::0::1::::<><>::res
 Performance Monitor.gd::GDScript::-1::1684623846::0::1::::Performance_Monitor<>Control<>::
 Performance Monitor.tscn::PackedScene::4417058207688161942::1684623846::0::1::::<><>::res://Dev tools/Performance Monitor.gd
 ::res://GodotSky/::1685765576
-GodotSky.tscn::PackedScene::1837630904097988851::1685765576::0::1::::<><>::uid://wwq6f40kybqq::::res://GodotSky/WorldEnvironment/default_environment.tres<>res://GodotSky/Scripts/GodotSky.gd
+GodotSky.tscn::PackedScene::1837630904097988851::1685765576::0::1::::<><>::uid://wwq6f40kybqq
 ::res://GodotSky/Presets/::1685765576
-sky_alien.tres::Resource/SkyPreset::6544410459469313275::1685765576::0::1::::<><>::uid://b1tbkqimx4iet::::res://GodotSky/Presets/alien/alien_baseCloudColor.tres<>uid://bh23k3qavhkgs::::res://GodotSky/Presets/alien/alien_baseSkyColor.tres<>uid://5w2qftxpu37u::::res://GodotSky/Presets/alien/alien_horizonFogColor.tres<>uid://olcpo6r2vd1w::::res://GodotSky/Presets/alien/alien_moonGlowColor.tres<>uid://j16cr0mc33qr::::res://GodotSky/Presets/alien/alien_moonLight.tres<>uid://dfwsgpngfonpr::::res://GodotSky/Presets/default/moonLightIntensity.tres<>uid://ldtmjeqburwu::::res://GodotSky/Presets/default/overcastCloudColor.tres<>res://GodotSky/Presets/sky_presets.gd<>uid://cssgcr5l78yas::::res://GodotSky/Presets/alien/alien_sunDiscColor.tres<>uid://cql6exfjhd3eb::::res://GodotSky/Presets/alien/alien_sunGlowColor.tres<>uid://b6pfci202gt33::::res://GodotSky/Presets/alien/alien_sunLight.tres<>uid://cbqp5kavktxj0::::res://GodotSky/Presets/default/sunLightIntensity.tres
-sky_default.tres::Resource/SkyPreset::2087792749060201634::1685765576::0::1::::<><>::uid://byjfyuyrx807k::::res://GodotSky/Presets/default/baseCloudColor.tres<>uid://cgx4sl3aogvl1::::res://GodotSky/Presets/default/baseSkyColor.tres<>uid://djvanj1c4svii::::res://GodotSky/Presets/default/horizonFogColor.tres<>uid://ckf0fl5h3dsb7::::res://GodotSky/Presets/default/moonGlowColor.tres<>uid://ciih3pg7w7pdi::::res://GodotSky/Presets/default/moonLight.tres<>uid://ldtmjeqburwu::::res://GodotSky/Presets/default/overcastCloudColor.tres<>uid://dfwsgpngfonpr::::res://GodotSky/Presets/default/moonLightIntensity.tres<>res://GodotSky/Presets/sky_presets.gd<>uid://b8shggit3kluq::::res://GodotSky/Presets/default/sunDiscColor.tres<>uid://c04hwtwd421t::::res://GodotSky/Presets/default/sunGlowColor.tres<>uid://b34sugfjpq5gi::::res://GodotSky/Presets/default/sunLight.tres<>uid://cbqp5kavktxj0::::res://GodotSky/Presets/default/sunLightIntensity.tres
+sky_alien.tres::Resource/Resource::6544410459469313275::1685765576::0::1::::<><>::uid://b1tbkqimx4iet
+sky_default.tres::Resource/Resource::2087792749060201634::1685765576::0::1::::<><>::uid://byjfyuyrx807k
 sky_presets.gd::GDScript::-1::1685765576::0::1::::SkyPreset<>Resource<>::
 ::res://GodotSky/Presets/alien/::1685765576
 alien_baseCloudColor.tres::GradientTexture1D::4250633223850041875::1685765576::0::1::::<><>::
@@ -48,17 +48,17 @@ alien_sunDiscColor.tres::GradientTexture1D::6073768165773231706::1685765576::0::
 alien_sunGlowColor.tres::GradientTexture1D::5920461607020256737::1685765576::0::1::::<><>::
 alien_sunLight.tres::GradientTexture1D::4593548122403389536::1685765576::0::1::::<><>::
 alien_sunLightIntensity.tres::Curve::6346346475374056449::1685765576::0::1::::<><>::
-::res://GodotSky/Presets/default/::1700592305
-baseCloudColor.tres::GradientTexture1D::4089879863156739910::1700592305::0::1::::<><>::
-baseSkyColor.tres::GradientTexture1D::5243248675668631284::1700592305::0::1::::<><>::
-horizonFogColor.tres::GradientTexture1D::7834337304983036300::1700592305::0::1::::<><>::
-moonGlowColor.tres::GradientTexture1D::5486579170782099138::1700592305::0::1::::<><>::
-moonLight.tres::GradientTexture1D::5351342958305328522::1700592305::0::1::::<><>::
+::res://GodotSky/Presets/default/::1700946269
+baseCloudColor.tres::GradientTexture1D::4089879863156739910::1700946268::0::1::::<><>::
+baseSkyColor.tres::GradientTexture1D::5243248675668631284::1700946268::0::1::::<><>::
+horizonFogColor.tres::GradientTexture1D::7834337304983036300::1700946268::0::1::::<><>::
+moonGlowColor.tres::GradientTexture1D::5486579170782099138::1700946269::0::1::::<><>::
+moonLight.tres::GradientTexture1D::5351342958305328522::1700946269::0::1::::<><>::
 moonLightIntensity.tres::Curve::7556727008704575491::1685765576::0::1::::<><>::
-overcastCloudColor.tres::GradientTexture1D::779445945288435700::1700592305::0::1::::<><>::
-sunDiscColor.tres::GradientTexture1D::4740247385433673428::1700592305::0::1::::<><>::
-sunGlowColor.tres::GradientTexture1D::193761610344868235::1700592305::0::1::::<><>::
-sunLight.tres::GradientTexture1D::4412704205467386140::1700592305::0::1::::<><>::
+overcastCloudColor.tres::GradientTexture1D::779445945288435700::1700946268::0::1::::<><>::
+sunDiscColor.tres::GradientTexture1D::4740247385433673428::1700946269::0::1::::<><>::
+sunGlowColor.tres::GradientTexture1D::193761610344868235::1700946269::0::1::::<><>::
+sunLight.tres::GradientTexture1D::4412704205467386140::1700946269::0::1::::<><>::
 sunLightIntensity.tres::Curve::4877025109999617151::1685765576::0::1::::<><>::
 ::res://GodotSky/Scripts/::1690343895
 GodotSky.gd::GDScript::-1::1690343895::0::1::::<>WorldEnvironment<>::
@@ -72,25 +72,25 @@ starmap_8k.jpg::CompressedTexture2D::2705215692772567721::1685765576::1685765779
 Stars_Noise.TGA::CompressedTexture2D::3622898064617848699::1685765576::1685765732::1::::<><>::
 StaticCloudsAlpha.tga::CompressedTexture2D::5710063143071602288::1685765576::1685765749::1::::<><>::
 StaticCloudsXY.tga::CompressedTexture2D::5286439033012208714::1685765576::1685765741::1::::<><>::
-::res://GodotSky/WorldEnvironment/::1700592305
-default_environment.tres::Environment::1590598010687615476::1700592305::0::1::::<><>::uid://bq7217qbtqsdc::::res://GodotSky/WorldEnvironment/default_sky.tres
-default_sky.tres::Sky::3577189765013304704::1700592305::0::1::::<><>::res://GodotSky/Shaders/GodotSky.gdshader<>uid://dnj6ylyuxc6w3::::res://GodotSky/Textures/scatteringLUT.HDR<>uid://cnl852air6g7q::::res://GodotSky/Textures/StaticCloudsAlpha.tga<>uid://chk144tfviq2e::::res://GodotSky/Textures/StaticCloudsXY.tga<>uid://bru7upxvlt3kp::::res://GodotSky/Textures/Stars_Noise.TGA<>uid://besoril5mkfd6::::res://GodotSky/Textures/starmap_8k.jpg
+::res://GodotSky/WorldEnvironment/::1700946269
+default_environment.tres::Environment::1590598010687615476::1700592305::0::1::::<><>::uid://bq7217qbtqsdc
+default_sky.tres::Sky::3577189765013304704::1700946269::0::1::::<><>::res://GodotSky/Shaders/GodotSky.gdshader<>uid://dnj6ylyuxc6w3::::res://GodotSky/Textures/scatteringLUT.HDR<>uid://cnl852air6g7q::::res://GodotSky/Textures/StaticCloudsAlpha.tga<>uid://chk144tfviq2e::::res://GodotSky/Textures/StaticCloudsXY.tga<>uid://bru7upxvlt3kp::::res://GodotSky/Textures/Stars_Noise.TGA<>uid://besoril5mkfd6::::res://GodotSky/Textures/starmap_8k.jpg
 ::res://Managers/::1699909596
-::res://Managers/Job manager/::1700592305
-job_manager.gd::GDScript::-1::1700496439::0::1::::Job_Manager<>Node3D<>::
-job_manager.tscn::PackedScene::4162580146600039206::1700592305::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn<>uid://cqu3g6ylilnec::::res://Managers/Job manager/Job Display/Job_offer_display.tscn
-::res://Managers/Job manager/Job/::1700592306
+::res://Managers/Job manager/::1700972151
+job_manager.gd::GDScript::-1::1700950965::0::1::::Job_Manager<>Node3D<>::
+job_manager.tscn::PackedScene::4162580146600039206::1700972151::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn<>uid://cqu3g6ylilnec::::res://Managers/Job manager/Job Display/Job_offer_display.tscn
+::res://Managers/Job manager/Job/::1700972151
 job.gd::GDScript::-1::1700496439::0::1::::Job<>Job_Offer<>::
-job.tscn::PackedScene::277627911881860335::1700592306::0::1::::<><>::res://Managers/Job manager/Job/job.gd
-::res://Managers/Job manager/Job Display/::1699909596
-Job_offer_display.gd::GDScript::-1::1699909596::0::1::::Job_Offer_Display<>Control<>::
-Job_offer_display.tscn::PackedScene::5938862877046894454::1699909596::0::1::::<><>::res://Managers/Job manager/Job Display/Job_offer_display.gd<>uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG<>uid://f2npnpspr7ya::::res://Assets/Pictures/Clock sprite.png
-::res://Managers/Job manager/Job Generator/::1700938671
-Job Generator.gd::GDScript::-1::1700938671::0::1::::Job_Generator<>Node3D<>::
-Job Generator.tscn::PackedScene::4288326430514385738::1699909596::0::1::::<><>::res://Managers/Job manager/Job Generator/Job Generator.gd
-::res://Managers/Job manager/Job Offer/::1700592306
-Job Offer.gd::GDScript::-1::1700496439::0::1::::Job_Offer<>Node3D<>::
-job_offer.tscn::PackedScene::1529938003045981293::1700592306::0::1::::<><>::res://Managers/Job manager/Job Offer/Job Offer.gd
+job.tscn::PackedScene::277627911881860335::1700972151::0::1::::<><>::res://Managers/Job manager/Job/job.gd
+::res://Managers/Job manager/Job Display/::1700972151
+Job_offer_display.gd::GDScript::-1::1700970423::0::1::::Job_Offer_Display<>Control<>::
+Job_offer_display.tscn::PackedScene::5938862877046894454::1700972151::0::1::::<><>::res://Managers/Job manager/Job Display/Job_offer_display.gd<>uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG<>uid://f2npnpspr7ya::::res://Assets/Pictures/Clock sprite.png
+::res://Managers/Job manager/Job Generator/::1700972151
+Job Generator.gd::GDScript::-1::1700971390::0::1::::Job_Generator<>Node3D<>::
+Job Generator.tscn::PackedScene::4288326430514385738::1700972151::0::1::::<><>::res://Managers/Job manager/Job Generator/Job Generator.gd
+::res://Managers/Job manager/Job Offer/::1701192935
+Job Offer.gd::GDScript::-1::1701192935::0::1::::Job_Offer<>Node3D<>::
+job_offer.tscn::PackedScene::1529938003045981293::1700972151::0::1::::<><>::res://Managers/Job manager/Job Offer/Job Offer.gd
 ::res://Mowing Section/::1699909596
 ::res://Mowing Section/Mower/::1699909596
 Mower.gd::GDScript::-1::1699909596::0::1::::<>CharacterBody3D<>::
@@ -98,15 +98,15 @@ Mower.gd::GDScript::-1::1699909596::0::1::::<>CharacterBody3D<>::
 Mower_Normal.tscn::PackedScene::4538003686887627614::1698083470::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
 ::res://Mowing Section/Mowing Area/::1699909596
 ::res://Mowing Section/Mowing Area/Mowing Ground/::1699909596
-::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/::1700592305
+::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/::1700972151
 custom_gridmap.gd::GDScript::-1::1700590862::0::1::::Custom_Gridmap<>Node3D<>::
-custom_gridmap.tscn::PackedScene::1385578023405934236::1700592305::0::1::::<><>::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
+custom_gridmap.tscn::PackedScene::1385578023405934236::1700972151::0::1::::<><>::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
 ::res://Mowing Section/Mowing Area/Mowing Ground/Grass Grid Item/::1699909596
 Grass Grid Item.gd::GDScript::-1::1699909596::0::1::::Grass_Grid_Item<>Node3D<>::
 Grass Grid Item.tscn::PackedScene::3191271372660305354::1699909596::0::1::::<><>::
-::res://Mowing Section/Mowing Area/Mowing Object/::1700592306
+::res://Mowing Section/Mowing Area/Mowing Object/::1700972151
 Mowing Object.gd::GDScript::-1::1700592305::0::1::::<>Node3D<>::
-Mowing Object.tscn::PackedScene::6924515985205581900::1700592306::0::1::::<><>::res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.gd
+Mowing Object.tscn::PackedScene::6924515985205581900::1700972151::0::1::::<><>::res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.gd
 ::res://Mowing Section/Mowing Area/MultiMesh Chunk/::1699909596
 MultiMesh Chunk.gd::GDScript::-1::1699909596::0::1::::Multi_Mesh_Chunk<>Node3D<>::
 MultiMesh Chunk.tscn::PackedScene::5291430207470945736::1699909596::0::1::::<><>::res://Mowing Section/Mowing Area/MultiMesh Chunk/MultiMesh Chunk.gd
@@ -115,7 +115,7 @@ Dirt Material.tres::ShaderMaterial::722726275677297723::1685765948::0::1::::<><>
 Dirt.gdshader::Shader::-1::1684623846::0::1::::<><>::
 ::res://Mowing Section/UI/::1690343895
 Information UI.gd::GDScript::-1::1690343895::0::1::::<>Control<>::
-Information UI.tscn::PackedScene::4480604293459826848::1690343895::0::1::::<><>::res://Mowing Section/UI/Information UI.gd<>uid://q2rtte7fp7h2::::res://Assets/Pictures/Fuel Icon.PNG<>uid://bobcfnnk8ypte::::res://Assets/Pictures/Grass Cuttings.PNG<>uid://6107l1ujsb54::::res://Assets/Information UI Texture.png
+Information UI.tscn::PackedScene::4480604293459826848::1690343895::0::1::::<><>::res://Mowing Section/UI/Information UI.gd<>uid://q2rtte7fp7h2
 ::res://Saves/::1697646328
 ::res://Saves/testing/::1697646650
 load_save_testing.txt::TextFile::-1::1698077563::0::1::::<><>::
@@ -124,10 +124,10 @@ basic_sky_shader.gdshader::Shader::-1::1690343895::0::1::::<><>::
 moon.png::CompressedTexture2D::1212082536930243315::1684623846::1684624016::1::::<><>::
 sky.gd::GDScript::-1::1684623846::0::1::::<>WorldEnvironment<>::
 sky.gdshader::Shader::-1::1684623846::0::1::::<><>::
-Sky.tscn::PackedScene::6593751617060754838::1684623846::0::1::::<><>::res://Sky/sky.gdshader<>uid://rje27tro15v8::::res://Sky/moon.png<>res://Sky/sky.gd<>uid://y630he11hwt4::::res://Sky/starfield.png<>uid://dbi0qq5xjxi0d::::res://Sky/thunder.ogg
+Sky.tscn::PackedScene::6593751617060754838::1684623846::0::1::::<><>::res://Sky/sky.gdshader<>uid://rje27tro15v8
 starfield.png::CompressedTexture2D::1750273053392749331::1684623846::1684624017::1::::<><>::
 thunder.ogg::AudioStreamOggVorbis::7247513302047144349::1684623846::1684624016::1::::<><>::
 ::res://Sky/Basic Sky/::1684624866
 Basic Sky.gd::GDScript::-1::1684623846::0::1::::<>WorldEnvironment<>::
-Basic Sky.tscn::PackedScene::7843909208810198867::1684624866::0::1::::<><>::res://Sky/Basic Sky/basic_sky_shader.gdshader<>uid://y630he11hwt4::::res://Sky/starfield.png<>res://Sky/Basic Sky/Basic Sky.gd
+Basic Sky.tscn::PackedScene::7843909208810198867::1684624866::0::1::::<><>::res://Sky/Basic Sky/basic_sky_shader.gdshader<>uid://y630he11hwt4
 basic_sky_shader.gdshader::Shader::-1::1684623846::0::1::::<><>::

@@ -297,7 +297,7 @@ func generate_job_time_accept(type:Job_Type) -> int:
 	
 	RETURN: IN MINUTES not seconds. Note this for when using this with Timer
 	"""
-	return randi_range(1,3)*60
+	return randi_range(1,2)*60
 
 
 func get_wait_time_until_next_job() ->int:

@@ -14,3 +14,4 @@ script = ExtResource("1_iut8r")
 [node name="Job Offer Display" parent="Display" instance=ExtResource("3_r660l")]
 
 [connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]
+[connection signal="remove_job_offer" from="Job Generator" to="." method="remove_job_offer"]
