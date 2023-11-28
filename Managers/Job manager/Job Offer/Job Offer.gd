@@ -112,8 +112,14 @@ func remove_job_offer() ->void:
 	If the timer to accept expires then remove offer.
 	To encapsulate the timer (in case some other mechanism is used later) have this 
 	function send another signal
+	
+	Note: This is basically triggered by the Timer object in this emitng the
+	timeout
+	
+	Currently, this is connected in the 
 	"""
 	emit_signal("remove_offer")
+	
 func get_remaining_time_to_accept_as_percentage() -> int:
 	"""
 	EXPECTS: to be called only when this object is inside the scene tree
