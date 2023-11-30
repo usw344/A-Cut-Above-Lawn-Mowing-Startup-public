@@ -15,3 +15,4 @@ script = ExtResource("1_iut8r")
 
 [connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]
 [connection signal="remove_job_offer" from="Job Generator" to="." method="remove_job_offer"]
+[connection signal="decline_offer" from="Display/Job Offer Display" to="." method="remove_job_offer"]

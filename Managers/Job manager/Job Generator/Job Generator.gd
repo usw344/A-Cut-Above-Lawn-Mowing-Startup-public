@@ -121,7 +121,7 @@ func generate_job_type() -> Job_Type:
 	elif rand_float < 100.1: # 20%
 		diff = diffculties[2] # hard
 	else:
-		print("Error in get type for diffculty")
+		print("Error in Job_Generator --> generate_job_type(): for get type for diffculty")
 	
 	# sample rand_float again for size
 	rand_float = randf_range(0.0,100.0)
@@ -133,7 +133,7 @@ func generate_job_type() -> Job_Type:
 	elif rand_float < 100.1: # 20%
 		size_pick = sizes[2] # large
 	else:
-		print("Error in get type for picking size")
+		print("Error in Job_Generator --> generate_job_type(): for type for picking size")
 	type.set_size(size_pick)
 	type.set_diffculty(diff)
 	
@@ -183,7 +183,7 @@ func generate_job_size(type:Job_Type) -> Vector2i:
 	elif size_type == size_types[2]: # large
 		size_multiplier = randi_range(12,22)
 	else:
-		print("Will get 0 as multiplier")
+		print("Error in Job_Generator --> generate_job_size() : will get zero as multiplier")
 	
 	var size:Vector2i = Vector2i(16*size_multiplier, 16*size_multiplier)
 	

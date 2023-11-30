@@ -1,6 +1,7 @@
 extends Control
 class_name Job_Offer_Display
 
+signal decline_offer
 
 # key = Job_ID, value = Job_Offer object
 var job_offer_display_order:Dictionary = {} # keep track of display order
@@ -31,18 +32,23 @@ func update_display() ->void:
 	and this node will be outside of the scene tree.
 	"""
 	var current_job_offers:Dictionary = model.get_all_job_offers()
-	## error checking
+	
 	# check if there even any job offers to be displayed.
 	if current_job_offers.size() == 0:
 		# note this condition should not be met if this function is called in the right place
-		print("Error: Trying to update display when there are no job offers in the model")
+		print("Error in Job_Offer_Display --> update_display(): Trying to update display when there are no job offers in the model")
 		return
 	
 	# check if there has been any changes since last update (this does not compare ordering)
-#	if if_diff(current_job_offers.values(),job_offer_display_order.values()) == false:
-#		# note this condition should not be met if this function is called in the right place
-#		print("Error: Trying to update display when there are no job offers to update")
-#		return 
+	if if_diff(current_job_offers.keys(),job_offer_display_order.keys()) == false:
+		# note this condition should not be met if this function is called in the right place
+#		print("Error in Job_Offer_Display --> update_display(): Trying to update display when there are no job offers to update")
+		
+		## NOTE TO SELF: For reason this function is called when there are in fact
+		## no updates. I think this happens because in Job Manager there are two places
+		## where update_display() is called. Either way, things seem to work ok
+		## so for now I am removing the error message
+		return 
 #
 
 	## general case ##
@@ -50,18 +56,6 @@ func update_display() ->void:
 	add_new_offers(current_job_offers)
 
 
-func if_diff(a1:Array, a2:Array) ->bool:
-	"""
-	Take in two array with Job_Offer objects as their items and see if they match
-	Note: this does not check order. 
-	so a1 = [1,2,3], a2 = [2,1,3] return false
-	"""
-	for item_in_a1 in a1:
-		if item_in_a1 in a2:
-			continue
-		else:
-			return true
-	return false
 
 func remove_old_offers(current_offers:Dictionary) -> void:
 	"""
@@ -153,6 +147,24 @@ func get_diff(current_offers:Dictionary) ->Array:
 		return []
 	
 	return new_offers
+
+
+func if_diff(a1:Array, a2:Array) ->bool:
+	"""
+	Take in two array with Job_Offer objects as their items and see if they match
+	Note: this does not check order. 
+	so a1 = [1,2,3], a2 = [2,1,3] return false
+	
+	CURRENTLY unused
+	"""
+	for item_in_a1 in a1:
+		if item_in_a1 in a2:
+			continue
+		else:
+			return true
+	return false
+
+
 func add_new_offers(current_offers:Dictionary) ->void:
 	"""
 	Given a list of new job offers this will insert them into the job_offer_display data structure
@@ -160,15 +172,14 @@ func add_new_offers(current_offers:Dictionary) ->void:
 	variable
 	"""
 	var new_offers:Array = get_diff(current_offers)
-	print("got new offers: " + str(len(new_offers)))
 	if new_offers.size() == 0:
-		print("Error in add_new_offers in Job_Offer_display: Trying to add new offers when an empty array was passed in")
+		print("Error in Job_Offer_Display --> add_new_offers(): Trying to add new offers when an empty array was passed in")
 		return
 	
 	for offer in new_offers:
 		var id:int = offer.get_id()
 		if job_offer_display_order.has(id):
-			print("Error in add_new_offer in Job_Offer_Display. This should not happen since old offers should be removed")
+			print("Error in Job_Offer_Display --> add_new_offers(): Trying to add a offer that already exists in display. This should not happen since old offers should be removed")
 			continue
 		job_offer_display_order[id] = offer
 	
@@ -200,3 +211,17 @@ func get_previous_job_offer_in_order() ->void:
 	else:
 		var index_place:int = ids.find(job_id_for_displayed_offer)
 		job_id_for_displayed_offer = ids[index_place-1] 
+
+func decline_job_offer() -> void:
+	"""
+	If a job offer is declined then this will emit a signal to notify of this.
+	
+	THIS signal is recieved in the Job_Manager object.
+	
+	Note to self: This could be done more directly since (Currently) the Job_Mangaer has a copy of
+	the Job_Display_Offer. So the signal from the button could directly be connected to the Job_Manager
+	But since I plan on changing this UI a lot later, I wanted to abstract that away
+	"""
+	# get the current 
+	var offer_to_decline:Job_Offer = job_offer_display_order.get(job_id_for_displayed_offer)
+	emit_signal("decline_offer",offer_to_decline)

@@ -14,6 +14,7 @@ Further, this will allow easier printing of debug messages by providing function
 
 One of the ideas here is to be able enable a 'silent' mode to prevent 
 
+TODO: make this. 
 """
 
 
