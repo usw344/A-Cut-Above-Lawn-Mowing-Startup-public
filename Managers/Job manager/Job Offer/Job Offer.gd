@@ -36,7 +36,7 @@ func _ready():
 	timer = Timer.new()
 	
 	# TEST: remove the float after done testing
-	time_to_accept = float(time_to_accept)/2
+	time_to_accept = float(time_to_accept)/4
 	timer.wait_time = max(time_to_accept,0) # max just in case this is called when wait time is not set
 
 	timer.connect("timeout",remove_job_offer)
@@ -136,5 +136,5 @@ func get_remaining_time_to_accept_as_percentage() -> int:
 
 	return int(percentage*100)
 func get_remaining_time_to_accept_as_string_format() -> String:
-	var time_in_seconds = timer.HORIZONTAL_ALIGNMENT_LEFT
-	return ""
+	var time_in_seconds = round(timer.time_left)
+	return str(time_in_seconds)

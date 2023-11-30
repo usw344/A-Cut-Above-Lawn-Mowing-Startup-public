@@ -39,16 +39,16 @@ func update_display() ->void:
 		return
 	
 	# check if there has been any changes since last update (this does not compare ordering)
-	if if_diff(current_job_offers.values(),job_offer_display_order.values()) == false:
-		# note this condition should not be met if this function is called in the right place
-		print("Error: Trying to update display when there are no job offers to update")
-		return 
-	
+#	if if_diff(current_job_offers.values(),job_offer_display_order.values()) == false:
+#		# note this condition should not be met if this function is called in the right place
+#		print("Error: Trying to update display when there are no job offers to update")
+#		return 
+#
 
 	## general case ##
 	remove_old_offers(current_job_offers)
 	add_new_offers(current_job_offers)
-	pass
+
 
 func if_diff(a1:Array, a2:Array) ->bool:
 	"""
@@ -122,9 +122,9 @@ func refresh_display() ->void:
 		$"Information Display/Size Information".text = str(job_offer.get_job_size())
 
 		# find the remaining time in the timer
-		var time_left_in_timer:int = job_offer.get_remaining_time_to_accept_as_percentage()
-		$"Information Display/Timeout Progressbar".value = time_left_in_timer
-		$"Information Display/Timeout Progressbar/Progress Label".text = str(time_left_in_timer)
+		var time_left_in_timer_as_a_percentage:int = job_offer.get_remaining_time_to_accept_as_percentage()
+		$"Information Display/Timeout Progressbar".value = time_left_in_timer_as_a_percentage
+		$"Information Display/Timeout Progressbar/Progress Label".text = str(job_offer.get_remaining_time_to_accept_as_string_format())
 func get_diff(current_offers:Dictionary) ->Array:
 	"""
 	Get which offers are new as compared to the current offers on displau

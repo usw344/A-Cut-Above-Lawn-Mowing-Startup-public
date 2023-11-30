@@ -1,0 +1,16 @@
+Removing the job offer with ID: 1936242430
+Error get_diff returining an empty array.
+got new offers: 0
+Error in add_new_offers in Job_Offer_display: Trying to add new offers when an empty array was passed in
+Removing the job offer with ID: 839327200
+got new offers: 1
+Error get_diff returining an empty array.
+got new offers: 0
+Error in add_new_offers in Job_Offer_display: Trying to add new offers when an empty array was passed in
+Removing the job offer with ID: 3540527364
+got new offers: 1
+got new offers: 1
+Error get_diff returining an empty array.
+got new offers: 0
+Error in add_new_offers in Job_Offer_display: Trying to add new offers when an empty array was passed in
+Removing the job offer with ID: 1314849533

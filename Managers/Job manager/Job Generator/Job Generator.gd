@@ -86,7 +86,7 @@ func make_new_job_offer() -> Job_Offer:
 	var job_size:Vector2i = generate_job_size(job_type)
 	var time_limit:Dictionary = generate_job_time_limit(job_type,job_size)
 	var base_pay:int = generate_job_base_pay(job_type,job_size)
-	var display_name:String = generate_job_display_name(job_type)
+	var display_name:String = generate_job_display_name(job_type,job_id)
 	var time_to_accept:int = generate_job_time_accept(job_type)
 	
 	var offer:Job_Offer = Job_Offer.new()
@@ -264,7 +264,7 @@ func generate_job_base_pay(type:Job_Type,job_size_vector:Vector2i) -> int:
 	
 	return base_pay
 
-func generate_job_display_name(type:Job_Type) -> String:
+func generate_job_display_name(type:Job_Type,id:int) -> String:
 	"""
 	Param type: Type of the Job must be of type Job_Type datastructure
 	This contains whether this is a easy, medium, hard job and whether it is 
@@ -280,7 +280,7 @@ func generate_job_display_name(type:Job_Type) -> String:
 	var diff:String = type.get_diffculty()
 	
 	
-	return "A job name " + str(randi())
+	return "A job name " + str(id)
 
 func generate_job_time_accept(type:Job_Type) -> int:
 	"""

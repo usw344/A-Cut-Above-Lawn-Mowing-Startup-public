@@ -116,7 +116,9 @@ var job_offers:Dictionary = {}
 func add_job_offer(o:Job_Offer) ->void:
 	job_offers[o.get_id()] = o
 func remove_job_offer(o:Job_Offer) -> void:
-	job_offers.erase(o.get_id())
+	var retr:bool = job_offers.erase(o.get_id())
+	if retr == false:
+		print("error in model.gd remove_job_offer: trying to remove a job offer that is not in model currently")
 func get_all_job_offers() ->Dictionary:
 	return job_offers
 

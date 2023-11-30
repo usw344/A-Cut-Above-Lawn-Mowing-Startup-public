@@ -84,6 +84,6 @@ func remove_job_offer(offer:Job_Offer) -> void:
 	remove_child(offer)
 	
 	print("Removing the job offer with ID: " + str(offer.get_id()))
-	offer.queue_free()
+
 	
 	
