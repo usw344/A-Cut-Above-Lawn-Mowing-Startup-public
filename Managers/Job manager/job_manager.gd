@@ -75,6 +75,8 @@ func remove_job_offer(offer:Job_Offer) -> void:
 	## remove from the model
 	model.remove_job_offer(offer)
 	
+	
+	
 	# update the display
 	job_offer_display.update_display()
 	

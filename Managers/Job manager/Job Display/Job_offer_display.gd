@@ -35,8 +35,9 @@ func update_display() ->void:
 	
 	# check if there even any job offers to be displayed.
 	if current_job_offers.size() == 0:
-		# note this condition should not be met if this function is called in the right place
-		print("Error in Job_Offer_Display --> update_display(): Trying to update display when there are no job offers in the model")
+		# empty display
+		job_id_for_displayed_offer = -1
+		job_offer_display_order = {}
 		return
 	
 	# check if there has been any changes since last update (this does not compare ordering)
@@ -78,14 +79,16 @@ func remove_old_offers(current_offers:Dictionary) -> void:
 	
 	# now delete from job_offer_display_order the relevent job offers
 	for id_to_remove in remove_these_id:
-		job_offer_display_order.erase(id_to_remove)
+		if job_offer_display_order.erase(id_to_remove) == false and job_offer_display_order.size != 0 :
+			print("Error in Job_Offer_Display --> remove_old_Offers(): trying to remove an offer from internal list that is not there")
 	
 	#make sure the current job_id is still in the list. if not then select the next job offer over
 	if job_id_for_displayed_offer not in job_offer_display_order.keys():
 		if job_offer_display_order.size() == 0:
 			job_id_for_displayed_offer = -1
 		else:
-			job_id_for_displayed_offer = job_offer_display_order.keys()[0]
+			get_next_job_offer_in_order()
+			print("From Job_Offer_Display --> remove_old_offers(): need to move display counter over")
 #		refresh_display()
 		return 
 
