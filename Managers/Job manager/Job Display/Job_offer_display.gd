@@ -107,6 +107,7 @@ func refresh_display() ->void:
 		$"No Job Offers".visible = false # just in case
 		
 		# now grab the job offer object and laod its data into the relevent labels
+		print("refreshing display to: " + str(job_id_for_displayed_offer) + " when size is: " + str(job_offer_display_order.size()))
 		var job_offer:Job_Offer = job_offer_display_order[job_id_for_displayed_offer]
 		
 		var ids:Array = job_offer_display_order.keys()
