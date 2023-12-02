@@ -218,14 +218,13 @@ func get_previous_job_offer_in_order() ->void:
 
 func decline_job_offer() -> void:
 	"""
-	If a job offer is declined then this will emit a signal to notify of this.
+	If a job offer is declined via button handle it here.
 	
-	THIS signal is recieved in the Job_Manager object.
-	
-	Note to self: This could be done more directly since (Currently) the Job_Mangaer has a copy of
-	the Job_Display_Offer. So the signal from the button could directly be connected to the Job_Manager
-	But since I plan on changing this UI a lot later, I wanted to abstract that away
+	Since this is added as the child of the Job_Manager this signal still needs to be sent 
+	to remove it from the scene tree
 	"""
 	# get the current 
 	var offer_to_decline:Job_Offer = job_offer_display_order.get(job_id_for_displayed_offer)
+	
+	
 	emit_signal("decline_offer",offer_to_decline)

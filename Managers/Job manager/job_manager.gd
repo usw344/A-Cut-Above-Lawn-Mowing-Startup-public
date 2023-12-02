@@ -51,36 +51,28 @@ func recieve_job_offer(offer:Job_Offer):
 
 func remove_job_offer(offer:Job_Offer) -> void:
 	"""
-	currently handles removing a job offer (either that is timed out or declined)
-	NOTE: I also think it could be easier to simply do the following
-	
-	To handle this only in the Job Offer display. Meaning, since that is where the
-	both the progress bar time out and decline button methods of removing or rejecting a job 
-	offer come from. 
-	
-	However, the Job_Offer display may not always be in the scene. Instead
-	by having this serve as an abstraction, we can continue handling this in the background 
-	even if the Job_Offer_display is not in the scene
+	currently handles removing a job offer when it is timed out
 	
 	So currently:
-		1. Job_Offer_Display calls function from Job_Generator. 
-			a. or the timeout is triggered in the Job_offer object. Which in turn is attached to this function
-		2. Job_Generator. Then emits signal
-		3. Signal is recived by this function. (from either job generator or from job_offer)
+		1.  timeout is triggered in the Job_offer object
+	
+		3. Signal is recived by this function.
 			a. Either update the Job Display offer 
 			b. in case something else is needed. Do that.
 		4. Remove the Job Offer child from this object.
+		
+	NOTE: all job offers are a child of Job_Manager. So removing 
 	
 	"""
 	## remove from the model
 	model.remove_job_offer(offer)
 	
 	
+	# TODO: ADD CHECK TO SEE IF THE JOB_OFFER_DISPLAY IS STILL IN SCENE
 	
 	# update the display
 	job_offer_display.update_display()
 	
-	# TODO: in case later descision is taken to save rejected or time ran out then save as a rejected job offer
 	
 	# remove child node 
 	remove_child(offer)
@@ -89,3 +81,15 @@ func remove_job_offer(offer:Job_Offer) -> void:
 
 	
 	
+func decline_job_offer():
+	"""
+	In the case the job offer is declined. This function will remove the child node relating 
+	to that job offer. 
+	
+	NOTE: the reason this is seperate from the remove_job_offer is because in that function
+	the offer is removed from the model and the update_display() function is called.
+	
+	This is not done with this function, since only removing the child node is neeeded
+	the rest is done inside the Job_Offer_Display
+	"""
+	pass
