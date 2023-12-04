@@ -81,7 +81,7 @@ func remove_job_offer(offer:Job_Offer) -> void:
 
 	
 	
-func decline_job_offer():
+func decline_job_offer(offer:Job_Offer):
 	"""
 	In the case the job offer is declined. This function will remove the child node relating 
 	to that job offer. 
@@ -92,4 +92,4 @@ func decline_job_offer():
 	This is not done with this function, since only removing the child node is neeeded
 	the rest is done inside the Job_Offer_Display
 	"""
-	pass
+	remove_child(offer)

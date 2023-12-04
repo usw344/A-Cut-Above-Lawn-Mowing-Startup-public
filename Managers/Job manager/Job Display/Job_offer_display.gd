@@ -225,6 +225,35 @@ func decline_job_offer() -> void:
 	"""
 	# get the current 
 	var offer_to_decline:Job_Offer = job_offer_display_order.get(job_id_for_displayed_offer)
-	
-	
 	emit_signal("decline_offer",offer_to_decline)
+
+	# select the next in-order job_offer_to_display
+	var index_position:int = job_offer_display_order.keys().find(offer_to_decline)
+	var length_in_index_scale:int = len(job_offer_display_order) -1
+	
+	# case 1: first item and only item
+	if index_position == length_in_index_scale and length_in_index_scale == 0:
+		# hide display
+		job_id_for_displayed_offer = -1 
+		
+	# case 2: first item and not only item
+	elif index_position == 0:
+		# move display the next job offer to the right
+		job_id_for_displayed_offer = job_offer_display_order.keys()[index_position+1]
+	
+	# case 3: last item in list
+	elif index_position == length_in_index_scale:
+		job_offer_display_order.keys()[index_position-1]
+		
+	# case 4: error did not find in the keys() array
+	elif index_position == -1:
+		print("Error in Job_Offer_Display --> decline_job_offer(): could not find job offer that is being declined in the keys() array")
+	
+	# remove from model
+	model.remove_job_offer(offer_to_decline)
+	
+	# update the internal job_offer_dict to match the model
+	job_offer_display_order = model.get_all_job_offers()
+	
+	# refresh display
+	refresh_display()
