@@ -107,7 +107,7 @@ func refresh_display() ->void:
 		$"No Job Offers".visible = false # just in case
 		
 		# now grab the job offer object and laod its data into the relevent labels
-		print("refreshing display to: " + str(job_id_for_displayed_offer) + " when size is: " + str(job_offer_display_order.size()))
+#		print("refreshing display to: " + str(job_id_for_displayed_offer) + " when size is: " + str(job_offer_display_order.size()))
 		var job_offer:Job_Offer = job_offer_display_order[job_id_for_displayed_offer]
 		
 		var ids:Array = job_offer_display_order.keys()
@@ -225,12 +225,19 @@ func decline_job_offer() -> void:
 	"""
 	# get the current 
 	var offer_to_decline:Job_Offer = job_offer_display_order.get(job_id_for_displayed_offer)
+	if(offer_to_decline == null):
+		print("Error in Job_Offer_Display --> decline_job_offer(): Getting null return when looking for current offer")
+	
+	
 	emit_signal("decline_offer",offer_to_decline)
-
+	
 	# select the next in-order job_offer_to_display
-	var index_position:int = job_offer_display_order.keys().find(offer_to_decline)
+	var index_position:int = job_offer_display_order.keys().find(offer_to_decline.get_id())
 	var length_in_index_scale:int = len(job_offer_display_order) -1
 	
+	
+#	print("removing job offer id: " + str(offer_to_decline.get_id()) + " with index place: " + str(index_position) )
+#	print("Current job order display: " + str(job_offer_display_order))
 	# case 1: first item and only item
 	if index_position == length_in_index_scale and length_in_index_scale == 0:
 		# hide display
@@ -243,12 +250,12 @@ func decline_job_offer() -> void:
 	
 	# case 3: last item in list
 	elif index_position == length_in_index_scale:
-		job_offer_display_order.keys()[index_position-1]
+		job_id_for_displayed_offer = job_offer_display_order.keys()[index_position-1]
 		
 	# case 4: error did not find in the keys() array
 	elif index_position == -1:
-		print("Error in Job_Offer_Display --> decline_job_offer(): could not find job offer that is being declined in the keys() array")
-	
+		print("Error in Job_Offer_Display --> decline_job_offer(): could not find job offer that is being declined in the keys() array" + str(offer_to_decline.get_id()))
+		
 	# remove from model
 	model.remove_job_offer(offer_to_decline)
 	
@@ -257,3 +264,4 @@ func decline_job_offer() -> void:
 	
 	# refresh display
 	refresh_display()
+	
