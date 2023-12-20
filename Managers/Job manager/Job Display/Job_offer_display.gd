@@ -2,7 +2,7 @@ extends Control
 class_name Job_Offer_Display
 
 signal decline_offer
-
+signal close_menu_signal
 # key = Job_ID, value = Job_Offer object
 var job_offer_display_order:Dictionary = {} # keep track of display order
 
@@ -113,6 +113,7 @@ func refresh_display() ->void:
 		var ids:Array = job_offer_display_order.keys()
 		var index_for_current_id:int = ids.find(job_id_for_displayed_offer) + 1 # +1 since index starts at 0
 		# set the job name
+		
 		$"Information Display/Job Name".text = str(job_offer.get_display_name())
 		$"Information Display/Base Pay Background/Base Pay".text = "Pay: " + str(job_offer.get_base_pay())
 		$"Information Display/Total Time To Do Job".text = str(job_offer.get_time_limit()["string"])
@@ -264,4 +265,15 @@ func decline_job_offer() -> void:
 	
 	# refresh display
 	refresh_display()
+
+func close_menu() ->void:
+	"""
+	Wrapper function to emit signal when the close button is clicked
 	
+	Recives: signal from the Close button 
+	
+	Emits: a signal to indicate to listner (for now it is job manager) to close display
+	
+	Also will set variables inside the Job Offer display to empty
+	"""
+	pass

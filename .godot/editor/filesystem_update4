@@ -1,4 +1,4 @@
-res://Managers/Job manager/job_manager.tscn
+res://Managers/Job manager/Job Display/Job_offer_display.tscn
 res://GodotSky/WorldEnvironment/default_sky.tres
 res://GodotSky/Presets/default/baseCloudColor.tres
 res://GodotSky/Presets/default/baseSkyColor.tres
@@ -9,11 +9,11 @@ res://GodotSky/Presets/default/overcastCloudColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
+res://Managers/Job manager/job_manager.gd
 res://Managers/Job manager/Job Display/Job_offer_display.gd
+res://Managers/Job manager/job_manager.tscn
 res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
 res://Mowing Section/Mowing Area/Mowing Object/Mowing Object.tscn
 res://Managers/Job manager/Job Offer/job_offer.tscn
 res://Managers/Job manager/Job/job.tscn
 res://Managers/Job manager/Job Generator/Job Generator.tscn
-res://Managers/Job manager/Job Display/Job_offer_display.tscn
-res://GodotSky/WorldEnvironment/default_environment.tres

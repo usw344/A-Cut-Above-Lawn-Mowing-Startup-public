@@ -12,14 +12,18 @@ Swaps different UI items in and out
 EXPECTS: to be added to scene tree
 """
 var job_generator:Job_Generator
-@onready var job_offer_display:Job_Offer_Display =$"Display/Job Offer Display"
+#@onready var job_offer_display:Job_Offer_Display =$"Display/Job Offer Display"
 
+var job_offer_display:Job_Offer_Display
 var is_job_offer_display_visible:bool = false
+
 
 
 func _ready():
 	job_generator = $"Job Generator"
-#	var control_rect:ColorRect = $"Job Display/Background shadow"
+	job_offer_display = Job_Offer_Display.new()
+	add_child(job_offer_display)
+#var control_rect:ColorRect = $"Job Display/Background shadow"
 #	control_rect.size = Vector2(200,200)
 	
 	
@@ -43,9 +47,10 @@ func recieve_job_offer(offer:Job_Offer):
 	
 	NOTE: by this time the offer has already been added to the model
 	"""
-#	var job_offer_display:Job_Offer_Display = $"Display/Job Offer Display"
+
 	add_child(offer)
 	offer.connect("remove_offer",remove_job_offer)
+	
 	job_offer_display.update_display() # this will pull from the model
 
 
@@ -76,11 +81,9 @@ func remove_job_offer(offer:Job_Offer) -> void:
 	
 	# remove child node 
 	remove_child(offer)
-	
-	print("Removing the job offer with ID: " + str(offer.get_id()))
 
-	
-	
+
+
 func decline_job_offer(offer:Job_Offer):
 	"""
 	In the case the job offer is declined. This function will remove the child node relating 
@@ -93,3 +96,9 @@ func decline_job_offer(offer:Job_Offer):
 	the rest is done inside the Job_Offer_Display
 	"""
 	remove_child(offer)
+
+
+func show_job_offer_display_menu():
+	pass
+func hide_job_offer_display_menu():
+	pass

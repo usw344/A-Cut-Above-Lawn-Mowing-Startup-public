@@ -35,8 +35,6 @@ func _ready():
 	# set the wait time for the timer node
 	timer = Timer.new()
 	
-	# TEST: remove the float after done testing
-	time_to_accept = float(time_to_accept)/3
 	timer.wait_time = max(time_to_accept,0) # max just in case this is called when wait time is not set
 
 	timer.connect("timeout",remove_job_offer)
