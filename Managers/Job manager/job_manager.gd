@@ -99,6 +99,14 @@ func decline_job_offer(offer:Job_Offer):
 
 
 func show_job_offer_display_menu():
+	"""
+	When the signal is recieved to display the job offer menue this function will make a fresh
+	job_offer_display object and add it to the scene.
+	
+	"""
 	pass
 func hide_job_offer_display_menu():
+	"""
+	When signal is recieved 
+	"""
 	pass
