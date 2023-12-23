@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1703179628
+::res://::1703368163
 default_env.tres::Environment::-1::1684623789::0::1::::<><>::
 errors.txt::TextFile::-1::1701274876::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1690343895::0::1::::<><>::
@@ -78,8 +78,8 @@ StaticCloudsXY.tga::CompressedTexture2D::5286439033012208714::1685765576::168576
 default_environment.tres::Environment::1590598010687615476::1702845112::0::1::::<><>::uid://bq7217qbtqsdc
 default_sky.tres::Sky::3577189765013304704::1703110233::0::1::::<><>::res://GodotSky/Shaders/GodotSky.gdshader<>uid://dnj6ylyuxc6w3::::res://GodotSky/Textures/scatteringLUT.HDR<>uid://cnl852air6g7q::::res://GodotSky/Textures/StaticCloudsAlpha.tga<>uid://chk144tfviq2e::::res://GodotSky/Textures/StaticCloudsXY.tga<>uid://bru7upxvlt3kp::::res://GodotSky/Textures/Stars_Noise.TGA<>uid://besoril5mkfd6::::res://GodotSky/Textures/starmap_8k.jpg
 ::res://Managers/::1699909596
-::res://Managers/Job manager/::1703110549
-job_manager.gd::GDScript::-1::1703110548::0::1::::Job_Manager<>Node3D<>::
+::res://Managers/Job manager/::1703325259
+job_manager.gd::GDScript::-1::1703325259::0::1::::Job_Manager<>Node3D<>::
 job_manager.tscn::PackedScene::4162580146600039206::1703110548::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn<>uid://cqu3g6ylilnec::::res://Managers/Job manager/Job Display/Job_offer_display.tscn
 ::res://Managers/Job manager/Job/::1703110549
 job.gd::GDScript::-1::1700496439::0::1::::Job<>Job_Offer<>::

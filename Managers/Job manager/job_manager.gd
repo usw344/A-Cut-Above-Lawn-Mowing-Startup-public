@@ -17,12 +17,14 @@ var job_generator:Job_Generator
 var job_offer_display:Job_Offer_Display
 var is_job_offer_display_visible:bool = false
 
+var job_offer_display_layer:CanvasLayer 
 
 
 func _ready():
 	job_generator = $"Job Generator"
-	job_offer_display = Job_Offer_Display.new()
-	add_child(job_offer_display)
+	show_job_offer_display_menu()
+	
+	
 #var control_rect:ColorRect = $"Job Display/Background shadow"
 #	control_rect.size = Vector2(200,200)
 	
@@ -104,9 +106,40 @@ func show_job_offer_display_menu():
 	job_offer_display object and add it to the scene.
 	
 	"""
-	pass
+	var return_objects:Array = make_new_job_offer_display()
+	var layer:CanvasLayer = return_objects[0]
+	
+	
+	job_offer_display = return_objects[1]
+	job_offer_display_layer = layer
+	
+	add_child(layer)
+	layer.add_child(job_offer_display)
+	
+	# attach all relevent signals 
+	job_offer_display.connect("close_menu_signal",hide_job_offer_display_menu)
+	job_offer_display.connect("decline_job_offer",hide_job_offer_display_menu)
+	
+	is_job_offer_display_visible = true
+	
 func hide_job_offer_display_menu():
 	"""
 	When signal is recieved 
 	"""
-	pass
+	remove_child(job_offer_display_layer)
+	job_offer_display_layer.queue_free()
+	is_job_offer_display_visible = false
+
+func make_new_job_offer_display():
+	"""
+	Return a Job Offer Display object encapsulated in a Canvas layer object
+	
+	Return a two item array. One with the reference to the Canvas layer (which can be added to the scene)
+	
+	and the other is the direct reference to the Job Offer Display object
+	"""
+	var canvas_layer:CanvasLayer = CanvasLayer.new()
+	var job_offer_display_object:Job_Offer_Display = Job_Offer_Display.new()
+	
+	
+	return [canvas_layer,job_offer_display_object]
