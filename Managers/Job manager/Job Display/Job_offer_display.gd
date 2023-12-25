@@ -276,4 +276,4 @@ func close_menu() ->void:
 	
 	Also will set variables inside the Job Offer display to empty
 	"""
-	pass
+	emit_signal("close_menu_signal")

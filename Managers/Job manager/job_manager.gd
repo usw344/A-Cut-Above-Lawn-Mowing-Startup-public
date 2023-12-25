@@ -19,6 +19,7 @@ var is_job_offer_display_visible:bool = false
 
 var job_offer_display_layer:CanvasLayer 
 
+var job_offer_display_scene = load("res://Managers/Job manager/Job Display/Job_offer_display.tscn")
 
 func _ready():
 	job_generator = $"Job Generator"
@@ -110,24 +111,24 @@ func show_job_offer_display_menu():
 	var layer:CanvasLayer = return_objects[0]
 	
 	
-	job_offer_display = return_objects[1]
-	job_offer_display_layer = layer
+	job_offer_display = return_objects[1] # reference to scene
+	job_offer_display_layer =layer # store this layer variable in a script variable
 	
-	add_child(layer)
-	layer.add_child(job_offer_display)
+	add_child(job_offer_display_layer)
+	job_offer_display_layer.add_child(job_offer_display)
 	
 	# attach all relevent signals 
 	job_offer_display.connect("close_menu_signal",hide_job_offer_display_menu)
-	job_offer_display.connect("decline_job_offer",hide_job_offer_display_menu)
+	job_offer_display.connect("decline_offer",decline_job_offer)
 	
 	is_job_offer_display_visible = true
 	
 func hide_job_offer_display_menu():
 	"""
-	When signal is recieved 
+	When signal is recieved remove the menu from view (delete the object and it can be made again later)
 	"""
 	remove_child(job_offer_display_layer)
-	job_offer_display_layer.queue_free()
+	
 	is_job_offer_display_visible = false
 
 func make_new_job_offer_display():
@@ -139,7 +140,7 @@ func make_new_job_offer_display():
 	and the other is the direct reference to the Job Offer Display object
 	"""
 	var canvas_layer:CanvasLayer = CanvasLayer.new()
-	var job_offer_display_object:Job_Offer_Display = Job_Offer_Display.new()
+	var job_offer_display_object:Job_Offer_Display = job_offer_display_scene.instantiate()
 	
 	
 	return [canvas_layer,job_offer_display_object]
