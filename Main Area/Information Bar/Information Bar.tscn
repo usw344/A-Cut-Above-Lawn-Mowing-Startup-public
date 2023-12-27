@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=3 uid="uid://ds517kdnq0ui8"]
+
+[ext_resource type="Script" path="res://Main Area/Information Bar/Information Bar.gd" id="1_4012t"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e77wv"]
+bg_color = Color(0.6, 0.6, 0.6, 0.545098)
+
+[node name="Information Bar" type="CanvasLayer"]
+script = ExtResource("1_4012t")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.002
+anchor_bottom = 0.198
+offset_right = -0.84021
+offset_bottom = -21.84
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_e77wv")
+
+[node name="Time" type="Button" parent="Control/Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.029
+anchor_top = 0.01
+anchor_right = 0.029
+anchor_bottom = 0.01
+offset_left = 0.232998
+offset_top = 0.0799999
+offset_right = 286.233
+offset_bottom = 185.08
+grow_vertical = 2
+text = "Time"
+
+[node name="Weather" type="Button" parent="Control/Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.228
+anchor_top = 0.031
+anchor_right = 0.228
+anchor_bottom = 0.031
+offset_left = 0.555969
+offset_top = -3.952
+offset_right = 283.556
+offset_bottom = 182.048
+text = "Weather:"
+
+[node name="Money" type="Button" parent="Control/Background"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.407
+anchor_top = 0.01
+anchor_right = 0.407
+anchor_bottom = 0.01
+offset_left = 0.338989
+offset_top = 0.0799999
+offset_right = 288.339
+offset_bottom = 184.08
+text = "Money:
+"
