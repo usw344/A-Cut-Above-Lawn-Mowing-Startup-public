@@ -26,7 +26,7 @@ offset_bottom = -21.84
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e77wv")
 
-[node name="Time" type="Button" parent="Control/Background"]
+[node name="Time_Button" type="Button" parent="Control/Background"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.029
@@ -40,7 +40,7 @@ offset_bottom = 185.08
 grow_vertical = 2
 text = "Time"
 
-[node name="Weather" type="Button" parent="Control/Background"]
+[node name="Weather_Button" type="Button" parent="Control/Background"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.228
@@ -49,20 +49,32 @@ anchor_right = 0.228
 anchor_bottom = 0.031
 offset_left = 0.555969
 offset_top = -3.952
-offset_right = 283.556
-offset_bottom = 182.048
+offset_right = 286.556
+offset_bottom = 181.048
 text = "Weather:"
 
-[node name="Money" type="Button" parent="Control/Background"]
+[node name="Money_Button" type="Button" parent="Control/Background"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.407
-anchor_top = 0.01
-anchor_right = 0.407
-anchor_bottom = 0.01
-offset_left = 0.338989
-offset_top = 0.0799999
-offset_right = 288.339
-offset_bottom = 184.08
+anchor_left = 0.423
+anchor_right = 0.423
+offset_left = -0.428894
+offset_top = 1.0
+offset_right = 285.571
+offset_bottom = 186.0
 text = "Money:
 "
+
+[node name="Settings_Button" type="Button" parent="Control/Background"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -286.0
+offset_top = -92.5
+offset_bottom = 92.5
+grow_horizontal = 0
+grow_vertical = 2
+text = "Settings"
