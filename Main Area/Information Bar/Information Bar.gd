@@ -20,7 +20,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	update_information_bar()
 
 func setup_signals() -> void:
 	"""
@@ -45,3 +45,24 @@ func signal_money_button() ->void:
 func signal_settings_button() ->void:
 	emit_signal("settings_button_signal")
 
+
+func update_information_bar():
+	"""
+	Get the basic information for the display and update it into the information bar
+	
+	TODO: see if this can be made more efficient. Right now it just checks every frame.
+	
+	NOTE: this is a wrapper function. If going forward 
+	"""
+	
+	# grab the current button objects
+	var time_button:Button = $Control/Background/Time_Button
+	var weather_button:Button = $Control/Background/Weather_Button
+	var money_button:Button = $Control/Background/Money_Button
+	var settings_button:Button = $Control/Background/Settings_Button
+	
+	# get the value from the model for this 
+	time_button.text = model.get_game_time()
+	weather_button.text = model.get_game_weather()
+	money_button.text = model.get_game_money()
+	

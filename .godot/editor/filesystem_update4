@@ -18,3 +18,4 @@ res://Managers/Job manager/Job Generator/Job Generator.tscn
 res://Managers/Job manager/Job Display/Job_offer_display.tscn
 res://Main Area/Main Area.tscn
 res://Main Area/Information Bar/Information Bar.tscn
+res://Data Structures/Model.gd

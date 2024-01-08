@@ -108,6 +108,21 @@ var mower_scene_references: Dictionary = {
 }
 
 
+"""------------------------------------------       Functions for Information Bar           -------------------------------------------"""
+
+func get_game_time() -> String:
+	return ""
+
+func get_game_weather() -> String:
+	return ""
+
+func get_game_money() -> String:
+	return ""
+# model.get_game_time()
+#	weather_button.text = model.get_game_weather()
+#	money_button.text = model.get_game_money()
+
+
 
 """------------------------------------------- Functions from 'testing grounds' job system  -------------------------------------------"""
 # store all current job offers
