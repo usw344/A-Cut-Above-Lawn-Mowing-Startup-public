@@ -66,3 +66,4 @@ func update_information_bar():
 	weather_button.text = model.get_game_weather()
 	money_button.text = model.get_game_money()
 	
+	
