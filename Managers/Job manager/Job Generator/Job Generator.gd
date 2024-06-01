@@ -53,7 +53,7 @@ func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
 func push_to_manager(o:Job_Offer,type:String) ->void:
 	"""
 	Signal to anyone listening that a new job offer has arrived.
-	Currently this is connected in the Job Manager object
+	Currently this is connected in the <<Job Manager object>>
 	"""
 	if type == "add":
 		emit_signal("job_offer_waiting",o)

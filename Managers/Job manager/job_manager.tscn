@@ -8,5 +8,20 @@ script = ExtResource("1_iut8r")
 
 [node name="Job Generator" parent="." instance=ExtResource("2_41pex")]
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.002
+anchor_top = 0.884
+anchor_right = 0.002
+anchor_bottom = 0.884
+offset_left = -0.84
+offset_top = 0.279907
+offset_right = 465.16
+offset_bottom = 110.28
+theme_override_font_sizes/font_size = 40
+text = "Next Job In:"
+
 [connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]
 [connection signal="remove_job_offer" from="Job Generator" to="." method="remove_job_offer"]
