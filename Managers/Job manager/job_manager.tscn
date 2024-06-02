@@ -6,9 +6,10 @@
 [node name="Job Manager" type="Node3D"]
 script = ExtResource("1_iut8r")
 
-[node name="Job Generator" parent="." instance=ExtResource("2_41pex")]
+[node name="Job_Offer_Display_Layer" type="CanvasLayer" parent="."]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
 
 [node name="Label" type="Label" parent="CanvasLayer"]
 anchors_preset = -1
@@ -22,6 +23,8 @@ offset_right = 465.16
 offset_bottom = 110.28
 theme_override_font_sizes/font_size = 40
 text = "Next Job In:"
+
+[node name="Job Generator" parent="." instance=ExtResource("2_41pex")]
 
 [connection signal="job_offer_waiting" from="Job Generator" to="." method="recieve_job_offer"]
 [connection signal="remove_job_offer" from="Job Generator" to="." method="remove_job_offer"]

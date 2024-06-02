@@ -1,11 +1,11 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1717215692
+::res://::1717267599
 default_env.tres::Environment::-1::1684623789::0::1::::<><>::
 errors.txt::TextFile::-1::1701274876::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1690343895::0::1::::<><>::
 Game.gd::GDScript::-1::1703552097::0::1::::<>Node3D<>::
 icon.svg::CompressedTexture2D::5507345590917116630::1684623846::1716932898::1::::<><>::
-Main.tscn::PackedScene::6050645004164830725::1716862424::0::1::::<><>::res://Game.gd
+Main.tscn::PackedScene::6050645004164830725::1717215887::0::1::::<><>::res://Game.gd
 ::res://Assets/::1716932898
 Information UI Texture.png::CompressedTexture2D::2231103663451887933::1690343895::1716932898::1::::<><>::
 ::res://Assets/Grass/::1716932951
@@ -84,17 +84,17 @@ Main Area.tscn::PackedScene::420676838155427561::1716862576::0::1::::<><>::
 Information Bar.gd::GDScript::-1::1704863438::0::1::::<>CanvasLayer<>::
 Information Bar.tscn::PackedScene::8486228886883526697::1716862576::0::1::::<><>::res://Main Area/Information Bar/Information Bar.gd
 ::res://Managers/::1699909596
-::res://Managers/Job manager/::1716862575
-job_manager.gd::GDScript::-1::1703543320::0::1::::Job_Manager<>Node3D<>::
-job_manager.tscn::PackedScene::4162580146600039206::1716862575::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn
+::res://Managers/Job manager/::1717218492
+job_manager.gd::GDScript::-1::1717218492::0::1::::Job_Manager<>Node3D<>::
+job_manager.tscn::PackedScene::4162580146600039206::1717218492::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn
 ::res://Managers/Job manager/Job/::1716862421
 job.gd::GDScript::-1::1700496439::0::1::::Job<>Job_Offer<>::
 job.tscn::PackedScene::277627911881860335::1716862421::0::1::::<><>::res://Managers/Job manager/Job/job.gd
 ::res://Managers/Job manager/Job Display/::1716862575
 Job_offer_display.gd::GDScript::-1::1703543247::0::1::::Job_Offer_Display<>Control<>::
 Job_offer_display.tscn::PackedScene::5938862877046894454::1716862575::0::1::::<><>::res://Managers/Job manager/Job Display/Job_offer_display.gd<>uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG<>uid://f2npnpspr7ya::::res://Assets/Pictures/Clock sprite.png
-::res://Managers/Job manager/Job Generator/::1716862575
-Job Generator.gd::GDScript::-1::1701311818::0::1::::Job_Generator<>Node3D<>::
+::res://Managers/Job manager/Job Generator/::1717218492
+Job Generator.gd::GDScript::-1::1717218492::0::1::::Job_Generator<>Node3D<>::
 Job Generator.tscn::PackedScene::4288326430514385738::1716862575::0::1::::<><>::res://Managers/Job manager/Job Generator/Job Generator.gd
 ::res://Managers/Job manager/Job Offer/::1716862575
 Job Offer.gd::GDScript::-1::1702845839::0::1::::Job_Offer<>Node3D<>::
