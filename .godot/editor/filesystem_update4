@@ -1,6 +1,21 @@
 res://Main.tscn
-res://Managers/Job manager/job_manager.gd
+res://GodotSky/WorldEnvironment/default_sky.tres
+res://GodotSky/WorldEnvironment/default_environment.tres
+res://GodotSky/Presets/default/baseCloudColor.tres
+res://GodotSky/Presets/default/baseSkyColor.tres
+res://GodotSky/Presets/default/horizonFogColor.tres
+res://GodotSky/Presets/default/moonGlowColor.tres
+res://GodotSky/Presets/default/moonLight.tres
+res://GodotSky/Presets/default/overcastCloudColor.tres
+res://GodotSky/Presets/default/sunLight.tres
+res://GodotSky/Presets/default/sunDiscColor.tres
+res://GodotSky/Presets/default/sunGlowColor.tres
 res://Managers/Job manager/job_manager.tscn
 res://Managers/Job manager/Job Display/Job_offer_display.tscn
-res://Managers/Job manager/Job Generator/Job Generator.gd
 res://Managers/Job manager/Job Generator/Job Generator.tscn
+res://Main Area/Information Bar/Information Bar.tscn
+res://Main Area/Main Area.tscn
+res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
+res://Mowing Section/Mowing Area/MultiMesh Chunk/MultiMesh Chunk.tscn
+res://Assets/Grass/Mowed_Grass_With_LOD_attempt1.res
+res://Mowing Section/Mowing Area/MultiMesh Chunk/MultiMesh Chunk.gd

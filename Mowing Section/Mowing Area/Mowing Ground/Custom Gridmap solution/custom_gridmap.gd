@@ -10,7 +10,7 @@ func _ready():
 	set_inital_positions_and_sizes()
 	
 	# test the gridmap 
-#	test_custom_gridmap()
+	test_custom_gridmap()
 #	test_save_loading()
 
 func _process(delta):
@@ -18,9 +18,7 @@ func _process(delta):
 	pass
 
 func test_custom_gridmap() ->void:
-	# setup the meshlibrary
-#	var grid_size:int = 22*16
-	var grid_size:int = 32
+	var grid_size:int = 128
 	set_grid_paramters(grid_size,grid_size,16)
 	make_grid()
 
@@ -56,16 +54,15 @@ func set_grid_paramters(width:int, length:int,batching:int = 16) ->void:
 	grid_width = width
 	batching_size = batching # default is 16 (so 4x4 mesh instances)
 
-func set_gridspace_item(item:Grass_Grid_Item) ->void:
-	"""
-	Set a item into gridmap. Provide a grass grid item with at least the position and mesh_id set
-	
-	CONDITION: mesh_id that is set should match what is the library_object
-	"""
-	var position_vector:Vector3i = item.get_grid_position()
-	
-	# check if this a valid point in the given grid
-	grid_mapping[position_vector] = item
+#func set_gridspace_item(item:Grass_Grid_Item) ->void:
+	#"""
+	#Set a item into gridmap. Provide a grass grid item with at least the position and mesh_id set
+	#
+	#"""
+	#var position_vector:Vector3i = item.get_grid_position()
+	#
+	## check if this a valid point in the given grid
+	#grid_mapping[position_vector] = item
 
 var global_array_of_coordinates:Array = []
 func make_grid() ->void:

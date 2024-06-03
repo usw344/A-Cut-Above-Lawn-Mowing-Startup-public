@@ -44,7 +44,8 @@ func _process(delta):
 
 # TODO move this to the model
 var grass_collision_shape:Resource = load("res://Assets/Grass/Unmowed Grass Collision Shape polygon.tres")
-var mowed_grass_mesh:Mesh=  load("res://Assets/Grass/Mowed_Grass_OBJ.obj")
+#var mowed_grass_mesh:Mesh=  load("res://Assets/Grass/Mowed_Grass_OBJ.obj")
+var mowed_grass_mesh:Mesh= load("res://Assets/Grass/Mowed_Grass_With_LOD_attempt1.res")
 var unmowed_grass_mesh:Mesh = load("res://Assets/Grass/Unmowed_Grass_OBJ.obj")
 
 
