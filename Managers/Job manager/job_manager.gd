@@ -33,6 +33,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	$CanvasLayer/Label.text = str($"Job Generator".timer.get_wait_time())
+	$CanvasLayer/Label.text += "Offers in model" + str(model.get_all_job_offers().size())
 
 func recieve_job_offer(offer:Job_Offer):
 	"""
@@ -45,12 +46,12 @@ func recieve_job_offer(offer:Job_Offer):
 	since that job_offer_display can sometimes be OUT of the scene tree and inactive
 	when the user is on other parts of the game.
 	
-	Similary add job offer to scene here and not in the display scene since the job_offer_display 
+	Similary add the job offer to scene here and not in the display scene since the job_offer_display 
 	can sometimes be outside of the scene
 	
-	NOTE: by this time the offer has already been added to the model
+	NOTE: WE DO NOT add the job offer to the model before calling this function to check for the edge case
+	listed in the TODO section below
 	"""
-
 
 	## TODO START
 	# until TODO END this block of code is for an edge case where once all offers have been declined
@@ -59,7 +60,13 @@ func recieve_job_offer(offer:Job_Offer):
 	# what job_offer_display_id (some variable to that similar name) is set
 	# as a shortcut for now I am adding this new block which will check to see if this case is met and 
 	# will delete the old instance job_offer_display and make a new one
-	if(model.get_all_job_offers().size() == 0 and is_job_offer_display_visible):
+	var number_of_offers_before_adding:int = model.get_all_job_offers().size() # store number before adding to model
+	
+	# by adding to model here most of the orginal logic from before(when offer was added to model inside Job Generator) 
+	# can be used without changing much else
+	model.add_job_offer(offer) 
+	
+	if(number_of_offers_before_adding == 0 and is_job_offer_display_visible):
 		hide_job_offer_display_menu() # remove the existing job offer display menu
 		show_job_offer_display_menu() # add new menu
 	

@@ -2,3 +2,5 @@ res://Main.tscn
 res://Managers/Job manager/job_manager.gd
 res://Managers/Job manager/job_manager.tscn
 res://Managers/Job manager/Job Display/Job_offer_display.tscn
+res://Managers/Job manager/Job Generator/Job Generator.gd
+res://Managers/Job manager/Job Generator/Job Generator.tscn

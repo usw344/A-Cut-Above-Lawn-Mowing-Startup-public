@@ -41,14 +41,13 @@ func add_remove_job_offer(job_offer:Job_Offer, action:String) ->void:
 	and thenc calls this function in this mode`
 	"""
 	if action == "add":
-		model.add_job_offer(job_offer)
-		push_to_manager(job_offer,"add") # notify the manager that there is a new job offer
+		# notify the manager that there is a new job offer
+		push_to_manager(job_offer,"add") 
 
 	elif action == "remove":
-		# this should be triggered when another function listening for 
-		# the timer from the Job Offer node goes off
-		model.remove_job_offer(job_offer)
-		push_to_manager(job_offer,"remove") # tell mangaer to update display to remove job offer
+		# this should be triggered when another function listening for the timer from the Job Offer node goes off
+		# tell mangaer to update display to remove job offer
+		push_to_manager(job_offer,"remove") 
 	
 func push_to_manager(o:Job_Offer,type:String) ->void:
 	"""
