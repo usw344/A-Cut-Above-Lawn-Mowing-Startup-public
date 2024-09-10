@@ -43,6 +43,13 @@ func signal_money_button() ->void:
 	emit_signal("money_button_signal")
 
 func signal_settings_button() ->void:
+	"""
+	Wrapper function to send out signal that the settings menue has been clicked. 
+	
+	The idea is that the signal from this function should be recieved by the Main Area
+	
+	FOR NOW: this function receives the signal from the Setting_Button object. This could change going forward. 
+	"""
 	emit_signal("settings_button_signal")
 
 
@@ -52,14 +59,15 @@ func update_information_bar():
 	
 	TODO: see if this can be made more efficient. Right now it just checks every frame.
 	
-	NOTE: this is a wrapper function. If going forward 
+	NOTE: this is a wrapper function. If going forward any changes are made to the UI, this function will encapsulate 
+	the logic of updating the information display
 	"""
 	
 	# grab the current button objects
 	var time_button:Button = $Control/Background/Time_Button
 	var weather_button:Button = $Control/Background/Weather_Button
 	var money_button:Button = $Control/Background/Money_Button
-	var settings_button:Button = $Control/Background/Settings_Button
+	
 	
 	# get the value from the model for this 
 	time_button.text = model.get_game_time()

@@ -111,6 +111,10 @@ var mower_scene_references: Dictionary = {
 """------------------------------------------       Functions for Information Bar           -------------------------------------------"""
 
 func get_game_time() -> String:
+	"""
+	Convert time from start of game instance to now into a day and hour equivlent. 
+	
+	"""
 	return ""
 
 func get_game_weather() -> String:

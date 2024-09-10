@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cimytfwbjg12"]
+
+[ext_resource type="Script" path="res://Managers/Simulation Manager/Game Time Manager/Game Time Manager.gd" id="1_26803"]
+
+[node name="GameTimeManager" type="Node"]
+script = ExtResource("1_26803")
+
+[node name="Timer" type="Timer" parent="."]
