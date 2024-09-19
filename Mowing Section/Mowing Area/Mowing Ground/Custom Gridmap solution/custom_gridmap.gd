@@ -1,8 +1,19 @@
 extends Node3D
 class_name  Custom_Gridmap
 
+'''
 
-var width_and_length_radius:int = 750 # remember this gets multiplied by 2
+Master Class for the actual mowing system. This includes
+1. placement of the mower
+2. placing of start and end zones
+3. the grass grid
+4. handling the mowing 
+
+Note: #TODO: make the Small Gas Mower object into a general mower object. So that the Mower object
+handles loading the correct mower model and the mower object will auto load from model all relevent stats
+'''
+
+var width_and_length_radius:int = 100 # remember this gets multiplied by 2
 
 
 var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
@@ -22,6 +33,11 @@ func test_custom_gridmap() ->void:
 	set_grid_paramters(grid_size,grid_size,16)
 	make_grid()
 
+func make_new_custom_gridmap() -> void:
+	"""
+	Public function to make a new custom_gridmap 
+	"""
+	pass
 
 ## custom gridmap variables
 var grid_length:int 
@@ -54,15 +70,6 @@ func set_grid_paramters(width:int, length:int,batching:int = 16) ->void:
 	grid_width = width
 	batching_size = batching # default is 16 (so 4x4 mesh instances)
 
-#func set_gridspace_item(item:Grass_Grid_Item) ->void:
-	#"""
-	#Set a item into gridmap. Provide a grass grid item with at least the position and mesh_id set
-	#
-	#"""
-	#var position_vector:Vector3i = item.get_grid_position()
-	#
-	## check if this a valid point in the given grid
-	#grid_mapping[position_vector] = item
 
 var global_array_of_coordinates:Array = []
 func make_grid() ->void:
