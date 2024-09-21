@@ -27,6 +27,7 @@ size = Vector3(25, 1, 25)
 script = ExtResource("1_ckxko")
 
 [node name="GodotSky" parent="." instance=ExtResource("2_ytjdf")]
+cloudCoverage = 0.403
 
 [node name="Mowing Area" type="StaticBody3D" parent="."]
 

@@ -13,12 +13,12 @@ Note: #TODO: make the Small Gas Mower object into a general mower object. So tha
 handles loading the correct mower model and the mower object will auto load from model all relevent stats
 '''
 
-var width_and_length_radius:int = 100 # remember this gets multiplied by 2
+var width_and_length_radius:int # remember this gets multiplied by 2
 
 
 var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func _ready():
-	set_inital_positions_and_sizes()
+	
 	
 	# test the gridmap 
 	test_custom_gridmap()
@@ -29,7 +29,10 @@ func _process(delta):
 	pass
 
 func test_custom_gridmap() ->void:
-	var grid_size:int = 128
+	var grid_size:int = 128 # has to be a multiple of 8
+	
+	width_and_length_radius = grid_size * 0.55 # since 1 to 1 leads to a very big ground
+	set_inital_positions_and_sizes()
 	set_grid_paramters(grid_size,grid_size,16)
 	make_grid()
 
@@ -281,6 +284,10 @@ func set_inital_positions_and_sizes() ->void:
 	var multiply_width_length_by_2 = width_and_length_radius*2 # since in code it does not auto scale to twice the value
 	$"Mowing Area/MeshInstance3D".mesh.size = Vector2(multiply_width_length_by_2,multiply_width_length_by_2)
 	$"Mowing Area/CollisionShape3D".shape.size = Vector3(multiply_width_length_by_2,1,multiply_width_length_by_2)
+	
+	# to center the ground and the grass grid, make these hard coded adjustment
+	$"Mowing Area".position.z += 1.5
+	$"Mowing Area".position.x += 1.5
 	
 	# set the start position area
 	var pos:Vector3 = Vector3()
