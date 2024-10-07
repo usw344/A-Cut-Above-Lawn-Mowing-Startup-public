@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://dnh8n4togvacq"]
+[gd_scene load_steps=4 format=3 uid="uid://dnh8n4togvacq"]
+
+[ext_resource type="Texture2D" uid="uid://cojmnbc5epnw3" path="res://Assets/Pictures/Game Button Outline.png" id="1_wj78x"]
+[ext_resource type="Texture2D" uid="uid://xkkkxtbxmyn2" path="res://Assets/Pictures/Game Button Outline Shadowed 2.png" id="2_lt50f"]
+[ext_resource type="Texture2D" uid="uid://qgmo60ekmbpm" path="res://Assets/Pictures/Game Button Outline Shadowed 1.png" id="2_q4us6"]
 
 [node name="Main Menu" type="Control"]
 layout_mode = 3
@@ -7,3 +11,35 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button vbox" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/Button vbox"]
+layout_mode = 2
+texture_normal = ExtResource("1_wj78x")
+texture_pressed = ExtResource("2_lt50f")
+texture_hover = ExtResource("2_q4us6")
+
+[node name="TextureButton2" type="TextureButton" parent="MarginContainer/Button vbox"]
+layout_mode = 2
+texture_normal = ExtResource("1_wj78x")
+texture_pressed = ExtResource("2_lt50f")
+texture_hover = ExtResource("2_q4us6")
+
+[node name="TextureButton3" type="TextureButton" parent="MarginContainer/Button vbox"]
+layout_mode = 2
+texture_normal = ExtResource("1_wj78x")
+texture_pressed = ExtResource("2_lt50f")
+texture_hover = ExtResource("2_q4us6")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7d4kclbpsmn5"]
+[gd_scene load_steps=3 format=3 uid="uid://c7d4kclbpsmn5"]
 
-[ext_resource type="Texture2D" uid="uid://cre82uqyryimm" path="res://Assets/Pictures/Menu Background.jpg" id="1_dsp2s"]
+[ext_resource type="Texture2D" uid="uid://b2u4kkack1eqm" path="res://Assets/Pictures/Menu Background blurred.jpg" id="1_rt4ij"]
+[ext_resource type="PackedScene" uid="uid://dnh8n4togvacq" path="res://UI/Main Screen/Main Menu.tscn" id="2_88ria"]
 
 [node name="Menu Hierarchy" type="Control"]
 layout_mode = 3
@@ -17,4 +18,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_dsp2s")
+texture = ExtResource("1_rt4ij")
+
+[node name="Main Menu" parent="." instance=ExtResource("2_88ria")]
+layout_mode = 1
