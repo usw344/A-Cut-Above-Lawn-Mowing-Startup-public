@@ -1,5 +1,5 @@
 fc8a56933c4b1c8d796fdb8f7a9f9475
-::res://::1727569369
+::res://::1728339214
 default_env.tres::Environment::-1::1684469219::0::1::::<><>::
 errors.txt::TextFile::-1::1716860283::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1687636727::0::1::::<><>::
@@ -14,7 +14,7 @@ Mowed_Grass_OBJ.obj::PackedScene::2900758128719330729::1697589744::1725940142::1
 Mowed_Grass_With_LOD_attempt1.res::ArrayMesh::7181165543889559361::1725940010::0::1::::<><>::
 Unmowed Grass Collision Shape polygon.tres::ConvexPolygonShape3D::1184207264206271142::1696198354::0::1::::<><>::
 Unmowed_Grass_OBJ.obj::Mesh::3874737000748816841::1696197298::1725940141::1::::<><>::
-::res://Assets/Pictures/::1727570481
+::res://Assets/Pictures/::1727570482
 Clock sprite.png::CompressedTexture2D::407499232178520104::1699230544::1725940057::1::::<><>::
 Fuel Icon.PNG::CompressedTexture2D::1179826822113467473::1685564857::1725940056::1::::<><>::
 Game Button Outline Shadowed 1.png::CompressedTexture2D::1136163036800286158::1727570194::1727570263::1::::<><>::
@@ -41,8 +41,8 @@ Performance Monitor.gd::GDScript::-1::1684469224::0::1::::Performance_Monitor<>C
 Performance Monitor.tscn::PackedScene::4417058207688161942::1684469224::0::1::::<><>::res://Dev tools/Performance Monitor.gd
 Print_Handler.gd::GDScript::-1::1716860283::0::1::::Print_Handler<>Node<>::
 ::res://Game/::1726963350
-::res://Game/M.V.P/::1727570356
-Minimum Viable Game.tscn::PackedScene::4765063158110817938::1727570356::0::1::::<><>::
+::res://Game/M.V.P/::1727570692
+Minimum Viable Game.tscn::PackedScene::4765063158110817938::1727570692::0::1::::<><>::
 ::res://GodotSky/::1687112213
 GodotSky.tscn::PackedScene::1837630904097988851::1687112213::0::1::::<><>::uid://wwq6f40kybqq::::res://GodotSky/WorldEnvironment/default_environment.tres<>res://GodotSky/Scripts/GodotSky.gd
 ::res://GodotSky/Presets/::1685761811
@@ -90,29 +90,29 @@ default_sky.tres::Sky::3577189765013304704::1727569503::0::1::::<><>::res://Godo
 ::res://Main Area/::1716860283
 Main Area.gd::GDScript::-1::1716860283::0::1::::<>Node3D<>::
 Main Area.tscn::PackedScene::420676838155427561::1716860283::0::1::::<><>::
-::res://Main Area/Information Bar/::1727570356
+::res://Main Area/Information Bar/::1727570692
 Information Bar.gd::GDScript::-1::1725940010::0::1::::<>CanvasLayer<>::
-Information Bar.tscn::PackedScene::8486228886883526697::1727570356::0::1::::<><>::res://Main Area/Information Bar/Information Bar.gd
+Information Bar.tscn::PackedScene::8486228886883526697::1727570692::0::1::::<><>::res://Main Area/Information Bar/Information Bar.gd
 ::res://Managers/::1725940010
-::res://Managers/Job manager/::1727570356
+::res://Managers/Job manager/::1727570692
 job_manager.gd::GDScript::-1::1725940010::0::1::::Job_Manager<>Node3D<>::
-job_manager.tscn::PackedScene::4162580146600039206::1727570356::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn
+job_manager.tscn::PackedScene::4162580146600039206::1727570692::0::1::::<><>::res://Managers/Job manager/job_manager.gd<>uid://b2dkdy5yu38e5::::res://Managers/Job manager/Job Generator/Job Generator.tscn
 ::res://Managers/Job manager/Job/::1726704552
 job.gd::GDScript::-1::1726704552::0::1::::Job<>Job_Offer<>::
 job.tscn::PackedScene::277627911881860335::1716857040::0::1::::<><>::res://Managers/Job manager/Job/job.gd
-::res://Managers/Job manager/Job Display/::1727570356
+::res://Managers/Job manager/Job Display/::1727570692
 Job_offer_display.gd::GDScript::-1::1716860283::0::1::::Job_Offer_Display<>Control<>::
-Job_offer_display.tscn::PackedScene::5938862877046894454::1727570356::0::1::::<><>::res://Managers/Job manager/Job Display/Job_offer_display.gd<>uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG<>uid://f2npnpspr7ya::::res://Assets/Pictures/Clock sprite.png
-::res://Managers/Job manager/Job Generator/::1727570356
+Job_offer_display.tscn::PackedScene::5938862877046894454::1727570692::0::1::::<><>::res://Managers/Job manager/Job Display/Job_offer_display.gd<>uid://bwdgxft8swypq::::res://Assets/Pictures/temp_place_holder_job_image.PNG<>uid://f2npnpspr7ya::::res://Assets/Pictures/Clock sprite.png
+::res://Managers/Job manager/Job Generator/::1727570692
 Job Generator.gd::GDScript::-1::1725940010::0::1::::Job_Generator<>Node3D<>::
-Job Generator.tscn::PackedScene::4288326430514385738::1727570356::0::1::::<><>::res://Managers/Job manager/Job Generator/Job Generator.gd
+Job Generator.tscn::PackedScene::4288326430514385738::1727570692::0::1::::<><>::res://Managers/Job manager/Job Generator/Job Generator.gd
 ::res://Managers/Job manager/Job Offer/::1716860283
 Job Offer.gd::GDScript::-1::1716860283::0::1::::Job_Offer<>Node3D<>::
 job_offer.tscn::PackedScene::1529938003045981293::1716860283::0::1::::<><>::res://Managers/Job manager/Job Offer/Job Offer.gd
 ::res://Managers/Simulation Manager/::1725940010
-::res://Managers/Simulation Manager/Game Time Manager/::1727570356
+::res://Managers/Simulation Manager/Game Time Manager/::1727570692
 Game Time Manager.gd::GDScript::-1::1725940010::0::1::::<>Node<>::
-Game Time Manager.tscn::PackedScene::157665178944410111::1727570356::0::1::::<><>::res://Managers/Simulation Manager/Game Time Manager/Game Time Manager.gd
+Game Time Manager.tscn::PackedScene::157665178944410111::1727570692::0::1::::<><>::res://Managers/Simulation Manager/Game Time Manager/Game Time Manager.gd
 ::res://Mowing Section/::1699845329
 ::res://Mowing Section/Mower/::1699845376
 Mower.gd::GDScript::-1::1699845376::0::1::::<>CharacterBody3D<>::
@@ -120,9 +120,9 @@ Mower.gd::GDScript::-1::1699845376::0::1::::<>CharacterBody3D<>::
 Mower_Normal.tscn::PackedScene::4538003686887627614::1725940010::0::1::::<><>::res://Mowing Section/Mower/Mower.gd
 ::res://Mowing Section/Mowing Area/::1699850188
 ::res://Mowing Section/Mowing Area/Mowing Ground/::1699848463
-::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/::1727570356
+::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/::1727570692
 custom_gridmap.gd::GDScript::-1::1726899036::0::1::::Custom_Gridmap<>Node3D<>::
-custom_gridmap.tscn::PackedScene::1385578023405934236::1727570356::0::1::::<><>::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
+custom_gridmap.tscn::PackedScene::1385578023405934236::1727570692::0::1::::<><>::res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd<>uid://1gfropwtqfbn::::res://GodotSky/GodotSky.tscn<>uid://b5wii06emkg1c::::res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
 ::res://Mowing Section/Mowing Area/Mowing Ground/Grass Grid Item/::1699849380
 Grass Grid Item.gd::GDScript::-1::1699847528::0::1::::Grass_Grid_Item<>Node3D<>::
 Grass Grid Item.tscn::PackedScene::3191271372660305354::1699849380::0::1::::<><>::
@@ -155,6 +155,6 @@ Basic Sky.tscn::PackedScene::7843909208810198867::1684546066::0::1::::<><>::res:
 basic_sky_shader.gdshader::Shader::-1::1685856621::0::1::::<><>::
 ::res://Testing Grounds/::1699848857
 ::res://UI/::1727044582
-::res://UI/Main Screen/::1727570357
-Main Menu.tscn::PackedScene::8088196091907577052::1727570356::0::1::::<><>::uid://cojmnbc5epnw3::::res://Assets/Pictures/Game Button Outline.png<>uid://xkkkxtbxmyn2::::res://Assets/Pictures/Game Button Outline Shadowed 2.png
-Menu Hierarchy.tscn::PackedScene::7026856269900445288::1727570357::0::1::::<><>::uid://b2u4kkack1eqm::::res://Assets/Pictures/Menu Background blurred.jpg<>uid://dnh8n4togvacq::::res://UI/Main Screen/Main Menu.tscn
+::res://UI/Main Screen/::1727570692
+Main Menu.tscn::PackedScene::8088196091907577052::1727570692::0::1::::<><>::uid://cojmnbc5epnw3::::res://Assets/Pictures/Game Button Outline.png<>uid://xkkkxtbxmyn2::::res://Assets/Pictures/Game Button Outline Shadowed 2.png<>uid://qgmo60ekmbpm::::res://Assets/Pictures/Game Button Outline Shadowed 1.png
+Menu Hierarchy.tscn::PackedScene::7026856269900445288::1727570692::0::1::::<><>::uid://b2u4kkack1eqm::::res://Assets/Pictures/Menu Background blurred.jpg<>uid://dnh8n4togvacq::::res://UI/Main Screen/Main Menu.tscn
