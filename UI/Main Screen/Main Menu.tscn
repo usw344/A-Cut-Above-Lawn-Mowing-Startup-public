@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://dnh8n4togvacq"]
+[gd_scene load_steps=5 format=3 uid="uid://dnh8n4togvacq"]
 
+[ext_resource type="Script" path="res://UI/Main Screen/main_menu.gd" id="1_rdr1o"]
 [ext_resource type="Texture2D" uid="uid://cojmnbc5epnw3" path="res://Assets/Pictures/Game Button Outline.png" id="1_wj78x"]
 [ext_resource type="Texture2D" uid="uid://xkkkxtbxmyn2" path="res://Assets/Pictures/Game Button Outline Shadowed 2.png" id="2_lt50f"]
 [ext_resource type="Texture2D" uid="uid://qgmo60ekmbpm" path="res://Assets/Pictures/Game Button Outline Shadowed 1.png" id="2_q4us6"]
@@ -11,6 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_rdr1o")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -114,3 +116,7 @@ theme_override_font_sizes/font_size = 16
 text = "v0.3.6"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[connection signal="pressed" from="MarginContainer/Button vbox/New Game Button" to="." method="handle_new_game_button_clicked"]
+[connection signal="pressed" from="MarginContainer/Button vbox/Load Game Button" to="." method="handle_load_game_button_clicked"]
+[connection signal="pressed" from="MarginContainer/Button vbox/Options" to="." method="handle_option_button_clicked"]

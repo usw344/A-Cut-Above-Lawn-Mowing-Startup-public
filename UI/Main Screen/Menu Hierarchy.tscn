@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://c7d4kclbpsmn5"]
+[gd_scene load_steps=4 format=3 uid="uid://c7d4kclbpsmn5"]
 
+[ext_resource type="Script" path="res://UI/Main Screen/Menu Hierarchy.gd" id="1_rb5ii"]
 [ext_resource type="Texture2D" uid="uid://b2u4kkack1eqm" path="res://Assets/Pictures/Menu Background blurred.jpg" id="1_rt4ij"]
 [ext_resource type="PackedScene" uid="uid://dnh8n4togvacq" path="res://UI/Main Screen/Main Menu.tscn" id="2_88ria"]
 
@@ -10,6 +11,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_rb5ii")
 
 [node name="Background Image" type="TextureRect" parent="."]
 layout_mode = 1

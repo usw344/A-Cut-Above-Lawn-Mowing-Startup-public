@@ -1,8 +1,5 @@
 extends Node3D
 
-
-var job_scene:PackedScene = load("res://Mowing Section/Job/job.tscn")
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass
