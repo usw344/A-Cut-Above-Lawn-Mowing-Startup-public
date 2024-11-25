@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dnh8n4togvacq"]
 
-[ext_resource type="Script" path="res://UI/Main Screen/main_menu.gd" id="1_rdr1o"]
+[ext_resource type="Script" path="res://UI/Main Screen/Main Menu/main_menu.gd" id="1_rdr1o"]
 [ext_resource type="Texture2D" uid="uid://cojmnbc5epnw3" path="res://Assets/Pictures/Game Button Outline.png" id="1_wj78x"]
 [ext_resource type="Texture2D" uid="uid://xkkkxtbxmyn2" path="res://Assets/Pictures/Game Button Outline Shadowed 2.png" id="2_lt50f"]
 [ext_resource type="Texture2D" uid="uid://qgmo60ekmbpm" path="res://Assets/Pictures/Game Button Outline Shadowed 1.png" id="2_q4us6"]

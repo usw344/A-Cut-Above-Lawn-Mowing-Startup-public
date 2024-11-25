@@ -15,10 +15,10 @@ func _process(delta):
 
 
 func handle_new_game_button_clicked():
-	emit_signal("new_game")
+	emit_signal("new_game","New Game")
 
 func handle_load_game_button_clicked():
-	emit_signal("load_game")
+	emit_signal("load_game","Load Game")
 
 func handle_option_button_clicked():
-	emit_signal("options")
+	emit_signal("options","Options")
