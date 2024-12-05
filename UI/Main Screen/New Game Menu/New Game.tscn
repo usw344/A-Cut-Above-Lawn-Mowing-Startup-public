@@ -1,4 +1,8 @@
-[gd_scene format=3 uid="uid://byywhte68k4sx"]
+[gd_scene load_steps=4 format=3 uid="uid://byywhte68k4sx"]
+
+[ext_resource type="Texture2D" uid="uid://b2u4kkack1eqm" path="res://Assets/Pictures/Menu Background blurred.jpg" id="1_5bern"]
+[ext_resource type="Script" path="res://UI/Main Screen/New Game Menu/New Game.gd" id="1_jyqo4"]
+[ext_resource type="Texture2D" uid="uid://dn048uqefb5ch" path="res://Assets/Textures/Wood Texture 1.png" id="2_8fhxd"]
 
 [node name="New Game" type="Control"]
 layout_mode = 3
@@ -7,20 +11,57 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_jyqo4")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="Background Image" type="TextureRect" parent="."]
+y_sort_enabled = true
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("1_5bern")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
+[node name="Text Entry Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.659
+anchor_right = 0.5
+anchor_bottom = 0.659
+offset_left = -685.0
+offset_top = -65.72
+offset_right = 687.0
+offset_bottom = 66.28
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_8fhxd")
+expand_mode = 1
+
+[node name="Game Name Entry" type="TextEdit" parent="Text Entry Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 84
+placeholder_text = "Enter Name"
+caret_type = 1
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="Go" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.486
+anchor_top = 0.837
+anchor_right = 0.486
+anchor_bottom = 0.837
+offset_left = -220.12
+offset_top = -90.9601
+offset_right = 221.88
+offset_bottom = 43.0399
+theme_override_font_sizes/font_size = 128
+text = "GO"
