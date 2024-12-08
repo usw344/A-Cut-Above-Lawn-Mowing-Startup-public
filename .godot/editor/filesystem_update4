@@ -1,22 +1,13 @@
-res://Assets/Mowed_Grass_With_LOD_attempt1.res
 res://UI/Main Screen/New Game Menu/New Game.tscn
-res://GodotSky/Presets/default/baseSkyColor.tres
+res://GodotSky/WorldEnvironment/default_sky.tres
 res://GodotSky/Presets/default/baseCloudColor.tres
-res://GodotSky/Presets/default/overcastCloudColor.tres
+res://GodotSky/Presets/default/baseSkyColor.tres
 res://GodotSky/Presets/default/horizonFogColor.tres
+res://GodotSky/Presets/default/moonGlowColor.tres
+res://GodotSky/Presets/default/moonLight.tres
+res://GodotSky/Presets/default/overcastCloudColor.tres
 res://GodotSky/Presets/default/sunLight.tres
 res://GodotSky/Presets/default/sunDiscColor.tres
 res://GodotSky/Presets/default/sunGlowColor.tres
-res://GodotSky/Presets/default/moonLight.tres
-res://GodotSky/Presets/default/moonGlowColor.tres
-res://GodotSky/WorldEnvironment/default_sky.tres
-res://UI/Main Screen/New Game Menu/New Game.gd
-res://Managers/Job manager/job_manager.tscn
-res://Managers/Job manager/Job Display/Job_offer_display.tscn
-res://Managers/Job manager/Job Generator/Job Generator.tscn
-res://Main Area/Information Bar/Information Bar.tscn
-res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
-res://Managers/Simulation Manager/Game Time Manager/Game Time Manager.tscn
-res://Game/M.V.P/Minimum Viable Game.tscn
-res://UI/Main Screen/Main Menu/Main Menu.tscn
-res://UI/Main Screen/Menu Hierarchy.tscn
+res://Data Structures/Game Profile.gd
+res://Data Structures/Model.gd

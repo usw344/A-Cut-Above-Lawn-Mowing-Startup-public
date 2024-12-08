@@ -162,7 +162,8 @@ func _input(event):
 func load_game_data(file_name):
 	pass
 
-
+func get_game_profile_object():
+	pass
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
