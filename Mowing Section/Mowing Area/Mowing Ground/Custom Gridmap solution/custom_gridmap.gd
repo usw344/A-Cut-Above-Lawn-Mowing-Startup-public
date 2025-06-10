@@ -18,29 +18,22 @@ var width_and_length_radius:int # remember this gets multiplied by 2
 
 var load_save_test_mode:int = -1 # save mode (save a game before testing loading)
 func _ready():
-	
-	
+	pass
 	# test the gridmap 
-	test_custom_gridmap()
+	#test_custom_gridmap()
 #	test_save_loading()
-
+	 
 func _process(delta):
 #	test_save_loading()
 	pass
 
-func test_custom_gridmap() ->void:
-	var grid_size:int = 128 # has to be a multiple of 8
-	
+func test_custom_gridmap(grid_size:int = 128) ->void:
 	width_and_length_radius = grid_size * 0.55 # since 1 to 1 leads to a very big ground
 	set_inital_positions_and_sizes()
 	set_grid_paramters(grid_size,grid_size,16)
 	make_grid()
 
-func make_new_custom_gridmap() -> void:
-	"""
-	Public function to make a new custom_gridmap 
-	"""
-	pass
+
 
 ## custom gridmap variables
 var grid_length:int 
@@ -56,6 +49,13 @@ var chunk_to_coordinates_dictionary:Dictionary = {}
 var coordinates_to_chunk_dictionary:Dictionary = {}
 
 var chunk_id_to_chunk_dictionary:Dictionary = {}
+
+func make_new_custom_gridmap() -> void:
+	"""
+	Public function to make a new custom_gridmap. This loads an brand new custom grid map object
+	based on the size parameters set for this object
+	"""
+	pass
 
 ## custom gridmap api functions
 func set_grid_paramters(width:int, length:int,batching:int = 16) ->void:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=18 format=3 uid="uid://cqu3g6ylilnec"]
 
-[ext_resource type="Script" path="res://Managers/Job manager/Job Display/Job_offer_display.gd" id="1_hvndf"]
+[ext_resource type="Script" uid="uid://bsgfnftg5b5br" path="res://Managers/Job manager/Job Display/Job_offer_display.gd" id="1_hvndf"]
 [ext_resource type="Texture2D" uid="uid://bwdgxft8swypq" path="res://Assets/Pictures/temp_place_holder_job_image.PNG" id="2_h2omr"]
 [ext_resource type="Texture2D" uid="uid://f2npnpspr7ya" path="res://Assets/Pictures/Clock sprite.png" id="3_rfyb6"]
 

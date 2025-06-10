@@ -13,8 +13,8 @@ config_version=5
 config/name="A Cut Above"
 config/tags=PackedStringArray("game")
 run/main_scene="res://Main.tscn"
-config/features=PackedStringArray("4.3", "Mobile")
-run/max_fps=30
+config/features=PackedStringArray("4.4", "Mobile")
+run/max_fps=144
 config/icon="res://icon.svg"
 
 [autoload]
@@ -32,6 +32,10 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/handheld/orientation=1
 window/vsync/vsync_mode=0
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/sky_3d/plugin.cfg")
 
 [input]
 
@@ -97,7 +101,8 @@ Save={
 common/physics_ticks_per_second=576
 common/max_physics_steps_per_frame=100
 common/physics_jitter_fix=1.25
-3d/physics_engine="GodotPhysics3D"
+3d/physics_engine="Jolt Physics"
+jolt_physics_3d/limits/max_bodies=1000240
 3d/solver/solver_iterations=4
 jolt_3d/limits/max_bodies=60240
 

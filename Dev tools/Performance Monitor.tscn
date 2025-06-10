@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b36wkkwqvedxm"]
 
-[ext_resource type="Script" path="res://Dev tools/Performance Monitor.gd" id="1_umbor"]
+[ext_resource type="Script" uid="uid://b8q1wq1w2xpi3" path="res://Dev tools/Performance Monitor.gd" id="1_umbor"]
 
 [node name="Performance Monitor" type="Control"]
 layout_mode = 3

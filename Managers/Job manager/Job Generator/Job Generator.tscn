@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b2dkdy5yu38e5"]
 
-[ext_resource type="Script" path="res://Managers/Job manager/Job Generator/Job Generator.gd" id="1_s8qsj"]
+[ext_resource type="Script" uid="uid://buud3jmluykif" path="res://Managers/Job manager/Job Generator/Job Generator.gd" id="1_s8qsj"]
 
 [node name="Job Generator" type="Node3D"]
 script = ExtResource("1_s8qsj")

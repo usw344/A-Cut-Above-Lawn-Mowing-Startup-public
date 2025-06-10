@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b0knc7nybh32y"]
 
-[ext_resource type="Script" path="res://Managers/Job manager/job_manager.gd" id="1_iut8r"]
+[ext_resource type="Script" uid="uid://c27mu1usyfinf" path="res://Managers/Job manager/job_manager.gd" id="1_iut8r"]
 [ext_resource type="PackedScene" uid="uid://b2dkdy5yu38e5" path="res://Managers/Job manager/Job Generator/Job Generator.tscn" id="2_41pex"]
 
 [node name="Job Manager" type="Node3D"]

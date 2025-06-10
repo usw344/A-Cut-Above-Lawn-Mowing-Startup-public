@@ -40,4 +40,3 @@ func set_type(s:String) ->void:
 	type = s
 func get_type() ->String:
 	return type
-

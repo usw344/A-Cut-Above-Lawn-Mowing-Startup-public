@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://byywhte68k4sx"]
 
 [ext_resource type="Texture2D" uid="uid://b2u4kkack1eqm" path="res://Assets/Pictures/Menu Background blurred.jpg" id="1_5bern"]
-[ext_resource type="Script" path="res://UI/Main Screen/New Game Menu/New Game.gd" id="1_jyqo4"]
+[ext_resource type="Script" uid="uid://vtxlag1rovnl" path="res://UI/Main Screen/New Game Menu/New Game.gd" id="1_jyqo4"]
 [ext_resource type="Texture2D" uid="uid://dn048uqefb5ch" path="res://Assets/Textures/Wood Texture 1.png" id="2_8fhxd"]
 
 [node name="New Game" type="Control"]
