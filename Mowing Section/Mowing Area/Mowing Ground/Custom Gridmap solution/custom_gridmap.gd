@@ -264,7 +264,7 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 	for collision in collision_objects:
 		var name_of_collision_object  = collision.get_collider().name
-		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
+		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area" or name_of_collision_object == "Terrain3D":
 			continue
 		else:
 			mow_item(name_of_collision_object)
