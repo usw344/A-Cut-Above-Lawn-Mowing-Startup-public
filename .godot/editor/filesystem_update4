@@ -1,4 +1,7 @@
-res://addons/terrain_3d/tools/importer.tscn
+res://Terrain/Footage-Demo Data/Diffuse_Material.tres
+res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres
+res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn
+res://Assets/Vehicles and Mowers/Mowers/mower_rider.gd
 res://Game/Demo/Footage/Footage.tscn
 res://Managers/Job manager/job_manager.tscn
 res://Managers/Job manager/Job Display/Job_offer_display.tscn
@@ -6,4 +9,8 @@ res://Managers/Job manager/Job Generator/Job Generator.tscn
 res://Main Area/Information Bar/Information Bar.tscn
 res://Managers/Simulation Manager/Game Time Manager/Game Time Manager.tscn
 res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
+res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn
+res://Game/Demo/Footage/footage.gd
 res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd
+res://Mower Scenes/Rider Mower (In Parts).tscn
+res://Mower Scenes/rider_mower_(in_parts).gd

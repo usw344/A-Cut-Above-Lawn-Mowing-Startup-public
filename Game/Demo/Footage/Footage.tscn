@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://t0gjdme5n50k" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn" id="1_aj2jr"]
 [ext_resource type="Script" uid="uid://dqiug843fchqn" path="res://Game/Demo/Footage/footage.gd" id="1_i7lpw"]
-[ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="2_ruowk"]
 [ext_resource type="Terrain3DMaterial" uid="uid://dxqt6dpgp05qg" path="res://Terrain/Footage-Demo Data/Diffuse_Material.tres" id="2_y15rs"]
 [ext_resource type="Shader" uid="uid://cvd0x7lon1ur6" path="res://addons/sky_3d/shaders/SkyMaterial.gdshader" id="3_i7lpw"]
 [ext_resource type="Terrain3DAssets" uid="uid://dqcct1qwdv0uf" path="res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres" id="3_rro0k"]
@@ -15,6 +14,7 @@
 [ext_resource type="Script" uid="uid://deo0gxkmk2ahd" path="res://addons/sky_3d/src/Sky3D.gd" id="10_db84i"]
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/Skydome.gd" id="11_xb4ri"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="12_hdypy"]
+[ext_resource type="PackedScene" uid="uid://ct3v8qn57dgtr" path="res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn" id="15_y15rs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qev5l"]
 shader = ExtResource("3_i7lpw")
@@ -116,10 +116,7 @@ top_level = true
 metadata/_edit_lock_ = true
 
 [node name="Custom Gridmap" parent="." instance=ExtResource("1_aj2jr")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 319.577, 204.218, 180.279)
-
-[node name="Small Gas Mower" parent="." instance=ExtResource("2_ruowk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 319.577, 204.218, 180.279)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 310.353, 200.482, 180.279)
 
 [node name="Sky3D" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jlsba")
@@ -154,4 +151,7 @@ dome_path = NodePath("../Skydome")
 total_hours = 10.54
 day = 2
 
-[connection signal="collided" from="Small Gas Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[node name="Rider Mower" parent="." instance=ExtResource("15_y15rs")]
+transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 310.108, 207.763, 182.367)
+
+[connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]

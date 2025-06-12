@@ -6,7 +6,7 @@ A demo scene designed to get the best possible footage for trailors and capsulat
 
 """
 @onready var custom_gridmap_object:Custom_Gridmap = $"Custom Gridmap"
-@onready var mower = $"Small Gas Mower"
+#@onready var mower = $"Small Gas Mower"
 func _ready() -> void:
 	custom_gridmap_object.test_custom_gridmap(256)
 	

@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://ct3v8qn57dgtr"]
+
+[ext_resource type="Script" uid="uid://c6gvlfboqofcw" path="res://Assets/Vehicles and Mowers/Mowers/mower_rider.gd" id="1_rkcut"]
+[ext_resource type="PackedScene" uid="uid://cd2svbt4yo136" path="res://Mower Scenes/Rider Mower (In Parts).tscn" id="2_rkcut"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rkcut"]
+size = Vector3(4.11915, 2.41307, 5.00241)
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_rkcut")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-2, -6.16083e-15, -1.74846e-07, -6.37147e-08, 1.86248, 0.728811, 1.62823e-07, 0.728811, -1.86248, -0.00287199, 7.5217, -7.3651)
+fov = 59.9
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0544924, 1.34182, 1.46603)
+shape = SubResource("BoxShape3D_rkcut")
+
+[node name="LawnTractor01" parent="." instance=ExtResource("2_rkcut")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
