@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://blqpoj70apwc8"]
+[gd_scene load_steps=21 format=3 uid="uid://blqpoj70apwc8"]
 
 [ext_resource type="PackedScene" uid="uid://t0gjdme5n50k" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn" id="1_aj2jr"]
 [ext_resource type="Script" uid="uid://dqiug843fchqn" path="res://Game/Demo/Footage/footage.gd" id="1_i7lpw"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/Skydome.gd" id="11_xb4ri"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="12_hdypy"]
 [ext_resource type="PackedScene" uid="uid://ct3v8qn57dgtr" path="res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn" id="15_y15rs"]
+[ext_resource type="PackedScene" uid="uid://2hfnetgvt1n2" path="res://Weather/particles/rain_particles.tscn" id="16_rro0k"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qev5l"]
 shader = ExtResource("3_i7lpw")
@@ -71,7 +72,7 @@ shader_parameter/clouds_horizon_light_color = Color(0.98, 0.43, 0.15, 1)
 shader_parameter/clouds_night_color = Color(0.090196, 0.094118, 0.129412, 1)
 shader_parameter/clouds_texture = ExtResource("5_y15rs")
 shader_parameter/cumulus_clouds_visible = true
-shader_parameter/cumulus_clouds_coverage = 0.55
+shader_parameter/cumulus_clouds_coverage = 0.895
 shader_parameter/cumulus_clouds_thickness = 0.0243
 shader_parameter/cumulus_clouds_absorption = 2.0
 shader_parameter/cumulus_clouds_noise_freq = 2.7
@@ -142,6 +143,7 @@ sun_azimuth = -153.172
 sun_altitude = -43.5298
 moon_azimuth = -327.893
 moon_altitude = -129.134
+clouds_cumulus_coverage = 0.895
 
 [node name="TimeOfDay" type="Node" parent="Sky3D"]
 script = ExtResource("12_hdypy")
@@ -153,5 +155,9 @@ day = 2
 
 [node name="Rider Mower" parent="." instance=ExtResource("15_y15rs")]
 transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 310.108, 207.763, 182.367)
+
+[node name="RainParticles" parent="Rider Mower" instance=ExtResource("16_rro0k")]
+amount = 6000
+amount_ratio = 0.4942
 
 [connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
