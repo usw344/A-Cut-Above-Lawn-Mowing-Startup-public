@@ -272,7 +272,8 @@ func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 
 func get_mower_inital_position() ->Vector3:
 	return  $"Start Area".position
-	
+
+
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
 	"""
@@ -284,7 +285,7 @@ func set_inital_positions_and_sizes() ->void:
 	var multiply_width_length_by_2 = width_and_length_radius*2 # since in code it does not auto scale to twice the value
 	$"Mowing Area/MeshInstance3D".mesh.size = Vector2(multiply_width_length_by_2,multiply_width_length_by_2)
 	$"Mowing Area/CollisionShape3D".shape.size = Vector3(multiply_width_length_by_2,1,multiply_width_length_by_2)
-	
+	print($"Mowing Area/MeshInstance3D".mesh.size)
 	# to center the ground and the grass grid, make these hard coded adjustment
 	$"Mowing Area".position.z += 1.5
 	$"Mowing Area".position.x += 1.5

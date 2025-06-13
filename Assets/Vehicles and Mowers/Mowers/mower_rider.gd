@@ -33,6 +33,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
+	#dev_hud()
 	velocity.y -= gravity * delta
 #
 	model.set_mower_position(position)
@@ -40,14 +41,15 @@ func _physics_process(delta):
 	var user_input = get_input() 
 
 	##assign user input to the velocity variable. which is BUILT-IN
-	velocity.x = user_input.x * model.get_speed() * 25
-	velocity.z = user_input.z * model.get_speed() * 25
+	velocity.x = user_input.x * model.get_speed() * 3
+	velocity.z = user_input.z * model.get_speed() * 3
 
 	if velocity.x != 0 and velocity.z != 0:
 		moving = true
 	else:
 		moving = false
-	mower_mesh_parts.send_speed_data(velocity)
+
+	mower_mesh_parts.send_speed_data(velocity,delta)
 	move_and_slide()
 	
 	## other input related functions
@@ -98,7 +100,7 @@ func _input(event):
 		
 		mower_mesh_parts.send_rotation_data(rot_y)
 		rotate_y(rot_y)
-		$Camera3D.rotate_x(rot_x_cam)
+		#$Camera3D.rotate_x(rot_x_cam)
 
 """
 	Encapsulation function to handle getting user input.
@@ -133,3 +135,11 @@ func get_input():
 	
 
 	return input_direction 
+func dev_hud():
+	var string_to_print:String = ""
+	string_to_print += str(round(position/16)) + "\n"
+	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
+	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
+	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\n"
+	string_to_print += "Vertices" + str(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
+	$CanvasLayer/Label.text = string_to_print

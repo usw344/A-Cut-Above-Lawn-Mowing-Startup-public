@@ -10,22 +10,38 @@ The complete functionallity of the mower is in the Mower Rider scene
 
 """
 
-@onready var wheels = [$WheelBL,$WheelBR,$WheelFL,$WheelFR]
-
+@onready var wheels:Array[MeshInstance3D] = [$WheelBL,$WheelBR,$WheelFL,$WheelFR]
+@onready var steering:MeshInstance3D = $SteeringWheel
 func _physics_process(delta: float) -> void:
 	engine_pulsation(delta)
+	
 
-func send_speed_data(speed:Vector3):
-	pass
+func send_speed_data(speed:Vector3,delta):
+	var movement_speed:float = maxf(speed.x,speed.z)
+	var rot_amount = movement_speed * 2.0 * delta
+	rotate_wheels(rot_amount)
 
 func send_rotation_data(rotation_data:float):
 	# rotate the steering Wheel 
-	$SteeringWheel.rotate_y(rotation_data)
+	steering.rotate_y(rotation_data)
+	$Timer.start(0.08)
 	
-
-
-func rotate_wheels():
+func straighten_wheel():
 	pass
+	#var current_angle = steering.rotation.y
+	#if abs(current_angle) < 0.03:
+		#steering.rotation.y = 0.0
+	#else:
+		#while abs(current_angle) > 0.03
+	##var unrotate_amount = steering.rotation.y
+	##steering.rotate_y(-unrotate_amount)
+
+func rotate_wheels(amount_to_rotate):
+	for wheel:MeshInstance3D in wheels:
+		if wheel.rotation_degrees.x == 360.0:
+			wheel.rotation_degrees.x = 0.0
+		else:
+			wheel.rotate_x(amount_to_rotate)
 	
 # variables to simulate mower engine running
 var max_scale = Vector3(1.0, 1.0, 1.0)

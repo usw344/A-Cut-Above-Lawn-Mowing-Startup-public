@@ -283,3 +283,8 @@ skeleton = NodePath("")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.453678, 0.189055, 0.656049)
 mesh = SubResource("ArrayMesh_86upd")
 skeleton = NodePath("")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.08
+
+[connection signal="timeout" from="Timer" to="." method="straighten_wheel"]
