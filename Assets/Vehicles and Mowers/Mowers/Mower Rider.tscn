@@ -10,7 +10,7 @@ size = Vector3(4.11915, 2.41307, 5.00241)
 script = ExtResource("1_rkcut")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-2, -6.16083e-15, -1.74846e-07, -6.37147e-08, 1.86248, 0.728811, 1.62823e-07, 0.728811, -1.86248, -0.00287199, 7.5217, -7.3651)
+transform = Transform3D(-1, -4.87263e-14, -8.74227e-08, -3.20462e-08, 0.930392, 0.366566, 8.13373e-08, 0.366566, -0.930392, -0.00287199, 7.5217, -6.91723)
 fov = 59.9
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]

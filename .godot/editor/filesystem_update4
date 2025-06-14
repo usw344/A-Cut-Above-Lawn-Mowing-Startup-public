@@ -8,5 +8,6 @@ res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gr
 res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn
 res://Mower Scenes/Rider Mower (In Parts).tscn
 res://Weather/particles/rain_particles.tscn
-res://Mower Scenes/rider_mower_(in_parts).gd
-res://Assets/Vehicles and Mowers/Mowers/mower_rider.gd
+res://Game/Demo/Footage/Footage_Rain.tscn
+res://Terrain/Footage-Demo Data/Diffuse_Material.tres
+res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres
