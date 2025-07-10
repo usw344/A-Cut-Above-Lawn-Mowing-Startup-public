@@ -34,7 +34,7 @@ shader_parameter/atm_darkness = 0.5
 shader_parameter/atm_sun_intensity = 18.0
 shader_parameter/atm_day_tint = Color(0.807843, 0.909804, 1, 1)
 shader_parameter/atm_horizon_light_tint = Color(0.980392, 0.635294, 0.462745, 1)
-shader_parameter/atm_night_tint = Color(0.151676, 0.179895, 0.225751, 0.899477)
+shader_parameter/atm_night_tint = Color(0.168627, 0.2, 0.25098, 1)
 shader_parameter/atm_level_params = Vector3(1, 0, 0)
 shader_parameter/atm_thickness = 0.7
 shader_parameter/atm_beta_ray = Vector3(5.80454e-06, 1.35629e-05, 3.31126e-05)
@@ -52,20 +52,20 @@ shader_parameter/moon_texture_flip_u = false
 shader_parameter/moon_texture_flip_v = false
 shader_parameter/moon_size = 0.07
 shader_parameter/atm_moon_mie_tint = Color(0.137255, 0.184314, 0.292196, 1)
-shader_parameter/atm_moon_mie_intensity = 0.0
+shader_parameter/atm_moon_mie_intensity = 0.7
 shader_parameter/atm_moon_partial_mie_phase = Vector3(0.36, 1.64, 1.6)
 shader_parameter/background_texture = ExtResource("8_ugph4")
 shader_parameter/background_color = Color(0.709804, 0.709804, 0.709804, 0.854902)
 shader_parameter/stars_field_color = Color(1, 1, 1, 1)
 shader_parameter/stars_field_texture = ExtResource("13_88pts")
 shader_parameter/sky_alignment = Vector3(2.6555, -0.23935, 0.4505)
-shader_parameter/sky_rotation = -13.3646
+shader_parameter/sky_rotation = -14.0288
 shader_parameter/sky_tilt = -1.29154
 shader_parameter/stars_scintillation = 0.75
 shader_parameter/stars_scintillation_speed = 0.01
 shader_parameter/noise_tex = ExtResource("12_pkm2w")
 shader_parameter/clouds_visible = true
-shader_parameter/clouds_coverage = 0.5
+shader_parameter/clouds_coverage = 1.0
 shader_parameter/clouds_thickness = 1.7
 shader_parameter/clouds_absorption = 2.0
 shader_parameter/clouds_sky_tint_fade = 0.5
@@ -79,7 +79,7 @@ shader_parameter/clouds_horizon_light_color = Color(0.98, 0.43, 0.15, 1)
 shader_parameter/clouds_night_color = Color(0.090196, 0.094118, 0.129412, 1)
 shader_parameter/clouds_texture = ExtResource("9_31gei")
 shader_parameter/cumulus_clouds_visible = true
-shader_parameter/cumulus_clouds_coverage = 0.776
+shader_parameter/cumulus_clouds_coverage = 1.0
 shader_parameter/cumulus_clouds_thickness = 0.0243
 shader_parameter/cumulus_clouds_absorption = 2.0
 shader_parameter/cumulus_clouds_noise_freq = 2.7
@@ -94,8 +94,8 @@ shader_parameter/cumulus_clouds_horizon_light_color = Color(0.98, 0.43, 0.15, 1)
 shader_parameter/cumulus_clouds_night_color = Color(0.090196, 0.094118, 0.129412, 1)
 shader_parameter/cumulus_clouds_partial_mie_phase = Vector3(0.957564, 1.04244, 0.412)
 shader_parameter/cumulus_clouds_mie_intensity = 1.0
-shader_parameter/moon_matrix = Basis(-2.98023e-08, -0.527908, -0.849301, -0.621993, 0.665022, -0.413364, 0.783023, 0.52826, -0.328355)
-shader_parameter/deep_space_matrix = Basis(-0.697944, -0.716153, -2.98023e-08, -0.197399, 0.19238, -0.961261, 0.68841, -0.670906, -0.275638)
+shader_parameter/moon_matrix = Basis(7.45058e-09, -0.235032, -0.971987, -0.935939, 0.342297, -0.0827693, 0.352162, 0.909721, -0.219976)
+shader_parameter/deep_space_matrix = Basis(-0.108144, -0.994135, 0, -0.274022, 0.0298086, -0.961261, 0.955624, -0.103955, -0.275638)
 
 [sub_resource type="Sky" id="Sky_ftv8m"]
 sky_material = SubResource("ShaderMaterial_qev5l")
@@ -105,7 +105,7 @@ background_mode = 2
 sky = SubResource("Sky_ftv8m")
 ambient_light_source = 3
 ambient_light_color = Color(0.235156, 0.278907, 0.35, 1)
-ambient_light_sky_contribution = 0.796181
+ambient_light_sky_contribution = 0.7
 reflected_light_source = 2
 tonemap_mode = 3
 tonemap_white = 6.0
@@ -116,6 +116,7 @@ tonemap_white = 6.0
 script = ExtResource("1_1gsxg")
 
 [node name="Terrain3D" type="Terrain3D" parent="."]
+debug_level = 2
 data_directory = "res://Terrain/Footage-Demo Data"
 material = ExtResource("2_ytgqn")
 assets = ExtResource("3_mv76e")
@@ -125,17 +126,17 @@ top_level = true
 metadata/_edit_lock_ = true
 
 [node name="Custom Gridmap" parent="." instance=ExtResource("4_thnrg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 493.986, 252.378, 500.109)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 191.343, 252.378, 500.109)
 
 [node name="Rider Mower" parent="." instance=ExtResource("5_h1v70")]
-transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 493.741, 259.659, 502.197)
+transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 162.252, 259.659, 508.294)
 
 [node name="RainParticles" parent="Rider Mower" instance=ExtResource("6_ura8v")]
 amount = 8500
 amount_ratio = 0.6296
 
 [node name="Staging Place holder" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 493.986, 242.914, 500.109)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 191.343, 242.914, 500.109)
 mesh = SubResource("PlaneMesh_8ls76")
 
 [node name="Sky3D" type="WorldEnvironment" parent="."]
@@ -144,34 +145,35 @@ camera_attributes = SubResource("CameraAttributesPractical_ytjtu")
 script = ExtResource("14_tgfi6")
 enable_editor_time = false
 enable_game_time = false
-current_time = 20.11
+current_time = 22.64
 metadata/_custom_type_script = "uid://deo0gxkmk2ahd"
 
 [node name="SunLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.643621, -0.765344, 0.363963, 0.712852, -0.599477, 0.931413, -0.278557, 0.234254, -0.765344, -0.599477, 0.234254)
+transform = Transform3D(0, -0.957315, -0.289046, 0.140193, 0.286191, -0.947861, 0.990124, -0.0405221, 0.134209, -0.289046, -0.947861, 0.134209)
 light_color = Color(0.98, 0.523, 0.294, 1)
 light_energy = 0.0
 
 [node name="MoonLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.621993, 0.783023, -0.527908, 0.665022, 0.52826, -0.849301, -0.413364, -0.328355, 0.783023, 0.52826, -0.328355)
+transform = Transform3D(0, -0.935939, 0.352162, -0.235032, 0.342297, 0.909721, -0.971988, -0.0827693, -0.219976, 0.352162, 0.909721, -0.219976)
 light_color = Color(0.572549, 0.776471, 0.956863, 1)
-light_energy = 0.142547
+light_energy = 0.272916
 shadow_enabled = true
 
 [node name="Skydome" type="Node" parent="Sky3D"]
 script = ExtResource("15_eugpd")
-sun_azimuth = -252.982
-sun_altitude = -126.832
-moon_azimuth = -67.2496
-moon_altitude = -58.112
-clouds_cumulus_coverage = 0.776
+sun_azimuth = -245.094
+sun_altitude = -161.417
+moon_azimuth = -58.0093
+moon_altitude = -24.5331
+clouds_coverage = 1.0
+clouds_cumulus_coverage = 1.0
 
 [node name="TimeOfDay" type="Node" parent="Sky3D"]
 script = ExtResource("16_glh4h")
 update_in_game = false
 update_in_editor = false
 dome_path = NodePath("../Skydome")
-total_hours = 20.11
+total_hours = 22.64
 day = 2
 
 [connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]

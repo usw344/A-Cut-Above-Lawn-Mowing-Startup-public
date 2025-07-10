@@ -14,7 +14,6 @@ signal fuel_empty
 
 # This is the mesh instance of the Rider Mower
 # The mesh instance has the functions to do movement of individual parts of the mower
-@onready var mower_mesh_parts =  $LawnTractor01
 
 # variables to simulate mower engine running
 var max_scale = Vector3(1.0, 1.0, 1.0)
@@ -49,7 +48,6 @@ func _physics_process(delta):
 	else:
 		moving = false
 
-	mower_mesh_parts.send_speed_data(velocity,delta)
 	move_and_slide()
 	
 	## other input related functions
@@ -98,7 +96,6 @@ func _input(event):
 		#rot_x_cam moves the camera up and down
 		var rot_x_cam:float = event.relative.y * mouse_sensitivity
 		
-		mower_mesh_parts.send_rotation_data(rot_y)
 		rotate_y(rot_y)
 		$Camera3D.rotate_x(rot_x_cam)
 

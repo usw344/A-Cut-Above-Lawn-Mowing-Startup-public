@@ -1,9 +1,10 @@
-[gd_scene load_steps=22 format=3 uid="uid://dbevp28rnue1u"]
+[gd_scene load_steps=24 format=3 uid="uid://dbevp28rnue1u"]
 
 [ext_resource type="Script" uid="uid://dqiug843fchqn" path="res://Game/Demo/Footage/footage.gd" id="1_yklhn"]
 [ext_resource type="Terrain3DMaterial" uid="uid://dxqt6dpgp05qg" path="res://Terrain/Footage-Demo Data/Diffuse_Material.tres" id="2_bnq1c"]
 [ext_resource type="Terrain3DAssets" uid="uid://dqcct1qwdv0uf" path="res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres" id="3_xlw8d"]
 [ext_resource type="PackedScene" uid="uid://t0gjdme5n50k" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn" id="4_5vkgk"]
+[ext_resource type="PackedScene" uid="uid://cli4va8qh8sar" path="res://Assets/Vehicles and Mowers/Mowers/Push Mower.tscn" id="4_bnq1c"]
 [ext_resource type="PackedScene" uid="uid://ct3v8qn57dgtr" path="res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn" id="5_toxwm"]
 [ext_resource type="Shader" uid="uid://cvd0x7lon1ur6" path="res://addons/sky_3d/shaders/SkyMaterial.gdshader" id="7_sft71"]
 [ext_resource type="Texture2D" uid="uid://c1vwcdcdvb74a" path="res://addons/sky_3d/assets/thirdparty/textures/milkyway/Milkyway.jpg" id="8_6325f"]
@@ -15,6 +16,7 @@
 [ext_resource type="Script" uid="uid://deo0gxkmk2ahd" path="res://addons/sky_3d/src/Sky3D.gd" id="14_c33nq"]
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/Skydome.gd" id="15_wrfs1"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="16_udqx7"]
+[ext_resource type="PackedScene" uid="uid://ccpq2jg6ps3be" path="res://Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn" id="16_yklhn"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rro0k"]
 albedo_color = Color(0.0705882, 0.0156863, 1, 1)
@@ -58,7 +60,7 @@ shader_parameter/background_color = Color(0.709804, 0.709804, 0.709804, 0.854902
 shader_parameter/stars_field_color = Color(1, 1, 1, 1)
 shader_parameter/stars_field_texture = ExtResource("13_byg8f")
 shader_parameter/sky_alignment = Vector3(2.6555, -0.23935, 0.4505)
-shader_parameter/sky_rotation = -13.677
+shader_parameter/sky_rotation = -13.9422
 shader_parameter/sky_tilt = -1.29154
 shader_parameter/stars_scintillation = 0.75
 shader_parameter/stars_scintillation_speed = 0.01
@@ -93,8 +95,8 @@ shader_parameter/cumulus_clouds_horizon_light_color = Color(0.98, 0.43, 0.15, 1)
 shader_parameter/cumulus_clouds_night_color = Color(0.090196, 0.094118, 0.129412, 1)
 shader_parameter/cumulus_clouds_partial_mie_phase = Vector3(0.957564, 1.04244, 0.412)
 shader_parameter/cumulus_clouds_mie_intensity = 1.0
-shader_parameter/moon_matrix = Basis(-1.49012e-08, -0.338817, -0.940852, -0.789188, 0.577826, -0.208085, 0.614151, 0.74251, -0.267391)
-shader_parameter/deep_space_matrix = Basis(-0.444063, -0.895996, 2.98023e-08, -0.246971, 0.122401, -0.961261, 0.861286, -0.426861, -0.275638)
+shader_parameter/moon_matrix = Basis(0, -0.252849, -0.967506, -0.906513, 0.40846, -0.106748, 0.422179, 0.877056, -0.229211)
+shader_parameter/deep_space_matrix = Basis(-0.193753, -0.98105, -2.98023e-08, -0.270415, 0.0534059, -0.961262, 0.943046, -0.186248, -0.275638)
 
 [sub_resource type="Sky" id="Sky_ftv8m"]
 sky_material = SubResource("ShaderMaterial_qev5l")
@@ -114,7 +116,16 @@ tonemap_white = 6.0
 [node name="Footage_Normal" type="Node3D"]
 script = ExtResource("1_yklhn")
 
+[node name="LawnMover02" parent="." instance=ExtResource("16_yklhn")]
+transform = Transform3D(-0.00573327, 0, 0.499967, 0, 0.5, 0, -0.499967, 0, -0.00573327, 489.844, 286.735, 864.601)
+
+[node name="Rider Mower" parent="." instance=ExtResource("5_toxwm")]
+transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 588.717, 334.604, 933.824)
+
+[node name="Push Mower" parent="." instance=ExtResource("4_bnq1c")]
+
 [node name="Terrain3D" type="Terrain3D" parent="."]
+debug_level = 2
 data_directory = "res://Terrain/Footage-Demo Data"
 material = ExtResource("2_bnq1c")
 assets = ExtResource("3_xlw8d")
@@ -124,13 +135,10 @@ top_level = true
 metadata/_edit_lock_ = true
 
 [node name="Custom Gridmap" parent="." instance=ExtResource("4_5vkgk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 493.986, 252.378, 500.109)
-
-[node name="Rider Mower" parent="." instance=ExtResource("5_toxwm")]
-transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 493.741, 259.659, 502.197)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 595.985, 283.312, 879.353)
 
 [node name="Staging Place holder" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 493.986, 242.914, 500.109)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 595.985, 273.848, 879.353)
 mesh = SubResource("PlaneMesh_8ls76")
 
 [node name="Sky3D" type="WorldEnvironment" parent="."]
@@ -139,26 +147,26 @@ camera_attributes = SubResource("CameraAttributesPractical_ytjtu")
 script = ExtResource("14_c33nq")
 enable_editor_time = false
 enable_game_time = false
-current_time = 21.3
+current_time = 22.31
 metadata/_custom_type_script = "uid://deo0gxkmk2ahd"
 
 [node name="SunLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.820429, -0.571749, 0.214919, 0.558388, -0.801257, 0.976632, -0.122879, 0.176325, -0.571749, -0.801257, 0.176325)
+transform = Transform3D(0, -0.931646, -0.363368, 0.152417, 0.359122, -0.920761, 0.988316, -0.0553836, 0.141999, -0.363368, -0.920761, 0.141999)
 light_color = Color(0.98, 0.523, 0.294, 1)
 light_energy = 0.0
 
 [node name="MoonLight" type="DirectionalLight3D" parent="Sky3D"]
-transform = Transform3D(0, -0.789188, 0.614151, -0.338817, 0.577826, 0.74251, -0.940852, -0.208085, -0.267391, 0.614151, 0.74251, -0.267391)
+transform = Transform3D(0, -0.906513, 0.422179, -0.252849, 0.40846, 0.877056, -0.967506, -0.106748, -0.229211, 0.422179, 0.877056, -0.229211)
 light_color = Color(0.572549, 0.776471, 0.956863, 1)
-light_energy = 0.222753
+light_energy = 0.263117
 shadow_enabled = true
 
 [node name="Skydome" type="Node" parent="Sky3D"]
 script = ExtResource("15_wrfs1")
-sun_azimuth = -252.86
-sun_altitude = -143.25
-moon_azimuth = -66.4725
-moon_altitude = -42.0544
+sun_azimuth = -248.655
+sun_altitude = -157.037
+moon_azimuth = -61.5014
+moon_altitude = -28.7107
 clouds_coverage = 0.769
 clouds_speed = 0.15
 
@@ -167,7 +175,13 @@ script = ExtResource("16_udqx7")
 update_in_game = false
 update_in_editor = false
 dome_path = NodePath("../Skydome")
-total_hours = 21.3
+total_hours = 22.31
 day = 2
 
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+
+[connection signal="collided" from="LawnMover02" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
 [connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="collided" from="Push Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="timeout" from="Timer" to="." method="time_toggle"]
