@@ -53,7 +53,7 @@ shader_parameter/moon_texture_flip_u = false
 shader_parameter/moon_texture_flip_v = false
 shader_parameter/moon_size = 0.07
 shader_parameter/atm_moon_mie_tint = Color(0.137255, 0.184314, 0.292196, 1)
-shader_parameter/atm_moon_mie_intensity = 0.0
+shader_parameter/atm_moon_mie_intensity = 0.7
 shader_parameter/atm_moon_partial_mie_phase = Vector3(0.36, 1.64, 1.6)
 shader_parameter/background_texture = ExtResource("8_6325f")
 shader_parameter/background_color = Color(0.709804, 0.709804, 0.709804, 0.854902)
@@ -123,6 +123,7 @@ transform = Transform3D(-0.00573327, 0, 0.499967, 0, 0.5, 0, -0.499967, 0, -0.00
 transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 588.717, 334.604, 933.824)
 
 [node name="Push Mower" parent="." instance=ExtResource("4_bnq1c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 504.058, 432.094, 897.651)
 
 [node name="Terrain3D" type="Terrain3D" parent="."]
 debug_level = 2

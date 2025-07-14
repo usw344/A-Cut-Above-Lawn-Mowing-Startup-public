@@ -11,11 +11,12 @@ var mowers
 var current_mower:CharacterBody3D = null
 func _ready() -> void:
 	custom_gridmap_object.test_custom_gridmap(256)
-	current_mower = $LawnMover02
 	mowers = [$LawnMover02,$"Rider Mower",$"Push Mower"]
+	current_mower = mowers[2]
 	
+	
+	remove_child(mowers[0])
 	remove_child(mowers[1])
-	remove_child(mowers[2])
 	
 func _process(delta: float) -> void:
 	pass
