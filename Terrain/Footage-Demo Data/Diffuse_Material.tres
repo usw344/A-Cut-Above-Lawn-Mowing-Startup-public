@@ -1,4 +1,4 @@
-[gd_resource type="Terrain3DMaterial" load_steps=4 format=3 uid="uid://dxqt6dpgp05qg"]
+[gd_resource type="Terrain3DMaterial" format=3 uid="uid://dxqt6dpgp05qg"]
 
 [sub_resource type="Gradient" id="Gradient_555ul"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -17,9 +17,9 @@ domain_warp_fractal_lacunarity = 1.5
 domain_warp_fractal_gain = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kcdxh"]
-seamless = true
-color_ramp = SubResource("Gradient_555ul")
 noise = SubResource("FastNoiseLite_ij0dh")
+color_ramp = SubResource("Gradient_555ul")
+seamless = true
 
 [resource]
 _shader_parameters = {

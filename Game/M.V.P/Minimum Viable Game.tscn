@@ -1,3 +1,24 @@
 [gd_scene format=3 uid="uid://b85h5nq688wra"]
 
-[node name="Minimum Viable Game" type="Node3D"]
+[ext_resource type="Script" uid="uid://cojv7ublbavx3" path="res://Game/M.V.P/MVP.gd" id="1_8kujc"]
+[ext_resource type="PackedScene" uid="uid://b3h5hm81jovij" path="res://Game/M.V.P/MVP_HUD.tscn" id="2_fl70i"]
+[ext_resource type="Terrain3DMaterial" uid="uid://dxqt6dpgp05qg" path="res://Terrain/Footage-Demo Data/Diffuse_Material.tres" id="3_58uqj"]
+[ext_resource type="Terrain3DAssets" uid="uid://dqcct1qwdv0uf" path="res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres" id="4_v28ll"]
+[ext_resource type="PackedScene" uid="uid://t0gjdme5n50k" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn" id="5_8kujc"]
+
+[node name="Minimum Viable Game" type="Node3D" unique_id=299911961]
+script = ExtResource("1_8kujc")
+
+[node name="MVP_HUD" parent="." unique_id=1212583194 instance=ExtResource("2_fl70i")]
+
+[node name="Terrain3D" type="Terrain3D" parent="MVP_HUD" unique_id=1931548111]
+data_directory = "res://Terrain/Footage-Demo Data"
+material = ExtResource("3_58uqj")
+assets = ExtResource("4_v28ll")
+show_checkered = true
+show_colormap = true
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="Custom Gridmap" parent="." unique_id=433474742 instance=ExtResource("5_8kujc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 462.4096, 240.67404, 534.1891)

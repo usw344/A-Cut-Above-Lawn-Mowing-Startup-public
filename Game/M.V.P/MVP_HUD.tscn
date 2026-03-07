@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://b3h5hm81jovij"]
+
+[ext_resource type="Script" uid="uid://twleo7jw72jk" path="res://Game/M.V.P/mvp_hud.gd" id="1_1ao3p"]
+[ext_resource type="LabelSettings" uid="uid://c4jbdhnp2h6vw" path="res://Game/M.V.P/MVP_HUD Label Settings.tres" id="1_cgckx"]
+
+[node name="MVP_HUD" type="Control" unique_id=1212583194]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1ao3p")
+
+[node name="Version Label" type="Label" parent="." unique_id=2101167588]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -53.0
+offset_right = 204.0
+grow_vertical = 0
+text = "Version 0.1"
+label_settings = ExtResource("1_cgckx")
+
+[node name="Mower Selection Menu" type="MenuBar" parent="." unique_id=2039048122]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.83867186
+anchor_top = 0.013888889
+anchor_right = 0.9921875
+anchor_bottom = 0.06944445
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 48
+metadata/_edit_use_anchors_ = true
+
+[node name="PopupMenu" type="PopupMenu" parent="Mower Selection Menu" unique_id=1252214706]
+title = "Mower Selection"
+theme_override_font_sizes/font_size = 17
+item_count = 3
+item_0/text = "Push Mower"
+item_0/id = 0
+item_1/text = "Push Power Powered"
+item_1/id = 1
+item_2/text = "Ride Mower"
+item_2/id = 2
+
+[node name="FPS counter" type="Label" parent="." unique_id=123262917]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -341.0
+offset_top = -176.0
+offset_right = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "FPS: 
+RAM:
+CPU:"
+label_settings = ExtResource("1_cgckx")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1094141190]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.163
+anchor_bottom = 0.163
+offset_left = 36.0
+offset_top = 0.27999878
+offset_right = 393.0
+offset_bottom = 90.28
+grow_vertical = 2
+
+[node name="Time of Day Label" type="Label" parent="VBoxContainer" unique_id=377439419]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Time of Day (Night - Day)"
+
+[node name="Time Of Day Slider" type="HSlider" parent="VBoxContainer" unique_id=939094663]
+layout_mode = 2
+
+[node name="Mower Speed Label" type="Label" parent="VBoxContainer" unique_id=1567425083]
+layout_mode = 2
+text = "Mower Speed"
+horizontal_alignment = 1
+
+[node name="Mower Speed Slider" type="HSlider" parent="VBoxContainer" unique_id=26350188]
+layout_mode = 2

@@ -1,12 +1,8 @@
-res://Main Area/Information Bar/Information Bar.tscn
 res://Terrain/Footage-Demo Data/Diffuse_Material.tres
 res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres
-res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
-res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn
-res://Mower Scenes/Rider Mower (In Parts).tscn
-res://Weather/particles/rain_particles.tscn
+res://Game/M.V.P/MVP_HUD.tscn
+res://Game/M.V.P/MVP_HUD Label Settings.tres
 res://Game/Demo/Footage/Footage_Normal.tscn
-res://Game/Demo/Footage/Footage_Rain.tscn
-res://Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn
-res://Assets/Vehicles and Mowers/Mowers/Push Mower.tscn
-res://Game/Demo/Footage/footage.gd
+res://Game/M.V.P/mvp_hud.gd
+res://Game/M.V.P/Minimum Viable Game.tscn
+res://Game/M.V.P/MVP.gd
