@@ -1,12 +1,22 @@
 extends Control
 
 @onready var FPS_Counter: Label = $"FPS counter"
+@onready var speed_control = $"VBoxContainer/Mower Speed Slider"
+
+
+#define the signals to emit so that the MVP scene can connect to them 
+signal tod_slider_value_changed(value) #time of day slider
+signal ms_slider_value_changed(value)  # mower speed
+
+signal mower_change_selected(mower_id)
+signal reset_map_and_location
 
 func _physics_process(delta: float) -> void:
 	update_debug_stats()
 	
+	
 func _ready() -> void:
-	pass
+	speed_control.set_value_no_signal(model.get_speed())
 	
 	
 func update_debug_stats():
@@ -24,3 +34,32 @@ func update_debug_stats():
 		ram_mb,
 		cpu_ms
 	]
+
+func _input(event):
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_SLASH:
+			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+			else:
+				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+# need this function to map slider value for TOD
+func map_0_100_to_time(value: float) -> float:
+	return (value / 100.0) * 23.99
+
+func _on_time_of_day_slider_value_changed(value: float) -> void:
+	emit_signal("tod_slider_value_changed",map_0_100_to_time(value))
+
+
+func _on_popup_menu_id_pressed(id: int) -> void:
+	# popup menu these index pos correspond to these Mowero
+	var mowers = ["push","powered","rider"]  
+	emit_signal("mower_change_selected",mowers[id])
+
+func _on_reset_button_pressed() -> void:
+	emit_signal("reset_map_and_location")
+
+
+func _on_mower_speed_slider_value_changed(value: float) -> void:
+	emit_signal("ms_slider_value_changed",value)

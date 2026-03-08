@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bu7nk2aghhiq7"
+path="res://.godot/imported/Push Lawn Mower SFX.wav-9624e52edf444bce93863185e1e1267a.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/Push Lawn Mower SFX.wav"
+dest_files=["res://.godot/imported/Push Lawn Mower SFX.wav-9624e52edf444bce93863185e1e1267a.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=2
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

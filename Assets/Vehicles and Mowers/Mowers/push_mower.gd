@@ -12,7 +12,7 @@ var mouse_sensitivity:float = 0.002
 signal collided
 signal fuel_empty
 
-# This is the mesh instance of the Rider Mower
+
 # The mesh instance has the functions to do movement of individual parts of the mower
 
 # variables to simulate mower engine running
@@ -27,8 +27,22 @@ var moving: bool = false
 
 var show_dev_hud:bool = true
 
+# audio effects 
+@onready var mower_audio: AudioStreamPlayer3D = $AudioStreamPlayer3D
+
+var stopped_volume_db: float = -60.0
+var moving_volume_db: float = 18.0
+var volume_lerp_speed: float = 8.0
+
+var stopped_pitch: float = 0.95
+var moving_pitch: float = 1.03
+
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	mower_audio.play()
+	mower_audio.volume_db = stopped_volume_db
+	mower_audio.pitch_scale = stopped_pitch
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -47,6 +61,23 @@ func _physics_process(delta):
 		moving = true
 	else:
 		moving = false
+
+
+	# --- AUDIO CONTROL SECTION ---
+
+	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
+	var max_speed: float = model.get_speed() * 3
+	var speed_ratio: float = clamp(horizontal_speed / max_speed, 0.0, 1.0)
+
+	var target_volume: float = lerp(stopped_volume_db, moving_volume_db, speed_ratio)
+	var target_pitch: float = lerp(stopped_pitch, moving_pitch, speed_ratio)
+
+	mower_audio.volume_db = lerp(mower_audio.volume_db, target_volume, volume_lerp_speed * delta)
+	mower_audio.pitch_scale = lerp(mower_audio.pitch_scale, target_pitch, volume_lerp_speed * delta)
+
+	# --- END AUDIO SECTION ---
+
+
 
 	move_and_slide()
 	

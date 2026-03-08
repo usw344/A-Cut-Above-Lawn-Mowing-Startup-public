@@ -65,13 +65,24 @@ label_settings = ExtResource("1_cgckx")
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1094141190]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.163
-anchor_bottom = 0.163
-offset_left = 36.0
-offset_top = 0.27999878
-offset_right = 393.0
-offset_bottom = 90.28
+anchor_left = 0.014
+anchor_top = 0.119
+anchor_right = 0.014
+anchor_bottom = 0.119
+offset_left = 0.15999985
+offset_top = 63.64
+offset_right = 357.16
+offset_bottom = 153.64
 grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=2048413059]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "To toggle mouse capture pres / on keyboard"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Time of Day Label" type="Label" parent="VBoxContainer" unique_id=377439419]
 layout_mode = 2
@@ -88,3 +99,14 @@ horizontal_alignment = 1
 
 [node name="Mower Speed Slider" type="HSlider" parent="VBoxContainer" unique_id=26350188]
 layout_mode = 2
+max_value = 25.0
+step = 0.5
+
+[node name="Reset Button" type="Button" parent="VBoxContainer" unique_id=340781417]
+layout_mode = 2
+text = "Reset Map and Location"
+
+[connection signal="id_pressed" from="Mower Selection Menu/PopupMenu" to="." method="_on_popup_menu_id_pressed"]
+[connection signal="value_changed" from="VBoxContainer/Time Of Day Slider" to="." method="_on_time_of_day_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/Mower Speed Slider" to="." method="_on_mower_speed_slider_value_changed"]
+[connection signal="pressed" from="VBoxContainer/Reset Button" to="." method="_on_reset_button_pressed"]

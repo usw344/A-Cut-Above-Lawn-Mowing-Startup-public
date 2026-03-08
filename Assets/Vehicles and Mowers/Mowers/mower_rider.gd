@@ -15,7 +15,7 @@ signal fuel_empty
 # This is the mesh instance of the Rider Mower
 # The mesh instance has the functions to do movement of individual parts of the mower
 @onready var mower_mesh_parts =  $LawnTractor01
-
+@onready var mower_audio:AudioStreamPlayer3D = $AudioStreamPlayer3D
 # variables to simulate mower engine running
 var max_scale = Vector3(1.0, 1.0, 1.0)
 var min_scale = Vector3(0.98, 0.98, 0.98)
@@ -28,8 +28,21 @@ var moving: bool = false
 
 var show_dev_hud:bool = true
 
+# sound effect stuff 
+var idle_volume_db: float = -12.0
+var moving_volume_db: float = 1.0
+var volume_lerp_speed: float = 4.0
+
+var idle_pitch: float = 0.9
+var moving_pitch: float = 1.15
+
+var last_speed: float = 0.0
+#end of sound variables
+
 func _ready():
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	mower_audio.play()
+	mower_audio.volume_db = idle_volume_db
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -49,6 +62,35 @@ func _physics_process(delta):
 	else:
 		moving = false
 
+
+	# --- AUDIO CONTROL SECTION ---
+
+	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
+
+	# --- acceleration detection ---
+	var accel = horizontal_speed - last_speed
+	last_speed = horizontal_speed
+
+	# convert speed to 0-1 range
+	var max_speed: float = model.get_speed() * 3
+	var speed_ratio: float = clamp(horizontal_speed / max_speed, 0.0, 1.0)
+
+	# target values
+	var target_volume: float = lerp(idle_volume_db, moving_volume_db, speed_ratio)
+	var target_pitch: float = lerp(idle_pitch, moving_pitch, speed_ratio)
+
+	# extra rev when accelerating
+	if accel > 0.1:
+		target_pitch += 0.02
+
+	# smooth changes
+	mower_audio.volume_db = lerp(mower_audio.volume_db, target_volume, volume_lerp_speed * delta)
+	mower_audio.pitch_scale = lerp(mower_audio.pitch_scale, target_pitch, volume_lerp_speed * delta)
+
+	# --- END AUDIO SECTION ---
+
+
+
 	mower_mesh_parts.send_speed_data(velocity,delta)
 	move_and_slide()
 	
@@ -67,7 +109,8 @@ func _physics_process(delta):
 
 	else:
 		handle_collision("collided")
-		
+	
+
 	
 
 
