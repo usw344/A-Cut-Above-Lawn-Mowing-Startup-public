@@ -16,7 +16,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="A Cut Above"
 config/tags=PackedStringArray("game")
-run/main_scene="res://Main.tscn"
+run/main_scene="uid://b85h5nq688wra"
 config/features=PackedStringArray("4.6", "Mobile")
 run/max_fps=144
 config/icon="res://icon.svg"
