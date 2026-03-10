@@ -1,5 +1,4 @@
-Note: This public version does not include the "GodotSky" plugin due to licensing. Please access the compiled and running version of the game at the itch.io or steam page 
 
-itch.io -> comming soon
+itch.io -> https://sologamedev873.itch.io/a-cut-above-mow-and-grow
 
-steam page -> coming soon
+steam page -> https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/
