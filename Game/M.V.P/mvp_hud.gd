@@ -3,6 +3,11 @@ extends Control
 @onready var FPS_Counter: Label = $"FPS counter"
 @onready var speed_control = $"VBoxContainer/Mower Speed Slider"
 
+@onready var credits: Label = $Credits
+@onready var credits2: Label = $Credits2
+
+@onready var credit_button: Button = $"Credit Button"
+
 
 #define the signals to emit so that the MVP scene can connect to them 
 signal tod_slider_value_changed(value) #time of day slider
@@ -63,3 +68,7 @@ func _on_reset_button_pressed() -> void:
 
 func _on_mower_speed_slider_value_changed(value: float) -> void:
 	emit_signal("ms_slider_value_changed",value)
+
+func _on_credit_button_pressed():
+	credits.visible = !credits.visible
+	credits2.visible = !credits2.visible
