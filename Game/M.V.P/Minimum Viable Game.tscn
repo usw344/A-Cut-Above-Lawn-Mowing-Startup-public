@@ -109,19 +109,20 @@ tonemap_white = 6.0
 script = ExtResource("1_8kujc")
 
 [node name="Rider Mower" parent="." unique_id=403766262 instance=ExtResource("2_dha1t")]
-transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 477.02698, 259.659, 520.4162)
+transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 1135.0652, 259.659, 943.5175)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1276535347]
 
 [node name="MVP_HUD" parent="CanvasLayer" unique_id=1212583194 instance=ExtResource("2_fl70i")]
 
 [node name="Custom Gridmap" parent="." unique_id=433474742 instance=ExtResource("5_8kujc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 462.4096, 240.67404, 534.1891)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1120.4478, 240.67404, 957.2904)
 
 [node name="Sky3D" type="WorldEnvironment" parent="." unique_id=1389995679]
 environment = SubResource("Environment_fsswk")
 camera_attributes = SubResource("CameraAttributesPractical_5nv5e")
 script = ExtResource("13_0axgp")
+fog_enabled = false
 enable_editor_time = false
 current_time = 9.820080000000022
 metadata/_custom_type_script = "uid://deo0gxkmk2ahd"
@@ -141,6 +142,7 @@ sun_azimuth = -141.98349990532648
 sun_altitude = -49.122501933462146
 moon_azimuth = -314.43532621934247
 moon_altitude = -119.81306103436411
+fog_visible = false
 
 [node name="TimeOfDay" type="Node" parent="Sky3D" unique_id=2023189968]
 script = ExtResource("15_wmxox")
@@ -149,9 +151,11 @@ dome_path = NodePath("../Skydome")
 total_hours = 9.820080000000022
 
 [node name="Terrain3D" type="Terrain3D" parent="." unique_id=1931548111]
+debug_level = 2
 data_directory = "res://Terrain/Footage-Demo Data"
 material = ExtResource("3_58uqj")
 assets = ExtResource("4_v28ll")
+vertex_spacing = 2.05
 show_checkered = true
 show_colormap = true
 top_level = true

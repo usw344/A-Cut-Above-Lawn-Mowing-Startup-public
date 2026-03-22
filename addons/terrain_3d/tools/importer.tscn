@@ -1,21 +1,23 @@
-[gd_scene load_steps=4 format=3 uid="uid://blaieaqp413k7"]
+[gd_scene format=3 uid="uid://blaieaqp413k7"]
 
 [ext_resource type="Script" uid="uid://cib2rig7vup10" path="res://addons/terrain_3d/tools/importer.gd" id="1_60b8f"]
 [ext_resource type="Terrain3DMaterial" uid="uid://dxqt6dpgp05qg" path="res://Terrain/Footage-Demo Data/Diffuse_Material.tres" id="1_kcdxh"]
 [ext_resource type="Terrain3DAssets" uid="uid://dqcct1qwdv0uf" path="res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres" id="2_34j6c"]
 
-[node name="Importer" type="Terrain3D"]
+[node name="Importer" type="Terrain3D" unique_id=1060636272]
 debug_level = 2
-data_directory = "res://Terrain/Footage-Demo Data"
 material = ExtResource("1_kcdxh")
 assets = ExtResource("2_34j6c")
 mesh_lods = 8
+vertex_spacing = 2.0
 show_checkered = true
 show_colormap = true
 top_level = true
 script = ExtResource("1_60b8f")
-height_file_name = "res://Terrain/Heightmaps/Rugged Terrain Height Map 1x1.exr"
-color_file_name = "res://Terrain/Heightmaps/Rugged Terrain Diffuse Map 1x1.exr"
-import_scale = 3048.0
-destination_directory = "res://Terrain/Footage-Demo Data"
+height_file_name = "C:/Users/usw87/Desktop/Programming/A cut Above Mow and And Grow/A-Cut-Above-Lawn-Mowing-Startup-public/Terrain/Heightmaps/8k/Mountain Range With Valley 8k Scale HeightMap .exr"
+color_file_name = "C:/Users/usw87/Desktop/Programming/A cut Above Mow and And Grow/A-Cut-Above-Lawn-Mowing-Startup-public/Terrain/Heightmaps/8k/Mountain Range With Valley 8k Scale Diffuse .exr"
+import_position = Vector2i(-4112, -4112)
+import_scale = 8000.0
+height_offset = 100.0
+destination_directory = "res://Terrain/MVP_TERRAIN"
 metadata/_edit_lock_ = true
