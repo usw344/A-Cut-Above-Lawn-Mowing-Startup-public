@@ -19,11 +19,20 @@ var custom_gridmap_scene = preload("res://Mowing Section/Mowing Area/Mowing Grou
 
 func _physics_process(delta: float) -> void:
 	pass
-	
+
+
 func _ready() -> void:
+	#TODO
+	# in case this gets moved around. This current Hardcoded value works.
+	custom_gridmap_object.position = Vector3(-311.935,-492.234,-140.184)
 	custom_gridmap_object.test_custom_gridmap(256)
 	sound.play() # start background ambience sound
 	original_mower_transform = current_mower.transform
+	
+	## now we can move the mower around without concern. This line will snap it to the correct start position
+	current_mower.global_position = custom_gridmap_object.get_mower_inital_position() + Vector3(0,2,0) # add a small margin in on the y
+	
+	
 
 # gets signal from MVP_HUD and changes time of day in Sky3d
 func _on_mvp_hud_tod_slider_value_changed(value: Variant) -> void:

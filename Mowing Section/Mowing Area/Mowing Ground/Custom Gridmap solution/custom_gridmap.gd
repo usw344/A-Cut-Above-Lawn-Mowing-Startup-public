@@ -115,6 +115,7 @@ func fill_multimesh_grid() ->void:
 
 	for z_coord in range(int(-grid_length/chunk_size_x ), int(grid_length/ chunk_size_z ) , 1  ):
 		for x_coord in range(int(-grid_width/ chunk_size_x ) , int(grid_width/ chunk_size_z ), 1):
+			print(Vector2i(x_coord, z_coord))
 			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
 
 	# get the grid ids in a list (this will be passed into add_mm and used to get the cords)
@@ -271,9 +272,10 @@ func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 
 
 func get_mower_inital_position() ->Vector3:
-	return  $"Start Area".position
+	return  $"Start Area".global_position
 
-
+func get_start_size():
+	print("Here is start size" + str($"Mowing Area/MeshInstance3D".mesh.size))
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
 	"""
@@ -285,7 +287,7 @@ func set_inital_positions_and_sizes() ->void:
 	var multiply_width_length_by_2 = width_and_length_radius*2 # since in code it does not auto scale to twice the value
 	$"Mowing Area/MeshInstance3D".mesh.size = Vector2(multiply_width_length_by_2,multiply_width_length_by_2)
 	$"Mowing Area/CollisionShape3D".shape.size = Vector3(multiply_width_length_by_2,1,multiply_width_length_by_2)
-	print($"Mowing Area/MeshInstance3D".mesh.size)
+
 	# to center the ground and the grass grid, make these hard coded adjustment
 	$"Mowing Area".position.z += 1.5
 	$"Mowing Area".position.x += 1.5

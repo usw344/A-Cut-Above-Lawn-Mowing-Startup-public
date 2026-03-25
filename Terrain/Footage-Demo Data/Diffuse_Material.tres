@@ -41,7 +41,15 @@ _shader_parameters = {
 &"noise_texture": SubResource("NoiseTexture2D_kcdxh"),
 &"projection_angular_division": 2.0,
 &"projection_threshold": 0.8,
+&"world_noise_fragment_normals": false,
+&"world_noise_height": 64.0,
+&"world_noise_lod_distance": 7500.0,
+&"world_noise_max_octaves": 4,
+&"world_noise_min_octaves": 2,
+&"world_noise_offset": Vector3(0, 0, 0),
+&"world_noise_region_blend": 0.33,
+&"world_noise_scale": 5.0,
 &"world_space_normal_blend": true
 }
-show_checkered = true
+world_background = 2
 show_colormap = true

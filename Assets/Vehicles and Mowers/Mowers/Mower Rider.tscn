@@ -14,6 +14,7 @@ script = ExtResource("1_rkcut")
 transform = Transform3D(-1, -3.80682e-14, -8.74226e-08, -3.20462e-08, 0.930392, 0.366566, 8.13373e-08, 0.366566, -0.930392, -0.00287199, 8.69776, -9.34563)
 current = true
 fov = 59.9
+far = 100000.0
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1462443952]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0544924, 1.34182, 1.46603)

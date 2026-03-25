@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cavv438xmxx45"]
+
+[ext_resource type="ArrayMesh" uid="uid://c2o87gx23krbu" path="res://Terrain/Meshes/1x1 Ground Main Mesh.mesh" id="1_7kti1"]
+[ext_resource type="Texture2D" uid="uid://f7wjta2ip6ve" path="res://Terrain/Meshes/Gound 1x1 ColourMap.png" id="2_bkkt2"]
+[ext_resource type="Script" uid="uid://wn2fgkpp4pet" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/Terrain Manager.gd" id="3_bkkt2"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0oug1"]
+albedo_texture = ExtResource("2_bkkt2")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_heoqk"]
+size = Vector2(350, 350)
+
+[node name="Ground" type="MeshInstance3D" unique_id=98127357]
+mesh = ExtResource("1_7kti1")
+surface_material_override/0 = SubResource("StandardMaterial3D_0oug1")
+script = ExtResource("3_bkkt2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=859004191]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 130.33945, 0)
+mesh = SubResource("PlaneMesh_heoqk")
