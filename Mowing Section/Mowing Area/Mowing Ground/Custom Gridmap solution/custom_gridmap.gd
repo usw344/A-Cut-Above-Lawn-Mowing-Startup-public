@@ -115,7 +115,6 @@ func fill_multimesh_grid() ->void:
 
 	for z_coord in range(int(-grid_length/chunk_size_x ), int(grid_length/ chunk_size_z ) , 1  ):
 		for x_coord in range(int(-grid_width/ chunk_size_x ) , int(grid_width/ chunk_size_z ), 1):
-			print(Vector2i(x_coord, z_coord))
 			grid_coords_of_chunks.append( Vector2i(x_coord, z_coord))
 
 	# get the grid ids in a list (this will be passed into add_mm and used to get the cords)
@@ -265,7 +264,7 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 	for collision in collision_objects:
 		var name_of_collision_object  = collision.get_collider().name
-		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area" or name_of_collision_object == "Terrain3D":
+		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area" or name_of_collision_object == "Ground":
 			continue
 		else:
 			mow_item(name_of_collision_object)
