@@ -30,6 +30,7 @@ func _ready() -> void:
 	original_mower_transform = current_mower.transform
 	
 	## now we can move the mower around without concern. This line will snap it to the correct start position
+	custom_gridmap_object.reset_start_area_global_position()
 	current_mower.global_position = custom_gridmap_object.get_mower_inital_position() + Vector3(0,2,0) # add a small margin in on the y
 	
 	
