@@ -17,77 +17,6 @@ var instance_count_adjustment:Array = [2.25, 1.5, 1.25, 0.85, 0.5]
 # Foliage database
 # Outer key   = foliage name
 # Outer value = dictionary of settings for that foliage type
-#var foliage_database: Dictionary = {
-	#"tree": {
-		##"mesh": extract_mesh_from_glb("res://Assets/Foilage/trees/SM_Pine_A1.glb"),
-		#"mesh": extract_mesh_from_glb("res://Assets/Foilage/Low Poly/Tree_1_B_Color1.gltf"),
-#
-		#"density": 1.0,
-		#"instance_count": 4,
-		#"instance_scale": 20,
-		#"min_scale": 0.9,
-		#"max_scale": 1.1,
-		#"y_offset": 0.0,
-		#"collision_radius": 12.0
-	#},
-#
-	#"tree2": {
-		#"mesh": extract_mesh_from_glb("res://Assets/Foilage/trees/SM_Pine_A2.glb"),
-		#"density": 0.7,
-		#"instance_count": 4,
-		#"instance_scale": 1.5,
-		#"min_scale": 1.0,
-		#"max_scale": 1.4,
-		#"y_offset": 0.0,
-		#"collision_radius": 8.0
-	#},
-#
-	#"shrub": {
-		#"mesh": extract_mesh_from_glb("res://Assets/Foilage/Shurbs/SM_Bush_A1.glb"),
-		#"density": 2.0,
-		#"instance_count": 30,
-		#"instance_scale": 1,
-		#"min_scale": 0.6,
-		#"max_scale": 1.0,
-		#"y_offset": 0.0,
-		#"collision_radius": 5.0
-	#},
-#
-		#"grass_lod1": {
-		#"mesh": extract_mesh_from_glb("res://Assets/Foilage/Shurbs/SM_Grass_A3.glb"),
-		#"instance_scale": 18.0,
-		#"min_scale": 0.85,
-		#"max_scale": 1.15,
-		#"grid_spacing": 26.0,
-		#"grid_jitter": 7.0,
-		#"fill_chance": 0.55,
-		#"visible_begin": 0.0,
-		#"visible_end": 900.0
-	#},
-#
-	#"grass_lod2": {
-		#"mesh": extract_mesh_from_glb("res://Assets/Foilage/Shurbs/SM_Grass_A3.glb"),
-		#"instance_scale": 24.0,
-		#"min_scale": 0.9,
-		#"max_scale": 1.2,
-		#"grid_spacing": 42.0,
-		#"grid_jitter": 10.0,
-		#"fill_chance": 0.38,
-		#"visible_begin": 500.0,
-		#"visible_end": 1800.0
-	#},
-#
-	#"stone": {
-		#"mesh": BoxMesh.new(), # for now while I add proper mesh for that
-		#"density": 0.4,
-		#"instance_count": 8,
-		#"min_scale": 0.7,
-		#"max_scale": 1.3,
-		#"y_offset": 0.0,
-		#"collision_radius": 2.0
-	#}
-#}
-#
 var foliage_database: Dictionary = {
 	"tree": {
 		"high": {
@@ -445,7 +374,7 @@ func _find_first_mesh_in_node(node: Node) -> Mesh:
 	return null
 
 
-const LOW_POLY_SCALE_MULTIPLIER: float = 7.0
+const LOW_POLY_SCALE_MULTIPLIER: float = 4.0
 
 func get_active_foliage_variant() -> String:
 	if low_poly:
