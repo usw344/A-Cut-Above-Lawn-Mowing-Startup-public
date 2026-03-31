@@ -16,6 +16,13 @@ signal ms_slider_value_changed(value)  # mower speed
 signal mower_change_selected(mower_id)
 signal reset_map_and_location
 
+## weather signals
+signal time_of_day_changed(value: float)
+signal time_preset_requested(preset_name: String)
+signal weather_preset_requested(preset_name: String)
+signal quality_preset_requested(preset_name: String)
+
+
 func _physics_process(delta: float) -> void:
 	update_debug_stats()
 	
@@ -58,7 +65,7 @@ func _on_time_of_day_slider_value_changed(value: float) -> void:
 
 
 func _on_popup_menu_id_pressed(id: int) -> void:
-	# popup menu these index pos correspond to these Mowero
+	# popup menu these index pos correspond to these Mowers
 	var mowers = ["push","powered","rider"]  
 	emit_signal("mower_change_selected",mowers[id])
 

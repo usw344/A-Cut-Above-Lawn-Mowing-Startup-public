@@ -1,4 +1,4 @@
-@tool
+#@tool comment this back in when needed
 extends Node3D
 
 

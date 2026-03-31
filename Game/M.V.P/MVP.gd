@@ -17,6 +17,11 @@ var mowers_scene_list = {"push":push_mower_scene,
 var original_mower_transform = null # for reset use
 var custom_gridmap_scene = preload("res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn") # for reset use
 
+
+@onready var hud = $CanvasLayer/MVP_HUD
+@onready var preset_manager_object:preset_manager = $"PresetManager (Sky3D)"
+
+
 func _physics_process(delta: float) -> void:
 	pass
 
@@ -33,6 +38,11 @@ func _ready() -> void:
 	custom_gridmap_object.reset_start_area_global_position()
 	current_mower.global_position = custom_gridmap_object.get_mower_inital_position() + Vector3(0,2,0) # add a small margin in on the y
 	
+	# connect the preset manager with the related HUD indicators 
+	hud.time_of_day_changed.connect(_on_hud_time_of_day_changed)
+	hud.time_preset_requested.connect(_on_hud_time_preset_requested)
+	hud.weather_preset_requested.connect(_on_hud_weather_preset_requested)
+	hud.quality_preset_requested.connect(_on_hud_quality_preset_requested)
 	
 
 # gets signal from MVP_HUD and changes time of day in Sky3d
@@ -81,3 +91,18 @@ func _on_mvp_hud_ms_slider_value_changed(value: Variant) -> void:
 	
 	# set the speed back in the model
 	model.set_speed(current_speed)
+
+func ______Weather_Functions_____():
+	pass
+
+func _on_hud_time_of_day_changed(value: float) -> void:
+	preset_manager_object.set_time_of_day_normalized(value)
+
+func _on_hud_time_preset_requested(preset_name: String) -> void:
+	preset_manager_object.apply_time_preset(preset_name)
+
+func _on_hud_weather_preset_requested(preset_name: String) -> void:
+	preset_manager_object.apply_weather_preset(preset_name)
+
+func _on_hud_quality_preset_requested(preset_name: String) -> void:
+	preset_manager_object.apply_quality_preset(preset_name)
