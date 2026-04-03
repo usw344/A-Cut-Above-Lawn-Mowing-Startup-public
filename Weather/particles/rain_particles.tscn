@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://2hfnetgvt1n2"]
+[gd_scene format=3 uid="uid://2hfnetgvt1n2"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g66cx"]
 emission_shape = 3
@@ -29,7 +29,7 @@ sections = 2
 section_length = 0.1
 curve = SubResource("Curve_ulbo1")
 
-[node name="RainParticles" type="GPUParticles3D"]
+[node name="RainParticles" type="GPUParticles3D" unique_id=1941541630]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 24.8356, 8.49582)
 amount = 3000
 amount_ratio = 0.3893

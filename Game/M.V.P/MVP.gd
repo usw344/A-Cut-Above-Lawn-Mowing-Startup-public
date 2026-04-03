@@ -27,29 +27,22 @@ func _physics_process(delta: float) -> void:
 
 
 func _ready() -> void:
-	#TODO
 	# in case this gets moved around. This current Hardcoded value works.
 	custom_gridmap_object.position = Vector3(-311.935,-492.234,-140.184)
-	custom_gridmap_object.test_custom_gridmap(256)
+	custom_gridmap_object.test_custom_gridmap(256) # TODO this line can be changed for different size areas
 	sound.play() # start background ambience sound
 	original_mower_transform = current_mower.transform
 	
 	## now we can move the mower around without concern. This line will snap it to the correct start position
 	custom_gridmap_object.reset_start_area_global_position()
-	current_mower.global_position = custom_gridmap_object.get_mower_inital_position() + Vector3(0,2,0) # add a small margin in on the y
-	
-	# connect the preset manager with the related HUD indicators 
-	hud.time_of_day_changed.connect(_on_hud_time_of_day_changed)
-	hud.time_preset_requested.connect(_on_hud_time_preset_requested)
-	hud.weather_preset_requested.connect(_on_hud_weather_preset_requested)
-	hud.quality_preset_requested.connect(_on_hud_quality_preset_requested)
-	
+	 # add a small margin in on the y
+	current_mower.global_position = custom_gridmap_object.get_mower_inital_position() + Vector3(0,2,0)
 
-# gets signal from MVP_HUD and changes time of day in Sky3d
-func _on_mvp_hud_tod_slider_value_changed(value: Variant) -> void:
-	$Sky3D.current_time = value
+	## for current debugging purposes set time to day and weather to clear
+	preset_manager_object.apply_time_of_day_preset("Day")
 
-
+func _____Debug_Functions_____():
+	pass
 func _on_mvp_hud_mower_change_selected(mower_id: Variant) -> void:
 	var current_transform = current_mower.transform
 	var current_mouse_method = Input.mouse_mode
@@ -62,7 +55,6 @@ func _on_mvp_hud_mower_change_selected(mower_id: Variant) -> void:
 	current_mower = new_mower
 	current_mower.collided.connect(custom_gridmap_object.custom_grid_map_collision_handler)
 	Input.mouse_mode = current_mouse_method
-
 
 func _on_mvp_hud_reset_map_and_location() -> void:
 	# since for MVP I moved the gridmap to its location I need to store it here
@@ -92,17 +84,31 @@ func _on_mvp_hud_ms_slider_value_changed(value: Variant) -> void:
 	# set the speed back in the model
 	model.set_speed(current_speed)
 
-func ______Weather_Functions_____():
+func ______Time_Functions_____():
 	pass
 
-func _on_hud_time_of_day_changed(value: float) -> void:
+func _on_mvp_hud_tod_day_requested() -> void:
+	preset_manager_object.apply_time_of_day_preset("Day")
+	
+func _on_mvp_hud_tod_evening_requested() -> void:
+	preset_manager_object.apply_time_of_day_preset("Evening")
+
+func _on_mvp_hud_tod_night_requested() -> void:
+	preset_manager_object.apply_time_of_day_preset("Night")
+	
+# gets signal from MVP_HUD and changes time of day in Sky3d
+func _on_mvp_hud_tod_slider_value_changed(value: Variant) -> void:
+	## TODO remove this function as move to preset is complete
 	preset_manager_object.set_time_of_day_normalized(value)
+	
 
-func _on_hud_time_preset_requested(preset_name: String) -> void:
-	preset_manager_object.apply_time_preset(preset_name)
+func ____Weather_Functions____():
+	pass
+func _on_mvp_hud_weather_clear_requested() -> void:
+	preset_manager_object.apply_weather_preset("Clear") # Replace with function body.
 
-func _on_hud_weather_preset_requested(preset_name: String) -> void:
-	preset_manager_object.apply_weather_preset(preset_name)
+func _on_mvp_hud_weather_foggy_requested() -> void:
+	preset_manager_object.apply_weather_preset("Foggy")
 
-func _on_hud_quality_preset_requested(preset_name: String) -> void:
-	preset_manager_object.apply_quality_preset(preset_name)
+func _on_mvp_hud_weather_rain_requested() -> void:
+	preset_manager_object.apply_weather_preset("Rain")

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://ih5t1i10v1sc"]
+
+[ext_resource type="Script" uid="uid://lfo15go8d4jr" path="res://Weather/Handlers/rain_handler.gd" id="1_hw0r7"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_krplb"]
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c0uai"]
+albedo_color = Color(0.22629985, 0.13062826, 0.011402067, 1)
+
+[node name="Rain Handler" type="Node3D" unique_id=921088035]
+script = ExtResource("1_hw0r7")
+
+[node name="Near Rain" type="GPUParticles3D" parent="." unique_id=2044052492]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=782207237]
+mesh = SubResource("PlaneMesh_krplb")
+surface_material_override/0 = SubResource("StandardMaterial3D_c0uai")

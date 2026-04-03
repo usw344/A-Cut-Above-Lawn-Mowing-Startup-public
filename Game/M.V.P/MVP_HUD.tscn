@@ -17,11 +17,15 @@ script = ExtResource("1_1ao3p")
 
 [node name="Version Label" type="Label" parent="." unique_id=2101167588]
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -53.0
-offset_right = 204.0
+anchors_preset = -1
+anchor_left = 0.008
+anchor_top = 0.947
+anchor_right = 0.008
+anchor_bottom = 0.947
+offset_left = 0.6399994
+offset_top = 0.23999023
+offset_right = 204.64
+offset_bottom = 53.23999
 grow_vertical = 0
 text = "Version 0.1"
 label_settings = ExtResource("1_cgckx")
@@ -69,13 +73,13 @@ label_settings = ExtResource("1_cgckx")
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.014
-anchor_top = 0.119
+anchor_top = 0.023000002
 anchor_right = 0.014
-anchor_bottom = 0.119
-offset_left = 0.15999985
-offset_top = 63.64
-offset_right = 357.16
-offset_bottom = 153.64
+anchor_bottom = 0.023000002
+offset_left = 0.11999893
+offset_top = 0.15999794
+offset_right = 511.12
+offset_bottom = 310.16
 grow_vertical = 2
 theme_override_constants/separation = 15
 alignment = 1
@@ -108,6 +112,48 @@ step = 0.5
 [node name="Reset Button" type="Button" parent="VBoxContainer" unique_id=340781417]
 layout_mode = 2
 text = "Reset Map and Location"
+
+[node name="Time of Day Preset Container" type="HBoxContainer" parent="VBoxContainer" unique_id=986554106]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TOD preset Label" type="Label" parent="VBoxContainer/Time of Day Preset Container" unique_id=176774810]
+layout_mode = 2
+text = "Time of Day Preset"
+
+[node name="Day Preset" type="Button" parent="VBoxContainer/Time of Day Preset Container" unique_id=707435991]
+layout_mode = 2
+text = "Day
+"
+
+[node name="Evening Preset" type="Button" parent="VBoxContainer/Time of Day Preset Container" unique_id=1465260078]
+layout_mode = 2
+text = "Evening"
+
+[node name="Night Preset" type="Button" parent="VBoxContainer/Time of Day Preset Container" unique_id=403945651]
+layout_mode = 2
+text = "Night"
+
+[node name="Weather Preset Container" type="HBoxContainer" parent="VBoxContainer" unique_id=872261271]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Weather Preset Label" type="Label" parent="VBoxContainer/Weather Preset Container" unique_id=1329628282]
+layout_mode = 2
+text = "Weather Preset      "
+
+[node name="Clear" type="Button" parent="VBoxContainer/Weather Preset Container" unique_id=82782554]
+layout_mode = 2
+text = "Clear
+"
+
+[node name="Foggy" type="Button" parent="VBoxContainer/Weather Preset Container" unique_id=1192482869]
+layout_mode = 2
+text = "Foggy"
+
+[node name="Rain" type="Button" parent="VBoxContainer/Weather Preset Container" unique_id=468354715]
+layout_mode = 2
+text = "Rain"
 
 [node name="Credit Button" type="Button" parent="." unique_id=567168248]
 layout_mode = 1
