@@ -3,8 +3,11 @@ extends Control
 @onready var FPS_Counter: Label = $"FPS counter"
 @onready var speed_control = $"VBoxContainer/Mower Speed Slider"
 
-@onready var credits: Label = $Credits
-@onready var credits2: Label = $Credits2
+@onready var credits: Label = $ColorRect/Credits
+@onready var credits2: Label = $ColorRect2/Credits2
+@onready var credit1_colorRect: ColorRect = $ColorRect
+@onready var credit2_colorRect: ColorRect = $ColorRect2
+
 @onready var credit_button: Button = $"Credit Button"
 
 @onready var day_preset_button: Button = $"VBoxContainer/Time of Day Preset Container/Day Preset"
@@ -36,8 +39,7 @@ signal weather_rain_requested
 
 func _physics_process(delta: float) -> void:
 	update_debug_stats()
-	credits.visible = false
-	credits2.visible = false
+	
 
 
 func _ready() -> void:
@@ -61,6 +63,10 @@ func _ready() -> void:
 	if not rain_weather_button.pressed.is_connected(_on_rain_weather_pressed):
 		rain_weather_button.pressed.connect(_on_rain_weather_pressed)
 
+	credits.visible = false
+	credits2.visible = false
+	credit1_colorRect.visible = false
+	credit2_colorRect.visible = false
 
 func update_debug_stats():
 	var fps = Performance.get_monitor(Performance.TIME_FPS)
@@ -114,6 +120,9 @@ func _on_mower_speed_slider_value_changed(value: float) -> void:
 func _on_credit_button_pressed():
 	credits.visible = !credits.visible
 	credits2.visible = !credits2.visible
+	credit1_colorRect.visible = !credit1_colorRect.visible
+	credit2_colorRect.visible = !credit2_colorRect.visible
+	
 
 
 func _on_day_preset_pressed() -> void:

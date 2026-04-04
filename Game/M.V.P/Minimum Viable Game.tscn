@@ -46,6 +46,8 @@ surface_material_override/0 = ExtResource("16_0tesn")
 
 [node name="PresetManager (Sky3D)" parent="." unique_id=13500202 instance=ExtResource("7_58uqj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -496.68634, -467.05133, -95.59346)
+custom_gridmap_path = NodePath("")
+time_preset_transition_duration = 2.5
 
 [connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
 [connection signal="mower_change_selected" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_mower_change_selected"]

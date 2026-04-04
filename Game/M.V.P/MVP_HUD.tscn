@@ -27,7 +27,7 @@ offset_top = 0.23999023
 offset_right = 204.64
 offset_bottom = 53.23999
 grow_vertical = 0
-text = "Version 0.1"
+text = "Version 0.2"
 label_settings = ExtResource("1_cgckx")
 
 [node name="Mower Selection Menu" type="MenuBar" parent="." unique_id=2039048122]
@@ -92,11 +92,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Time of Day Label" type="Label" parent="VBoxContainer" unique_id=377439419]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Time of Day (Night - Day)"
 
 [node name="Time Of Day Slider" type="HSlider" parent="VBoxContainer" unique_id=939094663]
+visible = false
 layout_mode = 2
 
 [node name="Mower Speed Label" type="Label" parent="VBoxContainer" unique_id=1567425083]
@@ -168,18 +170,31 @@ offset_right = 62.359985
 offset_bottom = 31.279907
 text = "Credits"
 
-[node name="Credits" type="Label" parent="." unique_id=691414560]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=238344536]
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.29000002
-anchor_top = 0.158
-anchor_right = 0.29000002
-anchor_bottom = 0.158
-offset_left = 0.19995117
-offset_top = 0.35998535
-offset_right = 702.19995
-offset_bottom = 647.36
+anchor_left = 0.209
+anchor_top = 0.28100002
+anchor_right = 0.209
+anchor_bottom = 0.28100002
+offset_left = 0.7200012
+offset_top = -0.480011
+offset_right = 701.72
+offset_bottom = 666.52
+color = Color(0.04395193, 0.04395193, 0.04395192, 1)
+
+[node name="Credits" type="Label" parent="ColorRect" unique_id=691414560]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.020000001
+anchor_top = 0.021000002
+anchor_right = 0.98700005
+anchor_bottom = 0.994
+offset_left = -0.020001411
+offset_top = -0.007000923
+offset_right = 0.112976074
+offset_bottom = 0.27600098
 theme_override_font_sizes/font_size = 14
 theme_override_styles/focus = SubResource("StyleBoxFlat_1ao3p")
 text = "For Terrain 3D 
@@ -208,18 +223,31 @@ SOFTWARE.
 ---
 "
 
-[node name="Credits2" type="Label" parent="." unique_id=556258948]
+[node name="ColorRect2" type="ColorRect" parent="." unique_id=827152019]
 visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.615
-anchor_top = 0.123
-anchor_right = 0.615
-anchor_bottom = 0.123
-offset_left = 0.19995117
-offset_top = 0.16000366
-offset_right = 730.19995
-offset_bottom = 699.16003
+anchor_left = 0.588
+anchor_top = 0.20700002
+anchor_right = 0.588
+anchor_bottom = 0.20700002
+offset_left = 0.040039063
+offset_top = 0.43998718
+offset_right = 708.04004
+offset_bottom = 645.44
+color = Color(0.04395193, 0.04395193, 0.04395192, 1)
+
+[node name="Credits2" type="Label" parent="ColorRect2" unique_id=556258948]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.041
+anchor_top = 0.037
+anchor_right = 0.887
+anchor_bottom = 0.97200006
+offset_left = 0.25202942
+offset_top = -15.195993
+offset_right = 15.283997
+offset_bottom = -0.27105713
 theme_override_font_sizes/font_size = 14
 text = "
 For Sky3D

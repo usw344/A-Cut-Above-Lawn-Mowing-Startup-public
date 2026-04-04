@@ -23,7 +23,8 @@ var custom_gridmap_scene = preload("res://Mowing Section/Mowing Area/Mowing Grou
 
 
 func _physics_process(delta: float) -> void:
-	pass
+	# this allows the rain gpu emitter to be set correctly Here -> preset manager -> Rain handler
+	preset_manager_object.get_and_set_mower_global_position(current_mower.global_position)
 
 
 func _ready() -> void:
@@ -40,6 +41,9 @@ func _ready() -> void:
 
 	## for current debugging purposes set time to day and weather to clear
 	preset_manager_object.apply_time_of_day_preset("Day")
+	
+	## to manage sound effect of rain and stuff
+	preset_manager_object.set_audio_player(sound)
 
 func _____Debug_Functions_____():
 	pass

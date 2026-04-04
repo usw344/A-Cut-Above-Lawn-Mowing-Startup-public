@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://deo0gxkmk2ahd" path="res://addons/sky_3d/src/Sky3D.gd" id="8_difgl"]
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/Skydome.gd" id="9_j6hb4"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="10_7xkff"]
+[ext_resource type="PackedScene" uid="uid://ih5t1i10v1sc" path="res://Weather/Handlers/Rain Handler.tscn" id="12_8i0be"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ygg5t"]
 shader = ExtResource("1_4fw1l")
@@ -102,6 +103,8 @@ auto_exposure_scale = 0.2
 
 [node name="PresetManager" type="Node3D" unique_id=13500202]
 script = ExtResource("1_o1a4g")
+custom_gridmap_path = null
+time_preset_transition_duration = null
 
 [node name="Sky3D" type="WorldEnvironment" parent="." unique_id=828130273]
 environment = SubResource("Environment_ttrnh")
@@ -136,3 +139,10 @@ script = ExtResource("10_7xkff")
 update_in_editor = false
 dome_path = NodePath("../Skydome")
 total_hours = 12.0
+
+[node name="Rain Handler" parent="." unique_id=921088035 instance=ExtResource("12_8i0be")]
+rain_audio_target_db = -8.0
+rain_audio_silent_db = -40.0
+ambience_clear_db = 0.0
+ambience_rain_db = -10.0
+rain_offset = Vector3(0, 10, 0)

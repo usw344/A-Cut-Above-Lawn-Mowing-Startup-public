@@ -1,18 +1,29 @@
 [gd_scene format=3 uid="uid://ih5t1i10v1sc"]
 
 [ext_resource type="Script" uid="uid://lfo15go8d4jr" path="res://Weather/Handlers/rain_handler.gd" id="1_hw0r7"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_krplb"]
-size = Vector2(100, 100)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c0uai"]
-albedo_color = Color(0.22629985, 0.13062826, 0.011402067, 1)
+[ext_resource type="PackedScene" uid="uid://2hfnetgvt1n2" path="res://Weather/particles/rain_particles.tscn" id="2_krplb"]
+[ext_resource type="AudioStream" uid="uid://655xlgtnyybb" path="res://Assets/Sounds/rain-sound-188158.wav" id="3_c0uai"]
 
 [node name="Rain Handler" type="Node3D" unique_id=921088035]
 script = ExtResource("1_hw0r7")
+rain_audio_target_db = null
+rain_audio_silent_db = null
+ambience_clear_db = null
+ambience_rain_db = null
+rain_offset = null
 
-[node name="Near Rain" type="GPUParticles3D" parent="." unique_id=2044052492]
+[node name="Near Rain" parent="." unique_id=1941541630 instance=ExtResource("2_krplb")]
+emitting = false
+amount = 4500
+amount_ratio = 0.0
+visibility_aabb = AABB(-21.014448, -17.445583, -21.252842, 42.244797, 18.145538, 42.17658)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=782207237]
-mesh = SubResource("PlaneMesh_krplb")
-surface_material_override/0 = SubResource("StandardMaterial3D_c0uai")
+[node name="Far Rain" parent="." unique_id=1803022865 instance=ExtResource("2_krplb")]
+transform = Transform3D(24, 0, 0, 0, 24, 0, 0, 0, 24, 0, 0, -4.5704346)
+emitting = false
+amount = 2200
+amount_ratio = 0.0
+visibility_aabb = AABB(-20.948109, -15.942305, -20.729837, 42.259056, 16.642183, 41.11611)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1497604630]
+stream = ExtResource("3_c0uai")

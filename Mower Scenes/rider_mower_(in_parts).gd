@@ -12,29 +12,42 @@ The complete functionallity of the mower is in the Mower Rider scene
 
 @onready var wheels:Array[MeshInstance3D] = [$WheelBL,$WheelBR,$WheelFL,$WheelFR]
 @onready var steering:MeshInstance3D = $SteeringWheel
+
+var max_steering_angle_deg: float = 35.0
+var steering_turn_speed: float = 10.0
+var steering_return_speed: float = 6.0
+var steering_input_scale: float = 12.0
+
+var steering_rest_rotation: Vector3
+var steering_target_angle: float = 0.0
+
+func _ready() -> void:
+	steering_rest_rotation = steering.rotation
+
 func _physics_process(delta: float) -> void:
 	engine_pulsation(delta)
+	_update_steering(delta)
 	
 
 func send_speed_data(speed:Vector3,delta):
-	var movement_speed:float = maxf(speed.x,speed.z)
+	#var movement_speed:float = maxf(speed.x,speed.z)
+	var movement_speed: float = maxf(abs(speed.x), abs(speed.z))
 	var rot_amount = movement_speed * 2.0 * delta
 	rotate_wheels(rot_amount)
 
-func send_rotation_data(rotation_data:float):
-	# rotate the steering Wheel 
-	steering.rotate_y(rotation_data)
-	$Timer.start(0.08)
-	
-func straighten_wheel():
-	pass
-	#var current_angle = steering.rotation.y
-	#if abs(current_angle) < 0.03:
-		#steering.rotation.y = 0.0
-	#else:
-		#while abs(current_angle) > 0.03
-	##var unrotate_amount = steering.rotation.y
-	##steering.rotate_y(-unrotate_amount)
+#func send_rotation_data(rotation_data:float):
+	## rotate the steering Wheel 
+	#steering.rotate_y(rotation_data)
+	#$Timer.start(0.08)
+func send_rotation_data(rotation_data: float):
+	var max_angle_rad = deg_to_rad(max_steering_angle_deg)
+	steering_target_angle += rotation_data * steering_input_scale
+	steering_target_angle = clamp(steering_target_angle, -max_angle_rad, max_angle_rad)
+
+func _update_steering(delta: float) -> void:
+	steering_target_angle = move_toward(steering_target_angle, 0.0, steering_return_speed * delta)
+	var desired_y = steering_rest_rotation.y + steering_target_angle
+	steering.rotation.y = lerp_angle(steering.rotation.y, desired_y, steering_turn_speed * delta)
 
 func rotate_wheels(amount_to_rotate):
 	for wheel:MeshInstance3D in wheels:
