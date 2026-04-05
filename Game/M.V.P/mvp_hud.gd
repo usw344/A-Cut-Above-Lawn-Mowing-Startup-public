@@ -92,6 +92,8 @@ func _input(event):
 				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 			else:
 				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		if event.keycode == KEY_H:
+			visible = !visible
 
 
 # need this function to map slider value for TOD

@@ -45,6 +45,23 @@ func _ready() -> void:
 	## to manage sound effect of rain and stuff
 	preset_manager_object.set_audio_player(sound)
 
+func _input(event):
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_1:
+			preset_manager_object.apply_time_of_day_preset("Day")
+		if event.keycode == KEY_2:
+			preset_manager_object.apply_time_of_day_preset("Evening")
+		if event.keycode == KEY_3:
+			preset_manager_object.apply_time_of_day_preset("Night")
+		
+		if event.keycode == KEY_7:
+			preset_manager_object.apply_weather_preset("Clear")
+		if event.keycode == KEY_8:
+			preset_manager_object.apply_weather_preset("Foggy")
+		if event.keycode == KEY_9:
+			preset_manager_object.apply_weather_preset("Rain")
+
+
 func _____Debug_Functions_____():
 	pass
 func _on_mvp_hud_mower_change_selected(mower_id: Variant) -> void:

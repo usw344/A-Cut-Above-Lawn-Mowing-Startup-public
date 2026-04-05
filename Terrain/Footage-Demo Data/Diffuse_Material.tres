@@ -52,4 +52,5 @@ _shader_parameters = {
 &"world_space_normal_blend": true
 }
 world_background = 2
+show_checkered = true
 show_colormap = true

@@ -87,7 +87,8 @@ alignment = 1
 [node name="Label" type="Label" parent="VBoxContainer" unique_id=2048413059]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "To toggle mouse capture pres / on keyboard"
+text = "To toggle mouse capture pres / on keyboard. 
+To Hide UI Press H"
 horizontal_alignment = 1
 vertical_alignment = 1
 
