@@ -22,9 +22,9 @@ This project began as a small 2D experiment in 2022 and later evolved into a 3D 
 
 ## Screenshots
 
-![Screenshot 1](images/shot-01.jpg)
-![Screenshot 2](images/shot-02.jpg)
-![Screenshot 3](images/shot-03.jpg)
+![Screenshot 1](docs/images/shot-01.png)
+![Screenshot 2](docs/images/shot-02.png)
+![Screenshot 3](docs/images/shot-03.png)
 
 ## Roadmap
 ### Version 0.3
