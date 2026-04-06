@@ -145,7 +145,7 @@ func add_multimesh_chunk(coord:Vector2i,chunk_size,chunk_id:int,test=false) ->Mu
 	# since there can be many different multimeshes per chunk add them all
 	var multimeshe_instances:Array = a_chunk.get_for_rendering()
 	for mm_instance in multimeshe_instances:
-		add_child(mm_instance)
+		$"Mowing Area".add_child(mm_instance)
 		mm_instance.position = pos
 
 	return a_chunk
@@ -264,15 +264,29 @@ func partition_grid_into_chunks(grid: Array, chunk_size_x: int, chunk_size_y: in
 func custom_grid_map_collision_handler(collision_objects:Array) -> void:
 	for collision in collision_objects:
 		var name_of_collision_object  = collision.get_collider().name
-		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area":
+		if name_of_collision_object == "Mowing Area" or name_of_collision_object == "Start Area" or name_of_collision_object == "Ground":
 			continue
 		else:
 			mow_item(name_of_collision_object)
 
 
 func get_mower_inital_position() ->Vector3:
-	return  $"Start Area".position
+	return  $"Start Area".global_position
+
+func reset_start_area_global_position():
+	'''
+	If custom gridmap is used in another scene and the mowing area is moved
+	This funcion can be used to get the new global position for it
+	'''
+	$"Start Area".global_position = $"Mowing Area".global_position
+	#$"Start Area".global_position.x -= $"Mowing Area/MeshInstance3D".mesh.size / 2
+	var pos:Vector3 = Vector3()
+	pos.x += ($"Start Area/MeshInstance3D".mesh.size.x/2)
+	pos.y = 0
+	$"Start Area".global_position.x -= pos.x
 	
+func get_start_size():
+	print("Here is start size" + str($"Mowing Area/MeshInstance3D".mesh.size))
 ## testing ground functions
 func set_inital_positions_and_sizes() ->void:
 	"""
@@ -284,7 +298,7 @@ func set_inital_positions_and_sizes() ->void:
 	var multiply_width_length_by_2 = width_and_length_radius*2 # since in code it does not auto scale to twice the value
 	$"Mowing Area/MeshInstance3D".mesh.size = Vector2(multiply_width_length_by_2,multiply_width_length_by_2)
 	$"Mowing Area/CollisionShape3D".shape.size = Vector3(multiply_width_length_by_2,1,multiply_width_length_by_2)
-	
+
 	# to center the ground and the grass grid, make these hard coded adjustment
 	$"Mowing Area".position.z += 1.5
 	$"Mowing Area".position.x += 1.5

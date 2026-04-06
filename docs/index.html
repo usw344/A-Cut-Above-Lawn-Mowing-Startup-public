@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>A Cut Above: Mow & Grow</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #171a21;
+      --panel-2: #1d2330;
+      --text: #f2f4f8;
+      --muted: #b8c0cc;
+      --accent: #7dd87d;
+      --accent-2: #59b359;
+      --border: #2b3240;
+      --max: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0c0e12 0%, #131722 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 48px 0 28px;
+    }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(23,26,33,.92), rgba(15,17,21,.96));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block;
+      background: #0b0d11;
+    }
+
+    .hero-content {
+      padding: 28px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 800px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #0d140d;
+      font-weight: bold;
+      border: 0;
+    }
+
+    .btn.secondary {
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    section {
+      padding: 18px 0 30px;
+    }
+
+    .panel {
+      background: rgba(23,26,33,.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+
+    .gallery img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0b0d11;
+    }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .version-boxes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .version-box img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-top: 10px;
+      background: #0b0d11;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 10px 0 40px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-image {
+        height: 250px;
+      }
+
+      .hero-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <!-- Replace with your best banner or screenshot -->
+        <img class="hero-image" src="images/main.png" alt="A Cut Above: Mow & Grow screenshot" />
+
+        <div class="hero-content">
+          <h1>A Cut Above: Mow & Grow</h1>
+          <p class="lead">
+            A 3D lawn care business simulator where mowing meets management.
+            Start small, cut grass, build your equipment lineup, and grow toward running a bigger operation.
+          </p>
+
+          <div class="button-row">
+            <a class="btn" href="https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow" target="_blank" rel="noopener noreferrer">Wishlist on Steam</a>
+
+            <!-- Replace with your actual repo or release link -->
+            <a class="btn secondary" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public.git" target="_blank" rel="noopener noreferrer">View Project</a>
+
+            <!-- Optional: replace with direct download or remove -->
+            <a class="btn secondary" href="#" target="_blank" rel="noopener noreferrer">Download Demo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section>
+      <div class="panel">
+        <h2>Trailer / Demo Video</h2>
+        <div class="video-wrap">
+            <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/21TJlZmOSXo?enablejsapi=1&origin=https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public.git"
+            title="A Cut Above: Mow & Grow video"
+            style="border:0;"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+            </iframe>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="grid-2">
+        <div class="panel">
+          <h2>Controls</h2>
+          <p><strong>' / '</strong> → Toggle capture mouse to rotate the camera around.</p>
+          <p class="muted">
+            Note: Due to browser limitations, you may need to click on the game area first and then press the slash key.
+          </p>
+          <p><strong>W A S D</strong> → Move</p>
+        </div>
+
+        <div class="panel">
+          <h2>Browser Version Note</h2>
+          <p>This GitHub page is meant to showcase the project.</p>
+          <p>Because the browser version uses Godot web export:</p>
+          <ul>
+            <li>Graphics quality is reduced</li>
+            <li>Performance and FPS may be lower than the downloadable version</li>
+          </ul>
+          <p>
+            <strong>For the best experience</strong>, use the downloadable build when available.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <h2>About the Project</h2>
+        <p>
+          This project began as a small 2D experiment when I first started learning game development in 2022.
+          Over time, it evolved into a 3D project with expanded systems, improved visuals, and a broader gameplay vision.
+        </p>
+        <p>
+          Along the way, it became a major learning experience across programming, sound integration, 3D modelling,
+          and project organization. Moving from Godot 3 to Godot 4 required a near-complete refactor because of
+          breaking changes, but it also opened the door to a much stronger 3D pipeline and a much better final result.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <h2>Changes at a Glance</h2>
+        <div class="version-boxes">
+          <div class="version-box">
+            <h3>Version 0.1</h3>
+            <p class="muted">Released March 9, 2026</p>
+            <p>The first public build focused on getting the game playable and deployed.</p>
+            <img src="images/0.1.png" alt="Version 0.1 changelog image" />
+          </div>
+
+          <div class="version-box">
+            <h3>Version 0.2</h3>
+            <p class="muted">Released April 4, 2026</p>
+            <p>This update focused on atmosphere, presentation, environmental effects, and sound.</p>
+            <img src="images/0.2.png" alt="Version 0.2 changelog image" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <h2>Screenshots</h2>
+        <div class="gallery">
+          <img src="images/shot-01.png" alt="Gameplay screenshot 1" />
+          <img src="images/shot-02.png" alt="Gameplay screenshot 2" />
+          <img src="images/shot-03.png" alt="Gameplay screenshot 3" />
+          <img src="images/shot-04.png" alt="Gameplay screenshot 4" />
+          <img src="images/shot-05.png" alt="Gameplay screenshot 5" />
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel">
+        <h2>Roadmap</h2>
+
+        <h3>Version 0.1</h3>
+        <p class="muted">Released March 9, 2026</p>
+        <p>
+          The first public build focused on getting the game playable and deployed.
+          This version introduced the core mowing loop, a basic environment, and the first browser-playable build.
+        </p>
+
+        <h3>Version 0.2</h3>
+        <p class="muted">Released April 4, 2026</p>
+        <p>
+          This update focused on atmosphere and presentation. It improved the look of the mowing area,
+          added weather and environmental effects, and introduced sound to make the game feel more immersive.
+        </p>
+
+        <h3>Version 0.3</h3>
+        <p class="muted">Coming soon</p>
+        <p>
+          The next milestone shifts toward the business side of the game, introducing a store system and longer-term progression.
+        </p>
+        <ul>
+          <li>Equipment purchases and upgrades</li>
+          <li>More mower variety</li>
+          <li>Progression tied to business growth</li>
+          <li>An early economic loop</li>
+        </ul>
+
+        <h3>Version 0.4</h3>
+        <p>
+          This is where the project starts feeling more like a full business simulator rather than only a first-person mowing experience.
+        </p>
+        <ul>
+          <li>Proper main menu</li>
+          <li>New game, load game, options, and quit systems</li>
+          <li>Save and load functionality</li>
+          <li>Job generation systems</li>
+          <li>Central business or storefront area for upgrades and progression</li>
+        </ul>
+
+        <h3>Version 0.5</h3>
+        <p>
+          This version focuses on polish and usability.
+        </p>
+        <ul>
+          <li>More complete in-game HUD</li>
+          <li>Top bar UI for money, fuel, and storage</li>
+          <li>Pause menu and job status overlays</li>
+          <li>Better visual polish</li>
+          <li>Stronger sound effects and UI feedback</li>
+          <li>General quality of life improvements</li>
+        </ul>
+
+        <h3>Version 0.6</h3>
+        <p>
+          This milestone focuses on depth and balance once the core systems are in place.
+        </p>
+        <ul>
+          <li>Gameplay balancing</li>
+          <li>Business economy balancing</li>
+          <li>Terrain and job variety</li>
+          <li>Hiring and employee management systems</li>
+          <li>Multiple environments, obstacles, and mowing conditions</li>
+          <li>Refining the progression from solo mowing to running a growing business</li>
+        </ul>
+
+        <h3>Looking Ahead</h3>
+        <p>
+          Beyond these milestones, the long-term goal is to keep expanding the game into a fuller lawn care business simulator
+          with richer progression, stronger environments, more management features, and better overall polish.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="container">
+    <p>A Cut Above: Mow & Grow</p>
+  </footer>
+
+</body>
+</html>

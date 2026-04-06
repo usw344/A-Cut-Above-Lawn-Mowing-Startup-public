@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://blqpoj70apwc8"]
+[gd_scene load_steps=23 format=3 uid="uid://blqpoj70apwc8"]
 
 [ext_resource type="PackedScene" uid="uid://t0gjdme5n50k" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn" id="1_aj2jr"]
 [ext_resource type="Script" uid="uid://dqiug843fchqn" path="res://Game/Demo/Footage/footage.gd" id="1_i7lpw"]
-[ext_resource type="PackedScene" uid="uid://b5wii06emkg1c" path="res://Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn" id="2_ruowk"]
+[ext_resource type="Terrain3DMaterial" uid="uid://dxqt6dpgp05qg" path="res://Terrain/Footage-Demo Data/Diffuse_Material.tres" id="2_y15rs"]
 [ext_resource type="Shader" uid="uid://cvd0x7lon1ur6" path="res://addons/sky_3d/shaders/SkyMaterial.gdshader" id="3_i7lpw"]
+[ext_resource type="Terrain3DAssets" uid="uid://dqcct1qwdv0uf" path="res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres" id="3_rro0k"]
 [ext_resource type="Texture2D" uid="uid://c1vwcdcdvb74a" path="res://addons/sky_3d/assets/thirdparty/textures/milkyway/Milkyway.jpg" id="4_yjg58"]
 [ext_resource type="Texture2D" uid="uid://cfqk60lpl5ljv" path="res://addons/sky_3d/assets/resources/SNoise.tres" id="5_y15rs"]
 [ext_resource type="Texture2D" uid="uid://cecwdqjol0ckd" path="res://addons/sky_3d/assets/textures/noiseClouds.png" id="6_rro0k"]
@@ -13,6 +14,15 @@
 [ext_resource type="Script" uid="uid://deo0gxkmk2ahd" path="res://addons/sky_3d/src/Sky3D.gd" id="10_db84i"]
 [ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/Skydome.gd" id="11_xb4ri"]
 [ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="12_hdypy"]
+[ext_resource type="PackedScene" uid="uid://ct3v8qn57dgtr" path="res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn" id="15_y15rs"]
+[ext_resource type="PackedScene" uid="uid://2hfnetgvt1n2" path="res://Weather/particles/rain_particles.tscn" id="16_rro0k"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rro0k"]
+albedo_color = Color(0.0705882, 0.0156863, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8ls76"]
+material = SubResource("StandardMaterial3D_rro0k")
+size = Vector2(280, 280)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qev5l"]
 shader = ExtResource("3_i7lpw")
@@ -42,7 +52,7 @@ shader_parameter/moon_texture_flip_u = false
 shader_parameter/moon_texture_flip_v = false
 shader_parameter/moon_size = 0.07
 shader_parameter/atm_moon_mie_tint = Color(0.137255, 0.184314, 0.292196, 1)
-shader_parameter/atm_moon_mie_intensity = 0.7
+shader_parameter/atm_moon_mie_intensity = 0.0
 shader_parameter/atm_moon_partial_mie_phase = Vector3(0.36, 1.64, 1.6)
 shader_parameter/background_texture = ExtResource("4_yjg58")
 shader_parameter/background_color = Color(0.709804, 0.709804, 0.709804, 0.854902)
@@ -104,9 +114,28 @@ tonemap_white = 6.0
 [node name="Footage" type="Node3D"]
 script = ExtResource("1_i7lpw")
 
-[node name="Custom Gridmap" parent="." instance=ExtResource("1_aj2jr")]
+[node name="Terrain3D" type="Terrain3D" parent="."]
+data_directory = "res://Terrain/Footage-Demo Data"
+material = ExtResource("2_y15rs")
+assets = ExtResource("3_rro0k")
+show_checkered = true
+show_colormap = true
+top_level = true
+metadata/_edit_lock_ = true
 
-[node name="Small Gas Mower" parent="." instance=ExtResource("2_ruowk")]
+[node name="Custom Gridmap" parent="." instance=ExtResource("1_aj2jr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 493.986, 252.378, 500.109)
+
+[node name="Rider Mower" parent="." instance=ExtResource("15_y15rs")]
+transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 493.741, 259.659, 502.197)
+
+[node name="RainParticles" parent="Rider Mower" instance=ExtResource("16_rro0k")]
+amount = 6000
+amount_ratio = 0.4942
+
+[node name="Staging Place holder" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 493.986, 242.914, 500.109)
+mesh = SubResource("PlaneMesh_8ls76")
 
 [node name="Sky3D" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_jlsba")
@@ -141,4 +170,4 @@ dome_path = NodePath("../Skydome")
 total_hours = 10.54
 day = 2
 
-[connection signal="collided" from="Small Gas Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]

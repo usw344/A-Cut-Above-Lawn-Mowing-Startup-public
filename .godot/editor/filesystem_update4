@@ -1,9 +1,0 @@
-res://Game/Demo/Footage/Footage.tscn
-res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn
-res://Managers/Job manager/job_manager.tscn
-res://Managers/Job manager/Job Display/Job_offer_display.tscn
-res://Managers/Job manager/Job Generator/Job Generator.tscn
-res://Main Area/Information Bar/Information Bar.tscn
-res://Managers/Simulation Manager/Game Time Manager/Game Time Manager.tscn
-res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd
-res://Game/Demo/Footage/footage.gd

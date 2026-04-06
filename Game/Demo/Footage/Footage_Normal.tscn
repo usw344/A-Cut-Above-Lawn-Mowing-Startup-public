@@ -1,0 +1,184 @@
+[gd_scene format=3 uid="uid://dbevp28rnue1u"]
+
+[ext_resource type="Script" uid="uid://dqiug843fchqn" path="res://Game/Demo/Footage/footage.gd" id="1_yklhn"]
+[ext_resource type="Terrain3DMaterial" uid="uid://dxqt6dpgp05qg" path="res://Terrain/Footage-Demo Data/Diffuse_Material.tres" id="2_bnq1c"]
+[ext_resource type="Terrain3DAssets" uid="uid://dqcct1qwdv0uf" path="res://Terrain/Footage-Demo Data/Footage_Asset_Object.tres" id="3_xlw8d"]
+[ext_resource type="PackedScene" uid="uid://t0gjdme5n50k" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn" id="4_5vkgk"]
+[ext_resource type="PackedScene" uid="uid://cli4va8qh8sar" path="res://Assets/Vehicles and Mowers/Mowers/Push Mower.tscn" id="4_bnq1c"]
+[ext_resource type="PackedScene" uid="uid://ct3v8qn57dgtr" path="res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn" id="5_toxwm"]
+[ext_resource type="Shader" uid="uid://cvd0x7lon1ur6" path="res://addons/sky_3d/shaders/SkyMaterial.gdshader" id="7_sft71"]
+[ext_resource type="Texture2D" uid="uid://c1vwcdcdvb74a" path="res://addons/sky_3d/assets/thirdparty/textures/milkyway/Milkyway.jpg" id="8_6325f"]
+[ext_resource type="Texture2D" uid="uid://cfqk60lpl5ljv" path="res://addons/sky_3d/assets/resources/SNoise.tres" id="9_7hlt8"]
+[ext_resource type="Texture2D" uid="uid://cecwdqjol0ckd" path="res://addons/sky_3d/assets/textures/noiseClouds.png" id="10_aewr7"]
+[ext_resource type="Texture2D" uid="uid://2r8ylu6rg5dp" path="res://addons/sky_3d/assets/thirdparty/textures/moon/MoonMap.png" id="11_hqc2a"]
+[ext_resource type="Texture2D" uid="uid://djpfuyxkryegn" path="res://addons/sky_3d/assets/textures/noise.jpg" id="12_6h21m"]
+[ext_resource type="Texture2D" uid="uid://bm7dot7t7u1q4" path="res://addons/sky_3d/assets/thirdparty/textures/milkyway/StarField.jpg" id="13_byg8f"]
+[ext_resource type="Script" uid="uid://deo0gxkmk2ahd" path="res://addons/sky_3d/src/Sky3D.gd" id="14_c33nq"]
+[ext_resource type="Script" uid="uid://b4tkplvh7fq40" path="res://addons/sky_3d/src/Skydome.gd" id="15_wrfs1"]
+[ext_resource type="Script" uid="uid://cjmkcj8hwm7ts" path="res://addons/sky_3d/src/TimeOfDay.gd" id="16_udqx7"]
+[ext_resource type="PackedScene" uid="uid://ccpq2jg6ps3be" path="res://Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn" id="16_yklhn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rro0k"]
+albedo_color = Color(0.0705882, 0.0156863, 1, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8ls76"]
+material = SubResource("StandardMaterial3D_rro0k")
+size = Vector2(280, 280)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qev5l"]
+shader = ExtResource("7_sft71")
+shader_parameter/sky_visible = true
+shader_parameter/color_correction_params = Vector2(0, 1)
+shader_parameter/ground_color = Color(0.3, 0.3, 0.3, 1)
+shader_parameter/horizon_level = 0.0
+shader_parameter/atm_darkness = 0.5
+shader_parameter/atm_sun_intensity = 18.0
+shader_parameter/atm_day_tint = Color(0.807843, 0.909804, 1, 1)
+shader_parameter/atm_horizon_light_tint = Color(0.980392, 0.635294, 0.462745, 1)
+shader_parameter/atm_night_tint = Color(0, 0, 0, 0)
+shader_parameter/atm_level_params = Vector3(1, 0, 0)
+shader_parameter/atm_thickness = 0.7
+shader_parameter/atm_beta_ray = Vector3(5.804544e-06, 1.3562913e-05, 3.311258e-05)
+shader_parameter/atm_beta_mie = Vector3(3.038e-08, 3.038e-08, 3.038e-08)
+shader_parameter/sun_disk_color = Color(0.996094, 0.541334, 0.140076, 1)
+shader_parameter/sun_disk_intensity = 30.0
+shader_parameter/sun_disk_size = 0.02
+shader_parameter/atm_sun_mie_tint = Color(1, 1, 1, 1)
+shader_parameter/atm_sun_mie_intensity = 1.0
+shader_parameter/atm_sun_partial_mie_phase = Vector3(0.36, 1.64, 1.6)
+shader_parameter/moon_color = Color(1, 1, 1, 1)
+shader_parameter/moon_texture = ExtResource("11_hqc2a")
+shader_parameter/moon_texture_alignment = Vector3(7, 1.4, 4.8)
+shader_parameter/moon_texture_flip_u = false
+shader_parameter/moon_texture_flip_v = false
+shader_parameter/moon_size = 0.07
+shader_parameter/atm_moon_mie_tint = Color(0.137255, 0.184314, 0.292196, 1)
+shader_parameter/atm_moon_mie_intensity = 0.7
+shader_parameter/atm_moon_partial_mie_phase = Vector3(0.36, 1.64, 1.6)
+shader_parameter/background_texture = ExtResource("8_6325f")
+shader_parameter/background_color = Color(0.709804, 0.709804, 0.709804, 0.854902)
+shader_parameter/stars_field_color = Color(1, 1, 1, 1)
+shader_parameter/stars_field_texture = ExtResource("13_byg8f")
+shader_parameter/sky_alignment = Vector3(2.6555, -0.23935, 0.4505)
+shader_parameter/sky_rotation = -11.555902964105174
+shader_parameter/sky_tilt = -1.2915436464758039
+shader_parameter/stars_scintillation = 0.75
+shader_parameter/stars_scintillation_speed = 0.01
+shader_parameter/noise_tex = ExtResource("12_6h21m")
+shader_parameter/clouds_visible = true
+shader_parameter/clouds_coverage = 0.769
+shader_parameter/clouds_thickness = 1.7
+shader_parameter/clouds_absorption = 2.0
+shader_parameter/clouds_sky_tint_fade = 0.5
+shader_parameter/clouds_intensity = 10.0
+shader_parameter/clouds_size = 2.0
+shader_parameter/clouds_uv = Vector2(0.16, 0.11)
+shader_parameter/clouds_speed = 0.15
+shader_parameter/clouds_direction = Vector2(0.25, 0.25)
+shader_parameter/clouds_day_color = Color(0.823529, 0.87451, 1, 1)
+shader_parameter/clouds_horizon_light_color = Color(0.98, 0.43, 0.15, 1)
+shader_parameter/clouds_night_color = Color(0.090196, 0.094118, 0.129412, 1)
+shader_parameter/clouds_texture = ExtResource("9_7hlt8")
+shader_parameter/cumulus_clouds_visible = true
+shader_parameter/cumulus_clouds_coverage = 0.55
+shader_parameter/cumulus_clouds_thickness = 0.0243
+shader_parameter/cumulus_clouds_absorption = 2.0
+shader_parameter/cumulus_clouds_noise_freq = 2.7
+shader_parameter/cumulus_clouds_sky_tint_fade = 0.0
+shader_parameter/cumulus_clouds_intensity = 0.6
+shader_parameter/cumulus_clouds_size = 0.5
+shader_parameter/cumulus_clouds_speed = 0.05
+shader_parameter/cumulus_clouds_direction = Vector3(0.25, 0.1, 0.25)
+shader_parameter/cumulus_clouds_texture = ExtResource("10_aewr7")
+shader_parameter/cumulus_clouds_day_color = Color(0.823529, 0.87451, 1, 1)
+shader_parameter/cumulus_clouds_horizon_light_color = Color(0.98, 0.43, 0.15, 1)
+shader_parameter/cumulus_clouds_night_color = Color(0.090196, 0.094118, 0.129412, 1)
+shader_parameter/cumulus_clouds_partial_mie_phase = Vector3(0.957564, 1.042436, 0.412)
+shader_parameter/cumulus_clouds_mie_intensity = 1.0
+shader_parameter/moon_matrix = Basis(-7.4505797e-09, -0.69371915, 0.7202456, -0.9793339, -0.14566956, -0.14030461, 0.20224985, -0.70536095, -0.67938274)
+shader_parameter/deep_space_matrix = Basis(-0.53146803, 0.84707844, 0, 0.23348716, 0.14649284, -0.9612615, -0.8142638, -0.51087976, -0.27563822)
+
+[sub_resource type="Sky" id="Sky_ftv8m"]
+sky_material = SubResource("ShaderMaterial_qev5l")
+
+[sub_resource type="Environment" id="Environment_jlsba"]
+background_mode = 2
+sky = SubResource("Sky_ftv8m")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+reflected_light_source = 2
+tonemap_mode = 3
+tonemap_white = 6.0
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_ytjtu"]
+
+[node name="Footage_Normal" type="Node3D" unique_id=304178736]
+script = ExtResource("1_yklhn")
+
+[node name="LawnMover02" parent="." unique_id=1103185423 instance=ExtResource("16_yklhn")]
+transform = Transform3D(-0.00573327, 0, 0.499967, 0, 0.5, 0, -0.499967, 0, -0.00573327, 489.844, 286.735, 864.601)
+
+[node name="Rider Mower" parent="." unique_id=95229337 instance=ExtResource("5_toxwm")]
+transform = Transform3D(-0.0152082, 0, 0.499769, 0, 0.5, 0, -0.499769, 0, -0.0152082, 588.717, 334.604, 933.824)
+
+[node name="Push Mower" parent="." unique_id=1521618583 instance=ExtResource("4_bnq1c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 504.058, 432.094, 897.651)
+
+[node name="Terrain3D" type="Terrain3D" parent="." unique_id=1618954863]
+data_directory = "res://Terrain/Footage-Demo Data"
+material = ExtResource("2_bnq1c")
+assets = ExtResource("3_xlw8d")
+show_checkered = true
+show_colormap = true
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="Custom Gridmap" parent="." unique_id=1967306361 instance=ExtResource("4_5vkgk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 595.985, 283.312, 879.353)
+
+[node name="Staging Place holder" type="MeshInstance3D" parent="." unique_id=2067408431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 595.985, 273.848, 879.353)
+mesh = SubResource("PlaneMesh_8ls76")
+
+[node name="Sky3D" type="WorldEnvironment" parent="." unique_id=1384419031]
+environment = SubResource("Environment_jlsba")
+camera_attributes = SubResource("CameraAttributesPractical_ytjtu")
+script = ExtResource("14_c33nq")
+enable_editor_time = false
+enable_game_time = false
+current_time = 13.22
+metadata/_custom_type_script = "uid://deo0gxkmk2ahd"
+
+[node name="SunLight" type="DirectionalLight3D" parent="Sky3D" unique_id=1074689808]
+transform = Transform3D(0, -0.9468781, -0.32159305, 0.64780456, -0.2449917, 0.7213379, -0.7618066, -0.20832944, 0.6133919, -0.32159305, 0.7213379, 0.6133919)
+shadow_enabled = true
+
+[node name="MoonLight" type="DirectionalLight3D" parent="Sky3D" unique_id=2009516997]
+transform = Transform3D(0, -0.979334, 0.20224987, -0.6937192, -0.14566958, -0.70536095, 0.7202456, -0.14030463, -0.67938274, 0.20224987, -0.70536095, -0.67938274)
+light_color = Color(0.572549, 0.776471, 0.956863, 1)
+light_energy = 0.0
+
+[node name="Skydome" type="Node" parent="Sky3D" unique_id=671876323]
+script = ExtResource("15_wrfs1")
+sun_azimuth = -207.66732544007718
+sun_altitude = -43.83493147927159
+moon_azimuth = -16.578078055318773
+moon_altitude = -134.8586563761462
+clouds_coverage = 0.769
+clouds_speed = 0.15
+
+[node name="TimeOfDay" type="Node" parent="Sky3D" unique_id=2085842176]
+script = ExtResource("16_udqx7")
+update_in_game = false
+update_in_editor = false
+dome_path = NodePath("../Skydome")
+total_hours = 13.22
+day = 2
+
+[node name="Timer" type="Timer" parent="." unique_id=156874032]
+wait_time = 3.0
+
+[connection signal="collided" from="LawnMover02" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="collided" from="Push Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="timeout" from="Timer" to="." method="time_toggle"]

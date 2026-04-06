@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://kkdgw1hnpq32"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://kkdgw1hnpq32"]
 
-[ext_resource type="Shader" path="res://Mowing Section/Mowing_Area/Dirt.gdshader" id="1_r7ucp"]
+[ext_resource type="Shader" uid="uid://dy7df3lktwvqq" path="res://Mowing Section/Mowing_Area/Dirt.gdshader" id="1_r7ucp"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_xwc01"]
 

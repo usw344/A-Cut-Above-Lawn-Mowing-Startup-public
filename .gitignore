@@ -1,2 +1,16 @@
 # Godot 4+ specific ignores
 .godot/
+/Exports
+/Assets/Vehicles and Mowers
+/Assets/Vehicles and Mowers
+/Assets/Vehicles and Mowers/Mowers
+Terrain/Heightmaps/8k/Mountain Range With Valley 8k Scale Diffuse .exr
+Terrain/Heightmaps/8k/Mountain Range With Valley 8k Scale Diffuse .exr.import
+Terrain/Heightmaps/8k/Mountain Range With Valley 8k Scale HeightMap .exr
+Terrain/Heightmaps/8k/Mountain Range With Valley 8k Scale HeightMap .exr.import
+Terrain/Heightmaps/Mountain Range With Valley 4x4 Diffuse .exr
+Terrain/Heightmaps/Mountain Range With Valley 4x4 Diffuse .exr.import
+Terrain/Heightmaps/Mountain Range With Valley 4x4 HeightMap .exr
+Terrain/Heightmaps/Mountain Range With Valley 4x4 HeightMap .exr.import
+/Terrain
+/Assets/Foilage
