@@ -6,6 +6,7 @@ A 3D lawn care business simulator built in Godot.
 
 ## Live Project Page
 [Play Demo for Free on Itch.io](https://sologamedev873.itch.io/a-cut-above-mow-and-grow)
+[]
 [View the project page via github pages (if itch io can't be opened](https://usw344.github.io/A-Cut-Above-Lawn-Mowing-Startup-public/)
 
 ## Game Play Footage and Dev Log Videos
