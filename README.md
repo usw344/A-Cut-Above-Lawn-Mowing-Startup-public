@@ -2,17 +2,22 @@
 
 A 3D lawn care business simulator built in Godot.
 
-## Live Project Page
-[View the project page](https://usw344.github.io/A-Cut-Above-Lawn-Mowing-Startup-public/)
+![Main Image](docs/images/main.png)
 
-## Trailer
-[Watch the gameplay video on YouTube](https://www.youtube.com/watch?v=21TJlZmOSXo)
+## Live Project Page
+[Play Demo for Free on Itch.io](https://sologamedev873.itch.io/a-cut-above-mow-and-grow)
+[View the project page via github pages (if itch io can't be opened](https://usw344.github.io/A-Cut-Above-Lawn-Mowing-Startup-public/)
+
+## Game Play Footage and Dev Log Videos
+[Watch on YouTube](https://www.youtube.com/watch?v=21TJlZmOSXo)
 
 ## Steam
 [Wishlist on Steam](https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow)
 
+
+
 ## About
-This project began as a small 2D experiment in 2022 and later evolved into a 3D game focused on mowing, atmosphere, and long-term business simulation systems. It has been a major personal project for learning programming, 3D workflows, sound integration, and game architecture in Godot.
+This project began as a small 2D experiment in 2022 and later turned into a 3D game focused on mowing, atmosphere, and long-term business simulation systems. It has been a major personal project for learning programming, 3D workflows, sound integration, and game architecture in Godot.
 
 ## Current Focus
 - First-person mowing gameplay
