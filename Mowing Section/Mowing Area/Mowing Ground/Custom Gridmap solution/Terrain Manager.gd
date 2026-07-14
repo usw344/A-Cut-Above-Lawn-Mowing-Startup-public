@@ -20,7 +20,7 @@ var instance_count_adjustment:Array = [2.25, 1.5, 1.25, 0.85, 0.5]
 var foliage_database: Dictionary = {
 	"tree": {
 		"high": {
-			"mesh": extract_mesh_from_glb("res://Assets/Foilage/trees/SM_Pine_A1.glb"),
+			"mesh": extract_mesh_from_glb("res://Assets/Foilage/trees/SM_Pine_A2.glb"),
 			"density": 1.0,
 			"instance_count": 4,
 			"instance_scale": 2.0,

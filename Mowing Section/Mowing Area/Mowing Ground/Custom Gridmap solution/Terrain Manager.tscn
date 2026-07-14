@@ -1,11 +1,11 @@
 [gd_scene format=4 uid="uid://cavv438xmxx45"]
 
 [ext_resource type="ArrayMesh" uid="uid://c2o87gx23krbu" path="res://Terrain/Meshes/1x1 Ground Main Mesh.mesh" id="1_7kti1"]
-[ext_resource type="Texture2D" uid="uid://f7wjta2ip6ve" path="res://Terrain/Meshes/Gound 1x1 ColourMap.png" id="2_bkkt2"]
+[ext_resource type="Texture2D" uid="uid://b42d6pd5pea6h" path="res://Terrain/Meshes/Gound 1x1 ColourMap.png" id="2_bkkt2"]
 [ext_resource type="Script" uid="uid://wn2fgkpp4pet" path="res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/Terrain Manager.gd" id="3_bkkt2"]
 [ext_resource type="Texture2D" uid="uid://boilkvp7hawli" path="res://Assets/Foilage/Low Poly/Grass/forest_texture.png" id="4_algvb"]
 [ext_resource type="Texture2D" uid="uid://dihhwiu8brdrv" path="res://Assets/Foilage/Low Poly/Trees/forest_texture.png" id="5_ebo1y"]
-[ext_resource type="Texture2D" uid="uid://c0hq2lqqgr83c" path="res://Assets/Foilage/Shurbs/SM_Bush_A1_MI_PineLeaf_A1_BaseColor.png" id="8_ualnw"]
+[ext_resource type="Texture2D" uid="uid://byh87fsg1hibg" path="res://Assets/Foilage/Shurbs/SM_Pine_A1_MI_PineLeaf_A1_BaseColor.png" id="8_ualnw"]
 
 [sub_resource type="Shader" id="Shader_algvb"]
 code = "
