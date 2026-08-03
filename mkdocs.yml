@@ -1,0 +1,50 @@
+site_name: "A Cut Above: Mow & Grow"
+site_description: "Internal technical documentation for A Cut Above"
+
+docs_dir: project-docs
+site_dir: generated-doc-site
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Project Overview:
+      - Overview: project-overview.md
+      - Project Settings and Input: project-settings-and-input.md
+  - Architecture: architecture.md
+  - Runtime Flow: runtime-flow.md
+  - Systems:
+      - Global Model and Runtime State: systems/global-model.md
+      - Mowers and Player Controls: systems/mowers-and-controls.md
+      - Mowing Grid and Grass Removal: systems/mowing-grid.md
+      - Terrain and Foliage: systems/terrain-and-foliage.md
+      - Weather, Time of Day, and Audio: systems/weather-time-and-audio.md
+      - HUD, Menus, and Interface Systems: systems/ui-hud-and-menus.md
+      - Jobs and Economy: systems/jobs-and-economy.md
+      - Save and Load: systems/save-and-load.md
+  - Reference:
+      - Scene Reference: reference/scenes.md
+      - Important Script Reference: reference/important-scripts.md
+  - Plugins and Performance:
+      - Plugins and Third-Party Systems: plugins-and-third-party.md
+      - Performance Architecture: performance.md
+  - Decisions and Open Questions: decisions-and-open-questions.md
+  - Legacy and Experimental Systems: legacy-and-experimental.md

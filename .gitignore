@@ -14,3 +14,7 @@ Terrain/Heightmaps/Mountain Range With Valley 4x4 HeightMap .exr
 Terrain/Heightmaps/Mountain Range With Valley 4x4 HeightMap .exr.import
 /Terrain
 /Assets/Foilage
+
+# Generated MkDocs website
+generated-doc-site/
+/project-docs/.obsidian
