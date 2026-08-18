@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" uid="uid://dr3vp0o70n543" path="res://UI/Scenic Background for Menus/scenery/shaders/menu_safe_overlay.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/shadow_tint = Vector3(0.025, 0.03, 0.02)
+shader_parameter/left_darken = 0.24
+shader_parameter/edge_vignette = 0.16

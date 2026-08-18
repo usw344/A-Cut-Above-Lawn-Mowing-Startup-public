@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" uid="uid://chxyf5cy18rm2" path="res://UI/Scenic Background for Menus/scenery_wind/shaders/tree_wind.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" uid="uid://cy4su57v5yp5k" path="res://UI/Scenic Background for Menus/Assets/forest_texture.png" id="2_texture"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_shader")
+shader_parameter/wind_direction = Vector2(1, 0.25)
+shader_parameter/wind_speed = 0.55
+shader_parameter/wind_strength = 0.055
+shader_parameter/gust_strength = 0.025
+shader_parameter/albedo_texture = ExtResource("2_texture")
+shader_parameter/color_tint = Vector3(0.9, 0.93, 0.84)
+shader_parameter/color_saturation = 0.72
+shader_parameter/roughness = 0.84
+shader_parameter/wind_base_height = 0.15
+shader_parameter/wind_top_height = 7.6944
+shader_parameter/canopy_radius = 2.5
+shader_parameter/height_mask_power = 1.9
+shader_parameter/trunk_motion_ratio = 0.14
+shader_parameter/wind_response = 1.08

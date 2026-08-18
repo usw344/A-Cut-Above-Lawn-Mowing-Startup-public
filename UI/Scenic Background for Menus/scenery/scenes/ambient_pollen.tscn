@@ -1,0 +1,99 @@
+[gd_scene load_steps=11 format=3]
+
+[sub_resource type="Gradient" id="PollenGradient"]
+offsets = PackedFloat32Array(0, 0.48, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.92, 0.7, 0.72, 1, 0.82, 0.42, 0)
+
+[sub_resource type="GradientTexture2D" id="PollenTexture"]
+gradient = SubResource("PollenGradient")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="PollenMaterial"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.88, 0.58, 0.62)
+albedo_texture = SubResource("PollenTexture")
+emission_enabled = true
+emission = Color(1, 0.72, 0.28, 1)
+emission_energy_multiplier = 0.14
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="PollenMesh"]
+material = SubResource("PollenMaterial")
+size = Vector2(0.032, 0.032)
+
+[sub_resource type="ParticleProcessMaterial" id="PollenProcess"]
+emission_shape = 3
+emission_box_extents = Vector3(13, 3.8, 11)
+direction = Vector3(0.96, 0.18, 0.28)
+spread = 38.0
+gravity = Vector3(0, 0.006, 0)
+initial_velocity_min = 0.035
+initial_velocity_max = 0.11
+scale_min = 0.55
+scale_max = 1.55
+color = Color(1, 0.9, 0.62, 0.58)
+
+[sub_resource type="Gradient" id="NearPollenGradient"]
+offsets = PackedFloat32Array(0, 0.42, 1)
+colors = PackedColorArray(1, 0.97, 0.78, 0, 1, 0.91, 0.61, 0.78, 1, 0.76, 0.34, 0)
+
+[sub_resource type="GradientTexture2D" id="NearPollenTexture"]
+gradient = SubResource("NearPollenGradient")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="NearPollenMaterial"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.89, 0.58, 0.58)
+albedo_texture = SubResource("NearPollenTexture")
+emission_enabled = true
+emission = Color(1, 0.68, 0.22, 1)
+emission_energy_multiplier = 0.22
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="NearPollenMesh"]
+material = SubResource("NearPollenMaterial")
+size = Vector2(0.058, 0.058)
+
+[sub_resource type="ParticleProcessMaterial" id="NearPollenProcess"]
+emission_shape = 3
+emission_box_extents = Vector3(6.5, 2.5, 5.5)
+direction = Vector3(0.96, 0.12, 0.28)
+spread = 31.0
+gravity = Vector3(0, 0.004, 0)
+initial_velocity_min = 0.018
+initial_velocity_max = 0.055
+scale_min = 0.7
+scale_max = 1.65
+color = Color(1, 0.88, 0.54, 0.44)
+
+[node name="AmbientPollen" type="GPUParticles3D"]
+position = Vector3(1.5, 2.7, -1.5)
+amount = 155
+lifetime = 14.0
+preprocess = 14.0
+randomness = 0.82
+visibility_aabb = AABB(-14, -5, -13, 28, 11, 26)
+process_material = SubResource("PollenProcess")
+draw_pass_1 = SubResource("PollenMesh")
+
+[node name="NearPollen" type="GPUParticles3D" parent="."]
+position = Vector3(2.4, 0.2, 3.2)
+amount = 52
+lifetime = 9.0
+preprocess = 9.0
+randomness = 0.9
+visibility_aabb = AABB(-8, -3, -7, 16, 7, 14)
+process_material = SubResource("NearPollenProcess")
+draw_pass_1 = SubResource("NearPollenMesh")

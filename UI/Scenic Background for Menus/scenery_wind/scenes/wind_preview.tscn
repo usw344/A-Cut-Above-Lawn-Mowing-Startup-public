@@ -1,0 +1,82 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scenery_wind/scripts/wind_preview.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenery_wind/scenes/scenery_wind_controller.tscn" id="2_controller"]
+[ext_resource type="PackedScene" path="res://scenery_wind/scenes/tree_1_a_wind.tscn" id="3_tree_1"]
+[ext_resource type="PackedScene" path="res://scenery_wind/scenes/tree_2_a_wind.tscn" id="4_tree_2a"]
+[ext_resource type="PackedScene" path="res://scenery_wind/scenes/tree_2_d_wind.tscn" id="5_tree_2d"]
+[ext_resource type="PackedScene" path="res://scenery_wind/scenes/grass_a1_wind.tscn" id="6_grass_1"]
+[ext_resource type="PackedScene" path="res://scenery_wind/scenes/grass_a2_wind.tscn" id="7_grass_2"]
+
+[sub_resource type="Environment" id="Environment_preview"]
+background_mode = 1
+background_color = Color(0.39, 0.56, 0.7, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.72, 0.79, 0.86, 1)
+ambient_light_energy = 0.65
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="GroundMaterial"]
+albedo_color = Color(0.19, 0.25, 0.12, 1)
+roughness = 1.0
+
+[sub_resource type="PlaneMesh" id="GroundMesh"]
+material = SubResource("GroundMaterial")
+size = Vector2(30, 24)
+
+[node name="WindPreview" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="SceneryWindController" parent="." instance=ExtResource("2_controller")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_preview")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-48, -32, 0)
+light_color = Color(1, 0.91, 0.76, 1)
+light_energy = 1.25
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true
+fov = 48.0
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("GroundMesh")
+
+[node name="Tree2D_Left" parent="." instance=ExtResource("5_tree_2d")]
+position = Vector3(-4.5, 0, 0.8)
+rotation_degrees = Vector3(0, 18, 0)
+
+[node name="Tree1A_Centre" parent="." instance=ExtResource("3_tree_1")]
+position = Vector3(0.1, 0, -0.7)
+rotation_degrees = Vector3(0, -17, 0)
+
+[node name="Tree2A_Right" parent="." instance=ExtResource("4_tree_2a")]
+position = Vector3(4.1, 0, 0.4)
+rotation_degrees = Vector3(0, 31, 0)
+
+[node name="Tree1A_Back" parent="." instance=ExtResource("3_tree_1")]
+position = Vector3(2.2, 0, -4.1)
+rotation_degrees = Vector3(0, 73, 0)
+scale = Vector3(0.88, 0.88, 0.88)
+
+[node name="GrassA1_Left" parent="." instance=ExtResource("6_grass_1")]
+position = Vector3(-2.2, 0, 2.3)
+scale = Vector3(0.42, 0.42, 0.42)
+
+[node name="GrassA2_Centre" parent="." instance=ExtResource("7_grass_2")]
+position = Vector3(0.9, 0, 2.1)
+rotation_degrees = Vector3(0, 41, 0)
+scale = Vector3(0.45, 0.45, 0.45)
+
+[node name="GrassA1_Right" parent="." instance=ExtResource("6_grass_1")]
+position = Vector3(3.4, 0, 2.4)
+rotation_degrees = Vector3(0, -28, 0)
+scale = Vector3(0.38, 0.38, 0.38)
+
+[node name="GrassA2_Back" parent="." instance=ExtResource("7_grass_2")]
+position = Vector3(-1.2, 0, -2.6)
+rotation_degrees = Vector3(0, 67, 0)
+scale = Vector3(0.4, 0.4, 0.4)

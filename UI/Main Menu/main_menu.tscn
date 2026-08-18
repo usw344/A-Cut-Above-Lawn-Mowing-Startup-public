@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://br3pdn2gwa65h"]
+
+[ext_resource type="Script" uid="uid://27vmoqlg0hjj" path="res://UI/Main Menu/main_menu.gd" id="1_wk0pr"]
+[ext_resource type="Shader" uid="uid://bwkqcdamuy1a5" path="res://UI/Main Menu/radial_menu/readability_gradient.gdshader" id="2_rmr83"]
+[ext_resource type="PackedScene" path="res://UI/Main Menu/radial_menu/radial_menu.tscn" id="3_8uxxo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_readability"]
+shader = ExtResource("2_rmr83")
+shader_parameter/tint_colour = Color(0.008, 0.027, 0.02, 0.74)
+shader_parameter/fade_end = 0.58
+
+[node name="MainMenuPrototype" type="Control" unique_id=873061113]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wk0pr")
+transparent_background = true
+
+[node name="BackgroundPlaceholder" type="ColorRect" parent="." unique_id=651616063]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.031, 0.059, 0.047, 1)
+
+[node name="ReadabilityGradient" type="ColorRect" parent="." unique_id=1470861232]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_readability")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MainMenuUI" type="Control" parent="." unique_id=61899006]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RadialMenu" parent="MainMenuUI" unique_id=1239715342 instance=ExtResource("3_8uxxo")]
+unique_name_in_owner = true
+layout_mode = 1

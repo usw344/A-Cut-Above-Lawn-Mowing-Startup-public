@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery/trees/procedural_tree.tscn" id="1_tree"]
+
+[node name="OrganicTreeTall" instance=ExtResource("1_tree")]
+tree_seed = 83
+tree_height = 6.4
+canopy_radius = 2.02
+trunk_radius = 0.32
+canopy_cluster_count = 12
+branch_count = 9

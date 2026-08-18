@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://06h8dcwauxw2" path="res://UI/Scenic Background for Menus/scenery_wind/scripts/scenery_wind_controller.gd" id="1_script"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/tree_1_a_wind.tres" id="2_tree_1"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/tree_2_a_wind.tres" id="3_tree_2a"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/tree_2_d_wind.tres" id="4_tree_2d"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/grass_a1_wind.tres" id="5_grass_1"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/grass_a2_wind.tres" id="6_grass_2"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_bark_wind.tres" id="7_tree_bark"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_foliage_wind.tres" id="8_tree_foliage"]
+
+[node name="SceneryWindController" type="Node"]
+script = ExtResource("1_script")
+tree_materials = Array[ShaderMaterial]([ExtResource("2_tree_1"), ExtResource("3_tree_2a"), ExtResource("4_tree_2d"), ExtResource("7_tree_bark"), ExtResource("8_tree_foliage")])
+grass_materials = Array[ShaderMaterial]([ExtResource("5_grass_1"), ExtResource("6_grass_2")])

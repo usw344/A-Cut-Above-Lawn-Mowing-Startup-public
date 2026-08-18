@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" uid="uid://u7ohvwamk7ay" path="res://UI/Scenic Background for Menus/scenery/shaders/rolling_ground.gdshader" id="1_shader"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_shader")
+shader_parameter/low_color = Vector3(0.115, 0.072, 0.041)
+shader_parameter/high_color = Vector3(0.255, 0.17, 0.095)
+shader_parameter/dry_color = Vector3(0.36, 0.255, 0.14)
+shader_parameter/roughness = 0.985

@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" uid="uid://demqikq62ml73" path="res://UI/Scenic Background for Menus/scenery_wind/shaders/procedural_tree_wind.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/wind_direction = Vector2(1, 0.25)
+shader_parameter/wind_speed = 0.55
+shader_parameter/wind_strength = 0.055
+shader_parameter/gust_strength = 0.025
+shader_parameter/low_color = Vector3(0.145, 0.064, 0.028)
+shader_parameter/high_color = Vector3(0.39, 0.19, 0.072)
+shader_parameter/roughness = 0.94
+shader_parameter/foliage_surface = 0.0
+shader_parameter/surface_noise_strength = 0.018
+shader_parameter/subsurface_strength = 0.0
+shader_parameter/subsurface_color = Vector3(0.32, 0.2, 0.09)

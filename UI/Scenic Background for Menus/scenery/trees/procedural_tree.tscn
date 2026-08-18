@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dgps7pkd887at" path="res://UI/Scenic Background for Menus/scenery/scripts/procedural_scenery_tree.gd" id="1_script"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_bark_wind.tres" id="2_bark"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_foliage_wind.tres" id="3_foliage"]
+
+[node name="ProceduralTree" type="Node3D"]
+script = ExtResource("1_script")
+bark_material = ExtResource("2_bark")
+foliage_material = ExtResource("3_foliage")
+
+[node name="Wood" type="MeshInstance3D" parent="."]
+cast_shadow = 1
+
+[node name="Foliage" type="MeshInstance3D" parent="."]
+cast_shadow = 1

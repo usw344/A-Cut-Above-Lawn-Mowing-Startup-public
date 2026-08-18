@@ -1,0 +1,147 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://de5rmgo6663sh" path="res://UI/Main Menu/radial_menu/radial_menu.gd" id="1_script"]
+
+[node name="RadialMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="ConnectorLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TitleArea" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+mouse_filter = 2
+
+[node name="TitleKicker" type="Label" parent="TitleArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+anchor_bottom = 0.18
+grow_horizontal = 2
+mouse_filter = 2
+text = "A CUT ABOVE"
+vertical_alignment = 1
+
+[node name="TitleMain" type="Label" parent="TitleArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.16
+anchor_right = 1.0
+anchor_bottom = 0.61
+grow_horizontal = 2
+mouse_filter = 2
+text = "MOW & GROW"
+vertical_alignment = 1
+
+[node name="TitleBuild" type="Label" parent="TitleArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.64
+anchor_right = 1.0
+anchor_bottom = 0.82
+grow_horizontal = 2
+mouse_filter = 2
+text = "MAIN MENU  /  EARLY DEVELOPMENT BUILD"
+vertical_alignment = 1
+
+[node name="TitleSeparator" type="ColorRect" parent="TitleArea"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.96
+anchor_right = 0.86
+anchor_bottom = 0.96
+offset_bottom = 1.0
+mouse_filter = 2
+
+[node name="CentreHub" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+mouse_filter = 2
+
+[node name="HubKicker" type="Label" parent="CentreHub"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.22
+anchor_right = 1.0
+anchor_bottom = 0.35
+grow_horizontal = 2
+mouse_filter = 2
+text = "A CUT ABOVE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HubTitle" type="Label" parent="CentreHub"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_top = 0.35
+anchor_right = 1.0
+anchor_bottom = 0.55
+grow_horizontal = 2
+mouse_filter = 2
+text = "MOW & GROW"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HubDivider" type="ColorRect" parent="CentreHub"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.39
+anchor_top = 0.59
+anchor_right = 0.61
+anchor_bottom = 0.59
+offset_bottom = 1.0
+mouse_filter = 2
+
+[node name="HubDescription" type="Label" parent="CentreHub"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.08
+anchor_top = 0.64
+anchor_right = 0.92
+anchor_bottom = 0.82
+grow_horizontal = 2
+mouse_filter = 2
+text = "SELECT AN OPTION"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="MenuNodes" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BottomInfo" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+mouse_filter = 2
+text = "A Cut Above: Mow & Grow"
+vertical_alignment = 1
+
+[node name="ControlsHint" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+mouse_filter = 2
+text = "MOUSE / KEYBOARD: SELECT"
+horizontal_alignment = 2
+vertical_alignment = 1

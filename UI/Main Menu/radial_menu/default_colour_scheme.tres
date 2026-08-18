@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="RadialMenuColourScheme" format=3]
+
+[ext_resource type="Script" uid="uid://ci25tvfrk7nrf" path="res://UI/Main Menu/radial_menu/radial_menu_colour_scheme.gd" id="1_scheme_script"]
+
+[resource]
+resource_name = "Default Radial Menu Colour Scheme"
+script = ExtResource("1_scheme_script")

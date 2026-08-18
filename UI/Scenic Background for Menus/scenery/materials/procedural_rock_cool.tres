@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" uid="uid://dd5are1tgx2ir" path="res://UI/Scenic Background for Menus/scenery/shaders/procedural_rock.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/dark_color = Vector3(0.105, 0.11, 0.095)
+shader_parameter/light_color = Vector3(0.285, 0.30, 0.255)
+shader_parameter/mineral_color = Vector3(0.38, 0.365, 0.285)
+shader_parameter/distortion_strength = 0.22
+shader_parameter/noise_scale = 1.9
+shader_parameter/roughness = 0.985

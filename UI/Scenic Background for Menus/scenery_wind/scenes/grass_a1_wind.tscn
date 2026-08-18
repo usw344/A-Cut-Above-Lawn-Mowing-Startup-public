@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://bjq8kchk3eb5v" path="res://UI/Scenic Background for Menus/scenery_wind/scripts/vegetation_wind_instance.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://cr2jhpbbh2ivd" path="res://UI/Scenic Background for Menus/Assets/SM_Grass_A1.glb" id="2_grass"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/grass_a1_wind.tres" id="3_material"]
+
+[node name="GrassA1Wind" type="Node3D"]
+script = ExtResource("1_script")
+wind_material = ExtResource("3_material")
+wind_cull_margin = 0.45
+
+[node name="GrassSource" parent="." instance=ExtResource("2_grass")]

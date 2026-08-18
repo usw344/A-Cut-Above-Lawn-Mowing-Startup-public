@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" uid="uid://d2e0c8vk4q24m" path="res://UI/Scenic Background for Menus/scenery/shaders/procedural_mountain.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/valley_color = Vector3(0.105, 0.145, 0.15)
+shader_parameter/peak_color = Vector3(0.265, 0.305, 0.31)
+shader_parameter/sun_color = Vector3(0.38, 0.345, 0.285)
+shader_parameter/mountain_height = 21.0
+shader_parameter/plane_depth = 68.0
+shader_parameter/noise_scale = 0.024
+shader_parameter/noise_offset = Vector2(13.7, -8.2)
+shader_parameter/roughness = 1.0
