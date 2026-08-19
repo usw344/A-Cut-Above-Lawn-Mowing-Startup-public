@@ -24,6 +24,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 model="*res://Data Structures/Model.gd"
+JobManager="*uid://dogmb0pup4bhg"
 
 [debug]
 

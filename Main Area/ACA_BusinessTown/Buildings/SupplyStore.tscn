@@ -1,0 +1,108 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dkxc7mq4preas" path="res://Main Area/ACA_BusinessTown/Buildings/interactive_building.gd" id="1_kbndn"]
+[ext_resource type="PackedScene" uid="uid://nyevbmmo4r4o" path="res://Main Area/ACA_BusinessTown/Assets/Buildings/building_E.gltf" id="2_a5d4f"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood_dark.tres" id="3_ofrti"]
+[ext_resource type="PackedScene" uid="uid://da08ws8xnjjif" path="res://Main Area/ACA_BusinessTown/Assets/Props/box_A.gltf" id="4_60kj6"]
+[ext_resource type="PackedScene" uid="uid://c13owgt1u88p7" path="res://Main Area/ACA_BusinessTown/Assets/Props/box_B.gltf" id="5_kito7"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_qc8py"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.66
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tmuu7"]
+specular_mode = 2
+albedo_color = Color(0.878, 0.651, 0.235, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_jxyko"]
+size = Vector3(0.94, 0.38, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_epf2d"]
+size = Vector3(1, 0.05, 0.09)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cxj2r"]
+size = Vector3(2.2, 2.6, 2.2)
+
+[sub_resource type="TorusMesh" id="TorusMesh_hpi5e"]
+inner_radius = 1.45
+outer_radius = 1.61
+rings = 32
+ring_segments = 6
+
+[node name="SupplyStore" type="Node3D" unique_id=513158647]
+script = ExtResource("1_kbndn")
+building_id = &"supply_store"
+display_name = "Supply Store"
+description = "Stock up on fuel, blades and bags for upcoming jobs."
+accent_color = Color(0.878, 0.651, 0.235, 1)
+focus_point = Vector3(0, 1.1, 0.4)
+focus_zoom = 10.5
+
+[node name="Visual" type="Node3D" parent="." unique_id=1740798245]
+
+[node name="Model" type="Node3D" parent="Visual" unique_id=943819323 instance=ExtResource("2_a5d4f")]
+
+[node name="Sign" type="Node3D" parent="Visual" unique_id=416855148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72, 0.1, 0.88)
+
+[node name="Post" type="MeshInstance3D" parent="Visual/Sign" unique_id=1546428084]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+material_override = ExtResource("3_ofrti")
+mesh = SubResource("CylinderMesh_qc8py")
+
+[node name="Board" type="MeshInstance3D" parent="Visual/Sign" unique_id=367521710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
+material_override = SubResource("StandardMaterial3D_tmuu7")
+mesh = SubResource("BoxMesh_jxyko")
+
+[node name="BoardTrim" type="MeshInstance3D" parent="Visual/Sign" unique_id=1491689840]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = ExtResource("3_ofrti")
+mesh = SubResource("BoxMesh_epf2d")
+
+[node name="SignText" type="Label3D" parent="Visual/Sign" unique_id=212900263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0.045)
+pixel_size = 0.0028
+modulate = Color(0.16, 0.17, 0.18, 1)
+text = "SUPPLY"
+font_size = 96
+outline_size = 0
+
+[node name="CrateA" type="Node3D" parent="Visual" unique_id=282835291 instance=ExtResource("4_60kj6")]
+transform = Transform3D(0.95105654, 0, 0.309017, 0, 1, 0, -0.309017, 0, 0.95105654, -0.82, 0.1, 0.8)
+
+[node name="CrateB" type="Node3D" parent="Visual" unique_id=1516988680 instance=ExtResource("5_kito7")]
+transform = Transform3D(0.9781476, 0, -0.2079117, 0, 1, 0, 0.2079117, 0, 0.9781476, -0.82, 0.28, 0.8)
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=1121805319]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="InteractionArea" unique_id=854798032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+shape = SubResource("BoxShape3D_cxj2r")
+
+[node name="SelectionMarker" type="Node3D" parent="." unique_id=1213171896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="SelectionMarker" unique_id=1376473042]
+cast_shadow = 0
+mesh = SubResource("TorusMesh_hpi5e")
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1467276012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+pixel_size = 0.0042
+billboard = 1
+no_depth_test = true
+render_priority = 4
+outline_render_priority = 3
+outline_modulate = Color(0.11, 0.13, 0.15, 0.92)
+text = "Supply Store"
+font_size = 96
+outline_size = 22

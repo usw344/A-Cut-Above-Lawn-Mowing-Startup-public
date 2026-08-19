@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" uid="uid://bdn7jeymtu7gu" path="res://Main Area/ACA_BusinessTown/Assets/Textures/quaternius_palette_shop.png" id="1_d1mgq"]
+
+[resource]
+specular_mode = 2
+albedo_texture = ExtResource("1_d1mgq")
+roughness = 0.92
+texture_filter = 0

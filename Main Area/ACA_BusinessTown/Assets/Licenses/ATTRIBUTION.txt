@@ -1,0 +1,17 @@
+A Cut Above: Mow & Grow - Business Town
+Third-party art used in res://ACA_BusinessTown/Assets/
+
+KayKit City Builder Bits (1.0 FREE) - Kay Lousberg, www.kaylousberg.com - CC0 1.0
+    Buildings, roads, sidewalk bases, street props, parked cars.
+    See KayKit_City_Builder_Bits_License.txt
+
+KayKit Forest Nature Pack (1.0 FREE) - Kay Lousberg, www.kaylousberg.com - CC0 1.0
+    Trees, bushes, grass tufts.
+    See KayKit_Forest_Nature_Pack_License.txt
+
+Ultimate Textured Building Pack - @Quaternius, patreon.com/quaternius - CC0 1.0
+    Low-rise gable/round-roof shop buildings and their 32x32 palette textures.
+    See Quaternius_Ultimate_Textured_Buildings_License.txt
+
+All three packs are CC0 1.0 Universal (public domain dedication); attribution is
+appreciated but not required.

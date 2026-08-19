@@ -1,0 +1,273 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dkxc7mq4preas" path="res://Main Area/ACA_BusinessTown/Buildings/interactive_building.gd" id="1_gk3p2"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/dirt.tres" id="2_d78w8"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete.tres" id="3_ffnev"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood.tres" id="4_fdiph"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/Generated/SiteFence.tscn" id="5_bgy4u"]
+[ext_resource type="PackedScene" uid="uid://da08ws8xnjjif" path="res://Main Area/ACA_BusinessTown/Assets/Props/box_A.gltf" id="6_8f3ej"]
+[ext_resource type="PackedScene" uid="uid://c13owgt1u88p7" path="res://Main Area/ACA_BusinessTown/Assets/Props/box_B.gltf" id="7_ijwt8"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/earth.tres" id="8_b24xi"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/hazard.tres" id="9_0rsof"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/metal_light.tres" id="10_ku7ro"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood_dark.tres" id="11_vjmfx"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ulnw5"]
+size = Vector3(3.8, 0.1, 2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_73qnh"]
+size = Vector3(2.4, 0.14, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_fhxou"]
+size = Vector3(2.4, 0.07, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_o1mgi"]
+size = Vector3(0.08, 0.07, 1.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wi2bg"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_op1vi"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_yih62"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3redi"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l2gy8"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nmk5v"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_760wh"]
+size = Vector3(2.4, 0.07, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ot6o2"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ugiby"]
+size = Vector3(0.07, 0.62, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_07dw8"]
+size = Vector3(0.8, 0.2, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0v6va"]
+size = Vector3(0.8, 0.11, 0.07)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_jj1rm"]
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.4
+radial_segments = 6
+rings = 1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_b0i45"]
+top_radius = 0.03
+bottom_radius = 0.03
+height = 0.4
+radial_segments = 6
+rings = 1
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_adq7h"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.66
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s1etd"]
+specular_mode = 2
+albedo_color = Color(0.549, 0.588, 0.624, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_j1ug0"]
+size = Vector3(0.94, 0.38, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rxk4p"]
+size = Vector3(1, 0.05, 0.09)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p2txy"]
+size = Vector3(3.8, 1.6, 2.2)
+
+[sub_resource type="TorusMesh" id="TorusMesh_tj06t"]
+inner_radius = 1.9
+outer_radius = 2.06
+rings = 32
+ring_segments = 6
+
+[node name="FutureLot" type="Node3D" unique_id=989451477]
+script = ExtResource("1_gk3p2")
+building_id = &"future_lot"
+display_name = "Coming Soon"
+description = "This lot is being cleared for a new business. Check back as your company grows."
+action_label = "TAKE A LOOK"
+enabled = false
+accent_color = Color(0.549, 0.588, 0.624, 1)
+focus_point = Vector3(0, 0.5, 0.4)
+focus_zoom = 11.5
+
+[node name="Visual" type="Node3D" parent="." unique_id=2144590090]
+
+[node name="DirtPad" type="MeshInstance3D" parent="Visual" unique_id=1670340672]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+material_override = ExtResource("2_d78w8")
+mesh = SubResource("BoxMesh_ulnw5")
+
+[node name="Foundation" type="MeshInstance3D" parent="Visual" unique_id=234779297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.08, -0.3)
+material_override = ExtResource("3_ffnev")
+mesh = SubResource("BoxMesh_73qnh")
+
+[node name="SillPlate" type="MeshInstance3D" parent="Visual" unique_id=1037998629]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.18, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_fhxou")
+
+[node name="SillPlateW" type="MeshInstance3D" parent="Visual" unique_id=707865634]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.46, 0.18, -0.3)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_o1mgi")
+
+[node name="Stud0" type="MeshInstance3D" parent="Visual" unique_id=2055857629]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.44, 0.46, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_wi2bg")
+
+[node name="Stud1" type="MeshInstance3D" parent="Visual" unique_id=489702909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.98, 0.46, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_op1vi")
+
+[node name="Stud2" type="MeshInstance3D" parent="Visual" unique_id=2085357551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.52, 0.46, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_yih62")
+
+[node name="Stud3" type="MeshInstance3D" parent="Visual" unique_id=644726509]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.46, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_3redi")
+
+[node name="Stud4" type="MeshInstance3D" parent="Visual" unique_id=94601750]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.46, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_l2gy8")
+
+[node name="Stud5" type="MeshInstance3D" parent="Visual" unique_id=1034060647]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.86, 0.46, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_nmk5v")
+
+[node name="TopPlate" type="MeshInstance3D" parent="Visual" unique_id=593429368]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.8, -0.88)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_760wh")
+
+[node name="StudW1" type="MeshInstance3D" parent="Visual" unique_id=1125306077]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.46, 0.46, -0.3)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_ot6o2")
+
+[node name="StudW2" type="MeshInstance3D" parent="Visual" unique_id=984991721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.46, 0.46, 0.2)
+material_override = ExtResource("4_fdiph")
+mesh = SubResource("BoxMesh_ugiby")
+
+[node name="Fence0" type="Node3D" parent="Visual" unique_id=739966385 instance=ExtResource("5_bgy4u")]
+transform = Transform3D(0.95, 0, 0, 0, 0.72, 0, 0, 0, 1, -1.4, 0.1, 0.9)
+
+[node name="Fence1" type="Node3D" parent="Visual" unique_id=1996610023 instance=ExtResource("5_bgy4u")]
+transform = Transform3D(0.95, 0, 0, 0, 0.72, 0, 0, 0, 1, 0.9, 0.1, 0.9)
+
+[node name="Fence2" type="Node3D" parent="Visual" unique_id=1099476505 instance=ExtResource("5_bgy4u")]
+transform = Transform3D(-4.152582e-08, 0, 1, 0, 0.72, 0, -0.95, 0, -4.371139e-08, -1.88, 0.1, -0.1)
+
+[node name="Fence3" type="Node3D" parent="Visual" unique_id=524679147 instance=ExtResource("5_bgy4u")]
+transform = Transform3D(-4.152582e-08, 0, 1, 0, 0.72, 0, -0.95, 0, -4.371139e-08, 1.88, 0.1, -0.1)
+
+[node name="Crate" type="Node3D" parent="Visual" unique_id=282835291 instance=ExtResource("6_8f3ej")]
+transform = Transform3D(0.9135454, 0, 0.40673664, 0, 1, 0, -0.40673664, 0, 0.9135454, 1.25, 0.1, 0.45)
+
+[node name="Crate2" type="Node3D" parent="Visual" unique_id=1516988680 instance=ExtResource("7_ijwt8")]
+transform = Transform3D(0.9702957, 0, -0.2419219, 0, 1, 0, 0.2419219, 0, 0.9702957, 1.25, 0.28, 0.45)
+
+[node name="Crate3" type="Node3D" parent="Visual" unique_id=297776079 instance=ExtResource("6_8f3ej")]
+transform = Transform3D(0.8660254, 0, -0.5, 0, 1, 0, 0.5, 0, 0.8660254, 1.55, 0.1, 0.14)
+
+[node name="SandPile" type="MeshInstance3D" parent="Visual" unique_id=627778774]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 0.15, 0.45)
+material_override = ExtResource("8_b24xi")
+mesh = SubResource("BoxMesh_07dw8")
+
+[node name="Barrier" type="MeshInstance3D" parent="Visual" unique_id=708750542]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0.4, 0.9)
+material_override = ExtResource("9_0rsof")
+mesh = SubResource("BoxMesh_0v6va")
+
+[node name="BarrierPostL" type="MeshInstance3D" parent="Visual" unique_id=2099247107]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.3, 0.9)
+material_override = ExtResource("10_ku7ro")
+mesh = SubResource("CylinderMesh_jj1rm")
+
+[node name="BarrierPostR" type="MeshInstance3D" parent="Visual" unique_id=164164390]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.3, 0.9)
+material_override = ExtResource("10_ku7ro")
+mesh = SubResource("CylinderMesh_b0i45")
+
+[node name="Sign" type="Node3D" parent="Visual" unique_id=1905010968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.74, 0.1, 0.86)
+
+[node name="Post" type="MeshInstance3D" parent="Visual/Sign" unique_id=1104676999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+material_override = ExtResource("11_vjmfx")
+mesh = SubResource("CylinderMesh_adq7h")
+
+[node name="Board" type="MeshInstance3D" parent="Visual/Sign" unique_id=91702910]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
+material_override = SubResource("StandardMaterial3D_s1etd")
+mesh = SubResource("BoxMesh_j1ug0")
+
+[node name="BoardTrim" type="MeshInstance3D" parent="Visual/Sign" unique_id=2060623308]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = ExtResource("11_vjmfx")
+mesh = SubResource("BoxMesh_rxk4p")
+
+[node name="SignText" type="Label3D" parent="Visual/Sign" unique_id=2024518561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0.045)
+pixel_size = 0.0028
+modulate = Color(0.16, 0.17, 0.18, 1)
+text = "SOON"
+font_size = 96
+outline_size = 0
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=138543113]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="InteractionArea" unique_id=892133206]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+shape = SubResource("BoxShape3D_p2txy")
+
+[node name="SelectionMarker" type="Node3D" parent="." unique_id=1519017683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="SelectionMarker" unique_id=489369101]
+cast_shadow = 0
+mesh = SubResource("TorusMesh_tj06t")
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=426152569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+pixel_size = 0.0042
+billboard = 1
+no_depth_test = true
+render_priority = 4
+outline_render_priority = 3
+outline_modulate = Color(0.11, 0.13, 0.15, 0.92)
+text = "Coming Soon"
+font_size = 96
+outline_size = 22

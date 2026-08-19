@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood_dark.tres" id="1_hyt6a"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood.tres" id="2_jh4j2"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_2wus4"]
+size = Vector3(0.07, 0.52, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_t2dol"]
+size = Vector3(0.07, 0.52, 0.07)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1k0vl"]
+size = Vector3(2, 0.09, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xp6bj"]
+size = Vector3(2, 0.09, 0.05)
+
+[node name="SiteFence" type="Node3D" unique_id=739966385]
+
+[node name="PostL" type="MeshInstance3D" parent="." unique_id=1979204358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 0.26, 0)
+material_override = ExtResource("1_hyt6a")
+mesh = SubResource("BoxMesh_2wus4")
+
+[node name="PostR" type="MeshInstance3D" parent="." unique_id=1134039427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.26, 0)
+material_override = ExtResource("1_hyt6a")
+mesh = SubResource("BoxMesh_t2dol")
+
+[node name="RailTop" type="MeshInstance3D" parent="." unique_id=1799941731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44, 0)
+material_override = ExtResource("2_jh4j2")
+mesh = SubResource("BoxMesh_1k0vl")
+
+[node name="RailBottom" type="MeshInstance3D" parent="." unique_id=9124471]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+material_override = ExtResource("2_jh4j2")
+mesh = SubResource("BoxMesh_xp6bj")

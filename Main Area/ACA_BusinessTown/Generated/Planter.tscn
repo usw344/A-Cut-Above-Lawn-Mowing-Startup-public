@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete_dark.tres" id="1_bro5r"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/earth.tres" id="2_75fkx"]
+[ext_resource type="PackedScene" uid="uid://dgfprhq7au48h" path="res://Main Area/ACA_BusinessTown/Assets/Foliage/Bush_4_A_Color1.gltf" id="3_do16b"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ciukj"]
+size = Vector3(0.34, 0.14, 0.34)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tjkkv"]
+size = Vector3(0.28, 0.03, 0.28)
+
+[node name="Planter" type="Node3D" unique_id=746234092]
+
+[node name="Tub" type="MeshInstance3D" parent="." unique_id=122136105]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+material_override = ExtResource("1_bro5r")
+mesh = SubResource("BoxMesh_ciukj")
+
+[node name="Soil" type="MeshInstance3D" parent="." unique_id=1280998147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.145, 0)
+material_override = ExtResource("2_75fkx")
+mesh = SubResource("BoxMesh_tjkkv")
+
+[node name="Shrub" type="Node3D" parent="." unique_id=621193351 instance=ExtResource("3_do16b")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 0.15, 0)

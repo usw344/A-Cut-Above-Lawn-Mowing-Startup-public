@@ -1,0 +1,187 @@
+[gd_scene format=3 uid="uid://bmw4dwno1qeb7"]
+
+[ext_resource type="Script" uid="uid://cvfysgm7rhdrq" path="res://Main Area/ACA_BusinessTown/UI/business_hud.gd" id="1_odfm2"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/UI/BuildingPanel.tscn" id="2_qppc6"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_JobSystem/job_system/ui/JobBoard.tscn" id="4_4hak0"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/UI/PlaceholderScreen.tscn" id="4_wh57w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wykp7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.118, 0.145, 0.161, 0.94)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_voi68"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.9)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfrbh"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.9)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jx04a"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.078, 0.098, 0.106, 0.72)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cgn3i"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.118, 0.145, 0.161, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[node name="BusinessHUD" type="CanvasLayer" unique_id=201327167 node_paths=PackedStringArray("money_label", "day_label", "hint_label", "building_panel", "placeholder_screen", "job_board")]
+script = ExtResource("1_odfm2")
+money_label = NodePath("Root/TopBar/Margin/Row/FundsChip/Funds")
+day_label = NodePath("Root/TopBar/Margin/Row/DayChip/Day")
+hint_label = NodePath("Root/HintChip/Hint")
+building_panel = NodePath("Root/BuildingPanel")
+placeholder_screen = NodePath("Root/PlaceholderScreen")
+job_board = NodePath("Root/JobBoard")
+
+[node name="Root" type="Control" parent="." unique_id=317921767]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopBar" type="PanelContainer" parent="Root" unique_id=331298323]
+layout_mode = 0
+anchor_right = 1.0
+offset_bottom = 58.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wykp7")
+
+[node name="Margin" type="MarginContainer" parent="Root/TopBar" unique_id=1463899132]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 6
+
+[node name="Row" type="HBoxContainer" parent="Root/TopBar/Margin" unique_id=115327137]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Brand" type="VBoxContainer" parent="Root/TopBar/Margin/Row" unique_id=2047231585]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = -2
+
+[node name="Title" type="Label" parent="Root/TopBar/Margin/Row/Brand" unique_id=1117422161]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 20
+text = "A CUT ABOVE"
+
+[node name="Subtitle" type="Label" parent="Root/TopBar/Margin/Row/Brand" unique_id=268970030]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_font_sizes/font_size = 10
+text = "MOW & GROW"
+
+[node name="Gap" type="Control" parent="Root/TopBar/Margin/Row" unique_id=639276417]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="FundsChip" type="PanelContainer" parent="Root/TopBar/Margin/Row" unique_id=1620900297]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_voi68")
+
+[node name="Funds" type="Label" parent="Root/TopBar/Margin/Row/FundsChip" unique_id=68278126]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635, 0.855, 0.545, 1)
+theme_override_font_sizes/font_size = 17
+text = "$0"
+
+[node name="DayChip" type="PanelContainer" parent="Root/TopBar/Margin/Row" unique_id=589314778]
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sfrbh")
+
+[node name="Day" type="Label" parent="Root/TopBar/Margin/Row/DayChip" unique_id=78511468]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 17
+text = "Day 1"
+
+[node name="HintChip" type="PanelContainer" parent="Root" unique_id=1022109431]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = -54.0
+offset_right = 300.0
+offset_bottom = -18.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jx04a")
+
+[node name="Hint" type="Label" parent="Root/HintChip" unique_id=1259171729]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 13
+text = "Click a location to visit it"
+
+[node name="BuildingPanel" parent="Root" unique_id=2121014950 instance=ExtResource("2_qppc6")]
+layout_mode = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -348.0
+offset_top = -128.0
+offset_right = -24.0
+offset_bottom = 128.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_cgn3i")
+
+[node name="PlaceholderScreen" parent="Root" unique_id=1431140129 instance=ExtResource("4_wh57w")]
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="JobBoard" parent="Root" unique_id=1580552534 instance=ExtResource("4_4hak0")]
+layout_mode = 1
+anchors_preset = 15

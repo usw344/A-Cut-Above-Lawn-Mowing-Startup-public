@@ -60,6 +60,7 @@ func _ready() -> void:
 	_update_processing()
 
 
+
 func _process(delta: float) -> void:
 	if not camera_drift_enabled:
 		return

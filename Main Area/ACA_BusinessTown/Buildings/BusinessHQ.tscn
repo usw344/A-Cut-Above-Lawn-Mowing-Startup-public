@@ -1,0 +1,179 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dkxc7mq4preas" path="res://Main Area/ACA_BusinessTown/Buildings/interactive_building.gd" id="1_w27xm"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete.tres" id="2_benqt"]
+[ext_resource type="ArrayMesh" uid="uid://bh6fvdhulhcuh" path="res://Main Area/ACA_BusinessTown/Assets/Buildings/q_1Story_GableRoof.obj" id="3_l0g1x"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/quaternius_hq.tres" id="4_35djr"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/paint_white.tres" id="5_6qeax"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/metal_dark.tres" id="6_tolnn"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/mower_green.tres" id="7_78qib"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete_dark.tres" id="8_f1cp5"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/Generated/Mower.tscn" id="9_f578a"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/grass_dark.tres" id="10_gieif"]
+[ext_resource type="PackedScene" uid="uid://dgfprhq7au48h" path="res://Main Area/ACA_BusinessTown/Assets/Foliage/Bush_4_A_Color1.gltf" id="11_6178x"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood_dark.tres" id="12_0g1in"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lh6kd"]
+size = Vector3(3.2, 0.1, 2.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_10mko"]
+size = Vector3(1.1, 0.8, 1.4)
+
+[sub_resource type="PrismMesh" id="PrismMesh_w1kwf"]
+size = Vector3(1.5, 0.34, 1.24)
+
+[sub_resource type="BoxMesh" id="BoxMesh_kb0vo"]
+size = Vector3(0.86, 0.6, 0.05)
+
+[sub_resource type="BoxMesh" id="BoxMesh_cj2mu"]
+size = Vector3(0.92, 0.05, 0.08)
+
+[sub_resource type="BoxMesh" id="BoxMesh_3q77u"]
+size = Vector3(1.2, 0.1, 1.7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_of4kn"]
+size = Vector3(1.6, 0.09, 1.7)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6rolg"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.66
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2q2wx"]
+specular_mode = 2
+albedo_color = Color(0.31, 0.58, 0.333, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_2pqk6"]
+size = Vector3(0.94, 0.38, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xh0jh"]
+size = Vector3(1, 0.05, 0.09)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bvq3k"]
+size = Vector3(3.2, 2.3, 4.1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_b4540"]
+inner_radius = 1.7
+outer_radius = 1.86
+rings = 32
+ring_segments = 6
+
+[node name="BusinessHQ" type="Node3D" unique_id=1014768023]
+script = ExtResource("1_w27xm")
+building_id = &"business_hq"
+display_name = "Your Business"
+description = "Manage your lawn-care company and equipment."
+accent_color = Color(0.31, 0.58, 0.333, 1)
+focus_point = Vector3(0, 0.9, 1)
+
+[node name="Visual" type="Node3D" parent="." unique_id=931704962]
+
+[node name="Pad" type="MeshInstance3D" parent="Visual" unique_id=288612689]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+material_override = ExtResource("2_benqt")
+mesh = SubResource("BoxMesh_lh6kd")
+
+[node name="Model" type="MeshInstance3D" parent="Visual" unique_id=72764873]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0.62, 0.1, 0)
+mesh = ExtResource("3_l0g1x")
+surface_material_override/0 = ExtResource("4_35djr")
+
+[node name="Garage" type="MeshInstance3D" parent="Visual" unique_id=664864494]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0.5, 0.2)
+material_override = ExtResource("5_6qeax")
+mesh = SubResource("BoxMesh_10mko")
+
+[node name="GarageRoof" type="MeshInstance3D" parent="Visual" unique_id=1276144711]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.85, 1.07, 0.2)
+material_override = ExtResource("6_tolnn")
+mesh = SubResource("PrismMesh_w1kwf")
+
+[node name="GarageDoor" type="MeshInstance3D" parent="Visual" unique_id=671815245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0.4, 0.9)
+material_override = ExtResource("7_78qib")
+mesh = SubResource("BoxMesh_kb0vo")
+
+[node name="GarageDoorRail" type="MeshInstance3D" parent="Visual" unique_id=341278795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0.72, 0.9)
+material_override = ExtResource("6_tolnn")
+mesh = SubResource("BoxMesh_cj2mu")
+
+[node name="Driveway" type="MeshInstance3D" parent="Visual" unique_id=527613438]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 0.05, 2.05)
+material_override = ExtResource("8_f1cp5")
+mesh = SubResource("BoxMesh_3q77u")
+
+[node name="Mower" type="Node3D" parent="Visual" unique_id=1048557628 instance=ExtResource("9_f578a")]
+transform = Transform3D(1.5415089, 0, -0.16201912, 0, 1.55, 0, 0.16201912, 0, 1.5415089, -0.85, 0.1, 1.5)
+
+[node name="Lawn" type="MeshInstance3D" parent="Visual" unique_id=1668928752]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.045, 2.05)
+material_override = ExtResource("10_gieif")
+mesh = SubResource("BoxMesh_of4kn")
+
+[node name="Hedge0" type="Node3D" parent="Visual" unique_id=621193351 instance=ExtResource("11_6178x")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.25, 0.09, 2.62)
+
+[node name="Hedge1" type="Node3D" parent="Visual" unique_id=1799332636 instance=ExtResource("11_6178x")]
+transform = Transform3D(0.22981334, 0, 0.19283628, 0, 0.3, 0, -0.19283628, 0, 0.22981334, 0.69, 0.09, 2.62)
+
+[node name="Hedge2" type="Node3D" parent="Visual" unique_id=1796731784 instance=ExtResource("11_6178x")]
+transform = Transform3D(0.05209447, 0, 0.29544234, 0, 0.3, 0, -0.29544234, 0, 0.05209447, 1.13, 0.09, 2.62)
+
+[node name="Sign" type="Node3D" parent="Visual" unique_id=1768009559]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.42, 0.1, 2.5)
+
+[node name="Post" type="MeshInstance3D" parent="Visual/Sign" unique_id=2093572209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+material_override = ExtResource("12_0g1in")
+mesh = SubResource("CylinderMesh_6rolg")
+
+[node name="Board" type="MeshInstance3D" parent="Visual/Sign" unique_id=639542183]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
+material_override = SubResource("StandardMaterial3D_2q2wx")
+mesh = SubResource("BoxMesh_2pqk6")
+
+[node name="BoardTrim" type="MeshInstance3D" parent="Visual/Sign" unique_id=700994727]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = ExtResource("12_0g1in")
+mesh = SubResource("BoxMesh_xh0jh")
+
+[node name="SignText" type="Label3D" parent="Visual/Sign" unique_id=1949982998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0.045)
+pixel_size = 0.0028
+modulate = Color(0.98, 0.97, 0.93, 1)
+text = "HQ"
+font_size = 96
+outline_size = 0
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=9677516]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="InteractionArea" unique_id=1419748111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0.85)
+shape = SubResource("BoxShape3D_bvq3k")
+
+[node name="SelectionMarker" type="Node3D" parent="." unique_id=28776226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0.6)
+
+[node name="Mesh" type="MeshInstance3D" parent="SelectionMarker" unique_id=1374645467]
+cast_shadow = 0
+mesh = SubResource("TorusMesh_b4540")
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1493685260]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0.6)
+pixel_size = 0.0042
+billboard = 1
+no_depth_test = true
+render_priority = 4
+outline_render_priority = 3
+outline_modulate = Color(0.11, 0.13, 0.15, 0.92)
+text = "Your Business"
+font_size = 96
+outline_size = 22

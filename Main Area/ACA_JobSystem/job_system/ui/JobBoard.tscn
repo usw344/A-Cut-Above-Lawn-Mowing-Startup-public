@@ -1,0 +1,452 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://5usa5cswkn0n" path="res://Main Area/ACA_JobSystem/job_system/ui/job_board.gd" id="1_3f2jh"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_JobSystem/job_system/ui/JobCard.tscn" id="2_bgvc3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ol8om"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.118, 0.145, 0.161, 0.94)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b7smb"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oiblv"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pwa4k"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rmqy8"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5wig"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.678, 0.714, 0.729, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g2dsj"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.145, 0.176, 0.192, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wm47e"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjiw0"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.55)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gse6a"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g4tsp"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hjxap"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.145, 0.176, 0.192, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0rbxn"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hum4r"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.55)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_awt11"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dyad4"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q2lga"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.145, 0.176, 0.192, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e7m5o"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bot3o"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.208, 0.251, 0.259, 0.55)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3ty7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbpbv"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="JobBoard" type="Control" unique_id=1580552534 node_paths=PackedStringArray("title_label", "subtitle_label", "close_button", "available_tab_button", "current_tab_button", "past_tab_button", "list_container", "scroll", "empty_label", "message_label")]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 58.0
+script = ExtResource("1_3f2jh")
+card_scene = ExtResource("2_bgvc3")
+title_label = NodePath("Frame/Row/Panel/Margin/Column/Header/Titles/Title")
+subtitle_label = NodePath("Frame/Row/Panel/Margin/Column/Header/Titles/Subtitle")
+close_button = NodePath("Frame/Row/Panel/Margin/Column/Header/CloseButton")
+available_tab_button = NodePath("Frame/Row/Panel/Margin/Column/Tabs/AvailableTab")
+current_tab_button = NodePath("Frame/Row/Panel/Margin/Column/Tabs/CurrentTab")
+past_tab_button = NodePath("Frame/Row/Panel/Margin/Column/Tabs/PastTab")
+list_container = NodePath("Frame/Row/Panel/Margin/Column/Body/Scroll/List")
+scroll = NodePath("Frame/Row/Panel/Margin/Column/Body/Scroll")
+empty_label = NodePath("Frame/Row/Panel/Margin/Column/Body/EmptyBox/Empty")
+message_label = NodePath("Frame/Row/Panel/Margin/Column/Message")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1507745134]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043, 0.059, 0.067, 0.55)
+
+[node name="Frame" type="MarginContainer" parent="." unique_id=2141883577]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 26
+
+[node name="Row" type="HBoxContainer" parent="Frame" unique_id=169325238]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SpacerL" type="Control" parent="Frame/Row" unique_id=1382912933]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Frame/Row" unique_id=1837854577]
+custom_minimum_size = Vector2(760, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ol8om")
+
+[node name="Margin" type="MarginContainer" parent="Frame/Row/Panel" unique_id=1091863037]
+layout_mode = 2
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 22
+
+[node name="Column" type="VBoxContainer" parent="Frame/Row/Panel/Margin" unique_id=415797776]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Header" type="HBoxContainer" parent="Frame/Row/Panel/Margin/Column" unique_id=31071007]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeadSpacer" type="Control" parent="Frame/Row/Panel/Margin/Column/Header" unique_id=188919957]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+
+[node name="Titles" type="VBoxContainer" parent="Frame/Row/Panel/Margin/Column/Header" unique_id=876303779]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="Frame/Row/Panel/Margin/Column/Header/Titles" unique_id=1911342586]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "JOBS"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Frame/Row/Panel/Margin/Column/Header/Titles" unique_id=1247395437]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "0 offers on the board"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="Button" parent="Frame/Row/Panel/Margin/Column/Header" unique_id=1505722296]
+custom_minimum_size = Vector2(110, 34)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_b7smb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_oiblv")
+theme_override_styles/hover = SubResource("StyleBoxFlat_pwa4k")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_rmqy8")
+theme_override_styles/focus = SubResource("StyleBoxFlat_t5wig")
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 13
+text = "CLOSE"
+
+[node name="Divider" type="ColorRect" parent="Frame/Row/Panel/Margin/Column" unique_id=1502785570]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="Tabs" type="HBoxContainer" parent="Frame/Row/Panel/Margin/Column" unique_id=227400839]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="AvailableTab" type="Button" parent="Frame/Row/Panel/Margin/Column/Tabs" unique_id=787947715]
+custom_minimum_size = Vector2(126, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_g2dsj")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_wm47e")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qjiw0")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_gse6a")
+theme_override_styles/focus = SubResource("StyleBoxFlat_g4tsp")
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_focus_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 13
+toggle_mode = true
+text = "AVAILABLE  0"
+
+[node name="CurrentTab" type="Button" parent="Frame/Row/Panel/Margin/Column/Tabs" unique_id=1445825788]
+custom_minimum_size = Vector2(126, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hjxap")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_0rbxn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hum4r")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_awt11")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dyad4")
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_focus_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 13
+toggle_mode = true
+text = "CURRENT  0"
+
+[node name="PastTab" type="Button" parent="Frame/Row/Panel/Margin/Column/Tabs" unique_id=1820195255]
+custom_minimum_size = Vector2(126, 34)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_q2lga")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_e7m5o")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bot3o")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_e3ty7")
+theme_override_styles/focus = SubResource("StyleBoxFlat_xbpbv")
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_focus_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 13
+toggle_mode = true
+text = "PAST  0"
+
+[node name="Message" type="Label" parent="Frame/Row/Panel/Margin/Column" unique_id=152952245]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.855, 0.647, 0.31, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Body" type="Control" parent="Frame/Row/Panel/Margin/Column" unique_id=1568610050]
+custom_minimum_size = Vector2(0, 320)
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Scroll" type="ScrollContainer" parent="Frame/Row/Panel/Margin/Column/Body" unique_id=1531526263]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Frame/Row/Panel/Margin/Column/Body/Scroll" unique_id=1094891098]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="EmptyBox" type="CenterContainer" parent="Frame/Row/Panel/Margin/Column/Body" unique_id=1670610682]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Empty" type="Label" parent="Frame/Row/Panel/Margin/Column/Body/EmptyBox" unique_id=1308253184]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="SpacerR" type="Control" parent="Frame/Row" unique_id=181892763]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2

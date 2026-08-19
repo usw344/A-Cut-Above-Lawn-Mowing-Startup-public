@@ -1,0 +1,131 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dkxc7mq4preas" path="res://Main Area/ACA_BusinessTown/Buildings/interactive_building.gd" id="1_us2ef"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete.tres" id="2_1jtgp"]
+[ext_resource type="ArrayMesh" uid="uid://dacgmb13kkxw4" path="res://Main Area/ACA_BusinessTown/Assets/Buildings/q_1Story_RoundRoof.obj" id="3_122so"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/quaternius_dealer.tres" id="4_pyo2m"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete_dark.tres" id="5_vpno7"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/Generated/Mower.tscn" id="6_r3nif"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood_dark.tres" id="7_qexyq"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_vynrp"]
+size = Vector3(2.4, 0.1, 2.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_n5dhu"]
+size = Vector3(2.4, 0.1, 1.7)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_x3348"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.66
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tteen"]
+specular_mode = 2
+albedo_color = Color(0.788, 0.353, 0.263, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_1lina"]
+size = Vector3(0.94, 0.38, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_i600f"]
+size = Vector3(1, 0.05, 0.09)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0mjgw"]
+size = Vector3(2.4, 2.4, 4.1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_cy3hl"]
+inner_radius = 1.55
+outer_radius = 1.71
+rings = 32
+ring_segments = 6
+
+[node name="MowerDealer" type="Node3D" unique_id=1634937446]
+script = ExtResource("1_us2ef")
+building_id = &"mower_dealer"
+display_name = "Mowers & Upgrades"
+description = "Purchase new equipment and improve your mowers."
+accent_color = Color(0.788, 0.353, 0.263, 1)
+focus_point = Vector3(0, 0.9, 1)
+
+[node name="Visual" type="Node3D" parent="." unique_id=537670935]
+
+[node name="Pad" type="MeshInstance3D" parent="Visual" unique_id=1516262211]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+material_override = ExtResource("2_1jtgp")
+mesh = SubResource("BoxMesh_vynrp")
+
+[node name="Model" type="MeshInstance3D" parent="Visual" unique_id=849083625]
+transform = Transform3D(0.92, 0, 0, 0, 0.92, 0, 0, 0, 0.92, 0, 0.1, 0)
+mesh = ExtResource("3_122so")
+surface_material_override/0 = ExtResource("4_pyo2m")
+
+[node name="Forecourt" type="MeshInstance3D" parent="Visual" unique_id=866599283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 2.05)
+material_override = ExtResource("5_vpno7")
+mesh = SubResource("BoxMesh_n5dhu")
+
+[node name="Mower0" type="Node3D" parent="Visual" unique_id=1048557628 instance=ExtResource("6_r3nif")]
+transform = Transform3D(1.5039583, 0, 0.37497893, 0, 1.55, 0, -0.37497893, 0, 1.5039583, -0.68, 0.1, 1.62)
+
+[node name="Mower1" type="Node3D" parent="Visual" unique_id=777232861 instance=ExtResource("6_r3nif")]
+transform = Transform3D(1.5349154, 0, -0.21571831, 0, 1.55, 0, 0.21571831, 0, 1.5349154, -0.06, 0.1, 1.78)
+
+[node name="Mower2" type="Node3D" parent="Visual" unique_id=856660878 instance=ExtResource("6_r3nif")]
+transform = Transform3D(1.437135, 0, 0.5806402, 0, 1.55, 0, -0.5806402, 0, 1.437135, 0.56, 0.1, 1.6)
+
+[node name="Sign" type="Node3D" parent="Visual" unique_id=2090217743]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.02, 0.1, 2.52)
+
+[node name="Post" type="MeshInstance3D" parent="Visual/Sign" unique_id=1552255316]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+material_override = ExtResource("7_qexyq")
+mesh = SubResource("CylinderMesh_x3348")
+
+[node name="Board" type="MeshInstance3D" parent="Visual/Sign" unique_id=1108962229]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
+material_override = SubResource("StandardMaterial3D_tteen")
+mesh = SubResource("BoxMesh_1lina")
+
+[node name="BoardTrim" type="MeshInstance3D" parent="Visual/Sign" unique_id=291818563]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = ExtResource("7_qexyq")
+mesh = SubResource("BoxMesh_i600f")
+
+[node name="SignText" type="Label3D" parent="Visual/Sign" unique_id=866521557]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0.045)
+pixel_size = 0.0028
+modulate = Color(0.98, 0.97, 0.93, 1)
+text = "MOWERS"
+font_size = 96
+outline_size = 0
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=102590184]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="InteractionArea" unique_id=1060190658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0.85)
+shape = SubResource("BoxShape3D_0mjgw")
+
+[node name="SelectionMarker" type="Node3D" parent="." unique_id=1817883043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0.6)
+
+[node name="Mesh" type="MeshInstance3D" parent="SelectionMarker" unique_id=763511404]
+cast_shadow = 0
+mesh = SubResource("TorusMesh_cy3hl")
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=578531459]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 0.6)
+pixel_size = 0.0042
+billboard = 1
+no_depth_test = true
+render_priority = 4
+outline_render_priority = 3
+outline_modulate = Color(0.11, 0.13, 0.15, 0.92)
+text = "Mowers & Upgrades"
+font_size = 96
+outline_size = 22

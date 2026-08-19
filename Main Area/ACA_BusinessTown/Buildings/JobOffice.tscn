@@ -1,0 +1,104 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dkxc7mq4preas" path="res://Main Area/ACA_BusinessTown/Buildings/interactive_building.gd" id="1_ak7pp"]
+[ext_resource type="PackedScene" uid="uid://dov5ka010aon2" path="res://Main Area/ACA_BusinessTown/Assets/Buildings/building_A.gltf" id="2_absm1"]
+[ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/wood_dark.tres" id="3_g44x7"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/Generated/Planter.tscn" id="4_trtq5"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_668ex"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 0.66
+radial_segments = 8
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mmnn0"]
+specular_mode = 2
+albedo_color = Color(0.29, 0.529, 0.78, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_ch08q"]
+size = Vector3(0.94, 0.38, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_5l5ja"]
+size = Vector3(1, 0.05, 0.09)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gximc"]
+size = Vector3(2.2, 2, 2.2)
+
+[sub_resource type="TorusMesh" id="TorusMesh_a4cn8"]
+inner_radius = 1.45
+outer_radius = 1.61
+rings = 32
+ring_segments = 6
+
+[node name="JobOffice" type="Node3D" unique_id=1210457137]
+script = ExtResource("1_ak7pp")
+building_id = &"job_office"
+display_name = "Jobs"
+description = "Find and accept mowing contracts around town."
+accent_color = Color(0.29, 0.529, 0.78, 1)
+focus_point = Vector3(0, 0.9, 0.4)
+focus_zoom = 10.0
+
+[node name="Visual" type="Node3D" parent="." unique_id=1096421094]
+
+[node name="Model" type="Node3D" parent="Visual" unique_id=1094650647 instance=ExtResource("2_absm1")]
+
+[node name="Sign" type="Node3D" parent="Visual" unique_id=327502147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.1, 0.86)
+
+[node name="Post" type="MeshInstance3D" parent="Visual/Sign" unique_id=1773708656]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.33, 0)
+material_override = ExtResource("3_g44x7")
+mesh = SubResource("CylinderMesh_668ex")
+
+[node name="Board" type="MeshInstance3D" parent="Visual/Sign" unique_id=901288115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0)
+material_override = SubResource("StandardMaterial3D_mmnn0")
+mesh = SubResource("BoxMesh_ch08q")
+
+[node name="BoardTrim" type="MeshInstance3D" parent="Visual/Sign" unique_id=912879055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = ExtResource("3_g44x7")
+mesh = SubResource("BoxMesh_5l5ja")
+
+[node name="SignText" type="Label3D" parent="Visual/Sign" unique_id=1841228441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.78, 0.045)
+pixel_size = 0.0028
+modulate = Color(0.98, 0.97, 0.93, 1)
+text = "JOBS"
+font_size = 96
+outline_size = 0
+
+[node name="Planter" type="Node3D" parent="Visual" unique_id=746234092 instance=ExtResource("4_trtq5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.76, 0.1, 0.82)
+
+[node name="InteractionArea" type="Area3D" parent="." unique_id=1561595760]
+collision_layer = 256
+collision_mask = 0
+monitoring = false
+monitorable = false
+
+[node name="Shape" type="CollisionShape3D" parent="InteractionArea" unique_id=2080527218]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_gximc")
+
+[node name="SelectionMarker" type="Node3D" parent="." unique_id=1191220875]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.13, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="SelectionMarker" unique_id=2139586611]
+cast_shadow = 0
+mesh = SubResource("TorusMesh_a4cn8")
+
+[node name="NameLabel" type="Label3D" parent="." unique_id=1675121645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 0)
+pixel_size = 0.0042
+billboard = 1
+no_depth_test = true
+render_priority = 4
+outline_render_priority = 3
+outline_modulate = Color(0.11, 0.13, 0.15, 0.92)
+text = "Jobs"
+font_size = 96
+outline_size = 22

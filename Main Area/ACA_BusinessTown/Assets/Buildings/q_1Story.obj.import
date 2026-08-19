@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://ssgf4s0pugb4"
+path="res://.godot/imported/q_1Story.obj-0c8899a156ba768debc85691a300991a.mesh"
+
+[deps]
+
+files=["res://.godot/imported/q_1Story.obj-0c8899a156ba768debc85691a300991a.mesh"]
+
+source_file="res://Main Area/ACA_BusinessTown/Assets/Buildings/q_1Story.obj"
+dest_files=["res://.godot/imported/q_1Story.obj-0c8899a156ba768debc85691a300991a.mesh", "res://.godot/imported/q_1Story.obj-0c8899a156ba768debc85691a300991a.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

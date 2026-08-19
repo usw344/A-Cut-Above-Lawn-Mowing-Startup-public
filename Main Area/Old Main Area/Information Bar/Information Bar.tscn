@@ -1,14 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://ds517kdnq0ui8"]
+[gd_scene format=3 uid="uid://ds517kdnq0ui8"]
 
-[ext_resource type="Script" uid="uid://c2sy27hh56x38" path="res://Main Area/Information Bar/Information Bar.gd" id="1_4012t"]
+[ext_resource type="Script" uid="uid://c2sy27hh56x38" path="res://Main Area/Old Main Area/Information Bar/Information Bar.gd" id="1_4012t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e77wv"]
 bg_color = Color(0.6, 0.6, 0.6, 0.545098)
 
-[node name="Information Bar" type="CanvasLayer"]
+[node name="Information Bar" type="CanvasLayer" unique_id=1293522937]
 script = ExtResource("1_4012t")
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="." unique_id=1279375099]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,7 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Background" type="Panel" parent="Control"]
+[node name="Background" type="Panel" parent="Control" unique_id=1494514167]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.002
@@ -26,7 +26,7 @@ offset_bottom = -21.84
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_e77wv")
 
-[node name="Time_Button" type="Button" parent="Control/Background"]
+[node name="Time_Button" type="Button" parent="Control/Background" unique_id=1704034933]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.029
@@ -40,7 +40,7 @@ offset_bottom = 185.08
 grow_vertical = 2
 text = "Time"
 
-[node name="Weather_Button" type="Button" parent="Control/Background"]
+[node name="Weather_Button" type="Button" parent="Control/Background" unique_id=384843551]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.228
@@ -53,7 +53,7 @@ offset_right = 286.556
 offset_bottom = 181.048
 text = "Weather:"
 
-[node name="Money_Button" type="Button" parent="Control/Background"]
+[node name="Money_Button" type="Button" parent="Control/Background" unique_id=517819577]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.423
@@ -65,7 +65,7 @@ offset_bottom = 186.0
 text = "Money:
 "
 
-[node name="Settings_Button" type="Button" parent="Control/Background"]
+[node name="Settings_Button" type="Button" parent="Control/Background" unique_id=1075954893]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0

@@ -1,0 +1,240 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://bfg8bpjdn1i3i" path="res://Main Area/ACA_JobSystem/job_system/ui/job_card.gd" id="1_ct7wg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y4jog"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.106, 0.129, 0.145, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h7xgh"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.075, 0.094, 0.106, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iyuhm"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5fs7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqx1b"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.357, 0.5831, 0.30005, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_en24l"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2nd25"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0e0ib"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.678, 0.714, 0.729, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="JobCard" type="PanelContainer" unique_id=1748711951 node_paths=PackedStringArray("accent_bar", "title_label", "meta_label", "row_a_key", "row_a_value", "row_b_key", "row_b_value", "row_c", "row_c_key", "row_c_value", "progress_bar", "footer", "footer_label", "action_button")]
+theme_override_styles/panel = SubResource("StyleBoxFlat_y4jog")
+script = ExtResource("1_ct7wg")
+accent_bar = NodePath("Margin/Column/AccentBar")
+title_label = NodePath("Margin/Column/Title")
+meta_label = NodePath("Margin/Column/Meta")
+row_a_key = NodePath("Margin/Column/Rows/RowA/Key")
+row_a_value = NodePath("Margin/Column/Rows/RowA/Value")
+row_b_key = NodePath("Margin/Column/Rows/RowB/Key")
+row_b_value = NodePath("Margin/Column/Rows/RowB/Value")
+row_c = NodePath("Margin/Column/Rows/RowC")
+row_c_key = NodePath("Margin/Column/Rows/RowC/Key")
+row_c_value = NodePath("Margin/Column/Rows/RowC/Value")
+progress_bar = NodePath("Margin/Column/Progress")
+footer = NodePath("Margin/Column/Footer")
+footer_label = NodePath("Margin/Column/Footer/FooterLabel")
+action_button = NodePath("Margin/Column/Footer/ActionButton")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=209265496]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 16
+
+[node name="Column" type="VBoxContainer" parent="Margin" unique_id=735715356]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AccentBar" type="ColorRect" parent="Margin/Column" unique_id=1500958367]
+custom_minimum_size = Vector2(0, 3)
+layout_mode = 2
+color = Color(0.42, 0.686, 0.353, 1)
+
+[node name="Title" type="Label" parent="Margin/Column" unique_id=863823227]
+layout_mode = 2
+theme_override_constants/line_spacing = 0
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "JOB SITE"
+
+[node name="Meta" type="Label" parent="Margin/Column" unique_id=779914422]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Property   -   Lawn"
+
+[node name="Rows" type="VBoxContainer" parent="Margin/Column" unique_id=1285586567]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RowA" type="HBoxContainer" parent="Margin/Column/Rows" unique_id=789211362]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Key" type="Label" parent="Margin/Column/Rows/RowA" unique_id=1469381023]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Estimated Time"
+
+[node name="Value" type="Label" parent="Margin/Column/Rows/RowA" unique_id=583186282]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "-"
+horizontal_alignment = 2
+
+[node name="RowB" type="HBoxContainer" parent="Margin/Column/Rows" unique_id=80620230]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Key" type="Label" parent="Margin/Column/Rows/RowB" unique_id=1148816031]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Pay"
+
+[node name="Value" type="Label" parent="Margin/Column/Rows/RowB" unique_id=1033830184]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "-"
+horizontal_alignment = 2
+
+[node name="RowC" type="HBoxContainer" parent="Margin/Column/Rows" unique_id=266894902]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Key" type="Label" parent="Margin/Column/Rows/RowC" unique_id=1796820289]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Progress"
+
+[node name="Value" type="Label" parent="Margin/Column/Rows/RowC" unique_id=927880802]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "0%"
+horizontal_alignment = 2
+
+[node name="Progress" type="ProgressBar" parent="Margin/Column" unique_id=511559592]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_h7xgh")
+theme_override_styles/fill = SubResource("StyleBoxFlat_iyuhm")
+show_percentage = false
+
+[node name="Footer" type="HBoxContainer" parent="Margin/Column" unique_id=1124309927]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FooterLabel" type="Label" parent="Margin/Column/Footer" unique_id=926111128]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Offer expires in -"
+
+[node name="ActionButton" type="Button" parent="Margin/Column/Footer" unique_id=1857722222]
+custom_minimum_size = Vector2(168, 36)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_g5fs7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tqx1b")
+theme_override_styles/hover = SubResource("StyleBoxFlat_en24l")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_2nd25")
+theme_override_styles/focus = SubResource("StyleBoxFlat_0e0ib")
+theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 14
+text = "ACCEPT"
