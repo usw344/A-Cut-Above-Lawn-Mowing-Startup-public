@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ACAEnvQualityProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/quality_profile.gd" id="1_0xxpx"]
+
+[resource]
+script = ExtResource("1_0xxpx")
+id = &"Medium"
+display_name = "Medium"
+volumetric_density_scale = 0.0
+volumetric_length = 64.0
+depth_fog_density_scale = 0.92
+height_fog_density_scale = 0.8
+rain_layers = 2
+rain_amount_scale = 0.75
+update_interval = 0.06

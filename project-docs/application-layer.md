@@ -25,9 +25,34 @@ Declared in `project.godot` in this order; later ones depend on earlier ones.
 | 6 | `AppUI` | `Game/App/app_ui.gd` | Persistent UI: transitions + notifications. |
 | 7 | `GameSession` | `Game/App/game_session.gd` | Screen routing, money, the completion pathway. |
 | 8 | `SaveService` | `Game/App/save_service.gd` | Save/load. See [save and load](systems/save-and-load.md). |
+| 9 | `Economy` | `Game/Economy/economy_manager.gd` | Market conditions, temporary events, and prices. **Holds no money.** |
+| 10 | `MowerUpgrades` | `Game/Economy/mower_upgrades.gd` | Per-mower upgrade levels and the multipliers the controllers read. |
 
 `GameSession._ready()` is what hands `ACAWorldClockTimeProvider` to
 `JobManager.set_time_provider()`. Without that call the job market is dead.
+
+It also injects `JobManager.pay_multiplier_provider`, which is how the market
+reaches job pricing. The Job System has no idea an economy exists; the
+APPLICATION layer connects them, exactly as it connects the clock. Left
+uninjected, every offer is priced at its authored value.
+
+`Economy` connects itself to `WorldClock.day_changed` in its own `_ready()`.
+Nothing in it runs per frame.
+
+### Money
+
+`GameSession` holds **the one balance**. `Economy` and `MowerUpgrades` price
+things and never hold any. Every payment goes through:
+
+| Call | |
+|---|---|
+| `GameSession.money()` | read |
+| `GameSession.can_afford(amount)` | test, without side effects |
+| `GameSession.try_spend(amount)` | take it if it is there; **returns false and changes nothing otherwise** |
+| `GameSession.add_money(amount)` | pay in |
+
+`try_spend()` is the only way money leaves the player, and it cannot go
+negative.
 
 `MowerFuel` sits directly after `model` because it is the only thing that may
 decide how fast fuel burns — see

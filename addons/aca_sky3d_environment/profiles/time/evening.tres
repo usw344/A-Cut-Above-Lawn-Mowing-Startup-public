@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="ACAEnvTimeProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/time_profile.gd" id="1_cr1dg"]
+
+[resource]
+script = ExtResource("1_cr1dg")
+id = &"Evening"
+camera_exposure = 1.08
+tonemap_exposure = 1.01
+skydome_energy = 1.02
+sun_light_color = Color(1, 0.9, 0.78, 1)
+sun_horizon_light_color = Color(1, 0.87, 0.76, 1)
+moon_energy = 0.4
+sun_disk_intensity = 34.0
+ambient_energy = 1.12
+sky_contribution = 0.95
+night_ambient_min = 0.52
+atm_darkness = 0.42
+atm_sun_intensity = 17.0
+atm_day_tint = Color(0.84, 0.86, 0.96, 1)
+atm_horizon_light_tint = Color(0.99, 0.76, 0.62, 1)
+atm_mie = 0.088
+ground_color = Color(0.2, 0.2, 0.2, 1)
+aerial_density = 0.0013
+aerial_end = 780.0
+aerial_rayleigh_depth = 0.13
+aerial_mie_depth = 0.00024
+aerial_falloff = 2.7
+cloud_day_color = Color(0.98, 0.94, 0.94, 1)
+cloud_horizon_color = Color(1, 0.74, 0.58, 1)
+fog_tint = Color(0.74, 0.72, 0.76, 1)

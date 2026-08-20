@@ -47,22 +47,30 @@ func _run() -> void:
 func _test_composition() -> void:
 	var adapter := ACAWeatherVisualAdapter.new()
 
-	# Four time profiles, three weather layers, and every profile has to carry
-	# the same key set or blending between two of them is partial.
-	var keys: Array = ACAWeatherVisualAdapter.TIME_PROFILES["Day"].keys()
+	# ------------------------------------------------------------- structure
+	#
+	# The look now lives in profile RESOURCES under
+	# `res://addons/aca_sky3d_environment/profiles/`, not in tables in the
+	# adapter. These assertions are therefore about the profile SET rather than
+	# about a dictionary constant.
+	var time_ids := adapter.time_profile_ids()
+	var weather_ids := adapter.weather_ids()
+	_check("Composition: the four time profiles loaded (%s)" % str(time_ids),
+		time_ids.has("Morning") and time_ids.has("Day")
+		and time_ids.has("Evening") and time_ids.has("Night"))
+	_check("Composition: the three weather profiles loaded (%s)" % str(weather_ids),
+		weather_ids.has("Clear") and weather_ids.has("Foggy")
+		and weather_ids.has("Rain"))
+
+	# Every profile has to produce the same key set or blending between two of
+	# them is partial and values pop at the anchor boundary.
+	var keys: Array = adapter.time_values(12.0).keys()
 	var same := true
-	for name: String in ACAWeatherVisualAdapter.TIME_PROFILES:
-		var profile: Dictionary = ACAWeatherVisualAdapter.TIME_PROFILES[name]
-		if profile.size() != keys.size():
+	for id: String in time_ids:
+		var profile := adapter.time_profile(id)
+		if profile == null or profile.to_values().size() != keys.size():
 			same = false
-		for key: String in keys:
-			if not profile.has(key):
-				same = false
 	_check("Composition: every time profile carries the same keys", same)
-	_check("Composition: the three weather layers exist",
-		ACAWeatherVisualAdapter.WEATHER_LAYERS.has("Clear")
-		and ACAWeatherVisualAdapter.WEATHER_LAYERS.has("Foggy")
-		and ACAWeatherVisualAdapter.WEATHER_LAYERS.has("Rain"))
 
 	# Anchors must be sorted and cover the whole day, or an hour falls through.
 	var anchors: Array = ACAWeatherVisualAdapter.TIME_ANCHORS
@@ -83,30 +91,69 @@ func _test_composition() -> void:
 		h += 0.25
 	_check("Composition: every hour resolves to a complete look", covered)
 
-	# THE RULE. Evening rain must still be evening: the warm sun tint survives
-	# as a scaled-down version of the evening value, not replaced by grey.
+	# --------------------------------------------------- THE COMPOSITION RULE
+	#
+	# CHANGED in Milestone 14, and this is the assertion that records why.
+	#
+	# The old rule was that weather always SCALES the time profile. Scaling a
+	# Color can only make it darker, never bluer, so a storm at golden hour came
+	# out as a dim golden hour — the warm-storm complaint, R-020.
+	#
+	# Weather now BIASES colours (`lerp` towards a target) instead. The weight
+	# is what preserves composition: at 0.5 half the hour's hue survives, so
+	# evening rain is still recognisably an evening AND genuinely reads
+	# blue-grey. Both halves of that are asserted below.
 	var evening_clear := adapter.compose("Clear", 16.3)
 	var evening_rain := adapter.compose("Rain", 16.3)
 	var day_rain := adapter.compose("Rain", 12.0)
 
-	var e_sun: Color = evening_clear["dome:sun_horizon_light_color"]
-	var er_sun: Color = evening_rain["dome:sun_horizon_light_color"]
-	var dr_sun: Color = day_rain["dome:sun_horizon_light_color"]
-	_check("Composition: rain darkens the evening sun tint", er_sun.r < e_sun.r)
-	_check("Composition: rain keeps the evening HUE, not just a grey",
-		er_sun.r > er_sun.b and er_sun.r / maxf(er_sun.b, 0.001) > 1.4)
-	_check("Composition: evening rain differs from day rain",
-		not er_sun.is_equal_approx(dr_sun))
+	var ec_atm: Color = evening_clear["dome:atm_day_tint"]
+	_check("Look: clear evening is not sepia — the upper sky stays cool (%.2f/%.2f)"
+		% [ec_atm.r, ec_atm.b], ec_atm.b >= ec_atm.r)
 
-	# Weather owns the clouds and fog outright, whatever the hour.
+	for hour in [7.0, 12.0, 16.3, 22.0]:
+		var wet: Dictionary = adapter.compose("Rain", hour)
+		var atm: Color = wet["dome:atm_day_tint"]
+		_check("R-020: rain reads blue-grey at %04.1f (r %.2f < b %.2f)"
+			% [hour, atm.r, atm.b], atm.b > atm.r)
+
+	_check("Composition: evening rain still differs from day rain",
+		not (evening_rain["dome:atm_horizon_light_tint"] as Color).is_equal_approx(
+			day_rain["dome:atm_horizon_light_tint"]))
+	_check("Composition: rain keeps SOME of the hour — evening rain is warmer at the horizon than night rain",
+		(evening_rain["dome:atm_horizon_light_tint"] as Color).r
+		> (adapter.compose("Rain", 22.0)["dome:atm_horizon_light_tint"] as Color).r)
+
+	# Weather owns the clouds outright, whatever the hour.
 	_check("Composition: rain sets heavy cloud cover at any hour",
 		float(evening_rain["dome:clouds_cumulus_coverage"])
 		== float(day_rain["dome:clouds_cumulus_coverage"]))
-	_check("Composition: fog is shorter-range in Foggy than in Clear",
-		float(adapter.compose("Foggy", 12.0)["dome:fog_end"])
-		< float(adapter.compose("Clear", 12.0)["dome:fog_end"]))
 
-	# Readability rules, stated as assertions rather than trusted to taste.
+	# ------------------------------------------------------------------- FOG
+	#
+	# The fog redesign. RANGE is carried by Godot's Environment depth fog
+	# (`env:`), not by Sky3D's screen-space quad (`dome:fog_*`), because the
+	# shipped `AtmFog.gdshader` cannot exclude the sky — its sky-exclusion line
+	# is commented out — and pushing it is what produced the white wall.
+	var foggy := adapter.compose("Foggy", 12.0)
+	var clear := adapter.compose("Clear", 12.0)
+	_check("Fog: Foggy loses the distance sooner than Clear (%.0f < %.0f)"
+		% [float(foggy["env:fog_depth_end"]), float(clear["env:fog_depth_end"])],
+		float(foggy["env:fog_depth_end"]) < float(clear["env:fog_depth_end"]))
+	_check("Fog: the near field is left completely sharp (begins at %.0f units)"
+		% float(foggy["env:fog_depth_begin"]),
+		float(foggy["env:fog_depth_begin"]) > 4.0)
+	_check("Fog: NOT a white wall — the sky is mostly spared (sky_affect %.2f)"
+		% float(foggy["env:fog_sky_affect"]),
+		float(foggy["env:fog_sky_affect"]) < 0.5)
+	_check("Fog: Sky3D's own quad is kept subtle rather than pushed (%.5f)"
+		% float(foggy["dome:fog_density"]),
+		float(foggy["dome:fog_density"]) < 0.0035)
+	_check("Fog: fog colour follows the sky — night fog is bluer than day fog",
+		(adapter.compose("Foggy", 22.0)["env:fog_light_color"] as Color).r
+		< (foggy["env:fog_light_color"] as Color).r)
+
+	# ----------------------------------------------------------- readability
 	for weather in ["Clear", "Foggy", "Rain"]:
 		var night: Dictionary = adapter.compose(weather, 22.0)
 		_check("Readability: %s night is not pitch black (exposure %.2f)"
@@ -121,10 +168,36 @@ func _test_composition() -> void:
 			float(day["sky:camera_exposure"]) <= 1.2)
 		_check("Readability: %s keeps some ambient fill" % weather,
 			float(day["sky:ambient_energy"]) >= 0.9)
-	_check("Readability: fog does not become a white wall (near field is clear)",
-		float(adapter.compose("Foggy", 12.0)["dome:fog_start"]) > 0.0)
 
-	# The town's Day profile must stay the authored town.
+	# --------------------------------------------------------- precipitation
+	_check("Precipitation: only Rain is wet",
+		float(adapter.compose("Rain", 12.0)["fx:rain_intensity"]) > 0.5
+		and float(clear["fx:rain_intensity"]) == 0.0
+		and float(foggy["fx:rain_intensity"]) == 0.0)
+
+	# --------------------------------------------------------------- quality
+	#
+	# A quality level must REMOVE WORK. If two levels do the same thing, one of
+	# them is a lie and should be deleted rather than shipped.
+	var env := adapter.environment()
+	var high := env.quality_profile("High")
+	var medium := env.quality_profile("Medium")
+	var low := env.quality_profile("Low")
+	_check("Quality: three levels exist", high != null and medium != null and low != null)
+	if high != null and medium != null and low != null:
+		_check("Quality: only High integrates a volumetric fog volume",
+			high.use_volumetric_fog and not medium.use_volumetric_fog
+			and not low.use_volumetric_fog)
+		_check("Quality: Low drops Sky3D's screen-space scattering quad",
+			high.use_aerial and medium.use_aerial and not low.use_aerial)
+		_check("Quality: each level runs fewer rain emitters (%d / %d / %d)"
+			% [high.rain_layers, medium.rain_layers, low.rain_layers],
+			high.rain_layers > medium.rain_layers
+			and medium.rain_layers > low.rain_layers)
+		_check("Quality: every level still has depth fog to carry the range",
+			high.use_depth_fog and medium.use_depth_fog and low.use_depth_fog)
+
+	# ------------------------------------------------------------------ town
 	var town_day: Dictionary = ACATownLightAdapter.TIME_PROFILES["Day"]
 	_check("Town: Day is the authored sun colour",
 		(town_day["sun_color"] as Color).is_equal_approx(Color(1.0, 0.945, 0.851)))
@@ -242,6 +315,22 @@ func _test_scene_visuals() -> void:
 	_check("Rain: the ambience player was handed over for ducking",
 		rain.base_ambience_audio != null)
 
+	# The rig replaced the two authored emitters. `Far Rain` used to be the SAME
+	# particle scene scaled by 24 — a 4.8-unit-wide ribbon per drop, which is
+	# the curtain of white rods in the Milestone 13 frames.
+	_check("Rain: the precipitation rig exists and is layered",
+		rain.rig != null and rain.rig.layer_count() == 3)
+	_check("Rain: the old scaled-up emitters are gone",
+		rain.get_node_or_null(^"Far Rain") == null)
+	_check("Rain: the rig is actually emitting",
+		rain.rig != null and rain.rig.is_raining())
+	var near_layer: GPUParticles3D = rain.rig.layers()[0]
+	_check("Rain: streaks are oriented along their own velocity",
+		near_layer.transform_align
+		== GPUParticles3D.TRANSFORM_ALIGN_Z_BILLBOARD_Y_TO_VELOCITY)
+	_check("Rain: emitters are in world space so drops do not drag on a turn",
+		not near_layer.local_coords)
+
 	# The clock really moves the sky.
 	var before: float = pm.current_time_of_day
 	WorldClock.advance_to_hour(22.0)
@@ -261,8 +350,13 @@ func _test_scene_visuals() -> void:
 		- float(target["sky:camera_exposure"])) < 0.05
 	_check("Transitions: rapid preset changes settle on the LAST one, not a stale tween",
 		settled)
-	_check("Transitions: no Tween is left running on the sky",
-		pm.visual.get_children().is_empty())
+	# The integration layer owns exactly one thing: the reusable package node.
+	# Nothing else may accumulate under it across weather changes, which is the
+	# structural half of "no tween pile-ups".
+	_check("Transitions: the adapter owns only the environment package (%d children)"
+		% pm.visual.get_child_count(),
+		pm.visual.get_child_count() == 1
+		and pm.visual.get_child(0) is ACASky3DEnvironment)
 
 
 # ============================================================== persistence

@@ -183,6 +183,8 @@ func _collect() -> Dictionary:
 		"jobs": JobManager.save_state(),
 		"session": GameSession.to_save_dict(),
 		"mower": _collect_mower(),
+		"economy": Economy.to_save_dict(),
+		"upgrades": MowerUpgrades.to_save_dict(),
 	}
 
 	if GameSession.current_screen() == ACAGameSession.Screen.MOWING:
@@ -266,6 +268,7 @@ func load_game(slot_name: String) -> bool:
 	JobManager.load_state(data["jobs"])
 	GameSession.from_save_dict(data["session"])
 	_apply_mower(data.get("mower", {}))
+	_apply_economy(data)
 
 	var screen := int(data.get("session", {}).get("screen", ACAGameSession.Screen.TOWN))
 	_pending_mowing = {}
@@ -283,6 +286,21 @@ func load_game(slot_name: String) -> bool:
 
 	game_loaded.emit(slot_name)
 	return true
+
+
+## ECONOMY AND UPGRADES. Both sections are OPTIONAL: a save written before they
+## existed loads perfectly, and gets a fresh market anchored to its own day
+## rather than a market that has been running since the epoch.
+##
+## Nothing here rerolls. `Economy.from_save_dict()` restores the exact condition,
+## event and drift the player left, and `advance_to_day()` is NOT called — the
+## clock's own `day_changed` will do that when the world next moves.
+func _apply_economy(data: Dictionary) -> void:
+	if data.has("economy"):
+		Economy.from_save_dict(data["economy"])
+	else:
+		Economy.initialise_for_legacy_save(WorldClock.day_index())
+	MowerUpgrades.from_save_dict(data.get("upgrades", {}))
 
 
 func _apply_mower(data: Dictionary) -> void:

@@ -98,6 +98,27 @@ func _ready() -> void:
 
 # =========================================================== world boundaries
 
+## OPTIONAL. Returns a multiplier applied to the pay of NEWLY GENERATED offers.
+##
+## Injected by the application layer (see `ACAGameSession._ready`), exactly like
+## the time provider — the Job System has no idea an economy exists and does not
+## depend on one. Left null, every offer is priced at its authored value.
+##
+## THIS IS ONLY EVER READ AT GENERATION. An accepted contract's `base_pay` is
+## stored on the job and paid from there, so a recession after the handshake
+## cannot reprice work the player has already agreed to do.
+var pay_multiplier_provider: Callable = Callable()
+
+
+func _pay_multiplier() -> float:
+	if not pay_multiplier_provider.is_valid():
+		return 1.0
+	var value: Variant = pay_multiplier_provider.call()
+	if not (value is float or value is int):
+		return 1.0
+	return clampf(float(value), 0.1, 5.0)
+
+
 ## INTEGRATION POINT - world time. Hand in the game's authoritative clock
 ## wrapped in an ACAJobTimeProvider subclass. Until then the manager uses a
 ## stopped default clock and nothing happens.
@@ -246,9 +267,11 @@ func minutes_until_next_arrival() -> float:
 
 
 func _spawn_offer(t: float) -> void:
-	var job := ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t)
+	var job := ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t,
+		ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
 	while get_job(job.id) != null:
-		job = ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t)
+		job = ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t,
+			ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
 	job.status = ACAJobEnums.Status.AVAILABLE
 	_available.append(job)
 	job_generated.emit(job)
@@ -477,7 +500,8 @@ func debug_force_offer(respect_capacity: bool = false) -> ACAJob:
 
 ## Inject a job built from an explicit seed - used to verify determinism.
 func debug_add_offer_with_seed(job_seed: int) -> ACAJob:
-	var job := ACAJobGenerator.generate(job_seed, _time.game_minutes())
+	var job := ACAJobGenerator.generate(job_seed, _time.game_minutes(),
+		ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
 	job.status = ACAJobEnums.Status.AVAILABLE
 	_available.append(job)
 	job_generated.emit(job)

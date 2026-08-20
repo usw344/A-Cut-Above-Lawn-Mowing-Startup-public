@@ -104,6 +104,20 @@ func _apply_one(key: String, value: Variant) -> void:
 
 
 ## Mouse look multiplier for the mower controllers. 1.0 is the authored feel.
+## The quality index as a NAME, for systems that reason about quality levels
+## rather than about render scale. The environment adapter maps these on to its
+## own profile set (`ACAWeatherVisualAdapter.QUALITY_FOR_SETTING`).
+##
+## Index order matches the Settings component's QUALITY_OPTIONS and
+## QUALITY_RENDER_SCALE above.
+const QUALITY_NAMES: PackedStringArray = ["low", "medium", "high", "ultra"]
+
+
+func graphics_quality() -> String:
+	var i := clampi(int(get_value("quality", 2)), 0, QUALITY_NAMES.size() - 1)
+	return QUALITY_NAMES[i]
+
+
 func mouse_sensitivity_scale() -> float:
 	return clampf(float(_values.get("mouse_sensitivity", 1.0)), 0.1, 3.0)
 

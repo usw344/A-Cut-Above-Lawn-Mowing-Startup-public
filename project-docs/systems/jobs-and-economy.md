@@ -1,139 +1,214 @@
 # Jobs and Economy
 
-Status: **Current and integrated.** Verified 2026-08-19 by the Flow Test (54) and
-the Job System's own suite (110).
+Status: **Current** — source-verified 2026-08-20 (session 7, Milestones C & D).
+Canonical owners: `JobManager` (jobs) · `Economy` (market) · `MowerUpgrades`
+(equipment) · `GameSession` (**money**).
+Important paths:
 
-## Owner
+- `Main Area/ACA_JobSystem/job_system/`
+- `Game/Economy/economy_manager.gd`
+- `Game/Economy/mower_upgrades.gd`
+- `Main Area/ACA_BusinessTown/UI/business_services.gd`
 
-`ACAJobManager` — `Main Area/ACA_JobSystem/job_system/manager/job_manager.gd`,
-autoloaded as **`JobManager`**.
+## Purpose
 
-It is the single authoritative owner of every job. `available_jobs` /
-`current_jobs` / `past_jobs` live there and nowhere else. The UI is a read-only
-view; gameplay reports in through the public API. There is no job state in job
-nodes, in global dictionaries, or in accepted-job subclasses.
+Generate work, price it against a market that moves, pay for it, and let the
+money buy fuel and machine upgrades that change how the game plays.
 
-The older prototype (`Managers/Job manager/`, `Job_Offer`, `Job_Type`,
-`Job_Data_Container`) is **gone from `res://`** — see `Soft Delete/MANIFEST.md`.
-`Model.gd` no longer has a job-offer dictionary.
-
-## Package layout
+## Ownership
 
 ```
-Main Area/ACA_JobSystem/
-  job_system/
-    data/        job.gd (ACAJob : Resource), job_enums.gd, game_time.gd
-    config/      job_balance.gd (ALL tunables), job_catalog.gd (site names)
-    generation/  job_generator.gd  — deterministic from (seed, generator_version)
-    market/      job_market.gd     — season+economy+climate -> strength 0..5
-    time/        job_time_provider.gd  ← INTEGRATION POINT
-    debug/       debug_time_provider.gd (demo/tests only, NOT the game clock)
-    manager/     job_manager.gd
-    ui/          JobBoard.tscn, JobCard.tscn, job_ui_style.gd
-  demo/   tests/   tools/          — tooling, all working
+WorldClock.day_changed
+        |
+   Economy.advance_to_day()      <- the ONLY thing that moves the market
+        |
+   condition + event + drift  ->  job index / fuel price / equipment index
+        |
+        +--> JobManager      priced at GENERATION only
+        +--> Supply Store    fuel price per unit
+        +--> MowerUpgrades   equipment price index
+                 |
+        GameSession.try_spend()   <- THE ONE BALANCE
 ```
 
-## ACAJob (Resource)
+| Concern | Owner | Not the owner |
+|---|---|---|
+| Money | `GameSession` | `Economy`, `MowerUpgrades` — they price, never hold |
+| Market condition, events, prices | `Economy` | anything with a `_process` |
+| Job objects, offers, expiry, history | `JobManager` | `GameSession` |
+| Upgrade levels and their effects | `MowerUpgrades` | the mower scenes |
+| Shop presentation | `ACABusinessServices` | any of the above |
 
-Pure data — no timers, no `_process`, no scene tree, no UI.
+## The market
 
-`id`, `seed`, `generator_version`, `job_site`, `property_type`, `lawn_size`,
-`grid_size: Vector2i`, `base_pay`, `offer_duration_minutes`,
-`created_game_time`, `expiry_game_time`, `accepted_game_time`,
-`completed_game_time`, `status`, `progress`.
+Four conditions and one temporary event at a time.
 
-**Reproduction key:** `ACAJobGenerator.generate_core(seed, generator_version)`
-rebuilds site, property type, lawn size, grid size, pay and offer duration from
-`(seed, version)` alone. Only the absolute timestamps depend on when the offer
-entered the market. This is the foundation the save system builds on.
+| Condition | Job | Fuel | Equipment | Lasts |
+|---|---|---|---|---|
+| Stable | 1.00 | 1.00 | 1.00 | 8–20 days |
+| Growth | 1.12 | 1.05 | 1.08 | 6–16 days |
+| Inflation | 1.18 | 1.22 | 1.20 | 6–14 days |
+| Recession | 0.84 | 0.92 | 0.90 | 6–16 days |
 
-**Draw order in the generator is part of the contract.** Inserting a draw, or
-reordering `ACAJobCatalog.GENERATED_PROPERTY_TYPES`, changes what existing seeds
-produce — bump `GENERATOR_VERSION` instead.
+Six events (Fuel Shortage / Surplus, High Demand, Slow Season, Construction
+Boom, Supply Delay), 2–8 days each, 11% chance per dry day, with a 3-day
+cooldown so back-to-back events do not read as one permanent modifier.
 
-## Lifecycle
-
-`GENERATED → AVAILABLE → ACCEPTED → IN_PROGRESS → COMPLETED`, with
-`EXPIRED` for lapsed offers and for abandoned contracts.
-
-- Offer expiry applies to `AVAILABLE` only. Once accepted, a contract never
-  expires; a completion deadline is a separate, future system.
-- Expired offers are **not** business history — they never reach `past_jobs`.
-- `MAX_CURRENT_JOBS = 1`. `current_jobs` stays a collection so raising that
-  number is the only change required later.
-
-## Public API
+Fuel adds a **mean-reverting daily drift** (AR(1), ±3.5% step, retention 0.72,
+clamped to ±9%), so the price wanders rather than teleporting. The final fuel
+multiplier is clamped to 0.70 – 1.45 whatever conditions and events conspire to
+produce.
 
 ```
-set_time_provider(provider)      time_provider()      now()
-available_jobs() / current_jobs() / past_jobs()   -> Array[ACAJob] (copies)
-get_job(job_id) -> ACAJob        has_current_capacity()   max_current_jobs()
-market_strength()  max_available_jobs()  market_summary()  minutes_until_next_arrival()
-evaluate_now()
-seed_initial_offers(count = 2)
-accept_job(job_id) -> bool
-begin_new_job(job_id) -> bool          # emits begin_job_requested, changes NO scene
-update_job_progress(job_id, 0..1) -> bool
-complete_job(job_id) -> bool
-discard_current_job(job_id) -> bool    # abandon: not completion, not history
-estimated_time_minutes(job) / estimated_time_text(job)
-debug_force_offer() / debug_add_offer_with_seed(seed) / debug_clear_all()
+fuel price  = BASE_FUEL_PRICE (1.10) x condition x event x (1 + drift)
+job index   = condition x event
+equipment   = condition x event          (no drift — shop prices are steady)
 ```
 
-**SIGNALS:** `available_jobs_changed`, `current_jobs_changed`, `past_jobs_changed`,
-`job_generated(job)`, `job_expired(job)`, `job_accepted(job)`, `job_completed(job)`,
-`job_accept_failed(job_id, reason)`, `market_strength_changed(strength)`,
-`begin_job_requested(job)`
+### Days, not frames
 
-## Integration points — all three are now filled in
+Nothing in `Economy` runs in `_process`. It moves on `WorldClock.day_changed`
+and at no other time, so it cannot drift with frame rate or be affected by a
+pause. `advance_to_day()` walks each intervening day, so a regime that should
+have ended does — capped at `MAX_CATCHUP_DAYS` (400).
 
-| Point | Filled by |
+### Determinism
+
+Every day's rolls come from a seed derived from `(economy_seed, day_index)`,
+**not** from a running RNG stream. A stream would have to have its internal state
+persisted exactly, and any divergence would silently reroll the economy on load.
+`randomize()` is never called. Replaying day 41 always produces day 41.
+
+## Job pricing, and the lock
+
+```
+generate_core(seed)          pure. The same seed always describes the same
+       |                     PROPERTY: type, site, size, grid, base value
+       v
+generate(..., multiplier)    base_pay = round5(core value x market)
+       |                     market_base_pay and market_multiplier are kept
+       v                     for diagnostics only
+ACAJob.base_pay              LOCKED. Stored on the job, paid on completion
+```
+
+!!! danger "Accepted contracts are immutable"
+    The market is read **only at generation**. `GameSession.complete_current_job()`
+    pays `job.base_pay` from the job object. A recession after the handshake
+    cannot reprice work the player already agreed to do. `Economy Test` drives
+    the market 120 days forward between accepting and completing and asserts the
+    agreed figure is what is paid.
+
+`ACAJobManager.pay_multiplier_provider` is injected by the application layer
+(`ACAGameSession._ready`), exactly as the time provider is. **The Job System has
+no idea an economy exists.** Left null, every offer is priced at its authored
+value — which is why the 110 job-system tests were unaffected.
+
+The job system's own seeded variation (`PAY_VARIATION_MIN/MAX`, 0.85–1.15) is
+unchanged: that is the authored balance by lawn size, and the economy multiplies
+on top of it rather than replacing it.
+
+## Fuel
+
+`MowerFuel` capacity is **100 units**; the UI says "units" rather than
+pretending to be litres. A full tank in a neutral market is about $110.
+
+The Supply Store: shows the level, the price per unit and the cost to fill;
+offers a full refuel, and a **partial** one for whatever the player can afford —
+being short of a full tank is not the same as being unable to buy fuel at all.
+
+Money leaves FIRST and fuel goes in second, so a failed payment can never leave
+the player with free fuel.
+
+The F7 development refuel and F8 Auto Refuel are unchanged and still free. They
+are development tools; paid refuelling is the production system.
+
+## Upgrades
+
+Stable ids `rider` / `powered` / `push` — the keys `MVP.mowers_scene_list` and
+`model.current_mower` already used. **Not scene paths**, so moving a mower scene
+cannot invalidate a save.
+
+| Category | Stat | rider | powered | push | Levels |
+|---|---|---|---|---|---|
+| Engine & Drive | speed | ✔ | ✔ | — | 4 |
+| Fuel System | burn rate (lower is better) | ✔ | ✔ | — | 4 |
+| Steering | yaw response | ✔ | ✔ | — | 4 |
+| Lightweight Frame | speed | — | — | ✔ | 4 |
+| Bearing Kit | yaw response | — | — | ✔ | 4 |
+
+Controllers ask one question per stat:
+
+```gdscript
+model.get_speed() * 3.0 * MowerUpgrades.speed_multiplier(MOWER_ID)
+MowerFuel.consume(delta * MowerUpgrades.fuel_multiplier(MOWER_ID), _throttle)
+mouse_yaw_smoothing * MowerUpgrades.handling_multiplier(MOWER_ID)
+```
+
+The authored base is never overwritten, so removing an upgrade would restore the
+stock machine exactly.
+
+Costs rise `base_cost * cost_growth^(level-1)`, deterministically, and the market
+applies `equipment_index` on top. Rounded to $5.
+
+!!! note "Two deliberate absences"
+    **Cut width is not an upgrade.** The grid cuts whatever the mower's
+    `CharacterBody3D` physically touched (`custom_grid_map_collision_handler`
+    reads `get_slide_collision()`), so widening the cut means widening the
+    collision shape — a physics change wearing an upgrade's clothes.
+
+    **The push mower has two categories, not three**, because it burns no fuel.
+    That is the machine being simpler, not the system being incomplete.
+
+## Town integration
+
+| Building id | Opens |
 |---|---|
-| World time (`set_time_provider`) | `ACAWorldClockTimeProvider` wrapping `WorldClock`, set in `GameSession._ready()`. **Before this existed the manager ran on a stopped clock and no offer could ever be generated.** |
-| Gameplay handoff (`begin_job_requested`) | `GameSession._on_begin_job_requested()` does the scene transition. The Job System still never changes scenes. |
-| Progress reporting (`update_job_progress`) | `MVP._tick_job_runtime()` pushes `Custom_Gridmap.mowed_fraction()` at 2 Hz. |
+| `job_office` | the Job Board (handled by the town itself) |
+| `supply_store` | Supply Store — paid refuelling |
+| `business_hq` | Business Office — the economy dashboard |
+| `mower_dealer` | Mower Workshop — upgrades, per machine |
+| `future_lot` | still the "Coming Soon" placeholder |
 
-`estimated_time_provider` is still **unset** — estimates come from
-`ACAJobBalance.PLACEHOLDER_CELLS_PER_REAL_MINUTE`. Setting it is the clean way to
-derive estimates from lawn size + mower capability later; do not edit gameplay
-code for it.
+`ACABusinessTown.host_handled_buildings` is an **exported list**, so the town
+package stays generic — it does not need to know that this game has a fuel shop.
 
-## Market model
+## Persistence
 
-`ACAJobMarket.market_strength(season, economy, climate)` → 0..5, which **is** the
-maximum number of simultaneous offers (a capacity, not a quota).
-Spring 4 / Summer 3 / Autumn 2 / Winter 0; economy −2..+1; climate −1..+1;
-**Drought is a hard zero** that overrides everything.
+| Section | Written by | Contains |
+|---|---|---|
+| `economy` | `Economy.to_save_dict()` | seed, condition, days left, event + days left, cooldown, fuel drift, last processed day |
+| `upgrades` | `MowerUpgrades.to_save_dict()` | `{mower_id: {category: level}}` |
 
-Arrivals come one at a time on a game-minute interval banded by strength
-(strength 4 → 60–120 game minutes). Falling demand never deletes existing offers.
+Derived values (indices, prices) are **not** saved — they are recomputed from the
+state above, so they can never disagree with it.
 
-Season comes from the time provider (calendar-driven). Economy and climate are
-exported on the manager and default to `NORMAL`; no system drives them yet.
+Both sections are **OPTIONAL** and `SAVE_FORMAT_VERSION` did not change. A save
+written before this milestone loads and gets a fresh market anchored to its own
+day. Loading never calls `advance_to_day()`; the clock's own `day_changed` does
+that when the world next moves.
 
-## Economy
+## Validation
 
-Deliberately minimal and honest:
+`Economy Test` — 88 assertions plus a **90-day simulation with a fixed seed**
+that prints what the market actually did. Unit tests prove the economy is
+consistent; they cannot say whether it is any good to live in.
 
-- `job.base_pay` is the size base value with seeded variation, rounded to $5.
-  Property type, mower, economy and climate **do not** affect pay in V1.
-- `GameSession` owns money. `STARTING_MONEY = 250`.
-- On completion `GameSession.complete_current_job()` adds `base_pay` and emits a
-  `job_settled` summary with `bonus: 0` — the Job Complete screen hides the bonus
-  row when it is zero. **No bonus/tip system was invented to fill the label.**
-- There is no spending yet. The Supply Store, Mower Dealer and Business HQ are
-  still placeholder destinations in the town.
+Representative run (seed 20260820):
 
-## Presentation
+| | |
+|---|---|
+| fuel price | min $0.89, mean $1.11, max $1.49 (base $1.10) |
+| biggest daily drift | 4.9% |
+| biggest event/regime step | 26.4% |
+| job index | 0.84 – 1.12 |
+| equipment index | 0.90 – 1.18 |
+| conditions | Stable 45 days, Recession 22, Growth 23 |
+| events | 20 event days across 5 events |
 
-`ACAJobBoard` (`JobBoard.tscn`) — Available / Current / Past, bound to the
-manager by `ACABusinessHUD._ready()`. One board-level 0.5 s timer drives every
-offer countdown; individual jobs and cards never own timers.
-Player-facing wording only: the raw grid dimension is never shown.
+## Known limitations
 
-## KNOWN ISSUES / NOT DONE
-
-- No completion deadline on accepted contracts.
-- No economy or climate simulation driving `market_strength`.
-- No trust/reputation, no bonuses, no spending.
-- Job persistence across save/load: see [save and load](save-and-load.md).
+1. No mower ownership or dealership. All three machines are available.
+2. No fuel inventory or gas cans. Fuel goes into the tank.
+3. Job payouts do not yet consider the mower used or the time taken — only lawn
+   size, the authored variation, and the market.
+4. One event at a time by design. Stacked modifiers become unreadable.

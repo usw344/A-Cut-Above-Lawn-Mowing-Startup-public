@@ -50,6 +50,11 @@ signal collided
 # There is no `fuel_empty` signal here because there is nothing to emit it for.
 const POWERED := false
 
+## THE STABLE UPGRADE ID for this machine. Matches `MVP.mowers_scene_list` and
+## `model.current_mower`, so a save refers to the mower by NAME and moving the
+## scene file cannot invalidate it.
+const MOWER_ID := &"push"
+
 ## Uniform across the canonical mowers so nothing has to check a scene name.
 func is_powered() -> bool:
 	return POWERED
@@ -103,8 +108,12 @@ func _physics_process(delta):
 	var user_input = get_input() 
 
 	##assign user input to the velocity variable. which is BUILT-IN
-	velocity.x = user_input.x * model.get_speed() * 3
-	velocity.z = user_input.z * model.get_speed() * 3
+	# Authored speed x purchased upgrades. The base value stays exactly what
+	# the scene and the dev slider say; the upgrade is a multiplier on top, so
+	# selling the upgrade back would restore the stock machine precisely.
+	var drive_speed: float = model.get_speed() * 3.0 		* MowerUpgrades.speed_multiplier(MOWER_ID)
+	velocity.x = user_input.x * drive_speed
+	velocity.z = user_input.z * drive_speed
 
 	if velocity.x != 0 and velocity.z != 0:
 		moving = true
@@ -115,7 +124,8 @@ func _physics_process(delta):
 	# --- AUDIO CONTROL SECTION ---
 
 	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
-	var max_speed: float = model.get_speed() * 3
+	var max_speed: float = model.get_speed() * 3.0 \
+		* MowerUpgrades.speed_multiplier(MOWER_ID)
 	var speed_ratio: float = clamp(horizontal_speed / max_speed, 0.0, 1.0)
 
 	var target_volume: float = lerp(stopped_volume_db, moving_volume_db, speed_ratio)
@@ -139,10 +149,13 @@ func _physics_process(delta):
 ## Exponential approach towards the values the mouse asked for. Runs from
 ## _physics_process so the feel does not change with frame rate.
 func handle_smoothed_mouse_movement(delta: float) -> void:
+	# Steering upgrades raise the approach RATE, which is what "tighter" means
+	# for an exponential smooth - not a different curve, just a faster one.
+	var yaw_rate: float = mouse_yaw_smoothing 		* MowerUpgrades.handling_multiplier(MOWER_ID)
 	rotation.y = lerp_angle(
 		rotation.y,
 		target_body_yaw,
-		1.0 - exp(-mouse_yaw_smoothing * delta)
+		1.0 - exp(-yaw_rate * delta)
 	)
 	$Camera3D.rotation.x = lerp_angle(
 		$Camera3D.rotation.x,
@@ -215,9 +228,13 @@ func get_input():
 	return input_direction 
 func dev_hud():
 	var string_to_print:String = ""
-	string_to_print += str(round(position/16)) + "\n"
-	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
-	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
-	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\n"
+	string_to_print += str(round(position/16)) + "\
+"
+	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\
+"
+	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\
+"
+	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\
+"
 	string_to_print += "Vertices" + str(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
 	$CanvasLayer/Label.text = string_to_print

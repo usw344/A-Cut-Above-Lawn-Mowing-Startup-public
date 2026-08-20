@@ -131,7 +131,7 @@ parented under `Mowing Area`.
 |---|---|
 | `Weather/Preset Manager/Preset Manager.tscn` | Contains Sky3D (Skydome, TimeOfDay) and the Rain Handler. Instanced in the mowing scene as `PresetManager (Sky3D)`. |
 | `Weather/Handlers/Rain Handler.tscn` | Near/far GPU rain particles |
-| `Weather/particles/rain_particles.tscn` | Used by the Rain Handler and the rain precipitation resources |
+| `Weather/Handlers/Rain Handler.tscn` | Rain audio and the ownership of `ACAPrecipitationRig`. **The authored particle scene is gone** — the rain is three layers built in code by the environment package |
 | `Weather/particles/snow_particles.tscn` | Authored, **not yet reachable** from `apply_weather_preset()` |
 
 ## Town
@@ -214,3 +214,16 @@ scene changes it drives. Its presentation layer lives in
 `Game/Demo/Trailer/Presentation/` -- a mower adapter, a lawn adapter, a weather
 adapter, a UI director and the cinematic camera. See
 `Game/Demo/Trailer/README.md`.
+
+## Added in session 7
+
+| Scene | Purpose |
+|---|---|
+| `addons/aca_sky3d_environment/demo/Environment Demo.tscn` | The environment package's STANDALONE demo. Builds its own ground, camera and Sky3D at runtime; loads none of the game |
+| `Mowing Section/Experimental/Pond/Pond Demo.tscn` | The pond prototype's standalone scene. **Experimental** |
+| `Dev tools/Validation/Economy Test.tscn` | The economy, shops and upgrades, plus a 90-day simulation |
+| `Dev tools/Validation/Flicker Probe.tscn` | Measures temporal instability in the Town |
+
+`Main Area/ACA_BusinessTown/UI/business_services.gd` (`ACABusinessServices`) has
+**no scene**: the Supply Store, Business Office and Mower Workshop are built in
+code and parented to a `CanvasLayer` created by `town_screen.gd` on first use.

@@ -202,6 +202,17 @@ func selected_building_id() -> StringName:
 	return _selected.building_id if _selected != null else &""
 
 
+## Building ids the HOST PROJECT opens with a real screen of its own. The town
+## emits its signal for them and then keeps out of the way; everything else
+## still gets the town's own "coming soon" placeholder.
+##
+## Exported rather than hard-coded so this package stays generic - it does not
+## need to know that A Cut Above happens to have a fuel shop.
+@export var host_handled_buildings: Array[StringName] = [
+	&"supply_store", &"business_hq", &"mower_dealer",
+]
+
+
 func _on_open_requested() -> void:
 	if _selected == null:
 		return
@@ -213,5 +224,5 @@ func _on_open_requested() -> void:
 
 	if _selected.building_id == &"job_office":
 		hud.open_jobs()
-	else:
+	elif not host_handled_buildings.has(_selected.building_id):
 		hud.open_placeholder(_selected)

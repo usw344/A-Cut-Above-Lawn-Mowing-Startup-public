@@ -22,6 +22,7 @@ const CLOCK_REFRESH_INTERVAL := 0.5
 var _hud: ACABusinessHUD
 var _clock_refresh_accumulator: float = 0.0
 var _lights: ACATownLightAdapter = null
+var _services: ACABusinessServices = null
 
 
 func _ready() -> void:
@@ -42,6 +43,22 @@ func _ready() -> void:
 ## R-013. The town keeps its own authored WorldEnvironment, SSAO and grading;
 ## only light colour/energy, the procedural sky gradient, ambient, exposure and
 ## fog are driven from the world clock. Day is the authored look unchanged.
+## The services panel is built on first use. It is a whole UI that most visits
+## to the town never open, and creating it up front would cost every player the
+## work whether or not they ever walk into a shop.
+func _ensure_services() -> ACABusinessServices:
+	if _services != null and is_instance_valid(_services):
+		return _services
+	_services = ACABusinessServices.new()
+	_services.name = "Business Services"
+	var layer := CanvasLayer.new()
+	layer.name = "Business Services Layer"
+	layer.layer = 6
+	layer.add_child(_services)
+	add_child(layer)
+	return _services
+
+
 func _setup_lighting() -> void:
 	if not light_from_world_clock:
 		return
@@ -110,6 +127,10 @@ func _on_money_changed(amount: int) -> void:
 
 func _on_business_action(action: StringName) -> void:
 	# job_office is handled by the town itself (it opens the Job Board).
-	# Everything else is still a placeholder destination inside the town.
+	# supply_store / business_hq / mower_dealer open the real services panel.
+	# future_lot is still a placeholder, because there really is nothing there.
+	if ACABusinessServices.handles(action):
+		_ensure_services().open_service(action)
+		return
 	if action != &"job_office":
 		return

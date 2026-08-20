@@ -1,26 +1,46 @@
 # Architecture and System Relationships
 
-Status: **Current** — verified 2026-08-19.
+Status: **Current** — source-verified 2026-08-20 (session 7).
+Entry point: `res://Game/App/Main Menu Screen.tscn`
 
 ## Layering
 
 The application is three layers. Keep them separate.
 
 ```
-APPLICATION   GameSession   WorldClock   AppUI   GameSettings   (autoloads)
-              owns: routing, session state, time/weather state, completion
+APPLICATION   GameSession  WorldClock  SaveService  AppUI  GameSettings
+              Economy  MowerUpgrades  MowerFuel                (autoloads)
+              owns: routing, session state, time and weather STATE, the market,
+                    file I/O, and THE completion pathway
 
-DOMAIN        JobManager (ACAJobManager)      Custom_Gridmap + Multi_Mesh_Chunk
-              model (mower/fuel)              preset_manager -> Sky3D / Rain Handler
+DOMAIN        JobManager (ACAJobManager)     Custom_Gridmap + Multi_Mesh_Chunk
+              model (legacy shared state)    preset_manager -> environment
               owns: game state. Never changes scenes. Never touches UI.
 
-PRESENTATION  res://UI/**    ACAJobBoard    ACABusinessHUD
+PRESENTATION  res://UI/**   ACAJobBoard   ACABusinessHUD   ACABusinessServices
               displays state, emits intent. Owns no game state.
 ```
 
 Integration between layers lives in exactly three host scripts:
 `Game/App/main_menu_screen.gd`, `Game/App/town_screen.gd`,
 `Game/App/gameplay_ui.gd`.
+
+## Autoloads
+
+Registered in `project.godot`, in load order.
+
+| Autoload | Script | Owns |
+|---|---|---|
+| `model` | `Data Structures/Model.gd` | LEGACY shared state: mower speed, fuel level, blade length |
+| `MowerFuel` | `Game/App/mower_fuel.gd` | Fuel RULES. Storage stays on `model` |
+| `WorldClock` | `Game/World/world_clock.gd` | Authoritative game time, season, weather STATE |
+| `JobManager` | `Main Area/ACA_JobSystem/.../job_manager.gd` | Job domain state, offers, expiry, history |
+| `GameSettings` | `Game/App/game_settings.gd` | Player settings and their application |
+| `AppUI` | `Game/App/app_ui.gd` | Transitions, notifications, cursor ownership |
+| `GameSession` | `Game/App/game_session.gd` | Routing, session state, **the one money balance**, completion |
+| `SaveService` | `Game/App/save_service.gd` | File I/O. Owns no domain state |
+| `Economy` | `Game/Economy/economy_manager.gd` | Market conditions, events, prices |
+| `MowerUpgrades` | `Game/Economy/mower_upgrades.gd` | Per-mower upgrade levels and their effects |
 
 ## Runtime composition
 
@@ -29,204 +49,135 @@ flowchart TD
     Project["project.godot"] --> Menu["Game/App/Main Menu Screen.tscn"]
 
     subgraph Autoloads
-        Model["model"]
         Clock["WorldClock"]
-        Jobs["JobManager (ACAJobManager)"]
-        Settings["GameSettings"]
-        UI["AppUI"]
+        Jobs["JobManager"]
         Session["GameSession"]
+        Save["SaveService"]
+        Econ["Economy"]
+        Upg["MowerUpgrades"]
+        Fuel["MowerFuel"]
     end
 
     Session -->|"set_time_provider"| Jobs
-    Clock --> Provider["ACAWorldClockTimeProvider"] --> Jobs
+    Session -->|"pay_multiplier_provider"| Jobs
+    Clock -->|"day_changed"| Econ
     Jobs -->|"begin_job_requested(job)"| Session
 
     Menu -->|"new_game"| Session
     Session -->|"go_to_town"| Town["Game/App/Town Screen.tscn"]
-    Town --> BT["BusinessTown.tscn"] --> Board["ACAJobBoard"] --> Jobs
-    Session -->|"go_to_mowing"| MVPScene["Game/M.V.P/Minimum Viable Game.tscn"]
+    Town --> BT["BusinessTown.tscn"]
+    BT --> Board["ACAJobBoard"] --> Jobs
+    BT --> Services["ACABusinessServices"]
+    Services --> Econ
+    Services --> Upg
+    Services --> Fuel
+    Services -->|"try_spend"| Session
 
+    Session -->|"go_to_mowing"| MVPScene["Game/M.V.P/Minimum Viable Game.tscn"]
     MVPScene --> MVP["MVP.gd"]
     MVPScene --> Mower["Current mower scene"]
     MVPScene --> Grid["Custom Gridmap"]
-    MVPScene --> DebugHUD["MVP HUD (dev only, F3)"]
     MVPScene --> Presets["Preset Manager"]
     MVPScene --> GPUI["Gameplay UI.tscn"]
 
-    Model --> MVP
-    Model --> Mower
     Mower -->|"collided(collision_array)"| Grid
+    Mower --> Upg
+    Mower --> Fuel
     Grid --> Chunks["Multi_Mesh_Chunk objects"]
-    Chunks --> Grass["Mowed and unmowed MultiMeshes"]
-    Grid --> Terrain["Canonical Terrain Manager"]
-    Terrain --> EnvironmentMM["Baked grass, tree, and shrub MultiMeshes"]
 
     Grid -->|"mowing_progress_changed"| MVP
-    MVP -->|"update_job_progress"| Jobs
     MVP -->|"complete_current_job"| Session
     Session -->|"job_settled(summary)"| GPUI
     GPUI -->|"go_to_town"| Session
 
     Clock --> MVP --> Presets
-    Presets --> Sky3D["Sky3D"]
-    Presets --> Rain["Rain Handler"]
-    Session --> UI
-    Settings --> GPUI
+    Presets --> EnvAdapter["ACAWeatherVisualAdapter"]
+    EnvAdapter --> Package["ACASky3DEnvironment (addon)"]
+    Package --> Sky3D["vanilla Sky3D"]
+    Package --> Rig["ACAPrecipitationRig"]
 ```
 
-## The two boundaries that must not be crossed
+## The boundaries that must not be crossed
 
 1. **`ACAJobManager` never changes scenes.** `begin_new_job()` validates, marks
    the job `IN_PROGRESS`, emits `begin_job_requested(job)` and stops.
-   `GameSession` does the transition. Preserve this.
-2. **There is one completion pathway.** Natural 100% mowing and the development
-   fast-completion helper both reach `MVP._finish_job()` →
-   `GameSession.complete_current_job()`. Do not add a second way to finish a job.
+   `GameSession` does the transition.
+2. **There is one completion pathway.** Real 100% mowing and the development
+   fast-completion helper both reach `GameSession.complete_current_job()`.
+3. **There is one money balance.** `GameSession` holds it. `Economy` and
+   `MowerUpgrades` PRICE things; neither keeps a wallet. Every payment goes
+   through `GameSession.try_spend()`, which cannot go negative.
+4. **The Job System does not know the economy exists.** The application layer
+   injects `pay_multiplier_provider`, exactly as it injects the time provider.
+5. **`res://addons/sky_3d/` is read-only.** The environment package reads and
+   writes its public properties and modifies nothing inside it.
 
 ## Ownership
 
 ### Mowing scene root (`MVP.gd`)
 
-`MVP.gd` owns cross-system runtime orchestration:
-
-- Initial grid creation.
-- Initial mower placement.
-- Current mower node reference.
-- Mower switching.
-- Grid reset.
-- Ambient audio startup.
-- Time and weather requests.
-- Passing mower position to weather.
-
-It does not own the detailed behavior of grass, mower movement, or Sky3D.
+Cross-system orchestration: grid creation, mower placement and switching, grid
+reset, ambient audio startup, time and weather requests, and telling the weather
+system where the camera and the ground are. It does not own grass behaviour,
+mower movement or the sky.
 
 ### Global model
 
-The `model` autoload owns process-lifetime shared state:
-
-- Mower speed and fuel.
-- Mower position.
-- Blade length and cuttings fields.
-- Existing job-offer dictionary.
-- Older mower-selection metadata.
-
-The model is a shared mutable state object. Current scripts access it directly rather than through signals or injected references.
+`model` is LEGACY shared mutable state — mower speed, fuel level, blade length,
+position. New systems do not add to it. `MowerFuel` owns the fuel RULES while
+`model` merely stores the level, which is why a save restore or a test writing
+`model.set_mower_fuel()` is seen immediately.
 
 ### Mower scenes
 
-The canonical mower scenes own:
-
-- Character-body motion.
-- Mouse-driven orientation and camera movement.
-- Gravity.
-- Fuel consumption.
-- Mower-specific audio.
-- Collision collection and emission.
-
-The rider mower additionally delegates wheel, steering, and engine visual animation to `Rider Mower (In Parts).tscn`.
+`Assets/Vehicles and Mowers/Mowers/` — the three canonical machines. Each owns
+its motion, look, gravity, audio and collision emission, declares `POWERED` and
+a stable `MOWER_ID`, and multiplies its authored values by
+`MowerUpgrades.*_multiplier(MOWER_ID)`. The authored base is never overwritten.
 
 ### Custom grid
 
-The custom grid owns the mowable area:
+The mowable area: dimensions, chunk partitioning, per-chunk grass state,
+collision-name decoding, and the conversion from unmowed to mowed grass.
+`mow_swath()` / `mow_disc()` exist for media tooling and are not called by
+gameplay.
 
-- Grid dimensions.
-- Chunk partitioning.
-- Chunk-to-coordinate lookup.
-- Mower start position.
-- Per-chunk grass state.
-- Collision-name decoding.
-- Conversion from unmowed to mowed grass.
-- Serializable grid and chunk dictionaries.
+### Economy and upgrades
 
-### Canonical terrain manager
+See [Jobs and Economy](systems/jobs-and-economy.md). The market moves on
+`WorldClock.day_changed` and at no other time.
 
-The custom Terrain Manager owns non-mowable environmental presentation:
+### Weather and environment
 
-- Main terrain mesh and colour map.
-- Baked tree, shrub, and decorative grass MultiMeshes.
-- High/low foliage variants.
-- Ring-based density and grass LOD generation tools.
-- Mesh sampling for foliage placement.
-- Far-grass overlay generation.
-
-It is separate from the mowable grass grid even though both are children of the same custom-grid scene.
-
-### Weather and time
-
-The Preset Manager owns preset selection and Sky3D property transitions. The Rain Handler owns rain particles, rain audio, ambience ducking, and following the mower.
-
-### HUD
-
-The MVP HUD owns controls and diagnostic presentation. It emits domain requests to the MVP root rather than modifying the grid or weather scenes directly. It reads initial speed directly from `model`.
-
-## Communication patterns
-
-### Signals
-
-Confirmed active signal boundaries:
-
-- Mower `collided` → custom-grid collision handler.
-- MVP HUD controls → MVP root methods.
-
-The job prototype also uses signals extensively, but that graph is not instantiated by the current runtime.
-
-### Direct references
-
-Confirmed active direct references:
-
-- MVP root → mower, grid, HUD, Preset Manager, ambient audio.
-- Mower scripts → `model`.
-- Custom grid → its `Mowing Area`, `Start Area`, and Terrain Manager children.
-- Preset Manager → Sky3D, Skydome, TimeOfDay, and Rain Handler.
-- Rain Handler → particle and audio children.
-
-### Class-name dependencies
-
-Important global GDScript class names include:
-
-- `Custom_Gridmap`
-- `Multi_Mesh_Chunk`
-- `preset_manager`
-- `Rain_Handler`
-- Job-related prototype classes
-
-`Custom_Gridmap` constructs `Multi_Mesh_Chunk` objects directly with `Multi_Mesh_Chunk.new()`, so the chunk script is an active dependency even though its `.tscn` wrapper is not instantiated.
-
-## Partially integrated architecture
-
-The repository contains a second, incomplete application layer:
-
-```mermaid
-flowchart LR
-    Menu["Menu Hierarchy / Main Menu"] --> NewGame["New Game"]
-    NewGame --> Profile["Game Profile / saves directory"]
-    JobManager["Job Manager"] --> Generator["Job Generator"]
-    Generator --> Offer["Job Offer"]
-    JobManager --> Display["Job Offer Display"]
-    Offer --> Job["Accepted Job"]
-    Job --> MowingObject["Mowing Object"]
-    MowingObject --> Grid["Custom Gridmap"]
-```
-
-This expresses a plausible intended direction, but several arrows are not implemented in runtime code:
-
-- Menu signals are not wired into navigation.
-- New Game does not serialize a profile or change scenes.
-- Accept Job is not wired from the display.
-- `Job_Offer.accept_job()` returns an empty `Job`.
-- `Mowing Object` does not construct or save a complete job.
-- The current MVP does not load from a job or profile.
-
-These systems are documented as partially integrated rather than active or hypothetical.
+See [Weather, Time of Day, and Audio](systems/weather-time-and-audio.md).
+`preset_manager` remains the project-facing API; the LOOK is composed by a
+reusable addon.
 
 ## Canonical and superseded implementations
 
-| Domain | Canonical | Superseded/deprecated |
+| Domain | Canonical | Superseded / legacy |
 |---|---|---|
 | Runtime world | `Minimum Viable Game.tscn` | `Main.tscn` |
-| Mowers | `Assets/Vehicles and Mowers/Mowers/` | `Mower_Normal` and old model scene lookup |
-| Terrain | Custom Terrain Manager | Terrain3D experiment |
-| Weather | Preset Manager and Rain Handler | GodotWeatherSystem precipitation resources |
-| Sky | Sky3D | Historical GodotSky plugin |
+| Mowers | `Assets/Vehicles and Mowers/Mowers/` | `Mower Scenes/`, `Mowing Section/Mower/` |
+| Terrain | Custom Terrain Manager | Terrain3D experiment (removed) |
+| Weather look | `addons/aca_sky3d_environment/` | in-adapter tables (session 7) |
+| Rain particles | `ACAPrecipitationRig` (code-built) | authored `rain_particles.tscn` (removed) |
+| Precipitation resources | — | `Weather/precipitation/*.tres`, **dead** |
+| Sky | Sky3D | historical GodotSky plugin |
+| Ponds | `Mowing Section/Experimental/Pond/` — **EXPERIMENTAL** | — |
 
-Superseded files remain repository cleanup debt and must not be removed solely from this documentation classification.
+`Weather/precipitation/*.tres` reference `res://addons/GodotWeatherSystem/`,
+which is not installed. Nothing loads them. See
+[Legacy and Experimental](legacy-and-experimental.md).
+
+## What is NOT built
+
+Stated plainly so it is not mistaken for an omission:
+
+- **Mower ownership / a dealership.** All three mowers are available; upgrades
+  are per machine. There is no purchase-a-mower flow.
+- **A fuel inventory.** Fuel is bought into the tank, not into cans.
+- **Rocks, props, or pond integration.** The pond tool exists and is tested; the
+  grid does not use it.
+- **Water volumes.** Pond collision is static bed geometry. Nothing floats.
+- **Snow.** `Weather/precipitation/snow*.tres` are dead files, not a feature.

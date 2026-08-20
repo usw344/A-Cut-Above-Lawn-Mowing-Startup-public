@@ -74,6 +74,12 @@ func _ready() -> void:
 	# THE GAMEPLAY HANDOFF. The Job System never changes scenes; we do.
 	JobManager.begin_job_requested.connect(_on_begin_job_requested)
 
+	# The Job System does not know the economy exists. The APPLICATION layer
+	# connects them, the same way it hands over the clock — so a new offer is
+	# priced by the market, and an ACCEPTED contract never is again.
+	JobManager.pay_multiplier_provider = func() -> float:
+		return Economy.job_index()
+
 	# Player-facing notifications for real domain events. Deliberately few:
 	# accepting work, new work arriving, and getting paid.
 	JobManager.job_accepted.connect(_on_job_accepted)
@@ -102,6 +108,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func start_new_game() -> void:
 	JobManager.debug_clear_all()
 	WorldClock.start_new_world()
+	Economy.start_new_economy(0, WorldClock.day_index())
+	MowerUpgrades.reset_all()
 	_set_money(STARTING_MONEY)
 	_job_elapsed_seconds = 0.0
 	_session_active = true
@@ -217,6 +225,22 @@ func _set_money(amount: int) -> void:
 
 func add_money(amount: int) -> void:
 	_set_money(_money + amount)
+
+
+## THE transaction API. `Economy` and `MowerUpgrades` price things; this is the
+## only place a price is ever PAID, so there is exactly one balance in the game
+## and it can never go negative.
+func can_afford(amount: int) -> bool:
+	return amount >= 0 and _money >= amount
+
+
+## Take `amount` if it is there. Returns false and changes nothing otherwise —
+## callers must not assume success.
+func try_spend(amount: int) -> bool:
+	if amount < 0 or not can_afford(amount):
+		return false
+	_set_money(_money - amount)
+	return true
 
 
 # ============================================================== the active job

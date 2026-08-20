@@ -51,6 +51,9 @@ func _ready() -> void:
 
 	## to manage sound effect of rain and stuff
 	preset_manager_object.set_audio_player(sound)
+	# Rain follows the LENS, not the machine: the drops the player sees are the
+	# ones near the camera. Every canonical mower carries its own Camera3D.
+	_track_weather_to_camera()
 	
 	# Player-facing UI is the Gameplay UI stack; the MVP HUD is dev tooling.
 	hud.visible = false
@@ -96,6 +99,24 @@ func _input(event):
 			WorldClock.set_weather("Rain")
 
 
+## Point the weather system's precipitation at the active mower's camera.
+## Falls back to the mower body if a mower ever ships without one.
+func _track_weather_to_camera() -> void:
+	if preset_manager_object == null or current_mower == null:
+		return
+	var cam := current_mower.get_node_or_null(^"Camera3D") as Node3D
+	preset_manager_object.set_weather_tracking_target(
+		cam if cam != null else current_mower)
+
+	# Height fog is measured from an ABSOLUTE world Y, and this lawn is authored
+	# about five hundred units below the origin. Measured from the grid's own
+	# visible ground rather than guessed from the camera - the same node the
+	# trailer measures for the mower's ride height.
+	var plane := custom_gridmap_object.get_node_or_null(^"Mowing Area") as Node3D
+	if plane != null:
+		preset_manager_object.set_weather_ground_reference(plane.global_position.y)
+
+
 func _____Debug_Functions_____():
 	pass
 func _on_mvp_hud_mower_change_selected(mower_id: Variant) -> void:
@@ -111,6 +132,7 @@ func _on_mvp_hud_mower_change_selected(mower_id: Variant) -> void:
 	add_child(new_mower)
 	current_mower = new_mower
 	current_mower.collided.connect(custom_gridmap_object.custom_grid_map_collision_handler)
+	_track_weather_to_camera()
 	AppUI.set_mouse_context(current_mouse_context)
 
 func _on_mvp_hud_reset_map_and_location() -> void:

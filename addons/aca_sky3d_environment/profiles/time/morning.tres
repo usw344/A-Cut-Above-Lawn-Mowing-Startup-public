@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ACAEnvTimeProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/time_profile.gd" id="1_1nejs"]
+
+[resource]
+script = ExtResource("1_1nejs")
+id = &"Morning"
+camera_exposure = 1.05
+tonemap_exposure = 1.01
+sun_light_color = Color(1, 0.95, 0.88, 1)
+sun_horizon_light_color = Color(1, 0.78, 0.58, 1)
+moon_energy = 0.35
+ambient_energy = 1.05
+sky_contribution = 0.95
+night_ambient_min = 0.6
+atm_darkness = 0.42
+atm_sun_intensity = 16.0
+atm_day_tint = Color(0.82, 0.89, 1, 1)
+atm_horizon_light_tint = Color(1, 0.78, 0.6, 1)
+atm_mie = 0.082
+ground_color = Color(0.17, 0.18, 0.17, 1)
+aerial_density = 0.0014
+aerial_end = 700.0
+aerial_rayleigh_depth = 0.135
+aerial_mie_depth = 0.00026
+aerial_falloff = 2.7
+cloud_day_color = Color(0.95, 0.95, 1, 1)
+cloud_horizon_color = Color(1, 0.7, 0.48, 1)
+fog_tint = Color(0.74, 0.78, 0.84, 1)

@@ -114,6 +114,24 @@ throws.
     "cuttings_in_mower": 0
   },
 
+  "economy": {                     // OPTIONAL - Economy.to_save_dict()
+    "seed": 1837465002,
+    "condition": 3,                // ACAEconomyManager.Condition
+    "condition_days_left": 7,
+    "event_id": "fuel_shortage",   // "" when none
+    "event_days_left": 3,
+    "event_cooldown": 0,
+    "fuel_noise": -0.0142,         // the mean-reverting drift term
+    "last_day": 41
+  },
+
+  "upgrades": {                    // OPTIONAL - MowerUpgrades.to_save_dict()
+    "levels": {
+      "rider": {"drive": 2, "fuel_system": 1},
+      "push":  {"bearings": 1}
+    }
+  },
+
   "mowing": {                      // present ONLY when screen == MOWING
     "job_id": "job_1605987657_v1_48000",
     "grid_size": 96,
@@ -235,6 +253,35 @@ changes:
 - Breaking change: bump the version and add one explicit upgrade step.
 
 Missing fields already fall back to defaults everywhere via `data.get(key, default)`.
+
+### The economy and upgrades sections are the worked example
+
+Both were added in session 7 **without bumping the version**, because both are
+additive. `load_game()` requires only `world`, `jobs` and `session`; everything
+else is read with a default.
+
+A save written before they existed therefore loads, and:
+
+- `Economy.initialise_for_legacy_save(day)` starts a fresh market anchored to
+  **that save's own day**, rather than one that has been running since the epoch;
+- `MowerUpgrades.from_save_dict({})` leaves every machine stock.
+
+`Economy Test` writes a legacy save with neither section and asserts it loads
+and produces a working market.
+
+Two rules that made this safe:
+
+1. **Derived values are never saved.** Prices and indices are recomputed from
+   the condition, event and drift, so a save cannot contain a price that
+   disagrees with the state that produced it.
+2. **Loading never advances the market.** `from_save_dict()` restores and stops;
+   `WorldClock.day_changed` moves it when the world next moves. Combined with
+   day-derived seeding, loading a save cannot reroll the economy — `Economy Test`
+   asserts the restored fuel price matches to four decimal places.
+
+Unknown mower ids and unknown upgrade categories are **dropped** on load rather
+than kept, so a level for something this build no longer has cannot sit in the
+file forever and reappear if the name is reused.
 
 ## Where the player reaches it
 

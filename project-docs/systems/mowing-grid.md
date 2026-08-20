@@ -179,7 +179,10 @@ Corresponding `load_object()` methods rebuild MultiMeshes and collision bodies. 
 The custom grid contains:
 
 - A CSV writer with a hard-coded developer-machine path.
-- A save/load test using `res://Saves/testing/load_save_testing.txt`.
+- A save/load round trip. The grid state is collected and restored by
+  `SaveService` (`_collect_mowing()` / `take_pending_mowing_state()`), and
+  is covered by `Save Test`. An earlier prototype wrote a scratch file
+  under `Saves/testing/`; that path no longer exists.
 - An input action named `Save`.
 
 The test call is disabled in normal processing, and `res://` is not the intended location for release save data.

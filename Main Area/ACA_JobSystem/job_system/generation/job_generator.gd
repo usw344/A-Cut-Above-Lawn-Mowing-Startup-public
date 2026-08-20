@@ -65,8 +65,13 @@ static func generate_core(job_seed: int, generator_version: int = ACAJobBalance.
 
 ## Build a full job from a seed and the world time it entered the market.
 ## The returned job is GENERATED; ACAJobManager publishes it as AVAILABLE.
+## `market_multiplier` is the ECONOMY's contribution, and it is applied HERE
+## rather than inside `generate_core()` on purpose: the core must stay a pure
+## function of the seed, so the same seed always describes the same PROPERTY.
+## Only what the customer is willing to pay moves with the market.
 static func generate(job_seed: int, created_game_time: float,
-		generator_version: int = ACAJobBalance.GENERATOR_VERSION) -> ACAJob:
+		generator_version: int = ACAJobBalance.GENERATOR_VERSION,
+		market_multiplier: float = 1.0) -> ACAJob:
 	var core := generate_core(job_seed, generator_version)
 	var job := ACAJob.new()
 	job.id = make_id(job_seed, generator_version, created_game_time)
@@ -76,7 +81,12 @@ static func generate(job_seed: int, created_game_time: float,
 	job.job_site = core["job_site"]
 	job.lawn_size = core["lawn_size"]
 	job.grid_size = core["grid_size"]
-	job.base_pay = core["base_pay"]
+	job.market_base_pay = int(core["base_pay"])
+	job.market_multiplier = market_multiplier
+	# The player-facing number, and the one that is paid on completion. Rounded
+	# to $5 so an offer reads as a price rather than as arithmetic.
+	job.base_pay = _round_to(float(core["base_pay"]) * market_multiplier,
+		ACAJobBalance.PAY_ROUNDING)
 	job.offer_duration_minutes = core["offer_duration_minutes"]
 	job.created_game_time = created_game_time
 	job.expiry_game_time = created_game_time + core["offer_duration_minutes"]

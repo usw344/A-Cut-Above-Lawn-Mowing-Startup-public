@@ -26,6 +26,21 @@ extends Node
 
 const SUN_YAW_KEY := "sun_yaw_degrees"
 
+## Degrees the sun must actually turn before its basis is rewritten.
+##
+## MEASURED, in Milestone 15. `_write()` used to set `_sun.transform.basis` on
+## every tick of its own 20 Hz `_process`, and the yaw it wrote came from an
+## exponential approach that never reaches its target — so the town sun
+## micro-rotated twenty times a second, forever, even with the world clock
+## stopped. `Flicker Probe` measured the result: with a stationary camera and a
+## STOPPED clock the frame-to-frame difference was 0.039, against 0.022 for a
+## running clock with no shadows at all.
+##
+## The town's yaw sweeps about 122 degrees across a four-minute day, so a
+## quarter-degree deadband steps roughly twice a second and is invisible in the
+## shading while removing the churn entirely.
+const SUN_YAW_DEADBAND_DEGREES := 0.25
+
 ## Time profiles. Small on purpose - a stylised town needs colour and intensity,
 ## not a simulation.
 const TIME_PROFILES := {
@@ -137,6 +152,8 @@ var _sun_basis: Basis = Basis.IDENTITY
 
 var _weather: String = "Clear"
 var _hour: float = 12.0
+## Last yaw actually written, in degrees. NAN means "never written".
+var _written_yaw: float = NAN
 var _current: Dictionary = {}
 var _target: Dictionary = {}
 var _accumulator: float = 0.0
@@ -174,6 +191,8 @@ func set_state(weather: String, hour: float) -> void:
 func apply_immediate(weather: String, hour: float) -> void:
 	set_state(weather, hour)
 	_current = _target.duplicate()
+	# A snap must land exactly, deadband or not.
+	_written_yaw = NAN
 	_write(_current)
 
 
@@ -255,12 +274,17 @@ func _lerp_value(from: Variant, to: Variant, t: float) -> Variant:
 
 func _write(v: Dictionary) -> void:
 	if _sun != null:
+		# Colour and energy are cheap and continuous: a smooth day/night ramp is
+		# the whole point of this adapter and neither can shimmer.
 		_sun.light_color = v.get("sun_color", _sun.light_color)
 		_sun.light_energy = float(v.get("sun_energy", _sun.light_energy))
-		# Rotate the AUTHORED basis about world Y, so the sun sweeps across the
-		# sky without losing the pitch the scene was lit with.
-		var yaw := deg_to_rad(float(v.get(SUN_YAW_KEY, 0.0)))
-		_sun.transform.basis = Basis(Vector3.UP, yaw) * _sun_basis
+		# The BASIS is the expensive one — see SUN_YAW_DEADBAND_DEGREES. Rotate
+		# the AUTHORED basis about world Y, so the sun sweeps across the sky
+		# without losing the pitch the scene was lit with.
+		var yaw_degrees := float(v.get(SUN_YAW_KEY, 0.0))
+		if is_nan(_written_yaw) 				or absf(yaw_degrees - _written_yaw) >= SUN_YAW_DEADBAND_DEGREES:
+			_written_yaw = yaw_degrees
+			_sun.transform.basis = Basis(Vector3.UP, deg_to_rad(yaw_degrees)) * _sun_basis
 	if _fill != null:
 		_fill.light_color = v.get("fill_color", _fill.light_color)
 		_fill.light_energy = float(v.get("fill_energy", _fill.light_energy))

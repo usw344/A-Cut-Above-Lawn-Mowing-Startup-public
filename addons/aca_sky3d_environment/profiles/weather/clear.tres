@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ACAEnvWeatherProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/weather_profile.gd" id="1_ykmiq"]
+
+[resource]
+script = ExtResource("1_ykmiq")
+fog_enabled = true
+fog_density = 0.3
+fog_depth_begin = 110.0
+fog_depth_end = 1000.0
+fog_depth_curve = 1.7
+fog_sky_affect = 0.0
+fog_aerial_perspective = 0.25
+fog_sun_scatter = 0.05
+wind = Vector2(0.6, 0.3)

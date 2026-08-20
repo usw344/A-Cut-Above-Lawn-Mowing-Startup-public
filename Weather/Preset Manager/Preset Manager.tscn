@@ -143,6 +143,4 @@ total_hours = 12.0
 [node name="Rain Handler" parent="." unique_id=921088035 instance=ExtResource("12_8i0be")]
 rain_audio_target_db = -8.0
 rain_audio_silent_db = -40.0
-ambience_clear_db = 0.0
-ambience_rain_db = -10.0
 rain_offset = Vector3(0, 10, 0)

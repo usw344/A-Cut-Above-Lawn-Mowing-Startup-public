@@ -48,6 +48,11 @@ func _ready() -> void:
 	visual.name = "Weather Visual Adapter"
 	add_child(visual)
 	visual.bind(sky3d, skydome)
+	# The rain rig belongs to the Rain Handler (which owns the audio); the
+	# environment adapter DRIVES it, because rain intensity is part of the
+	# composed weather rather than a separate switch.
+	visual.set_precipitation_rig(rain_handler.rig)
+	visual.apply_quality_setting(_graphics_quality())
 
 	sky3d.sky_enabled = true
 	sky3d.lights_enabled = true
@@ -59,6 +64,41 @@ func _ready() -> void:
 		sky3d.enable_game_time = false
 
 	visual.apply_immediate(current_weather_preset, current_time_of_day)
+
+
+## The player's graphics setting. Defensive: the environment package ships its
+## own default level, and a missing autoload must not stop the sky binding.
+func _graphics_quality() -> String:
+	var settings := get_node_or_null(^"/root/GameSettings")
+	if settings == null or not settings.has_method(&"graphics_quality"):
+		return ""
+	if not settings.is_connected(&"applied", _on_settings_applied):
+		settings.connect(&"applied", _on_settings_applied)
+	return String(settings.call(&"graphics_quality"))
+
+
+## Quality follows the player changing it, rather than only the scene loading.
+func _on_settings_applied(_values: Dictionary) -> void:
+	if visual != null:
+		visual.apply_quality_setting(_graphics_quality())
+		rain_handler.set_quality(visual.environment().quality_profile(
+			visual.current_quality()))
+
+
+## Where the rain should sit. The mowing scene passes its camera.
+func set_weather_tracking_target(node: Node3D) -> void:
+	rain_handler.set_tracking_target(node)
+	if visual != null:
+		visual.set_tracking_target(node)
+
+
+## Tell the environment where ground level is, for height fog. See the note on
+## `ACASky3DEnvironment.ground_reference`.
+func set_weather_ground_reference(world_y: float) -> void:
+	if visual != null:
+		visual.set_ground_reference(world_y)
+	if rain_handler != null and rain_handler.rig != null:
+		rain_handler.rig.ground_offset = world_y - rain_handler.global_position.y
 
 
 func _process(_delta: float) -> void:
@@ -84,10 +124,15 @@ func _____TIME____():
 
 func set_time_of_day_normalized(value: float) -> void:
 	## note this function expects a value range 0-23.99 passed in
+	##
+	## `sky3d.current_time` is NOT written here. The environment adapter owns
+	## it — `set_time_of_day()` forwards the hour to Sky3D itself, so the sun
+	## position and the composed look can never come from two different places.
 	current_time_of_day = clampf(value, 0.0, 23.99)
-	sky3d.current_time = current_time_of_day
 	if visual != null:
 		visual.set_state(current_weather_preset, current_time_of_day)
+	else:
+		sky3d.current_time = current_time_of_day
 
 
 func smooth_set_time_of_day(target_time: float, duration: float = -1.0) -> void:
@@ -166,7 +211,8 @@ func apply_weather_preset(preset_name: String) -> void:
 func apply_world_state_immediate(weather_preset_name: String, hour: float) -> void:
 	current_weather_preset = weather_preset_name
 	current_time_of_day = clampf(hour, 0.0, 23.99)
-	sky3d.current_time = current_time_of_day
+	if visual == null:
+		sky3d.current_time = current_time_of_day
 
 	if weather_preset_name == "Rain":
 		rain_handler.start_rain()

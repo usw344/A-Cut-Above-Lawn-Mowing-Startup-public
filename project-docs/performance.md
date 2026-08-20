@@ -211,3 +211,63 @@ runs twice: after `make_grid()` and after `load_object()`.
 
 `MVP._tick_job_runtime()` pushes progress into `ACAJobManager` at 2 Hz, not per
 frame. The town refreshes its clock label at 2 Hz for the same reason.
+
+## Session 7 measurements — the environment rewrite
+
+Measured with `Weather Matrix` in the real mowing scene, twelve combinations per
+run, on the development machine. `--matrix-quality=` forces a level.
+
+| | fps range across 12 shots | mean |
+|---|---|---|
+| Baseline (before session 7) | 86 – 121 | ~101 |
+| **High** (volumetric + aerial + 3 rain layers) | 84 – 115 | ~97 |
+| **Medium** (no volumetric, 2 rain layers) | 78 – 108 | ~95 |
+| **Low** (no volumetric, no aerial quad, 1 rain layer) | 77 – 113 | ~92 |
+
+### The honest reading of that table
+
+The environment rewrite costs roughly **4–6% of mean frame rate at High**, which
+is comfortably inside the "no unexplained >20% loss" budget, and there is no
+weather-specific collapse: the worst single combination is 77 fps and the best
+is 115.
+
+**The three quality levels do not separate in this scene, and the table should
+not be read as though they do.** Run-to-run variance on these short samples is
+larger than the difference between levels — Foggy Day measured 96.7 at High and
+78.0 at Medium on consecutive runs, which is obviously not a real ordering.
+
+The reason is that the mowing scene is dominated by the **grass MultiMesh**, not
+by the sky. Turning off a froxel volume and a screen-space quad removes real GPU
+work, but not work that was the bottleneck here.
+
+So the quality levels are verified **structurally** rather than by frame rate:
+`Environment Test` asserts that each level switches different mechanisms off and
+that they are ordered by cost. That is a claim about what the code does, which
+is checkable; "Low is faster" is a claim about a particular machine and a
+particular scene, and in this scene it is not currently true.
+
+They will matter on hardware where the sky IS the bottleneck, and they cost
+nothing to keep.
+
+### What the rewrite added, and what it removed
+
+| Added | Removed |
+|---|---|
+| Godot Environment depth + height fog (all levels) | 6,700 authored rain particles across two emitters |
+| Volumetric fog (High only) | the 24x-scaled far-rain emitter |
+| Three code-built rain layers (~2,160 particles at High) | — |
+| A grade pass (saturation/contrast) when a weather asks for one | — |
+
+The old rain was **more** particles than the new rain, and each one was a
+`RibbonTrailMesh` with trails enabled.
+
+### Things deliberately kept off the per-frame path
+
+- `Economy` has no `_process` at all. The market moves on
+  `WorldClock.day_changed`.
+- The environment recomposes at 10–20 Hz depending on quality, not per frame.
+- Sky3D's tween-spawning setters (`ambient_energy`, `sky_contribution`,
+  `night_ambient_min`) are written only when the value has really moved past a
+  deadband — driving them per tick would spawn tweens per tick.
+- The Town sun's basis is written only when the yaw has moved a quarter of a
+  degree. See [decisions](decisions-and-open-questions.md), R-022.

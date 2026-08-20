@@ -29,6 +29,11 @@ extends Resource
 ## seeded variation, rounded to the nearest $5. Property type, mower, economy
 ## and climate deliberately do not affect it in V1.
 @export var base_pay: int = 0
+## What the property was worth BEFORE the market, and what the market did to it.
+## Diagnostic only: `base_pay` is the number the player sees and is paid, and it
+## is LOCKED once the offer exists. Nothing recomputes it from these.
+@export var market_base_pay: int = 0
+@export var market_multiplier: float = 1.0
 ## Seeded offer lifetime in game minutes. Absolute expiry depends on when the
 ## offer entered the market; this value does not.
 @export var offer_duration_minutes: float = 0.0
@@ -109,6 +114,8 @@ func to_dict() -> Dictionary:
 		"grid_size_x": grid_size.x,
 		"grid_size_y": grid_size.y,
 		"base_pay": base_pay,
+		"market_base_pay": market_base_pay,
+		"market_multiplier": market_multiplier,
 		"offer_duration_minutes": offer_duration_minutes,
 		"created_game_time": created_game_time,
 		"expiry_game_time": expiry_game_time,
@@ -131,6 +138,10 @@ static func from_dict(data: Dictionary) -> ACAJob:
 	job.grid_size = Vector2i(
 		int(data.get("grid_size_x", 96)), int(data.get("grid_size_y", 96)))
 	job.base_pay = int(data.get("base_pay", 0))
+	# Old saves have neither; fall back so an existing contract still describes
+	# itself rather than claiming the market doubled it.
+	job.market_base_pay = int(data.get("market_base_pay", job.base_pay))
+	job.market_multiplier = float(data.get("market_multiplier", 1.0))
 	job.offer_duration_minutes = float(data.get("offer_duration_minutes", 0.0))
 	job.created_game_time = float(data.get("created_game_time", 0.0))
 	job.expiry_game_time = float(data.get("expiry_game_time", 0.0))

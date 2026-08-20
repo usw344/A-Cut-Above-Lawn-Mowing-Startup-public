@@ -1,6 +1,6 @@
 # Important Script Reference
 
-Status: **Current** — 2026-08-19. Paths are `res://`-relative.
+Status: **Current** — source-verified 2026-08-20 (session 7). Paths are `res://`-relative.
 
 ## Application layer (autoloads)
 
@@ -13,6 +13,9 @@ Status: **Current** — 2026-08-19. Paths are `res://`-relative.
 | `Main Area/ACA_JobSystem/job_system/manager/job_manager.gd` | `ACAJobManager` | `JobManager` | Every job |
 | `Data Structures/Model.gd` | `Model` | `model` | Mower speed/blade, cuttings, mower selection, and the fuel **level** (storage only) |
 | `Game/App/mower_fuel.gd` | `ACAMowerFuel` | `MowerFuel` | **THE fuel rules** — burn rates, empty, the refuel interface, development Auto Refuel |
+| `Game/App/save_service.gd` | `ACASaveService` | `SaveService` | File I/O and slot handling. Owns **no** domain state |
+| `Game/Economy/economy_manager.gd` | `ACAEconomyManager` | `Economy` | Market condition, events, fuel/job/equipment prices. **Never holds money** |
+| `Game/Economy/mower_upgrades.gd` | `ACAMowerUpgrades` | `MowerUpgrades` | Per-mower upgrade levels, costs, and the multipliers controllers read |
 
 `Game/World/world_clock_time_provider.gd` (`ACAWorldClockTimeProvider`) is the
 bridge between the two. It is constructed in `GameSession._ready()`.
@@ -128,3 +131,33 @@ all in the workspace `Soft Delete/` folder. See its `MANIFEST.md`.
 
 `Data Structures/Game Profile.gd` (`Game_Profile`) **is still in the project** —
 unused, but a real save-data structure held for the save system.
+
+## Environment package (reusable addon)
+
+`res://addons/aca_sky3d_environment/` — **contains no A Cut Above paths or class
+names**, enforced by `Environment Test`. Its own docs are its `README.md`.
+
+| Script | class_name | Owns |
+|---|---|---|
+| `addons/aca_sky3d_environment/src/sky3d_environment.gd` | `ACASky3DEnvironment` | The adapter: binding, composition ticking, writing, quality, the ground reference |
+| `addons/aca_sky3d_environment/src/environment_composer.gd` | `ACAEnvComposer` | PURE composition. No nodes, no scene, testable without a renderer |
+| `addons/aca_sky3d_environment/src/env_keys.gd` | `ACAEnvKeys` | **The vanilla Sky3D compatibility map** — every fact this package relies on about the third-party addon |
+| `addons/aca_sky3d_environment/src/precipitation_rig.gd` | `ACAPrecipitationRig` | Three code-built rain layers, tracking, optional external audio |
+| `addons/aca_sky3d_environment/src/time_profile.gd` | `ACAEnvTimeProfile` | One time of day, as an editable Resource |
+| `addons/aca_sky3d_environment/src/weather_profile.gd` | `ACAEnvWeatherProfile` | One weather: multipliers, colour biases, and sets |
+| `addons/aca_sky3d_environment/src/quality_profile.gd` | `ACAEnvQualityProfile` | Which GPU mechanisms a level is allowed to spend |
+| `addons/aca_sky3d_environment/tools/build_default_profiles.gd` | — | Bootstrap. **Overwrites** the shipped profile set |
+
+The A Cut Above side is `Weather/Visual/weather_visual_adapter.gd`
+(`ACAWeatherVisualAdapter`) — anchors, binding, quality mapping, ground
+reference, and the public API `preset_manager`, the trailer and the probes call.
+
+## Pond prototype (experimental)
+
+**Not part of job generation.** See
+[Pond Prototype](../systems/pond-prototype.md).
+
+| Script | class_name | Owns |
+|---|---|---|
+| `Mowing Section/Experimental/Pond/pond_carver.gd` | `ACAPondCarver` | Non-destructive deformation and the density check |
+| `Mowing Section/Experimental/Pond/pond.gd` | `ACAPond` | Carved terrain, water surface, collision, the exclusion API |

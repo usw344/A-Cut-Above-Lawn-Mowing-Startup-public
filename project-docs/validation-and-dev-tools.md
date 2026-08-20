@@ -11,12 +11,12 @@ Godot executable used for all of these: **4.6.1 stable**.
 |---|---|---|
 | `Dev tools/Validation/validate_all.gd` | `godot --headless --path . --script "res://Dev tools/Validation/validate_all.gd"` | Loads every `.gd` and `.tscn` under `res://`. Exit 1 on any failure. |
 | `Dev tools/Validation/Flow Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Flow Test.tscn"` | The full application loop, 54 assertions. Also runs with a real renderer (drop `--headless`). |
-| `Dev tools/Validation/UI Smoke Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/UI Smoke Test.tscn"` | Loads, instantiates and drives the public API of every component in `res://UI/`, 54 assertions. |
+| `Dev tools/Validation/UI Smoke Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/UI Smoke Test.tscn"` | Loads, instantiates and drives the public API of every component in `res://UI/`, 60 assertions. |
 | `Dev tools/Validation/Screenshot Tour.tscn` | `godot --path . "res://Dev tools/Validation/Screenshot Tour.tscn" -- "--tour-output=<dir>"` | Walks the real loop, saves a PNG per screen. **Needs a real renderer** — it captures the viewport, so `--headless` does not work. |
-| `Dev tools/Validation/Save Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Save Test.tscn" -- "--save-root=<dir>"` | Save/load resume tests A, B, C plus robustness, 57 assertions. **Always pass `--save-root`** so it never writes outside the working folder. |
-| `Dev tools/Validation/Pause Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Pause Test.tscn" -- "--save-root=<dir>"` | The pause stack in **both** screens, cursor ownership, and the mower look convention. 47 headless / 54 with a renderer. **Pass `--save-root`.** |
+| `Dev tools/Validation/Save Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Save Test.tscn" -- "--save-root=<dir>"` | Save/load resume tests A, B, C plus robustness, 59 assertions. **Always pass `--save-root`** so it never writes outside the working folder. |
+| `Dev tools/Validation/Pause Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Pause Test.tscn" -- "--save-root=<dir>"` | The pause stack in **both** screens, cursor ownership, and the mower look convention. 49 headless / 54 with a renderer. **Pass `--save-root`.** |
 | `Dev tools/Validation/Credits Test.tscn` | `godot --path . "res://Dev tools/Validation/Credits Test.tscn"` | The credits loader against a throwaway `user://` fixture, the real `res://Credits/` folder, and the Credits screen opened from the Main Menu. 40 assertions. |
-| `Dev tools/Validation/Weather Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Weather Test.tscn" -- "--save-root=<dir>"` | The weather/time VISUAL layer: composition rule, readability limits, clock ownership, convergence, persistence, rain follow + audio. 46 assertions. |
+| `Dev tools/Validation/Weather Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Weather Test.tscn" -- "--save-root=<dir>"` | The weather/time VISUAL layer: the composition RULE (including R-020 at four hours), fog is not a white wall, readability limits, clock ownership, convergence, persistence, the precipitation rig, and that the quality levels genuinely differ. **75 assertions.** |
 | `Dev tools/Validation/Weather Matrix.tscn` | `godot --path . "res://Dev tools/Validation/Weather Matrix.tscn" -- "--matrix-output=<dir>"` | Renders 4 times x 3 weathers in the real mowing scene + 6 town shots, and logs fps per combination. **Needs a real renderer.** Look at the images. |
 | `Dev tools/Validation/Sky Probe.tscn` | `godot --path . "res://Dev tools/Validation/Sky Probe.tscn" -- "--sky-output=<dir>"` | Renders **just the sky** for each shipped weather look, plus a sweep of `clouds_cumulus_size`. **Needs a real renderer.** Use it to judge a cloud parameter in one run instead of one 33-second trailer per guess. |
 | `Dev tools/Validation/Sun Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Sun Probe.tscn"` | Prints Sky3D's sun/moon altitude per half hour. Used to place the time-of-day anchors; re-run it if the Skydome's latitude/date/mode change. |
@@ -26,6 +26,15 @@ Godot executable used for all of these: **4.6.1 stable**.
 | `Dev tools/Validation/Town Probe.tscn` | `godot --path . "res://Dev tools/Validation/Town Probe.tscn" -- "--town-output=<dir>"` | Grazing-angle close-ups of the real Business Town, each rendered TWICE with the camera's far plane nudged so depth ties can be counted. **Needs a real renderer.** |
 | `Dev tools/Validation/coplanar_probe.gd` | `godot --headless --path . --script "res://Dev tools/Validation/coplanar_probe.gd" -- "--coplanar-scene=<scene>"` | Finds Z-fighting BEFORE it is rendered: reports every pair of meshes that share a face plane while overlapping on the other two axes. |
 | `Main Area/ACA_JobSystem/tests/JobSystemTests.tscn` | `godot --headless --path . "res://Main Area/ACA_JobSystem/tests/JobSystemTests.tscn"` | The Job System's own suite, 110 assertions. |
+| `Dev tools/Validation/environment_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/environment_test.gd"` | Guards the REUSABLE environment package: that it contains no A Cut Above paths or class names, bundles no binary assets, composes with nothing bound, measures fog height from the declared ground, survives interrupted transitions, and that its quality levels remove real work. **28 assertions.** |
+| `Dev tools/Validation/Economy Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Economy Test.tscn" -- "--save-root=<dir>"` | The market, the shops and the upgrades — plus a **90-day simulation** and a **6-seed x 365-day sweep** that print what the market actually did. `--economy-days=` and `--economy-seeds=` widen the sweep. **93 assertions.** **Pass `--save-root`.** |
+| `Dev tools/Validation/Upgrade Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Upgrade Probe.tscn" -- "--save-root=<dir>"` | **Drives the real mowers** with real `Input` actions and measures displacement per second and fuel burned per second, stock against upgraded, for all three machines. **15 assertions.** |
+| `Dev tools/Validation/Town Services Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Town Services Probe.tscn" -- "--save-root=<dir>"` | Drives the Supply Store, Mower Workshop and Business Office through their **real `Button` nodes** — checks what they say, presses them, and checks what changed. **29 assertions.** |
+| `Dev tools/Validation/pond_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/pond_test.gd"` | The EXPERIMENTAL pond carver: non-destructiveness, the density refusal, geometry, normals, shape controls, the exclusion API, collision, and the edge cases an integrator will hit (a pond bigger than the mesh, one straddling its boundary, one centred off it entirely, zero irregularity, a bathtub bank, a null mesh). **37 assertions.** No renderer needed. |
+| `Dev tools/Validation/docs_audit.gd` | `godot --headless --path . --script "res://Dev tools/Validation/docs_audit.gd"` | Checks the DOCUMENTATION against the repository: every `res://` path exists, relative links resolve, the mkdocs nav and the page set agree, and no page mentions a class or path this build removed. **5 checks.** |
+| `Dev tools/Validation/Flicker Probe.tscn` | `godot --path . "res://Dev tools/Validation/Flicker Probe.tscn" -- "--flicker-output=<dir>"` | **Measures temporal instability** in the Town: holds the camera still and reports the mean absolute difference between consecutive frames, under three conditions it forces itself. **Needs a real renderer.** |
+| `addons/aca_sky3d_environment/demo/Environment Demo.tscn` | `godot --path . "res://addons/aca_sky3d_environment/demo/Environment Demo.tscn" -- "--demo-shots=<dir>"` | The environment package's STANDALONE demo — loads none of the game. Renders the whole quality x weather x time matrix (36 shots) and quits. **Needs a real renderer.** |
+| `Mowing Section/Experimental/Pond/Pond Demo.tscn` | `godot --path . "res://Mowing Section/Experimental/Pond/Pond Demo.tscn" -- "--pond-shots=<dir>"` | The pond prototype's standalone scene. Renders a review set, then prints the density-refusal and exclusion-API results. **Needs a real renderer.** |
 
 ### Why these are scenes, not `--script`
 
@@ -377,3 +386,90 @@ exactly three changed files.
 The hero shot is now `mower over the top`: the lens in the driving seat with the
 steering wheel in frame, looking forward over the bonnet. It is the closest this
 game gets to a first-person view without a first-person camera existing.
+
+## Measuring things a screenshot cannot show
+
+Two tools in this list exist because the thing being judged is not visible in a
+single frame, and both were built the same way: decide what the claim actually
+is, then find a number that expresses it.
+
+### `Flicker Probe` — the Town's shadows
+
+"The shadows flicker" is a statement about the difference between CONSECUTIVE
+FRAMES. A flickering town and a stable one produce identical stills. So the
+probe holds the camera still, captures a run of frames and reports the mean
+absolute difference between each pair, at 480x270 with NEAREST resampling —
+smoothing is exactly what would hide a one-pixel shimmer.
+
+It forces its own conditions rather than inheriting the scene's, because
+otherwise changing a scene default silently turns three measurements into three
+measurements of the same thing. It restores what it changed.
+
+### `Economy Test`'s 90-day simulation
+
+A green suite proves the economy is CONSISTENT. It says nothing about whether
+fuel spends three months at the ceiling or a recession arrives every other week.
+The simulation prints the distribution and asserts only on values that would be
+absurd rather than merely debatable — and it separates DRIFT from event and
+regime STEPS, because measuring them together only proves that events exist.
+
+### `Upgrade Probe` — proving the machine changed, not the dictionary
+
+`Economy Test` asserts that `MowerUpgrades.speed_multiplier("rider")` returns a
+bigger number after a purchase. That is a statement about a dictionary.
+
+It is **not** a statement about the mower. A controller could ignore the
+multiplier, apply it to the wrong term, or apply it twice, and every one of
+those assertions would still pass. The only way to know the machine got faster
+is to press the throttle and measure how far it went.
+
+So the probe holds real `Input` actions down, in the real mowing scene, through
+the real controllers, and measures — resetting the grid between runs, because
+otherwise the second run drives through a lane the first one already cut and the
+comparison is between two different worlds. Results are normalised by **elapsed
+time**, so a frame-rate difference between runs cannot masquerade as speed.
+
+Measured 2026-08-20:
+
+| | stock | upgraded | change | asked for |
+|---|---|---|---|---|
+| rider — speed | 14.99 u/s | 19.95 u/s | **+33.0%** | +33% |
+| powered — speed | 15.00 u/s | 19.95 u/s | **+32.9%** | +33% |
+| push — speed | 15.04 u/s | 19.35 u/s | **+28.7%** | +29% |
+| rider — fuel burn | 0.2081 u/s | 0.1458 u/s | **−29.9%** | −30% |
+| powered — fuel burn | 0.2084 u/s | 0.1458 u/s | **−30.0%** | −30% |
+
+### The economy sweep
+
+One 90-day run with one seed can be lucky. The sweep walks several seeds a full
+year each and asserts on the **worst case across all of them**, so a pathology
+that only appears in some markets has somewhere to show up.
+
+Six seeds x 365 days, 2026-08-20: fuel $0.83–$1.60 (the clamp working), drift
+4.9–5.9%, events 25–31% of days, and the most common condition occupying 36–49%
+of a year — Stable dominates by design without monopolising, and all four
+conditions appear in every seed.
+
+### `Town Services Probe` — proving a player can reach the rules
+
+`Economy Test` calls `GameSession.try_spend()` and
+`MowerUpgrades.try_purchase()` directly. Those are the right things to
+unit-test, and they prove the RULES.
+
+They do not prove a player can reach them. A button could be disabled when it
+should not be, wired to nothing, wired to the wrong category, or **show a price
+it does not charge** — and every assertion in `Economy Test` would still pass.
+
+So this probe walks the route a player walks: opens each service the way
+clicking a building does, finds the actual `Button` nodes, reads their text,
+presses them, and checks the world afterwards. The assertions worth naming:
+
+- the refuel button's printed price is the price actually charged;
+- a full tank stops offering a refuel at all;
+- a broke player gets a **disabled** button, and pressing it anyway leaves them
+  with no fuel and no debt;
+- the Push Mower tab offers no fuel system;
+- the dashboard **follows** the market rather than snapshotting it — asserted on
+  the fuel price, which drifts every day, rather than on the condition name,
+  which can legitimately still be "Stable" sixty days later. An assertion that
+  can pass because nothing happened is not an assertion.

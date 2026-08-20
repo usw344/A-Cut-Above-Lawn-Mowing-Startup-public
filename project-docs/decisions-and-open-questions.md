@@ -100,7 +100,7 @@ Consequences:
 
 These items are documented but still need future technical or design decisions.
 
-### R-001 — Model schema for canonical mowers
+### R-001 — Model schema for canonical mowers — **RESOLVED 2026-08-20 (see session 7 below)**
 
 Decide:
 
@@ -135,7 +135,7 @@ Decide:
 - Scene transitions are owned by `GameSession`; the fullscreen transition is
   owned by `AppUI`. `ACAJobManager` still never changes scenes.
 
-### R-004 — Economy and upgrades
+### R-004 — Economy and upgrades — **RESOLVED 2026-08-20 (see session 7 below)**
 
 Decide:
 
@@ -195,7 +195,7 @@ Confirm which Jolt maximum-body setting Godot 4.6 uses before removing or reconc
 
 Confirm whether the Timer and stale `straighten_wheel` connection can be removed now that steering return occurs continuously in `_update_steering()`.
 
-### R-011 — Snow
+### R-011 — Snow — **CLOSED 2026-08-20 (see session 7 below)**
 
 The removed addon resources are deprecated, but the local `snow_particles.tscn` remains technically independent. Decide whether snow remains in scope.
 
@@ -385,7 +385,7 @@ at -16.855 dB, so the first Rain -> Clear transition raised the ambience by
 nearly 17 dB and left it there permanently. The duck is now relative to the
 level captured when the player is handed over.
 
-### R-019 — Fuel has no source and no economy — **NEW 2026-08-19**
+### R-019 — Fuel has no source and no economy — **RESOLVED 2026-08-20 (see session 7 below)**
 
 `MowerFuel.refuel()` / `refuel_full()` exist and work, but nothing in the game
 sells fuel: there is no gas can, no station and no purchase. A powered mower
@@ -523,3 +523,193 @@ and behind the machine, so a close shot that frames the bodywork beautifully
 reports its origin off-screen — which is exactly what the first version of the
 readout did report.
 
+
+---
+
+## Session 7 — environment package, town lighting, economy, upgrades, ponds
+
+### R-004 — Economy and upgrades — **RESOLVED 2026-08-20**
+
+Built. `Economy` (`ACAEconomyManager`) owns market conditions, temporary events
+and prices; `MowerUpgrades` (`ACAMowerUpgrades`) owns per-mower upgrade levels
+and the multipliers the controllers read. Neither holds money. Documented in
+[Jobs and Economy](systems/jobs-and-economy.md).
+
+### R-019 — Fuel has no source and no economy — **RESOLVED 2026-08-20**
+
+The Supply Store sells fuel at `Economy.fuel_price_per_unit()`, with a full or
+partial fill. Money leaves through `GameSession.try_spend()` first, and only then
+does fuel go in — so a failed payment cannot leave the player with free fuel. The
+F7 / F8 development controls are unchanged and still free.
+
+### R-020 — The storm sky is warm, not grey — **RESOLVED IN THE GAME 2026-08-20**
+
+Previously resolved only for the trailer, through a presentation override, and
+left open as a question about the game. It is now fixed in the shipped look.
+
+The cause was the composition RULE, not the numbers: weather could only
+MULTIPLY the time profile, and multiplying a `Color` can make it darker but
+never bluer. Weather now BIASES colours — `lerp(hour_value, target, weight)` —
+so at a weight of 0.5 half the hour's hue survives and the rest goes blue-grey.
+`Weather Test` asserts `atm_day_tint.b > atm_day_tint.r` for Rain at 07:00,
+12:00, 16:18 and 22:00, and separately that evening rain still differs from day
+rain.
+
+The trailer's override is unchanged and still works; it now exaggerates a storm
+that is already cold rather than correcting one that was warm.
+
+### R-001 — Model schema for canonical mowers — **RESOLVED 2026-08-20**
+
+The three canonical mowers now declare a stable `MOWER_ID` — `rider`,
+`powered`, `push` — matching the keys `MVP.mowers_scene_list` and
+`model.current_mower` already used. Upgrades are saved against those ids, so a
+mower scene can be moved or renamed without invalidating a save.
+
+### R-011 — Snow — **CLOSED 2026-08-20**
+
+Not implemented, and not planned for now. `Weather/precipitation/snow.tres` and
+`heavy_snow.tres` are **dead files** referencing `res://addons/GodotWeatherSystem/`,
+which is not installed. Nothing loads them. Recorded in
+[Legacy and Experimental](legacy-and-experimental.md) rather than removed.
+
+### R-022 — Town shadow flicker — **RESOLVED 2026-08-20 (Milestone 15)**
+
+Two causes, and the second was not the obvious one.
+
+`ACATownLightAdapter._write()` set `_sun.transform.basis` on every tick of its
+own 20 Hz `_process`, from a yaw produced by an exponential approach that never
+reaches its target — so the town sun micro-rotated twenty times a second
+**forever, even with the world clock stopped**. A 0.25° deadband on the basis
+fixed that; colour and energy stay continuous, because the smooth day/night ramp
+is the point of the adapter and neither of those can shimmer.
+
+That alone was not enough. `Flicker Probe` measures the mean absolute difference
+between consecutive frames with the camera held still:
+
+| Condition | Before | After |
+|---|---|---|
+| clock STOPPED, shadows ON | 0.039 | **0.004** |
+| clock RUNNING, shadows ON | 0.086 | 0.032 |
+| clock RUNNING, shadows OFF | 0.022 | **0.019** |
+
+With a running clock, shadows still measured nearly twice the shadow-free case
+and a peak nearly three times higher. Town sun shadows are therefore **off**.
+
+### R-023 — Wet ground is composed but not consumed — **NEW 2026-08-20**
+
+`ACAEnvWeatherProfile.wetness` is composed into the key space as `fx:wetness`
+and Rain sets it to 0.65, but nothing reads it. Consuming it would need the
+terrain and grass materials to accept a global parameter, which is a broad
+material change this session deliberately did not make. Deferred to whichever
+pass rewrites those materials.
+
+---
+
+### D-019 — The environment look is a REUSABLE PACKAGE, and Sky3D stays read-only — **DECIDED 2026-08-20**
+
+Everything that decides how the world looks now lives in
+`res://addons/aca_sky3d_environment/`, which contains no A Cut Above paths or
+class names. `Environment Test` enforces that by scanning the package for this
+project's directories and autoload names and failing if any appear.
+
+`res://addons/sky_3d/` remains untouched — `diff -rq` against Backup 04 is
+silent. Where Sky3D's behaviour is inconvenient (its fog quad cannot exclude the
+sky, because the shipped shader has that line commented out), the answer is to
+work around it in the adapter, never to edit the addon.
+
+The A Cut Above integration layer (`ACAWeatherVisualAdapter`) stays outside the
+package and keeps the anchors, the binding, the quality mapping and the ground
+reference — the parts that are genuinely ours.
+
+### D-020 — Weather composes by three operations, not one — **DECIDED 2026-08-20**
+
+Supersedes D-005 ("weather looks are composed, not enumerated"), which remains
+right about composition and wrong about the operation.
+
+One rule is elegant and produced sepia storms. The operation is now chosen per
+property by what that property MEANS: multiply energies and exposures, BIAS
+colours toward a target with a weight, and SET the things weather owns outright.
+See R-020.
+
+### D-021 — Fog range and fog colour come from different mechanisms — **DECIDED 2026-08-20**
+
+Godot's `Environment` depth + height fog carries the RANGE, because it has
+`fog_sky_affect` and an explicit near-clear distance. Sky3D's screen-space quad
+carries the COLOUR, because it is tinted by the same scattering model as the sky.
+Volumetric fog is a quality decision, never a default.
+
+Pushing the Sky3D quad harder is what produced the white wall, and it cannot be
+fixed inside the addon without editing it.
+
+A consequence worth recording: `Environment.fog_height` is an **absolute world
+Y**, and the mowing lawn is authored at about y = -508. Height fog measured from
+the origin renders that scene as a flat white screen. `ground_reference` exists
+for exactly this, and `MVP` measures it from the grid's own `Mowing Area`.
+
+### D-022 — There is one money balance, and it is GameSession's — **DECIDED 2026-08-20**
+
+`Economy` and `MowerUpgrades` PRICE things. Neither holds a balance. Every
+payment goes through `GameSession.try_spend()`, which refuses rather than going
+negative. A second wallet is the kind of thing that looks harmless and then
+disagrees with the first one three milestones later.
+
+### D-023 — Accepted contracts are immutable — **DECIDED 2026-08-20**
+
+The market is read **only when an offer is generated**. `base_pay` is stored on
+the job and paid from there. A recession after the handshake cannot reprice work
+the player already agreed to do.
+
+The Job System is not aware of the economy at all: the application layer injects
+`pay_multiplier_provider`, exactly as it injects the time provider. That is why
+adding the economy changed none of the 110 job-system tests.
+
+### D-024 — The economy moves on DAYS, and its randomness is derived from them — **DECIDED 2026-08-20**
+
+Nothing in `Economy` runs in `_process`. It advances on `WorldClock.day_changed`
+and at no other time.
+
+Every day's rolls come from a seed derived from `(economy_seed, day_index)`
+rather than from a running RNG stream. A stream would need its internal state
+persisted exactly, and any divergence would silently reroll the market on load.
+With day-derived seeding, replaying day 41 always produces day 41 — which is
+what makes "loading a save does not reroll the economy" a property of the design
+rather than a thing to be careful about.
+
+### D-025 — An upgrade must change a number a controller reads — **DECIDED 2026-08-20**
+
+No upgrade ships whose effect cannot be written down. Speed, fuel burn and
+steering response are multipliers on authored values, so the base is never
+overwritten and removing an upgrade would restore the stock machine exactly.
+
+Two consequences accepted rather than worked around:
+
+- **Cut width is not an upgrade.** The grid cuts whatever the mower's
+  `CharacterBody3D` physically touched, so widening the cut means widening the
+  collision shape — a physics change wearing an upgrade's clothes.
+- **The push mower has two categories, not three**, because it burns no fuel.
+
+### D-026 — The pond tool is EXPERIMENTAL and stays out of job generation — **DECIDED 2026-08-20**
+
+`Mowing Section/Experimental/Pond/` is complete and tested, and nothing in
+gameplay builds one. The mowing grid is due a larger overhaul; wiring ponds into
+the current grid would have to be undone.
+
+The carver is **non-destructive** by rule: an imported mesh is a shared resource,
+and deforming it in place would silently deform every other instance in the
+project. It also REFUSES a mesh too coarse to carry a pond rather than producing
+a three-triangle pit — a documented input requirement is an acceptable prototype
+boundary; a general-purpose remesher is not this prototype's job.
+
+### D-027 — Documentation claims are checked mechanically — **DECIDED 2026-08-20**
+
+`Dev tools/Validation/docs_audit.gd` verifies that every `res://` path a doc
+names exists, that relative links resolve, that the mkdocs nav and the page set
+agree, and that no page still mentions a class or path this build removed.
+
+It is small on purpose. It says nothing about whether the prose is any good; it
+only stops a rename from quietly turning a page into a lie.
+
+The one subtlety worth recording: **this project has spaces in its paths**, so a
+pattern that stops at whitespace truncates almost every path in these docs and
+then reports them all as missing. Paths are matched inside code spans, or bare up
+to a known file extension.

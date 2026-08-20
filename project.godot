@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="A Cut Above: Claude Work Repo"
+config/name="A Cut Above"
 config/tags=PackedStringArray("game")
 run/main_scene="res://Game/App/Main Menu Screen.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
@@ -31,6 +31,8 @@ GameSettings="*res://Game/App/game_settings.gd"
 AppUI="*res://Game/App/app_ui.gd"
 GameSession="*res://Game/App/game_session.gd"
 SaveService="*res://Game/App/save_service.gd"
+Economy="*res://Game/Economy/economy_manager.gd"
+MowerUpgrades="*res://Game/Economy/mower_upgrades.gd"
 
 [debug]
 

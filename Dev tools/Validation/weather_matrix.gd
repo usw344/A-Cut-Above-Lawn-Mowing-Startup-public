@@ -37,6 +37,14 @@ func _ready() -> void:
 	_run.call_deferred()
 
 
+## `--matrix-quality=low|medium|high`. Empty means "leave the player's setting".
+func _forced_quality() -> String:
+	for arg in OS.get_cmdline_user_args() + OS.get_cmdline_args():
+		if arg.begins_with("--matrix-quality="):
+			return arg.trim_prefix("--matrix-quality=")
+	return ""
+
+
 func _output_dir() -> String:
 	for arg in OS.get_cmdline_user_args() + OS.get_cmdline_args():
 		if arg.begins_with("--matrix-output="):
@@ -80,6 +88,22 @@ func _run() -> void:
 		printerr("[MATRIX] no camera in the mowing scene")
 		get_tree().quit(1)
 		return
+
+	# OPTIONAL quality override, so the same twelve shots can be measured at a
+	# different level. Without it the run uses whatever `GameSettings` says,
+	# which is what a player would get.
+	var presets := get_tree().current_scene.get_node_or_null(
+		^"PresetManager (Sky3D)") as preset_manager
+	var visual: ACAWeatherVisualAdapter = presets.visual if presets != null else null
+	var wanted := _forced_quality()
+	if not wanted.is_empty() and visual != null:
+		visual.apply_quality_setting(wanted)
+		if presets.rain_handler != null:
+			presets.rain_handler.set_quality(
+				visual.environment().quality_profile(visual.current_quality()))
+		await _settle(30)
+	print("[MATRIX] environment quality: %s"
+		% (visual.current_quality() if visual != null else "?"))
 
 	for weather in WEATHERS:
 		WorldClock.set_weather(weather)

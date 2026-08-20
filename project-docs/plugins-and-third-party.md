@@ -138,3 +138,37 @@ enabled=PackedStringArray("res://addons/sky_3d/plugin.cfg")
 ```
 
 Presence under `addons/` alone does not mean a plugin is active.
+
+## `addons/aca_sky3d_environment/` — project-owned, addon-shaped
+
+Added session 7. **Not third party** — this project wrote it — but it lives
+under `addons/` because it is deliberately built to be copied into another
+project that has a vanilla Sky3D.
+
+| | |
+|---|---|
+| Depends on | vanilla Sky3D **2.1-dev**, Godot 4.6 |
+| Depends on A Cut Above | **nothing**, enforced by `Environment Test` |
+| Bundles assets | **none** — every mesh, material and wave is built in code |
+| Install order | Sky3D first, then this package, then restart the editor once |
+
+It does not vendor Sky3D. The intended model is: install vanilla Sky3D, install
+this, get an atmospheric system.
+
+`Environment Test` scans every file in the package for this project's
+directories and autoload names and fails if any appear, so the boundary cannot
+quietly rot.
+
+### Why Sky3D is never edited, even where it is inconvenient
+
+The shipped `AtmFog.gdshader` has its sky-exclusion line commented out, so its
+fog cannot be pushed hard without washing the sky. The fix is not to edit the
+addon — it is to keep that quad subtle and let Godot's own Environment fog,
+which has `fog_sky_affect`, carry the range. See
+[Weather, Time of Day, and Audio](systems/weather-time-and-audio.md).
+
+Verify the addon is untouched with:
+
+```
+diff -rq "Working Repository/addons/sky_3d" "Milestone Backups/04 Save-System Working/addons/sky_3d"
+```

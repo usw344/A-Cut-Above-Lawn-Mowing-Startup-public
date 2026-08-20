@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Dev tools/Validation/runner_boot.gd" id="1_boot"]
+[ext_resource type="Script" path="res://Dev tools/Validation/upgrade_probe.gd" id="2_probe"]
+
+[node name="Upgrade Probe Boot" type="Node"]
+script = ExtResource("1_boot")
+runner_script = ExtResource("2_probe")
+runner_name = "UpgradeProbe"

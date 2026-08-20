@@ -91,3 +91,41 @@ which **181 did not exist**: the whole `res://addons/terrain_3d/` tree, the
 quarantined `Terrain/Footage-Demo Data/` files, and a few foliage assets that are
 not in the repository. Each entry was checked against the filesystem; the dead
 ones were removed and the 15 real ones kept. Preset settings were not touched.
+
+## Dead files found in session 7
+
+### `Weather/precipitation/*.tres`
+
+`rain.tres`, `heavy_rain.tres`, `snow.tres`, `heavy_snow.tres` all declare
+`script_class="PrecipitationResource"` and reference
+`res://addons/GodotWeatherSystem/scripts/PrecipitationResource.cs` and
+`res://addons/GodotWeatherSystem/particles/rain_particles.tscn`.
+
+**That addon is not installed.** `res://addons/` contains `sky_3d` and
+`aca_sky3d_environment` and nothing else. Nothing in the project loads these
+resources — a repository-wide search finds no reference outside the four files
+themselves.
+
+Classification: **LEGACY, dead.** Left in place rather than removed, in keeping
+with the rule that a documentation classification does not by itself justify
+deleting files. They are also the whole of the project's "snow support" (R-011).
+
+### The authored rain particle scene
+
+`Weather/particles/rain_particles.tscn` was removed in session 7. The rain is
+now three `GPUParticles3D` layers built in code by `ACAPrecipitationRig`, so
+there is no particle scene to keep in sync — and nothing for a redistributable
+package to have to copy.
+
+The old scene's `Far Rain` instance was the same scene as `Near Rain` scaled by
+**24**, over a `RibbonTrailMesh` 0.2 units wide. That is a 4.8-unit-wide white
+ribbon per raindrop, and it is why the pre-session-7 rain looked like scratches
+on a film print.
+
+## Experimental
+
+### Pond prototype — `Mowing Section/Experimental/Pond/`
+
+Complete, tested (28 assertions) and **deliberately unused**. See
+[Pond Prototype](systems/pond-prototype.md). It is staged for the future
+grid/terrain overhaul; wiring it into the current grid would have to be undone.

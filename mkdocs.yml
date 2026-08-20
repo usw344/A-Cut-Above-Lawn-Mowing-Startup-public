@@ -40,6 +40,7 @@ nav:
       - Weather, Time of Day, and Audio: systems/weather-time-and-audio.md
       - HUD, Menus, and Interface Systems: systems/ui-hud-and-menus.md
       - Jobs and Economy: systems/jobs-and-economy.md
+      - Pond Prototype (experimental): systems/pond-prototype.md
       - Save and Load: systems/save-and-load.md
   - Reference:
       - Scene Reference: reference/scenes.md

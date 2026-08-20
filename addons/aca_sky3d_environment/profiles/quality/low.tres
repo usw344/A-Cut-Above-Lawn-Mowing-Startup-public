@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ACAEnvQualityProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/quality_profile.gd" id="1_blum0"]
+
+[resource]
+script = ExtResource("1_blum0")
+id = &"Low"
+display_name = "Low"
+use_aerial = false
+volumetric_density_scale = 0.0
+volumetric_length = 48.0
+volumetric_detail_spread = 3.0
+depth_fog_density_scale = 0.78
+height_fog_density_scale = 0.0
+rain_layers = 1
+rain_amount_scale = 0.55
+update_interval = 0.1

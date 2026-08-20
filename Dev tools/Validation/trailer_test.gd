@@ -304,12 +304,15 @@ func _test_weather_adapter() -> void:
 		_override_keys_are_project_owned())
 
 
+## The composed key space moved into the reusable environment package in
+## Milestone 14; `ACAEnvKeys` is where the prefixes live now. The assertion is
+## unchanged: a trailer override may only address properties this project
+## composes, never anything inside the third-party addon.
 func _override_keys_are_project_owned() -> bool:
 	for section in ["scale", "set"]:
 		var part: Dictionary = ACATrailerWeatherAdapter.STORM_OVERRIDE.get(section, {})
 		for key: String in part:
-			if not (key.begins_with(ACAWeatherVisualAdapter.SKY_PREFIX)
-					or key.begins_with(ACAWeatherVisualAdapter.DOME_PREFIX)):
+			if ACAEnvKeys.target_for(key) == "":
 				return false
 	return true
 

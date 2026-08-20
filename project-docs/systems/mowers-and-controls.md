@@ -311,3 +311,28 @@ them.
 raises `emptied` once per transition. `gameplay_ui.gd` suppresses both when the
 active mower is manual or Auto Refuel is on, and suppresses "Fuel low" when the
 tank is already empty.
+
+## Upgrades multiply, they never overwrite
+
+Added session 7. Each canonical mower declares a stable `MOWER_ID` (`rider`,
+`powered`, `push`) next to its existing `POWERED` constant, and asks
+`MowerUpgrades` one question per stat:
+
+| Where | Call |
+|---|---|
+| drive velocity, and the engine-audio speed ceiling | `MowerUpgrades.speed_multiplier(MOWER_ID)` |
+| fuel burn | `MowerUpgrades.fuel_multiplier(MOWER_ID)` — **below 1.0 is an improvement** |
+| body-yaw approach rate | `MowerUpgrades.handling_multiplier(MOWER_ID)` |
+
+The authored value is the base and the upgrade is a multiplier on top, so the
+scene exports and the development speed slider still mean exactly what they say,
+and removing an upgrade would restore the stock machine precisely.
+
+The audio ceiling uses the SAME multiplier as the velocity. Without that, a
+fully upgraded mower would sit pinned at full-throttle engine noise.
+
+The push mower has no fuel multiplier and cannot acquire one — `fuel_multiplier("push")`
+returns 1.0 whatever is set on it, because no fuel category lists `push` in its
+`applies_to`. `Economy Test` asserts that directly.
+
+See [Jobs and Economy](jobs-and-economy.md) for the categories and costs.

@@ -1,7 +1,7 @@
 # A Cut Above: Mow & Grow — Developer Documentation
 
 Status: Internal developer documentation
-Last repository review: **2026-08-19** (polish and presentation pass: pause/controls, credits, weather visuals, trailer)
+Last repository review: **2026-08-20** (session 7: reusable environment package, town lighting, economy and upgrades, pond prototype, documentation audit)
 Configured entry point: **`res://Game/App/Main Menu Screen.tscn`**
 
 ## Purpose
@@ -17,10 +17,26 @@ migration-era material and is not a source for these pages.
 
 ## Read this first
 
-**[Application layer](application-layer.md)** — the autoloads, screen routing,
-world clock, and the one job-completion pathway. It is the layer that makes the
-separate systems into a running game, and most integration questions are
-answered there.
+If you are an AI coding agent picking this project up, read in this order and
+stop as soon as you have what you need:
+
+1. **[Application layer](application-layer.md)** — the autoloads, screen
+   routing, the world clock, and the one job-completion pathway. Most
+   integration questions are answered here.
+2. **[Architecture](architecture.md)** — the layering, the runtime graph, and
+   **the boundaries that must not be crossed**.
+3. **The system page for whatever you are touching** — see the map below.
+4. **[Reference](reference/important-scripts.md)** — exact paths, class names
+   and owners.
+5. **[Decisions and open questions](decisions-and-open-questions.md)** — why
+   something is the way it is, and what is still unresolved. Check here before
+   "fixing" anything that looks odd.
+6. **[Validation and development tools](validation-and-dev-tools.md)** — how to
+   prove you did not break it.
+
+The workspace root also has `CURRENT_STATUS.md` (where the project is now) and
+`CLAUDE_WORKLOG.md` (chronological history). **These pages describe the system;
+the worklog describes how it got here. Do not put history in here.**
 
 ## Status vocabulary
 
@@ -48,9 +64,15 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 | Mowing runtime | `Game/M.V.P/Minimum Viable Game.tscn` + `MVP.gd` |
 | Grass cutting | `Custom_Gridmap` + `Multi_Mesh_Chunk` |
 | Terrain / foliage | `Custom Gridmap solution/Terrain Manager.tscn` |
-| Sky | `addons/sky_3d` (the only installed addon) |
+| Money | `GameSession` — **the one balance** |
+| Market and prices | `Economy` autoload — `Game/Economy/economy_manager.gd` |
+| Mower upgrades | `MowerUpgrades` autoload — `Game/Economy/mower_upgrades.gd` |
+| Town services | `Main Area/ACA_BusinessTown/UI/business_services.gd` |
+| Sky | `addons/sky_3d` — third party, **read-only** |
 | Weather routing | `Weather/Preset Manager` + `Weather/Handlers/Rain Handler` |
-| Weather LOOK | `Weather/Visual/weather_visual_adapter.gd` (mowing), `town_light_adapter.gd` (town) |
+| Weather LOOK | `addons/aca_sky3d_environment/` (reusable package) via `Weather/Visual/weather_visual_adapter.gd`; `town_light_adapter.gd` for the town |
+| Rain particles | `ACAPrecipitationRig`, built in code inside the package |
+| Ponds | `Mowing Section/Experimental/Pond/` — **EXPERIMENTAL, unused by gameplay** |
 | Player UI | `res://UI/` driven by `Game/App/gameplay_ui.gd` |
 | Pause stack | `Game/App/pause_layer.gd` (`ACAPauseLayer`) — one implementation, both screens |
 | Cursor ownership | `AppUI` — the only writer of `Input.mouse_mode` |
@@ -78,6 +100,7 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 - [Weather, time of day, and audio](systems/weather-time-and-audio.md)
 - [HUD, menus, and interface systems](systems/ui-hud-and-menus.md)
 - [Jobs and economy](systems/jobs-and-economy.md)
+- [Pond prototype](systems/pond-prototype.md) — **experimental**
 - [Save and load](systems/save-and-load.md)
 
 ### Reference and maintenance

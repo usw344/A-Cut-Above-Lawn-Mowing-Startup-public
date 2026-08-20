@@ -194,12 +194,7 @@ environment = SubResource("Environment_lyy1u")
 transform = Transform3D(0.8660254, -0.3213938, 0.38302222, 0, 0.76604444, 0.6427876, -0.5, -0.55667037, 0.66341394, 0, 0, 0)
 light_color = Color(1, 0.945, 0.851, 1)
 light_energy = 1.5
-shadow_enabled = true
-shadow_bias = 0.025
-shadow_normal_bias = 1.2
-shadow_blur = 1.1
-directional_shadow_mode = 0
-directional_shadow_max_distance = 80.0
+shadow_enabled = false
 
 [node name="FillLight" type="DirectionalLight3D" parent="." unique_id=1703009524]
 transform = Transform3D(-0.8660254, 0.20336835, -0.45677277, 0, 0.9135454, 0.40673664, 0.50000006, 0.35224426, -0.79115355, 0, 0, 0)

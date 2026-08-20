@@ -64,6 +64,26 @@ func _run() -> void:
 	await _settle(45)
 	await _capture("02-town")
 
+	# The three real town services, opened exactly the way clicking a building
+	# opens them. Money and fuel are staged first, so the shop shows a machine
+	# that can afford something and a tank that needs filling - an empty wallet
+	# in front of a full tank proves nothing about the panel.
+	GameSession.add_money(4000)
+	MowerFuel.dev_drain()
+	var screen := get_tree().current_scene
+	for service: Array in [
+			["business_hq", "02a-business-office"],
+			["supply_store", "02b-supply-store"],
+			["mower_dealer", "02c-mower-workshop"]]:
+		if screen.has_method("_on_business_action"):
+			screen.call("_on_business_action", StringName(service[0]))
+			await _settle(30)
+			await _capture(String(service[1]))
+			var panel := screen.find_child("Business Services", true, false)
+			if panel != null and panel.has_method("close"):
+				panel.call("close")
+				await _settle(16)
+
 	# Open the Job Board the way the town does.
 	var town := get_tree().current_scene.get_node_or_null(^"BusinessTown") as ACABusinessTown
 	if town != null and town.hud != null:

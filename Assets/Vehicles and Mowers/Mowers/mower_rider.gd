@@ -63,6 +63,11 @@ signal fuel_empty
 # reimplemented here.
 const POWERED := true
 
+## THE STABLE UPGRADE ID for this machine. Matches `MVP.mowers_scene_list` and
+## `model.current_mower`, so a save refers to the mower by NAME and moving the
+## scene file cannot invalidate it.
+const MOWER_ID := &"rider"
+
 ## Uniform across the canonical mowers so nothing has to check a scene name.
 func is_powered() -> bool:
 	return POWERED
@@ -131,8 +136,12 @@ func _physics_process(delta):
 	var user_input = get_input()
 
 	##assign user input to the velocity variable. which is BUILT-IN
-	velocity.x = user_input.x * model.get_speed() * 3
-	velocity.z = user_input.z * model.get_speed() * 3
+	# Authored speed x purchased upgrades. The base value stays exactly what
+	# the scene and the dev slider say; the upgrade is a multiplier on top, so
+	# selling the upgrade back would restore the stock machine precisely.
+	var drive_speed: float = model.get_speed() * 3.0 		* MowerUpgrades.speed_multiplier(MOWER_ID)
+	velocity.x = user_input.x * drive_speed
+	velocity.z = user_input.z * drive_speed
 
 	if velocity.x != 0 and velocity.z != 0:
 		moving = true
@@ -144,7 +153,9 @@ func _physics_process(delta):
 	# TIME based, through the one owner. `_throttle` was decided by get_input()
 	# a few lines up. Burning BEFORE the audio section means the engine reacts
 	# on the same frame the tank runs dry.
-	MowerFuel.consume(delta, _throttle)
+	# Fuel-system upgrades multiply the BURN, below 1.0 being an
+	# improvement. The rates themselves still live only in MowerFuel.
+	MowerFuel.consume(delta * MowerUpgrades.fuel_multiplier(MOWER_ID), _throttle)
 	var engine_running: bool = MowerFuel.has_fuel()
 
 	# --- AUDIO CONTROL SECTION ---
@@ -156,7 +167,8 @@ func _physics_process(delta):
 	last_speed = horizontal_speed
 
 	# convert speed to 0-1 range
-	var max_speed: float = model.get_speed() * 3
+	var max_speed: float = model.get_speed() * 3.0 \
+		* MowerUpgrades.speed_multiplier(MOWER_ID)
 	var speed_ratio: float = clamp(horizontal_speed / max_speed, 0.0, 1.0)
 
 	# A refuel restarts the loop; running dry fades it out and stops it.
@@ -204,10 +216,13 @@ func _physics_process(delta):
 func handle_smoothed_mouse_movement(delta):
 	var old_yaw: float = rotation.y
 
+	# Steering upgrades raise the approach RATE, which is what "tighter" means
+	# for an exponential smooth - not a different curve, just a faster one.
+	var yaw_rate: float = mouse_yaw_smoothing 		* MowerUpgrades.handling_multiplier(MOWER_ID)
 	rotation.y = lerp_angle(
 		rotation.y,
 		target_body_yaw,
-		1.0 - exp(-mouse_yaw_smoothing * delta)
+		1.0 - exp(-yaw_rate * delta)
 	)
 
 	var applied_rot_y: float = shortest_angle_difference(old_yaw, rotation.y)
@@ -301,11 +316,16 @@ func get_input():
 
 func dev_hud():
 	var string_to_print:String = ""
-	string_to_print += str(round(position/16)) + "\n"
-	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\n"
-	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\n"
-	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\n"
-	string_to_print += "Vertices" + str(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME) + "\n"
+	string_to_print += str(round(position/16)) + "\
+"
+	string_to_print += "FPS: " + str(Performance.get_monitor(Performance.TIME_FPS)) + "\
+"
+	string_to_print += "Rendered calls: " + str(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)) + "\
+"
+	string_to_print += "Memory: " + str(round(Performance.get_monitor(Performance.MEMORY_STATIC)/1000000)) + "\
+"
+	string_to_print += "Vertices" + str(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME) + "\
+"
 	string_to_print += "P Mode: " + str(p_mode)
 
 	$CanvasLayer/Label.text = string_to_print
