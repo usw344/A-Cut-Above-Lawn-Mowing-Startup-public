@@ -135,11 +135,14 @@ func fill_dictionaries(global_coords_of_items:Array):
 			i+=1
 
 
-func mow_item_by_name(item_name:String,coord:Vector3i):
+func mow_item_by_name(item_name:String,coord:Vector3i) -> bool:
 	"""
 	Pass in a item_name in the given format 'chunk_id,x,y,z' and
 	since the collision function that uses this function already does the split
 	to prevent duplicate work, also pass in the local to multimesh coord in Vector3i format
+	
+	Returns true only when an item was actually mowed by this call, so the
+	owning Custom_Gridmap can keep an O(1) mowed counter instead of rescanning.
 	"""
 	# remove the static body
 	if collisions_static_bodies.has(item_name): # prevent any case where staticbody is not there
@@ -151,11 +154,61 @@ func mow_item_by_name(item_name:String,coord:Vector3i):
 		multimesh_instances_coords_unmowed.erase(coord)
 		multimesh_instances_coords_mowed.append(coord)
 	else:
-		return
+		return false
 	
 
 	# regenerate the meshes
 	multimesh_instance_mowed.multimesh = make_multimesh(multimesh_instances_coords_mowed,1)
+	multimesh_instance_unmowed.multimesh = make_multimesh(multimesh_instances_coords_unmowed)
+	return true
+
+
+func mowed_count() -> int:
+	return multimesh_instances_coords_mowed.size()
+
+
+func unmowed_count() -> int:
+	return multimesh_instances_coords_unmowed.size()
+
+
+func item_count() -> int:
+	return multimesh_instances_coords_mowed.size() + multimesh_instances_coords_unmowed.size()
+
+
+## ---------------------------------------------------------------------------
+## SAVE / RESTORE SUPPORT
+##
+## The save system stores only WHICH items are cut, and rebuilds the rest with
+## the normal grid construction. Replaying cuts one at a time through
+## mow_item_by_name() would regenerate this chunk's MultiMeshes once per blade,
+## so restore uses the silent variant and rebuilds once at the end.
+## ---------------------------------------------------------------------------
+
+## Names of every item cut in this chunk, in the "chunk_id,x,y,z" form the
+## collision bodies use.
+func mowed_item_names() -> PackedStringArray:
+	var out := PackedStringArray()
+	for coord in multimesh_instances_coords_mowed:
+		out.append(get_str_represenation_of_collision_data(coord))
+	return out
+
+
+## Same bookkeeping as mow_item_by_name() but WITHOUT regenerating the meshes.
+## Call rebuild_multimeshes() once after a batch.
+func mow_item_silent(item_name: String, coord: Vector3i) -> bool:
+	if not collisions_static_bodies.has(item_name):
+		return false
+	var static_body: StaticBody3D = collisions_static_bodies[item_name]
+	multimesh_instance_unmowed.remove_child(static_body)
+	static_body.queue_free()
+	collisions_static_bodies.erase(item_name)
+	multimesh_instances_coords_unmowed.erase(coord)
+	multimesh_instances_coords_mowed.append(coord)
+	return true
+
+
+func rebuild_multimeshes() -> void:
+	multimesh_instance_mowed.multimesh = make_multimesh(multimesh_instances_coords_mowed, 1)
 	multimesh_instance_unmowed.multimesh = make_multimesh(multimesh_instances_coords_unmowed)
 
 func make_multimesh(instance_coords:Array,type:int=0) ->MultiMesh:

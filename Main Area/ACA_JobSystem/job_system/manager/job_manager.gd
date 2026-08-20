@@ -255,6 +255,19 @@ func _spawn_offer(t: float) -> void:
 	available_jobs_changed.emit()
 
 
+## Put offers on the board immediately, ignoring the arrival interval, up to
+## the market's current capacity. Called once when a world starts or loads so
+## the player never walks into an empty board on day one. Normal arrivals
+## continue on their own interval afterwards.
+func seed_initial_offers(count: int = 2) -> void:
+	var t := _time.game_minutes()
+	var capacity := max_available_jobs()
+	var wanted: int = mini(count, capacity - _available.size())
+	for _i in range(maxi(wanted, 0)):
+		_spawn_offer(t)
+	_schedule_next_arrival(t)
+
+
 # ============================================================= player actions
 
 ## Move an offer from Available to Current. Accepting one offer must never
@@ -322,6 +335,20 @@ func update_job_progress(job_id: StringName, value: float) -> bool:
 	return true
 
 
+## Drop a current job WITHOUT completing it. Used by the host when the player
+## abandons a contract. The job is not business history, so it never reaches
+## past_jobs; it simply stops existing.
+func discard_current_job(job_id: StringName) -> bool:
+	var job := _find(_current, job_id)
+	if job == null:
+		push_warning("ACAJobManager.discard_current_job: no current job with id %s" % job_id)
+		return false
+	_current.erase(job)
+	job.status = ACAJobEnums.Status.EXPIRED
+	current_jobs_changed.emit()
+	return true
+
+
 ## Move a current job to business history. Payment, trust, bonuses and saving
 ## are future systems and deliberately not done here.
 func complete_job(job_id: StringName) -> bool:
@@ -366,6 +393,74 @@ func _find(list: Array[ACAJob], job_id: StringName) -> ACAJob:
 		if job.id == job_id:
 			return job
 	return null
+
+
+# ================================================================ persistence
+## The manager owns every job, so it also owns their serialisation. Plain
+## built-in types only, so this round-trips through JSON.
+##
+## `_next_arrival_time` is absolute game time and is stored as null when INF
+## (a closed market), because JSON has no infinity.
+
+func save_state() -> Dictionary:
+	var out := {
+		"generator_version": ACAJobBalance.GENERATOR_VERSION,
+		"market_strength": _market_strength,
+		"economy": int(economy),
+		"climate": int(climate),
+		"next_arrival_time": null if is_inf(_next_arrival_time) else _next_arrival_time,
+		"available": [],
+		"current": [],
+		"past": [],
+	}
+	for job in _available:
+		out["available"].append(job.to_dict())
+	for job in _current:
+		out["current"].append(job.to_dict())
+	for job in _past:
+		out["past"].append(job.to_dict())
+	return out
+
+
+## Replace every collection from a save. Emits the collection signals so any
+## bound UI rebuilds itself.
+func load_state(data: Dictionary) -> void:
+	_available.clear()
+	_current.clear()
+	_past.clear()
+
+	_available.assign(_jobs_from(data.get("available", [])))
+	_current.assign(_jobs_from(data.get("current", [])))
+	_past.assign(_jobs_from(data.get("past", [])))
+
+	economy = int(data.get("economy", ACAJobEnums.Economy.NORMAL))
+	climate = int(data.get("climate", ACAJobEnums.Climate.NORMAL))
+	_market_strength = _compute_strength()
+
+	var t := _time.game_minutes()
+	_last_seen_time = t
+	var arrival: Variant = data.get("next_arrival_time", null)
+	if arrival == null:
+		_next_arrival_time = INF
+	else:
+		# Clamp into the future: a save loaded after the stored arrival would
+		# otherwise dump an offer on the first tick.
+		_next_arrival_time = maxf(float(arrival), t)
+
+	available_jobs_changed.emit()
+	current_jobs_changed.emit()
+	past_jobs_changed.emit()
+	market_strength_changed.emit(_market_strength)
+
+
+func _jobs_from(raw: Variant) -> Array[ACAJob]:
+	var out: Array[ACAJob] = []
+	if not (raw is Array):
+		return out
+	for entry in raw:
+		if entry is Dictionary:
+			out.append(ACAJob.from_dict(entry))
+	return out
 
 
 # ============================================================== debug support

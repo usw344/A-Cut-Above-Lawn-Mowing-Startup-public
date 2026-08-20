@@ -3,16 +3,22 @@ extends Control
 @onready var FPS_Counter: Label = $"FPS counter"
 @onready var speed_control = $"VBoxContainer/Mower Speed Slider"
 
-@onready var credits: Label = $ColorRect/Credits
-@onready var credits2: Label = $ColorRect2/Credits2
-@onready var credit1_colorRect: ColorRect = $ColorRect
-@onready var credit2_colorRect: ColorRect = $ColorRect2
-
-@onready var credit_button: Button = $"Credit Button"
+# The old in-HUD credits panel was removed 2026-08-19. Credits are a Main Menu
+# screen now (UI/Credits/), driven by the res://Credits/ folder. The licence
+# text this HUD carried was migrated there verbatim first.
 
 @onready var day_preset_button: Button = $"VBoxContainer/Time of Day Preset Container/Day Preset"
 @onready var evening_preset_button: Button = $"VBoxContainer/Time of Day Preset Container/Evening Preset"
 @onready var night_preset_button: Button = $"VBoxContainer/Time of Day Preset Container/Night Preset"
+
+# ------------------------------------------------------- FUEL (DEVELOPMENT)
+#
+# This row is the ONLY place Auto Refuel is exposed. It is a development cheat
+# and must never appear on the production Gameplay HUD. See MowerFuel.
+@onready var auto_refuel_check: CheckBox = $"VBoxContainer/Fuel Container/Auto Refuel"
+@onready var refuel_button: Button = $"VBoxContainer/Fuel Container/Refuel Now"
+@onready var drain_button: Button = $"VBoxContainer/Fuel Container/Drain"
+@onready var fuel_readout: Label = $"VBoxContainer/Fuel Container/Fuel Readout"
 
 @onready var clear_weather_button: Button = $"VBoxContainer/Weather Preset Container/Clear"
 @onready var foggy_weather_button: Button = $"VBoxContainer/Weather Preset Container/Foggy"
@@ -36,10 +42,16 @@ signal weather_clear_requested
 signal weather_foggy_requested
 signal weather_rain_requested
 
+# development fuel controls
+signal auto_refuel_toggled(enabled: bool)
+signal refuel_requested
+signal drain_fuel_requested
+
 
 func _physics_process(delta: float) -> void:
 	update_debug_stats()
-	
+	update_fuel_readout()
+
 
 
 func _ready() -> void:
@@ -63,10 +75,18 @@ func _ready() -> void:
 	if not rain_weather_button.pressed.is_connected(_on_rain_weather_pressed):
 		rain_weather_button.pressed.connect(_on_rain_weather_pressed)
 
-	credits.visible = false
-	credits2.visible = false
-	credit1_colorRect.visible = false
-	credit2_colorRect.visible = false
+	# Development fuel row. The checkbox mirrors MowerFuel rather than owning
+	# the state, so F8 and the HUD can never disagree.
+	auto_refuel_check.set_pressed_no_signal(MowerFuel.auto_refuel())
+	_refresh_auto_refuel_text()
+	if not auto_refuel_check.toggled.is_connected(_on_auto_refuel_toggled):
+		auto_refuel_check.toggled.connect(_on_auto_refuel_toggled)
+	if not refuel_button.pressed.is_connected(_on_refuel_pressed):
+		refuel_button.pressed.connect(_on_refuel_pressed)
+	if not drain_button.pressed.is_connected(_on_drain_pressed):
+		drain_button.pressed.connect(_on_drain_pressed)
+	MowerFuel.auto_refuel_changed.connect(_on_mower_fuel_auto_refuel_changed)
+
 
 func update_debug_stats():
 	var fps = Performance.get_monitor(Performance.TIME_FPS)
@@ -88,10 +108,8 @@ func update_debug_stats():
 func _input(event):
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_SLASH:
-			if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-				Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-			else:
-				Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			# The cursor is owned by AppUI; see Game/App/app_ui.gd.
+			AppUI.toggle_mouse_capture()
 		if event.keycode == KEY_H:
 			visible = !visible
 
@@ -119,14 +137,6 @@ func _on_mower_speed_slider_value_changed(value: float) -> void:
 	emit_signal("ms_slider_value_changed", value)
 
 
-func _on_credit_button_pressed():
-	credits.visible = !credits.visible
-	credits2.visible = !credits2.visible
-	credit1_colorRect.visible = !credit1_colorRect.visible
-	credit2_colorRect.visible = !credit2_colorRect.visible
-	
-
-
 func _on_day_preset_pressed() -> void:
 	emit_signal("tod_day_requested")
 
@@ -149,6 +159,37 @@ func _on_foggy_weather_pressed() -> void:
 
 func _on_rain_weather_pressed() -> void:
 	emit_signal("weather_rain_requested")
+
+
+# ------------------------------------------------------- FUEL (DEVELOPMENT)
+
+## Live tank readout, so the effect of Auto Refuel is visible: the bar should
+## still be seen falling and being topped up, not pinned at 100%.
+func update_fuel_readout() -> void:
+	fuel_readout.text = "%d%%  (auto %s)" % [
+		int(round(MowerFuel.fraction() * 100.0)), MowerFuel.auto_refuel_text()]
+
+
+func _refresh_auto_refuel_text() -> void:
+	auto_refuel_check.text = "AUTO REFUEL: %s" % MowerFuel.auto_refuel_text()
+
+
+func _on_auto_refuel_toggled(pressed: bool) -> void:
+	emit_signal("auto_refuel_toggled", pressed)
+
+
+## MowerFuel is the authority; F8 and the trailer can change it too.
+func _on_mower_fuel_auto_refuel_changed(enabled: bool) -> void:
+	auto_refuel_check.set_pressed_no_signal(enabled)
+	_refresh_auto_refuel_text()
+
+
+func _on_refuel_pressed() -> void:
+	emit_signal("refuel_requested")
+
+
+func _on_drain_pressed() -> void:
+	emit_signal("drain_fuel_requested")
 #extends Control
 #
 #@onready var FPS_Counter: Label = $"FPS counter"

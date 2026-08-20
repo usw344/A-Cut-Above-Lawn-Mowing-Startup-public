@@ -6,7 +6,7 @@ Status: Current workload map and measurement priorities
 
 The mowable grass system exchanges node count and physics-body count for direct collision-based identification of every grass position.
 
-At the current MVP call:
+At the fallback standalone call (`test_custom_gridmap(256)`):
 
 ```gdscript
 test_custom_gridmap(256)
@@ -54,7 +54,8 @@ The small chunk size bounds per-cut MultiMesh reconstruction, while the large nu
 
 ## Grid initialization and reset
 
-Grid creation is synchronous from `MVP._ready()`.
+Grid creation is synchronous from `MVP._ready()`, behind the fullscreen
+transition and the Job Intro screen, so the cost is masked rather than removed.
 
 Initialization performs:
 
@@ -116,7 +117,7 @@ Rain scenes currently author thousands of particles across the near and far emit
 
 ## UI instrumentation
 
-The MVP HUD currently samples:
+The development MVP HUD (F3) samples:
 
 - FPS.
 - Static memory.
@@ -185,3 +186,28 @@ Measure at minimum:
 - Desktop, Web, and Android separately.
 
 Record target hardware and acceptable budgets before using these numbers as pass/fail criteria.
+
+## Real contract sizes
+
+**Since 2026-08-19** the grid is sized from the accepted contract, so normal
+gameplay is well below the 256 fallback:
+
+| Lawn size | Grid | Instances | Chunks |
+|---|---|---:|---:|
+| Small | 96 | 9,216 | 576 |
+| Medium | 144 | 20,736 | 1,296 |
+| Large | 192 | 36,864 | 2,304 |
+| *(standalone fallback)* | 256 | 65,536 | 4,096 |
+
+Each unmowed instance still gets its own `StaticBody3D` + `CollisionShape3D`, so
+body count tracks the first column directly.
+
+## Progress accounting is O(1)
+
+Mowing progress is tracked with incremental counters on `Custom_Gridmap`, updated
+only when `Multi_Mesh_Chunk.mow_item_by_name()` reports a real cut. Nothing walks
+the chunk dictionary per frame. `recount_progress()` is the only full scan and
+runs twice: after `make_grid()` and after `load_object()`.
+
+`MVP._tick_job_runtime()` pushes progress into `ACAJobManager` at 2 Hz, not per
+frame. The town refreshes its clock label at 2 Hz for the same reason.

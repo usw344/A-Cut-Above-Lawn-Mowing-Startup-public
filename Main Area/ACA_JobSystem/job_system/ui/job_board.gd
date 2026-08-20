@@ -20,7 +20,7 @@ signal closed()
 
 enum Tab { AVAILABLE, CURRENT, PAST }
 
-const DEFAULT_CARD_SCENE := "res://ACA_JobSystem/job_system/ui/JobCard.tscn"
+const DEFAULT_CARD_SCENE := "res://Main Area/ACA_JobSystem/job_system/ui/JobCard.tscn"
 const FADE_TIME := 0.18
 const COUNTDOWN_INTERVAL := 0.5
 const MESSAGE_SECONDS := 3.5

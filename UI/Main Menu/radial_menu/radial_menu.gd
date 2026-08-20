@@ -219,6 +219,58 @@ func _create_menu_items() -> void:
 		_menu_items.append(item)
 
 
+# ======================================================= PRESENTATION API
+##
+## For screenshots and the Trailer Capture scene. These drive the SAME code
+## paths a real mouse hover drives - there is no separate "trailer look" and
+## there must never be one. Gameplay never calls them.
+
+## Put the menu into the visual state hovering `option_id` produces: the node
+## highlights and the centre hub shows that option's copy. Also moves the
+## keyboard selection there, so the shot cannot show two different items
+## emphasised at once. Returns false for an unknown or disabled option.
+func preview_hover_option(option_id: StringName) -> bool:
+	var index := option_index(option_id)
+	if index < 0 or not _is_option_enabled(index):
+		return false
+	# Each node already carries its name as a label beside it, so a pointer
+	# tooltip on top of that is a second copy of the same word - fine in play,
+	# text-on-text in a still. Suppressed for the length of the preview only.
+	_set_tooltips_enabled(false)
+	_set_selected_index(index)
+	_on_item_mouse_entered(index)
+	return true
+
+
+func clear_preview_hover() -> void:
+	if _hovered_index >= 0:
+		_on_item_mouse_exited(_hovered_index)
+	_set_tooltips_enabled(true)
+
+
+func _set_tooltips_enabled(enabled: bool) -> void:
+	for index: int in _menu_items.size():
+		var display_name := String(OPTION_DEFINITIONS[index]["display_name"])
+		_menu_items[index].tooltip_text = display_name.capitalize() if enabled else ""
+
+
+## Where an option sits on screen, for putting a real cursor on it. Returns
+## `Vector2(-1, -1)` if the option is unknown or the menu is not laid out yet.
+func option_screen_position(option_id: StringName) -> Vector2:
+	var index := option_index(option_id)
+	if index < 0 or index >= _menu_items.size():
+		return Vector2(-1.0, -1.0)
+	var item: Control = _menu_items[index]
+	return item.get_global_rect().get_center()
+
+
+func option_index(option_id: StringName) -> int:
+	for index: int in OPTION_DEFINITIONS.size():
+		if OPTION_DEFINITIONS[index]["option_id"] == option_id:
+			return index
+	return -1
+
+
 func _unhandled_key_input(event: InputEvent) -> void:
 	if _transitioning:
 		return

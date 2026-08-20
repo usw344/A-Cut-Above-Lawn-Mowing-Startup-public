@@ -106,6 +106,9 @@ func make_grid() ->void:
 	# at this point we have the base grid information ready. Now begin rendering 
 	# make the grid of multimesh chunks 
 	fill_multimesh_grid()
+	
+	# capture the instance totals once, for mowing progress
+	recount_progress()
 
 func fill_multimesh_grid() ->void:
 	# find the grid coords of the multimesh chunks
@@ -206,6 +209,161 @@ func make_an_array_of_arrays_of_coordinates() ->Array:
 	
 	return grid_positions
 
+## ---------------------------------------------------------------------------
+## MOWING PROGRESS
+##
+## Counters are maintained incrementally: totals are captured once the grid is
+## built and the mowed count moves only when a chunk reports a real cut. There
+## is no per-frame rescan of the chunk dictionary, which matters at 256x256.
+## ---------------------------------------------------------------------------
+
+## 0.0 - 1.0. Emitted only when the mowed count actually changes.
+signal mowing_progress_changed(fraction: float)
+
+var _total_items: int = 0
+var _mowed_items: int = 0
+
+
+## Total grass instances in this grid. Zero until the grid has been built.
+func total_item_count() -> int:
+	return _total_items
+
+
+func mowed_item_count() -> int:
+	return _mowed_items
+
+
+## 0.0 - 1.0. Returns 0.0 for an empty / unbuilt grid rather than dividing by zero.
+func mowed_fraction() -> float:
+	if _total_items <= 0:
+		return 0.0
+	return clampf(float(_mowed_items) / float(_total_items), 0.0, 1.0)
+
+
+## ---------------------------------------------------------------------------
+## SAVE / RESTORE
+##
+## The save format stores only the set of cut items. The grid itself is rebuilt
+## by the normal test_custom_gridmap(grid_size) path, then the saved set is
+## replayed here. That keeps saves small (an untouched lawn costs nothing) and
+## avoids serialising every coordinate of every chunk.
+## ---------------------------------------------------------------------------
+
+## Every item cut so far, as "chunk_id,x,y,z" strings.
+func mowed_item_names() -> PackedStringArray:
+	var out := PackedStringArray()
+	for id in chunk_id_to_chunk_dictionary:
+		var chunk: Multi_Mesh_Chunk = chunk_id_to_chunk_dictionary[id]
+		out.append_array(chunk.mowed_item_names())
+	return out
+
+
+## Apply a saved cut set to a freshly built grid. Groups by chunk so each
+## chunk's MultiMeshes are rebuilt exactly once, not once per blade.
+## Returns how many items were actually applied.
+func restore_mowed_items(item_names: PackedStringArray) -> int:
+	var touched_chunks := {}
+	var applied := 0
+
+	for item_name in item_names:
+		var v: Vector4i = str_to_vector4i(item_name)
+		var chunk_id: int = v.x
+		var chunk: Multi_Mesh_Chunk = chunk_id_to_chunk_dictionary.get(chunk_id)
+		if chunk == null:
+			continue
+		if chunk.mow_item_silent(item_name, Vector3i(v.y, v.z, v.w)):
+			touched_chunks[chunk_id] = chunk
+			applied += 1
+
+	for id in touched_chunks:
+		touched_chunks[id].rebuild_multimeshes()
+
+	recount_progress()
+	return applied
+
+
+## Recount from the chunks. Used after a restore or a load, where the counters
+## were never incremented because the mowed state arrived wholesale.
+func recount_progress() -> void:
+	var total := 0
+	var mowed := 0
+	for id in chunk_id_to_chunk_dictionary:
+		var chunk:Multi_Mesh_Chunk = chunk_id_to_chunk_dictionary[id]
+		total += chunk.item_count()
+		mowed += chunk.mowed_count()
+	_total_items = total
+	_mowed_items = mowed
+	mowing_progress_changed.emit(mowed_fraction())
+
+
+## ---------------------------------------------------------------------------
+## GEOMETRIC CUT -- DEVELOPMENT / MEDIA TOOLING
+##
+## The same cut the collision handler performs -- the same `mow_item_silent`
+## bookkeeping, the same MultiMesh rebuild, the same progress counters -- but
+## SELECTED BY GEOMETRY instead of by a physics contact.
+##
+## `Trailer Capture` needs this because its mower adapter owns the mower's
+## transform during a shot, so the mower produces no slide collisions and the
+## grid would never be told anything was cut. Nothing in normal gameplay calls
+## either function; the player's mower still cuts by colliding.
+## ---------------------------------------------------------------------------
+
+## Half-extent of a chunk plus slack, for the cheap per-chunk reject. A chunk is
+## 4 instances square at 2 units apart, so its items span 0..6 from its origin.
+const SWATH_CHUNK_MARGIN := 9.0
+
+
+## Cut every remaining item within `half_width` of the segment `from` -> `to`.
+## Distances are measured on the XZ plane, because the grass sits at ground
+## level and the caller's positions do not. Returns how many were really cut.
+func mow_swath(from: Vector3, to: Vector3, half_width: float) -> int:
+	var touched: Dictionary = {}
+	var cut: int = 0
+	var reject: float = half_width + SWATH_CHUNK_MARGIN
+
+	for id in chunk_id_to_chunk_dictionary:
+		var chunk: Multi_Mesh_Chunk = chunk_id_to_chunk_dictionary[id]
+		if chunk == null or chunk.unmowed_count() <= 0:
+			continue
+		var node: MultiMeshInstance3D = chunk.multimesh_instance_unmowed
+		if node == null or not is_instance_valid(node) or not node.is_inside_tree():
+			continue
+		# One test for the whole chunk before touching sixteen bodies.
+		if _xz_distance_to_segment(node.global_position + Vector3(3, 0, 3), from, to) > reject:
+			continue
+
+		for item_name in chunk.collisions_static_bodies.keys():
+			var body: Node3D = chunk.collisions_static_bodies[item_name]
+			if body == null or not is_instance_valid(body):
+				continue
+			if _xz_distance_to_segment(body.global_position, from, to) > half_width:
+				continue
+			var v: Vector4i = str_to_vector4i(item_name)
+			if chunk.mow_item_silent(item_name, Vector3i(v.y, v.z, v.w)):
+				touched[id] = chunk
+				cut += 1
+
+	for id in touched:
+		touched[id].rebuild_multimeshes()
+	if cut > 0:
+		_mowed_items += cut
+		mowing_progress_changed.emit(mowed_fraction())
+	return cut
+
+
+## Cut a disc. `mow_swath` with a zero-length segment.
+func mow_disc(centre: Vector3, radius: float) -> int:
+	return mow_swath(centre, centre, radius)
+
+
+func _xz_distance_to_segment(point: Vector3, a: Vector3, b: Vector3) -> float:
+	var p := Vector2(point.x, point.z)
+	var sa := Vector2(a.x, a.z)
+	var sb := Vector2(b.x, b.z)
+	return p.distance_to(Geometry2D.get_closest_point_to_segment(p, sa, sb))
+
+
 func mow_item(item_name:String) ->void:
 	"""
 	Expect an name object in form 'chunk_id,x,y,z'
@@ -215,9 +373,13 @@ func mow_item(item_name:String) ->void:
 	var coord_local_to_multimesh:Vector3i = Vector3i(vector4i.y,vector4i.z,vector4i.w)
 
 	var chunk_to_remove_item_from:Multi_Mesh_Chunk = chunk_id_to_chunk_dictionary.get(chunk_id)
+	if chunk_to_remove_item_from == null:
+		return
 
 	# remove item
-	chunk_to_remove_item_from.mow_item_by_name(item_name,coord_local_to_multimesh)
+	if chunk_to_remove_item_from.mow_item_by_name(item_name,coord_local_to_multimesh):
+		_mowed_items += 1
+		mowing_progress_changed.emit(mowed_fraction())
 
 
 func str_to_vector4i(str) -> Vector4i:
@@ -398,6 +560,9 @@ func load_object(data:Dictionary) ->void:
 			mm_instance.position = pos
 		mm_chunk.generate_collision() # add collision shapes in 
 		chunk_id_to_chunk_dictionary[mm_chunk_data_id] = mm_chunk
+	
+	# the counters were never incremented for a restored grid; rebuild them
+	recount_progress()
 
 func test_save_loading():
 	

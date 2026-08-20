@@ -14,9 +14,9 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="A Cut Above"
+config/name="A Cut Above: Claude Work Repo"
 config/tags=PackedStringArray("game")
-run/main_scene="uid://b85h5nq688wra"
+run/main_scene="res://Game/App/Main Menu Screen.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 run/max_fps=144
 config/icon="res://icon.svg"
@@ -24,7 +24,13 @@ config/icon="res://icon.svg"
 [autoload]
 
 model="*res://Data Structures/Model.gd"
+MowerFuel="*res://Game/App/mower_fuel.gd"
+WorldClock="*res://Game/World/world_clock.gd"
 JobManager="*uid://dogmb0pup4bhg"
+GameSettings="*res://Game/App/game_settings.gd"
+AppUI="*res://Game/App/app_ui.gd"
+GameSession="*res://Game/App/game_session.gd"
+SaveService="*res://Game/App/save_service.gd"
 
 [debug]
 

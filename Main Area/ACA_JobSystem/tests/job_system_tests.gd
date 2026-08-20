@@ -1,7 +1,7 @@
 extends Node
 ## Headless assertion suite for the portable Job System - development only.
 ##
-##     godot --headless --path <project> res://ACA_JobSystem/tests/JobSystemTests.tscn
+##     godot --headless --path <project> res://Main Area/ACA_JobSystem/tests/JobSystemTests.tscn
 ##
 ## Exits with a non-zero code when anything fails, so it can be wired into CI.
 ## Nothing in job_system/ depends on this folder.
@@ -103,12 +103,12 @@ func _test_job_is_data_not_node() -> void:
 	var as_object: Object = job
 	_check(as_object is Resource, "ACAJob is a Resource")
 	_check(not (as_object is Node), "ACAJob is not a Node (cannot own timers or _process)")
-	var script_source := FileAccess.get_file_as_string("res://ACA_JobSystem/job_system/data/job.gd")
+	var script_source := FileAccess.get_file_as_string("res://Main Area/ACA_JobSystem/job_system/data/job.gd")
 	_check(not script_source.contains("Timer.new()"), "job.gd creates no Timer")
 	_check(not script_source.contains("_process("), "job.gd has no _process")
 	_check(not script_source.contains("_physics_process("), "job.gd has no _physics_process")
 	var manager_source := FileAccess.get_file_as_string(
-		"res://ACA_JobSystem/job_system/manager/job_manager.gd")
+		"res://Main Area/ACA_JobSystem/job_system/manager/job_manager.gd")
 	_check(not manager_source.contains("_physics_process("),
 		"job_manager.gd has no _physics_process")
 
@@ -466,7 +466,7 @@ func _test_ui_board() -> void:
 	_say("- job board UI")
 	var pair := _make_manager()
 	var manager: ACAJobManager = pair[0]
-	var scene: PackedScene = load("res://ACA_JobSystem/job_system/ui/JobBoard.tscn")
+	var scene: PackedScene = load("res://Main Area/ACA_JobSystem/job_system/ui/JobBoard.tscn")
 	if not _check(scene != null, "JobBoard.tscn loads"):
 		_drop(manager)
 		return

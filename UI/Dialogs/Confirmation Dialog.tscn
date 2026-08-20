@@ -1,0 +1,269 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://UI/Theme/Game UI.theme.tres" id="1_cl188"]
+[ext_resource type="Script" path="res://UI/Dialogs/confirmation_dialog.gd" id="2_02bt0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_odm87"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qf7vd"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.153, 0.184, 0.196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uxnpe"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1g57t"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_78xjg"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8hvd6"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ssjnj"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxb86"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.184, 0.18, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.878, 0.482, 0.373, 0.35)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xf5by"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.4, 0.204, 0.169, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5oa0x"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.502, 0.259, 0.212, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.878, 0.482, 0.373, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7p2km"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fmydk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.878, 0.482, 0.373, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="ConfirmationDialog" type="Control" unique_id=1491879218]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_cl188")
+script = ExtResource("2_02bt0")
+
+[node name="Scrim" type="ColorRect" parent="." unique_id=1813527577]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043, 0.059, 0.067, 0.55)
+
+[node name="ScrimButton" type="Button" parent="." unique_id=1697457874]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_odm87")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_odm87")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_odm87")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_odm87")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_odm87")
+flat = true
+
+[node name="CardHolder" type="CenterContainer" parent="." unique_id=1443594742]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="CardHolder" unique_id=1361272559]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_qf7vd")
+
+[node name="Margin" type="MarginContainer" parent="CardHolder/Card" unique_id=969448954]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 26
+
+[node name="Column" type="VBoxContainer" parent="CardHolder/Card/Margin" unique_id=446094791]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="CardHolder/Card/Margin/Column" unique_id=462926175]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "ABANDON JOB?"
+
+[node name="MessageGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1832079612]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Message" type="Label" parent="CardHolder/Card/Margin/Column" unique_id=828621024]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Progress on this contract may be lost."
+autowrap_mode = 3
+
+[node name="ButtonGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1860912117]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Buttons" type="HBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=176014104]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="CancelButton" type="Button" parent="CardHolder/Card/Margin/Column/Buttons" unique_id=159468139]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_uxnpe")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_1g57t")
+theme_override_styles/hover = SubResource("StyleBoxFlat_78xjg")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_8hvd6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ssjnj")
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 15
+text = "CANCEL"
+
+[node name="ConfirmButton" type="Button" parent="CardHolder/Card/Margin/Column/Buttons" unique_id=696834934]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_dxb86")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xf5by")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5oa0x")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_7p2km")
+theme_override_styles/focus = SubResource("StyleBoxFlat_fmydk")
+theme_override_colors/font_color = Color(0.878, 0.482, 0.373, 1)
+theme_override_colors/font_focus_color = Color(0.878, 0.482, 0.373, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 15
+text = "CONFIRM"

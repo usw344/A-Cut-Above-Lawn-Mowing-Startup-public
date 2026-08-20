@@ -38,3 +38,4 @@ fov = 59.9
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1232892762]
 stream = ExtResource("3_5q6qd")
+bus = &"Mower"

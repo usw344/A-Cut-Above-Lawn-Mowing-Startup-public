@@ -6,11 +6,53 @@ var rotate_speed:int = 20
 var base_gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var gravity = base_gravity
-var mouse_sensitivity:float = 0.002 
+## Authored base sensitivity. The player's Settings multiplier is applied on top
+## through look_sensitivity(); do not read this directly.
+var mouse_sensitivity:float = 0.002
+
+## Base sensitivity scaled by the player's Settings value.
+func look_sensitivity() -> float:
+	return mouse_sensitivity * GameSettings.mouse_sensitivity_scale()
+
+# ---------------------------------------------------------------- LOOK FEEL
+#
+# GAMEPLAY camera tuning. Same convention as the rider mower (see
+# mower_rider.gd for the full note): the number is roughly "e-foldings per
+# second" of exponential approach, so higher = tighter.
+#
+# A walk-behind is hand-steered rather than driven, so it turns noticeably
+# quicker than the rider. Pitch is near-immediate on every mower.
+@export var mouse_yaw_smoothing: float = 26.0
+@export var mouse_pitch_smoothing: float = 32.0
+@export var min_camera_pitch_degrees: float = -75.0
+@export var max_camera_pitch_degrees: float = 45.0
+
+var target_body_yaw: float = 0.0
+var target_camera_pitch: float = 0.0
+
+
 
 ##Signals
 signal collided
-signal fuel_empty
+
+# ------------------------------------------------------------------ MOWER TYPE
+#
+# THE PUSH MOWER IS MANUAL. It is a reel mower: its blades are turned by its own
+# wheels, which is why its audio is silent when it is standing still and only
+# rises as it is pushed (see the audio block below) and why the development
+# HUD's own menu calls the OTHER walk-behind "Push Power Powered".
+#
+# It therefore burns NO gasoline: it does not call MowerFuel.consume(), it never
+# runs out, and it never stops cutting. It shares the fuel gauge's model state
+# with nothing - the gauge simply does not move while this mower is in use.
+#
+# The two powered mowers declare POWERED = true and carry all of that behaviour.
+# There is no `fuel_empty` signal here because there is nothing to emit it for.
+const POWERED := false
+
+## Uniform across the canonical mowers so nothing has to check a scene name.
+func is_powered() -> bool:
+	return POWERED
 
 
 # The mesh instance has the functions to do movement of individual parts of the mower
@@ -39,7 +81,11 @@ var moving_pitch: float = 1.03
 
 
 func _ready():
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# The cursor is owned by AppUI, not by the mower: declaring the context here
+	# means the pause menu can hold it visible without this _ready() fighting it.
+	AppUI.set_mouse_context(Input.MOUSE_MODE_CAPTURED)
+	target_body_yaw = rotation.y
+	target_camera_pitch = $Camera3D.rotation.x
 	mower_audio.play()
 	mower_audio.volume_db = stopped_volume_db
 	mower_audio.pitch_scale = stopped_pitch
@@ -48,7 +94,10 @@ func _ready():
 func _physics_process(delta):
 	#dev_hud()
 	velocity.y -= gravity * delta
-#
+
+	## Apply smoothed mouse turning/camera movement.
+	handle_smoothed_mouse_movement(delta)
+
 	model.set_mower_position(position)
 	##get the total user input. This function could also return from screen joystick
 	var user_input = get_input() 
@@ -80,24 +129,26 @@ func _physics_process(delta):
 
 
 	move_and_slide()
-	
-	## other input related functions
-	##calculate how much fuel has been used
-	if not model.is_mower_fuel_idle_counter(): 		  ##value is still less than counter
-		model.increment_mower_fuel_idle_counter(0.05) ##this is general fuel used due to idling
-	else:
-		model.set_mower_fuel(model.get_mower_fuel() - 1) ##substract one value of fuel due to counter being reached
-		model.set_mower_fuel_idle_counter(0)			 ##reset the counter to zero
-	
-	##collision signal is based if fuel is full or not
-	if model.get_mower_fuel() <= 0:
-		handle_collision("fuel_empty")
-		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
 
-	else:
-		handle_collision("collided")
-		
-	
+	## No fuel check: a reel mower cuts whenever it is pushed. See the MOWER
+	## TYPE note at the top.
+	handle_collision("collided")
+
+
+
+## Exponential approach towards the values the mouse asked for. Runs from
+## _physics_process so the feel does not change with frame rate.
+func handle_smoothed_mouse_movement(delta: float) -> void:
+	rotation.y = lerp_angle(
+		rotation.y,
+		target_body_yaw,
+		1.0 - exp(-mouse_yaw_smoothing * delta)
+	)
+	$Camera3D.rotation.x = lerp_angle(
+		$Camera3D.rotation.x,
+		target_camera_pitch,
+		1.0 - exp(-mouse_pitch_smoothing * delta)
+	)
 
 
 func handle_collision(signal_name):
@@ -119,16 +170,20 @@ func handle_collision(signal_name):
 
 
 func _input(event):
-	"""
-	"""
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		# rot_y moves the mower left and right
-		var rot_y:float = -event.relative.x * mouse_sensitivity
-		#rot_x_cam moves the camera up and down
-		var rot_x_cam:float = event.relative.y * mouse_sensitivity
-		
-		rotate_y(rot_y)
-		$Camera3D.rotate_x(rot_x_cam)
+		# Left/right turns the mower; smoothing is applied in _physics_process.
+		target_body_yaw -= event.relative.x * look_sensitivity()
+
+		# CONVENTIONAL: mouse up looks up. relative.y is positive downwards and
+		# camera pitch is positive upwards, so this subtracts.
+		var pitch_delta: float = -event.relative.y * look_sensitivity()
+		if GameSettings.invert_look_y():
+			pitch_delta = -pitch_delta
+		target_camera_pitch = clamp(
+			target_camera_pitch + pitch_delta,
+			deg_to_rad(min_camera_pitch_degrees),
+			deg_to_rad(max_camera_pitch_degrees)
+		)
 
 """
 	Encapsulation function to handle getting user input.
@@ -144,19 +199,14 @@ func get_input():
 	var input_direction = Vector3()
 #	var rotate_wheel = {"forward": 0, "backward": 0, "right": 0, "left": 0}
 
-	var use_fuel = false
 	if Input.is_action_pressed("move_forward"):
 		input_direction += global_transform.basis.z
 #		rotate_wheel["forward"] = rotate_speed
-		use_fuel = true
 	if Input.is_action_pressed("move_back"):
 		input_direction += -global_transform.basis.z
 #		rotate_wheel["backward"] = -rotate_speed
-		use_fuel = true
 
-	##if movement happened then increment fuel counter
-	if use_fuel:
-		model.increment_mower_fuel_idle_counter(1)
+	## Nothing to burn - this mower is pushed, not driven.
 
 #	##function to rotate all wheel according to given values
 #	rotate_wheels(rotate_wheel)

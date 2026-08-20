@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Dev tools/Validation/runner_boot.gd" id="1_boot"]
+[ext_resource type="Script" path="res://Dev tools/Validation/trailer_test.gd" id="2_trailer"]
+
+[node name="Trailer Test Boot" type="Node"]
+script = ExtResource("1_boot")
+runner_script = ExtResource("2_trailer")
+runner_name = "TrailerTest"

@@ -1,25 +1,25 @@
 extends SceneTree
 
 const TREE_MATERIAL_PATHS := [
-	"res://scenery_wind/materials/tree_1_a_wind.tres",
-	"res://scenery_wind/materials/tree_2_a_wind.tres",
-	"res://scenery_wind/materials/tree_2_d_wind.tres",
-	"res://scenery_wind/materials/procedural_tree_bark_wind.tres",
-	"res://scenery_wind/materials/procedural_tree_foliage_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/tree_1_a_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/tree_2_a_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/tree_2_d_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_bark_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_foliage_wind.tres",
 ]
 const GRASS_MATERIAL_PATHS := [
-	"res://scenery_wind/materials/grass_a1_wind.tres",
-	"res://scenery_wind/materials/grass_a2_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/grass_a1_wind.tres",
+	"res://UI/Scenic Background for Menus/scenery_wind/materials/grass_a2_wind.tres",
 ]
 const WRAPPER_SCENE_PATHS := [
-	"res://scenery_wind/scenes/tree_1_a_wind.tscn",
-	"res://scenery_wind/scenes/tree_2_a_wind.tscn",
-	"res://scenery_wind/scenes/tree_2_d_wind.tscn",
-	"res://scenery_wind/scenes/grass_a1_wind.tscn",
-	"res://scenery_wind/scenes/grass_a2_wind.tscn",
-	"res://scenery/trees/organic_tree_round.tscn",
-	"res://scenery/trees/organic_tree_open.tscn",
-	"res://scenery/trees/organic_tree_tall.tscn",
+	"res://UI/Scenic Background for Menus/scenery_wind/scenes/tree_1_a_wind.tscn",
+	"res://UI/Scenic Background for Menus/scenery_wind/scenes/tree_2_a_wind.tscn",
+	"res://UI/Scenic Background for Menus/scenery_wind/scenes/tree_2_d_wind.tscn",
+	"res://UI/Scenic Background for Menus/scenery_wind/scenes/grass_a1_wind.tscn",
+	"res://UI/Scenic Background for Menus/scenery_wind/scenes/grass_a2_wind.tscn",
+	"res://UI/Scenic Background for Menus/scenery/trees/organic_tree_round.tscn",
+	"res://UI/Scenic Background for Menus/scenery/trees/organic_tree_open.tscn",
+	"res://UI/Scenic Background for Menus/scenery/trees/organic_tree_tall.tscn",
 ]
 
 
@@ -47,7 +47,7 @@ func _init() -> void:
 			failures.append("No mesh received a wind material: %s" % path)
 		instance.free()
 
-	var controller_scene := load("res://scenery_wind/scenes/scenery_wind_controller.tscn") as PackedScene
+	var controller_scene := load("res://UI/Scenic Background for Menus/scenery_wind/scenes/scenery_wind_controller.tscn") as PackedScene
 	if controller_scene == null:
 		failures.append("Could not load SceneryWindController scene")
 	else:
@@ -65,7 +65,7 @@ func _init() -> void:
 		if not (test_material.get_shader_parameter("wind_direction") as Vector2).is_equal_approx(Vector2(0.8, 0.6)):
 			failures.append("Controller did not normalize/propagate wind_direction")
 		var procedural_material := load(
-			"res://scenery_wind/materials/procedural_tree_foliage_wind.tres"
+			"res://UI/Scenic Background for Menus/scenery_wind/materials/procedural_tree_foliage_wind.tres"
 		) as ShaderMaterial
 		if procedural_material == null or float(procedural_material.get_shader_parameter("surface_noise_strength")) <= 0.0:
 			failures.append("Procedural tree foliage noise breakup is missing")

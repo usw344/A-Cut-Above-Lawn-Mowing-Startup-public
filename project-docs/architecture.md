@@ -1,43 +1,91 @@
 # Architecture and System Relationships
 
-Status: Current playable architecture with partial-system boundaries
+Status: **Current** — verified 2026-08-19.
+
+## Layering
+
+The application is three layers. Keep them separate.
+
+```
+APPLICATION   GameSession   WorldClock   AppUI   GameSettings   (autoloads)
+              owns: routing, session state, time/weather state, completion
+
+DOMAIN        JobManager (ACAJobManager)      Custom_Gridmap + Multi_Mesh_Chunk
+              model (mower/fuel)              preset_manager -> Sky3D / Rain Handler
+              owns: game state. Never changes scenes. Never touches UI.
+
+PRESENTATION  res://UI/**    ACAJobBoard    ACABusinessHUD
+              displays state, emits intent. Owns no game state.
+```
+
+Integration between layers lives in exactly three host scripts:
+`Game/App/main_menu_screen.gd`, `Game/App/town_screen.gd`,
+`Game/App/gameplay_ui.gd`.
 
 ## Runtime composition
 
-The authoritative runtime is composed by `Minimum Viable Game.tscn`.
-
 ```mermaid
 flowchart TD
-    Project["project.godot"] --> MVPScene["Minimum Viable Game.tscn"]
+    Project["project.godot"] --> Menu["Game/App/Main Menu Screen.tscn"]
+
+    subgraph Autoloads
+        Model["model"]
+        Clock["WorldClock"]
+        Jobs["JobManager (ACAJobManager)"]
+        Settings["GameSettings"]
+        UI["AppUI"]
+        Session["GameSession"]
+    end
+
+    Session -->|"set_time_provider"| Jobs
+    Clock --> Provider["ACAWorldClockTimeProvider"] --> Jobs
+    Jobs -->|"begin_job_requested(job)"| Session
+
+    Menu -->|"new_game"| Session
+    Session -->|"go_to_town"| Town["Game/App/Town Screen.tscn"]
+    Town --> BT["BusinessTown.tscn"] --> Board["ACAJobBoard"] --> Jobs
+    Session -->|"go_to_mowing"| MVPScene["Game/M.V.P/Minimum Viable Game.tscn"]
+
     MVPScene --> MVP["MVP.gd"]
     MVPScene --> Mower["Current mower scene"]
     MVPScene --> Grid["Custom Gridmap"]
-    MVPScene --> HUD["MVP HUD"]
+    MVPScene --> DebugHUD["MVP HUD (dev only, F3)"]
     MVPScene --> Presets["Preset Manager"]
-    MVPScene --> Ambience["Ambient AudioStreamPlayer"]
+    MVPScene --> GPUI["Gameplay UI.tscn"]
 
-    Model["model autoload"] --> MVP
+    Model --> MVP
     Model --> Mower
-    Model --> HUD
-
     Mower -->|"collided(collision_array)"| Grid
     Grid --> Chunks["Multi_Mesh_Chunk objects"]
     Chunks --> Grass["Mowed and unmowed MultiMeshes"]
-
     Grid --> Terrain["Canonical Terrain Manager"]
     Terrain --> EnvironmentMM["Baked grass, tree, and shrub MultiMeshes"]
 
-    HUD -->|"mower, speed, reset, time, weather signals"| MVP
-    MVP --> Presets
+    Grid -->|"mowing_progress_changed"| MVP
+    MVP -->|"update_job_progress"| Jobs
+    MVP -->|"complete_current_job"| Session
+    Session -->|"job_settled(summary)"| GPUI
+    GPUI -->|"go_to_town"| Session
+
+    Clock --> MVP --> Presets
     Presets --> Sky3D["Sky3D"]
     Presets --> Rain["Rain Handler"]
-    Rain --> Ambience
-    MVP -->|"mower position each physics frame"| Presets
+    Session --> UI
+    Settings --> GPUI
 ```
+
+## The two boundaries that must not be crossed
+
+1. **`ACAJobManager` never changes scenes.** `begin_new_job()` validates, marks
+   the job `IN_PROGRESS`, emits `begin_job_requested(job)` and stops.
+   `GameSession` does the transition. Preserve this.
+2. **There is one completion pathway.** Natural 100% mowing and the development
+   fast-completion helper both reach `MVP._finish_job()` →
+   `GameSession.complete_current_job()`. Do not add a second way to finish a job.
 
 ## Ownership
 
-### MVP root
+### Mowing scene root (`MVP.gd`)
 
 `MVP.gd` owns cross-system runtime orchestration:
 

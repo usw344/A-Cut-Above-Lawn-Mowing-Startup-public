@@ -101,16 +101,16 @@ size = Vector3(28.8, 1.3, 18.3)
 size = Vector3(26.8, 1.1, 16.3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_x8u31"]
-size = Vector3(16, 0.09, 2)
+size = Vector3(15.96, 0.09, 1.98)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qj4wb"]
-size = Vector3(12, 0.09, 2)
+size = Vector3(11.96, 0.09, 1.98)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4ll7t"]
-size = Vector3(16, 0.13, 0.14)
+size = Vector3(15.94, 0.13, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_dix6r"]
-size = Vector3(12, 0.13, 0.14)
+size = Vector3(11.94, 0.13, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_e5ajo"]
 size = Vector3(2, 0.09, 4)
@@ -119,16 +119,16 @@ size = Vector3(2, 0.09, 4)
 size = Vector3(2, 0.09, 4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_3ed3h"]
-size = Vector3(16, 0.09, 1.3)
+size = Vector3(15.96, 0.09, 1.28)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0jir5"]
-size = Vector3(16, 0.13, 0.14)
+size = Vector3(15.94, 0.13, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_rbyua"]
-size = Vector3(14, 0.13, 0.14)
+size = Vector3(13.94, 0.13, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_np3y2"]
-size = Vector3(8.4, 0.1, 3)
+size = Vector3(8.4, 0.11, 3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2hun2"]
 size = Vector3(0.06, 0.02, 1.8)
@@ -146,7 +146,7 @@ size = Vector3(0.06, 0.02, 1.8)
 size = Vector3(0.06, 0.02, 1.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_g84v7"]
-size = Vector3(8.4, 0.16, 0.14)
+size = Vector3(8.34, 0.16, 0.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_kv33y"]
 size = Vector3(12.6, 0.08, 0.8)
@@ -155,10 +155,10 @@ size = Vector3(12.6, 0.08, 0.8)
 size = Vector3(9, 0.08, 0.8)
 
 [sub_resource type="BoxMesh" id="BoxMesh_saecb"]
-size = Vector3(0.8, 0.08, 4.2)
+size = Vector3(0.8, 0.08, 2.6)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ht7pv"]
-size = Vector3(0.8, 0.08, 4.2)
+size = Vector3(0.8, 0.08, 2.6)
 
 [sub_resource type="BoxMesh" id="BoxMesh_gd6i6"]
 size = Vector3(2.6, 0.08, 2.2)
@@ -295,12 +295,12 @@ material_override = ExtResource("8_r2no5")
 mesh = SubResource("BoxMesh_qj4wb")
 
 [node name="KerbNorthW" type="MeshInstance3D" parent="Lots" unique_id=729877616]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.065, -1.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0.065, -1.05)
 material_override = ExtResource("9_08iam")
 mesh = SubResource("BoxMesh_4ll7t")
 
 [node name="KerbNorthE" type="MeshInstance3D" parent="Lots" unique_id=1595236617]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.065, -1.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.065, -1.05)
 material_override = ExtResource("9_08iam")
 mesh = SubResource("BoxMesh_dix6r")
 
@@ -320,47 +320,47 @@ material_override = ExtResource("8_r2no5")
 mesh = SubResource("BoxMesh_3ed3h")
 
 [node name="KerbSouthE" type="MeshInstance3D" parent="Lots" unique_id=1240661389]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0.065, 1.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0.065, 1.05)
 material_override = ExtResource("9_08iam")
 mesh = SubResource("BoxMesh_0jir5")
 
 [node name="KerbSouthW" type="MeshInstance3D" parent="Lots" unique_id=809116849]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.065, 1.07)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.065, 1.05)
 material_override = ExtResource("9_08iam")
 mesh = SubResource("BoxMesh_rbyua")
 
 [node name="ParkingPad" type="MeshInstance3D" parent="Lots" unique_id=1997496985]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.05, 3.85)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.055, 3.85)
 material_override = ExtResource("10_ovm5h")
 mesh = SubResource("BoxMesh_np3y2")
 
 [node name="Stall0" type="MeshInstance3D" parent="Lots" unique_id=1164144448]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.105, 3.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0.115, 3.6)
 material_override = ExtResource("11_gmqom")
 mesh = SubResource("BoxMesh_2hun2")
 
 [node name="Stall1" type="MeshInstance3D" parent="Lots" unique_id=525162408]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.105, 3.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0.115, 3.6)
 material_override = ExtResource("11_gmqom")
 mesh = SubResource("BoxMesh_ij022")
 
 [node name="Stall2" type="MeshInstance3D" parent="Lots" unique_id=1985925933]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.105, 3.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.115, 3.6)
 material_override = ExtResource("11_gmqom")
 mesh = SubResource("BoxMesh_pf4ul")
 
 [node name="Stall3" type="MeshInstance3D" parent="Lots" unique_id=1983336358]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.105, 3.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.115, 3.6)
 material_override = ExtResource("11_gmqom")
 mesh = SubResource("BoxMesh_761we")
 
 [node name="Stall4" type="MeshInstance3D" parent="Lots" unique_id=1533198805]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6, 0.105, 3.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6, 0.115, 3.6)
 material_override = ExtResource("11_gmqom")
 mesh = SubResource("BoxMesh_dn3df")
 
 [node name="LotKerb" type="MeshInstance3D" parent="Lots" unique_id=809893012]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.08, 5.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.08, 5.3)
 material_override = ExtResource("9_08iam")
 mesh = SubResource("BoxMesh_g84v7")
 
@@ -450,7 +450,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.4, 0, -7.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.6, 0, -7.5)
 
 [node name="BackVista" parent="TownBuildings" unique_id=840746320 instance=ExtResource("23_htpy6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -7.5)
+transform = Transform3D(1.04, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -7.5)
 
 [node name="BackShopAPad" type="MeshInstance3D" parent="TownBuildings" unique_id=665039950]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4, 0.05, -7.5)

@@ -25,7 +25,7 @@ Sky3D supplies:
 
 The project’s Preset Manager is the canonical wrapper around Sky3D for time and weather behavior.
 
-Sky3D license text is present in the addon and reproduced in the MVP HUD credits.
+Sky3D licence text is present in the addon and reproduced verbatim in `res://Credits/` (`Sky3D_licence.txt`, `Sky3D_Shaders_licence.txt`, `Sky3D_Milky_Way_Texture_licence.txt`, `Sky3D_Moon_Texture_licence.txt`), which is what the player-facing Credits screen reads.
 
 ## Historical GodotSky
 
@@ -39,33 +39,22 @@ It is:
 
 The root README statement saying the public version excludes “GodotSky” is stale historical text. It should be corrected in a future public-documentation cleanup, not interpreted as describing the current Sky3D integration.
 
-## Terrain3D
+## Terrain3D — NOT INSTALLED
 
 | Property | Value |
 |---|---|
-| Path | `addons/terrain_3d/` |
-| Plugin name | Terrain3D |
-| Version | 1.0.0 |
-| Authors | Cory Petkovsek and Roope Palmroos |
-| Enabled | No |
-| Runtime status | Deprecated experimental system |
+| Path | *(absent)* |
+| Enabled | No — the addon folder does not exist |
+| Runtime status | **Removed.** The custom Terrain Manager is canonical. |
 
-Terrain3D includes:
+As of 2026-08-19 `addons/` contains only `sky_3d`. The Terrain3D addon was
+already gone; the orphaned content that depended on it
+(`Terrain/Footage-Demo Data/`, `Game/Demo/Footage/`) was moved to the workspace
+`Soft Delete/` folder because it could not load without the addon.
 
-- C++ GDExtension binaries for several platforms.
-- Editor plugin scripts and UI.
-- Brushes, icons, importer tools, and shader examples.
-- Terrain3D resources under `Terrain/Footage-Demo Data/`.
-
-It remains serialized into footage/demo scenes, but it is no longer planned for the final game. The custom Terrain Manager is canonical.
-
-Terrain3D is cleanup debt. Removal needs a dedicated validation pass because the repository still contains:
-
-- Terrain3D nodes.
-- Terrain3D typed resources.
-- Export references.
-- Credits and license content.
-- Platform binaries.
+`export_presets.cfg` used to enumerate the whole `res://addons/terrain_3d/` tree.
+Those 181 dead entries were removed on 2026-08-19; the presets themselves were
+not otherwise changed.
 
 ## Terrain Splitter
 
@@ -86,7 +75,7 @@ The plugin:
 - Optionally wraps output in static bodies with trimesh collisions.
 - Uses editor UndoRedo.
 
-It is not a runtime dependency of the MVP.
+It is not a runtime dependency of the mowing scene.
 
 ## Jolt Physics
 
@@ -111,15 +100,34 @@ The addon is not expected to return. The custom Preset Manager and Rain Handler 
 
 ## Asset licenses and credits
 
+**Player-facing credits live in `res://Credits/`** and are shown by the Main
+Menu CREDITS screen. Adding one is a file copy — see
+[HUD, menus and interface](systems/ui-hud-and-menus.md) for the naming
+convention. The originals stay where they are; the Credits folder holds copies.
+
 Known license locations include:
 
 - `addons/sky_3d/LICENSE.txt`
 - `addons/sky_3d/ThirdParty.md`
 - Sky3D third-party Milky Way and moon texture licenses.
-- `addons/terrain_3d/LICENSE.txt`
-- Terrain3D and Sky3D text in the MVP HUD credit panels.
+- `res://Credits/*_licence.txt` — the player-facing copies (**start here**).
+- Terrain3D and Sky3D text formerly in the legacy MVP HUD credit panels (now a
+  development-only layer, toggled with F3).
+- `addons/terrain_3d/LICENSE.txt` **no longer exists** — the addon is not installed.
+  If any Terrain3D-derived asset is ever redistributed, attribution must be
+  restored from upstream.
 
 Before removing a deprecated addon, confirm whether distributed builds still require its license or asset attribution because copied or derived assets may remain.
+
+## Known issue — Sky3D
+
+`addons/sky_3d/assets/resources/MoonRender.tscn` **fails to load**: it references
+`res://addons/sky_3d/shaders/SimpleMoon.gdshader`, which is missing from this copy
+of the addon (`shaders/` contains only `AtmFog.gdshader` and
+`SkyMaterial.gdshader`). Nothing in the project loads `MoonRender.tscn`, so this
+is cosmetic, but it is the project's only remaining scene-load failure. Left
+alone deliberately: it is third-party, and editing an addon folder invites
+confusion on the next addon update. Fix by updating/reinstalling Sky3D.
 
 ## Plugin enablement authority
 

@@ -1,6 +1,6 @@
 extends SceneTree
 
-const FIELD_PATH := "res://scenery/scenes/dense_grass_field.tscn"
+const FIELD_PATH := "res://UI/Scenic Background for Menus/scenery/scenes/dense_grass_field.tscn"
 
 
 func _init() -> void:

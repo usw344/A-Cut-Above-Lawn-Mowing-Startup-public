@@ -1,0 +1,12 @@
+A CUT ABOVE: MOW & GROW
+
+A cozy low-poly lawn-mowing business game.
+
+Built with the Godot Engine 4.6.
+
+Game code and original content are covered by the project's own LICENSE file
+in the repository root (All Rights Reserved).
+
+Third-party software, art and audio used in the game are credited individually
+in this Credits screen. Each entry reproduces its licence text in full and
+unmodified.

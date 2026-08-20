@@ -10,10 +10,23 @@ This is an autoload script that stores global game variables
 var speed = 10 
 var blade_length = 1
 
-##mower fuel variables 
-var mower_fuel = 100			#total mower fuel
-var mower_fuel_idle_counter = 0 #keeps track of movements. Since fuel icnrements are in whole numbers
-var idle_fuel_use = 26			#After this much movement substract fuel. PLANNED: to allow this value to be increased
+## MOWER FUEL - STORAGE ONLY.
+##
+## `mower_fuel` (0-100) is the authoritative fuel LEVEL and is what SaveService
+## persists. The RULES - burn rates, what empty means, the refuel interface and
+## the development Auto Refuel toggle - all live in `MowerFuel`
+## (Game/App/mower_fuel.gd). Nothing else may implement a burn rate.
+##
+## Changed 2026-08-19 (Milestone 9): fuel is now a float and is burned per
+## SECOND. The old model added a fixed amount per PHYSICS TICK, and this project
+## runs physics at 576 Hz, so a tank emptied in about four seconds.
+var mower_fuel: float = 100.0
+
+## LEGACY, no longer read by any mower. Kept only because they are fields of the
+## current save format; removing them would need a save-format version bump for
+## no gain. `MowerFuel` ignores both.
+var mower_fuel_idle_counter = 0
+var idle_fuel_use = 26
 
 var mower_position:Vector3 = Vector3()
 var mower_grid_position:Vector2
@@ -56,12 +69,13 @@ func set_blade_length(l):
 	blade_length = l
 
 """
-	Get and Set for mower fuel
+	Get and Set for the mower fuel LEVEL. Storage only - see the note above the
+	variable. Gameplay goes through MowerFuel, which clamps and announces.
 """
 func get_mower_fuel():
 	return mower_fuel
 func set_mower_fuel(f):
-	mower_fuel = f
+	mower_fuel = clampf(float(f), 0.0, 100.0)
 
 func get_idle_fuel_use():
 	return idle_fuel_use
@@ -128,18 +142,10 @@ func get_game_money() -> String:
 
 
 
-"""------------------------------------------- Functions from 'testing grounds' job system  -------------------------------------------"""
-# store all current job offers
-var job_offers:Dictionary = {}
-
-func add_job_offer(o:Job_Offer) ->void:
-	job_offers[o.get_id()] = o
-func remove_job_offer(o:Job_Offer) -> void:
-	var retr:bool = job_offers.erase(o.get_id())
-	if retr == false:
-		print("error in model.gd remove_job_offer: trying to remove a job offer that is not in model currently")
-func get_all_job_offers() ->Dictionary:
-	return job_offers
+"""------------------------------------------- Job system  -------------------------------------------"""
+# Jobs are owned by ACAJobManager (the `JobManager` autoload), not by this
+# model. The old 'testing grounds' job-offer dictionary that used to live here
+# was removed with the rest of that prototype - see Soft Delete/MANIFEST.md.
 
 """------------------------------------------- Model functions  -------------------------------------------"""
 func save_game_data(file_name):
@@ -151,13 +157,15 @@ func save_game_data(file_name):
 		"idle_fuel_use":get_idle_fuel_use()
 	}
 
+## ENTER releases / re-captures the cursor while playing. The cursor itself is
+## owned by AppUI, which refuses the toggle while a menu is holding it - without
+## that, confirming a pause-menu button with ENTER would grab the mouse back.
 func _input(event):
 	if Input.is_action_just_pressed("ui_accept"):
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else:
-			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-			
+		var app_ui := get_node_or_null(^"/root/AppUI")
+		if app_ui != null:
+			app_ui.call(&"toggle_mouse_capture")
+
 
 func load_game_data(file_name):
 	pass

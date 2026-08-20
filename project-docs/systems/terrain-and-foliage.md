@@ -145,25 +145,28 @@ The Terrain Manager is a child of the Custom Gridmap scene, but it does not own 
 
 The mowing collision handler explicitly ignores a collider named `Ground`. The current terrain root is a visual `MeshInstance3D`; the `Mowing Area` static body supplies the primary mowing surface collision.
 
-## Terrain3D deprecation
+## Terrain3D — removed
 
-Terrain3D is no longer planned for the final game. It was judged unnecessary and overly complex for project needs.
+Terrain3D is not planned for the final game and **is no longer in the project**.
 
-Remaining Terrain3D content includes:
+As of 2026-08-19:
 
-- `addons/terrain_3d/`
-- Terrain3D resources in `Terrain/Footage-Demo Data/`
-- Terrain3D nodes in the three footage scenes.
-- Export and credit references.
+- `addons/` contains **only `sky_3d`**. The Terrain3D addon itself was already
+  gone before this session; only orphaned content remained.
+- `Terrain/Footage-Demo Data/` (27 files, ~19 MB) and the three footage scenes in
+  `Game/Demo/Footage/` were moved to the workspace `Soft Delete/` folder. Neither
+  could function — loading them emitted `Cannot get class 'Terrain3DMaterial'`.
+- **`Terrain/Meshes/` (91 MB) is ACTIVE and stayed.** It holds
+  `1x1 Ground Main Mesh.mesh` and `Gound 1x1 ColourMap.png`, used by
+  `Terrain Manager.tscn`. Do not confuse it with the Terrain3D data.
+- `Terrain/Heightmaps/` is empty and was left in place.
 
-This content is deprecated cleanup debt. It must not be presented as a second planned terrain architecture.
+Remaining Terrain3D debt: `export_presets.cfg` still lists a whole
+`res://addons/terrain_3d/` tree that does not exist, plus the quarantined data
+files. That file needs its own review.
 
-Removal should occur only in a separate cleanup task after checking:
-
-- Footage/demo preservation requirements.
-- Export configuration.
-- Third-party credits.
-- Serialized Terrain3D resource references.
+See `Soft Delete/MANIFEST.md` for restore notes (they require reinstalling the
+Terrain3D addon first).
 
 ## Future direction
 

@@ -1,6 +1,12 @@
 # Global Model and Runtime State
 
-Status: Current playable runtime, with partially integrated future state
+Status: **Current, but no longer the only global.** As of 2026-08-19 `model` is
+one of six autoloads and its scope has narrowed to mower/cuttings state.
+
+> **Do not add new global state here.** World time and weather belong to
+> `WorldClock`, jobs to `JobManager`, application/session state to `GameSession`,
+> presentation settings to `GameSettings`. See
+> [application layer](../application-layer.md).
 
 ## Definition
 
@@ -14,16 +20,23 @@ The script extends `Node`, declares `class_name Model`, and is accessed by runti
 
 ## Responsibilities
 
-The model currently combines:
+The model currently holds:
 
-- Canonical mower runtime state.
+- Canonical mower runtime state (speed, fuel, blade length).
 - Mowing/cuttings state.
-- Older mower-selection metadata.
-- Job-offer prototype state.
-- Placeholder UI information.
-- Save/profile extension points.
+- Mower-selection metadata (`current_mower`, `mower_scene_references`).
+- Empty placeholder getters (`get_game_time`, `get_game_weather`, `get_game_money`)
+  left over from the old Information Bar — **superseded**; use `WorldClock` and
+  `GameSession` instead.
+- `save_game_data` / `load_game_data` / `get_game_profile_object` stubs.
 
-It is the only configured application-wide manager.
+**Removed 2026-08-19:** the `job_offers` dictionary and its `Job_Offer`-typed
+`add_job_offer()` / `remove_job_offer()` / `get_all_job_offers()`. Nothing called
+them, and they were the only tie to the old job prototype now in
+`Soft Delete/`. Restoring that prototype requires restoring this block.
+
+Note `mower_scene_references` loads `Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn`
+through `load()` — a dependency no scene graph shows.
 
 ## Current state fields
 

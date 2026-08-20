@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://UI/Theme/Game UI.theme.tres" id="1_w55r2"]
+[ext_resource type="Script" path="res://UI/Notifications/notification_toast.gd" id="2_et8wc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uq5mr"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.153, 0.184, 0.196, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="NotificationToast" type="PanelContainer" unique_id=820053176]
+custom_minimum_size = Vector2(380, 0)
+mouse_filter = 2
+theme = ExtResource("1_w55r2")
+theme_override_styles/panel = SubResource("StyleBoxFlat_uq5mr")
+script = ExtResource("2_et8wc")
+
+[node name="Row" type="HBoxContainer" parent="." unique_id=550010241]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="AccentWrap" type="MarginContainer" parent="Row" unique_id=834935022]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 12
+
+[node name="AccentBar" type="ColorRect" parent="Row/AccentWrap" unique_id=1754722985]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(3, 0)
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.42, 0.686, 0.353, 1)
+
+[node name="TextWrap" type="MarginContainer" parent="Row" unique_id=1268616710]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 11
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 11
+
+[node name="Column" type="VBoxContainer" parent="Row/TextWrap" unique_id=1541647720]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Title" type="Label" parent="Row/TextWrap/Column" unique_id=1172737304]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(337, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "Notification"
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Message" type="Label" parent="Row/TextWrap/Column" unique_id=2145730260]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(337, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+autowrap_mode = 3

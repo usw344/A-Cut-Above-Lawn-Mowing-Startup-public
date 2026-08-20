@@ -1,0 +1,20 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Game/App/pause_layer.gd" id="1_layer"]
+[ext_resource type="PackedScene" path="res://UI/Pause Menu/Pause Menu.tscn" id="2_pause"]
+[ext_resource type="PackedScene" path="res://UI/Settings/Settings.tscn" id="3_set"]
+[ext_resource type="PackedScene" path="res://UI/Controls Help/Controls Help.tscn" id="4_help"]
+[ext_resource type="PackedScene" path="res://UI/Dialogs/Confirmation Dialog.tscn" id="5_dialog"]
+
+[node name="Pause Layer" type="CanvasLayer"]
+process_mode = 3
+layer = 40
+script = ExtResource("1_layer")
+
+[node name="Pause Menu" parent="." instance=ExtResource("2_pause")]
+
+[node name="Settings" parent="." instance=ExtResource("3_set")]
+
+[node name="Controls Help" parent="." instance=ExtResource("4_help")]
+
+[node name="Confirmation Dialog" parent="." instance=ExtResource("5_dialog")]

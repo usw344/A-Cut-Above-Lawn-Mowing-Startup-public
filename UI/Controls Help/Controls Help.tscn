@@ -1,0 +1,183 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://UI/Theme/Game UI.theme.tres" id="1_c28g7"]
+[ext_resource type="Script" path="res://UI/Controls Help/controls_help.gd" id="2_3nokj"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_trxqq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpw4c"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.118, 0.145, 0.161, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_36tmp"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_klwa3"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.357, 0.5831, 0.30005, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fi3t7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gmaey"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nsatj"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="ControlsHelp" type="Control" unique_id=1251826041]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_c28g7")
+script = ExtResource("2_3nokj")
+
+[node name="Scrim" type="ColorRect" parent="." unique_id=1590418303]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043, 0.059, 0.067, 0.88)
+
+[node name="ScrimButton" type="Button" parent="." unique_id=1760250847]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_trxqq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_trxqq")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_trxqq")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_trxqq")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_trxqq")
+flat = true
+
+[node name="CardHolder" type="CenterContainer" parent="." unique_id=572578078]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="CardHolder" unique_id=140884025]
+custom_minimum_size = Vector2(560, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xpw4c")
+
+[node name="Margin" type="MarginContainer" parent="CardHolder/Card" unique_id=977192129]
+layout_mode = 2
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 28
+
+[node name="Column" type="VBoxContainer" parent="CardHolder/Card/Margin" unique_id=1519566688]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AccentBar" type="ColorRect" parent="CardHolder/Card/Margin/Column" unique_id=690128350]
+custom_minimum_size = Vector2(48, 3)
+layout_mode = 2
+size_flags_horizontal = 0
+color = Color(0.42, 0.686, 0.353, 1)
+
+[node name="TitleGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=399377987]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="CardHolder/Card/Margin/Column" unique_id=605072164]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "MOWER CONTROLS"
+
+[node name="RowsGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1729908974]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Rows" type="VBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=1808529460]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="ButtonGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1212487863]
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CloseButton" type="Button" parent="CardHolder/Card/Margin/Column" unique_id=1932598779]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_36tmp")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_klwa3")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fi3t7")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_gmaey")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nsatj")
+theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 15
+text = "CLOSE"

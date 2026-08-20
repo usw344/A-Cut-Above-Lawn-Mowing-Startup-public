@@ -6,11 +6,51 @@ var rotate_speed:int = 20
 var base_gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 var gravity = base_gravity
-var mouse_sensitivity:float = 0.002 
+## Authored base sensitivity. The player's Settings multiplier is applied on top
+## through look_sensitivity(); do not read this directly.
+var mouse_sensitivity:float = 0.002
+
+## Base sensitivity scaled by the player's Settings value.
+func look_sensitivity() -> float:
+	return mouse_sensitivity * GameSettings.mouse_sensitivity_scale()
+
+# ---------------------------------------------------------------- LOOK FEEL
+#
+# GAMEPLAY camera tuning. Same convention as the rider mower (see
+# mower_rider.gd for the full note): the number is roughly "e-foldings per
+# second" of exponential approach, so higher = tighter.
+#
+# A walk-behind is hand-steered rather than driven, so it turns noticeably
+# quicker than the rider. Pitch is near-immediate on every mower.
+@export var mouse_yaw_smoothing: float = 26.0
+@export var mouse_pitch_smoothing: float = 32.0
+@export var min_camera_pitch_degrees: float = -75.0
+@export var max_camera_pitch_degrees: float = 45.0
+
+var target_body_yaw: float = 0.0
+var target_camera_pitch: float = 0.0
+
+
 
 ##Signals
 signal collided
 signal fuel_empty
+
+# ------------------------------------------------------------------ MOWER TYPE
+#
+# THIS mower burns gasoline - it is the powered walk-behind, and it uses the
+# same "Powered Lawn Mower SFX" engine loop the rider does. The Push Mower
+# declares POWERED = false and has none of the fuel behaviour below. Rates live
+# in one place, `MowerFuel`, and are never reimplemented here.
+const POWERED := true
+
+## Uniform across the canonical mowers so nothing has to check a scene name.
+func is_powered() -> bool:
+	return POWERED
+
+## 0.0 idling, 1.0 driving. Set by get_input() each physics frame and read by
+## the fuel burn, so throttle is decided in exactly one place.
+var _throttle: float = 0.0
 
 # This is the mesh instance of the Rider Mower
 # The mesh instance has the functions to do movement of individual parts of the mower
@@ -37,21 +77,32 @@ var volume_lerp_speed: float = 6.0
 var idle_pitch: float = 0.98
 var moving_pitch: float = 1.06
 
+## Where the engine loop fades to when the tank runs dry. See mower_rider.gd.
+var engine_off_volume_db: float = -60.0
+
 var last_speed: float = 0.0
 #end of sound variables
 
 func _ready():
-	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# The cursor is owned by AppUI, not by the mower: declaring the context here
+	# means the pause menu can hold it visible without this _ready() fighting it.
+	AppUI.set_mouse_context(Input.MOUSE_MODE_CAPTURED)
+	target_body_yaw = rotation.y
+	target_camera_pitch = $Camera3D.rotation.x
 	mower_audio.play()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
 	#dev_hud()
 	velocity.y -= gravity * delta
-#
+
+	## Apply smoothed mouse turning/camera movement.
+	handle_smoothed_mouse_movement(delta)
+
 	model.set_mower_position(position)
 	##get the total user input. This function could also return from screen joystick
-	var user_input = get_input() 
+	## Returns ZERO while the tank is empty - a dead engine does not drive.
+	var user_input = get_input()
 
 	##assign user input to the velocity variable. which is BUILT-IN
 	velocity.x = user_input.x * model.get_speed() * 3
@@ -61,6 +112,15 @@ func _physics_process(delta):
 		moving = true
 	else:
 		moving = false
+
+	# ------------------------------------------------------------------- FUEL
+	#
+	# TIME based, through the one owner. `_throttle` was decided by get_input()
+	# a few lines up. Burning BEFORE the audio section means the engine reacts
+	# on the same frame the tank runs dry.
+	MowerFuel.consume(delta, _throttle)
+	var engine_running: bool = MowerFuel.has_fuel()
+
 # --- AUDIO CONTROL SECTION ---
 
 	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
@@ -73,41 +133,60 @@ func _physics_process(delta):
 	var max_speed: float = model.get_speed() * 3
 	var speed_ratio: float = clamp(horizontal_speed / max_speed, 0.0, 1.0)
 
-	# target values
-	var target_volume: float = lerp(idle_volume_db, moving_volume_db, speed_ratio)
-	var target_pitch: float = lerp(idle_pitch, moving_pitch, speed_ratio)
+	# A refuel restarts the loop; running dry fades it out and stops it.
+	if engine_running and not mower_audio.playing:
+		mower_audio.volume_db = engine_off_volume_db
+		mower_audio.play()
 
-	# extra rev when accelerating
-	if accel > 0.1:
-		target_pitch += 0.007
+	# target values
+	var target_volume: float = engine_off_volume_db
+	var target_pitch: float = idle_pitch * 0.8
+
+	if engine_running:
+		target_volume = lerp(idle_volume_db, moving_volume_db, speed_ratio)
+		target_pitch = lerp(idle_pitch, moving_pitch, speed_ratio)
+
+		# extra rev when accelerating
+		if accel > 0.1:
+			target_pitch += 0.007
 
 	# smooth changes
 	mower_audio.volume_db = lerp(mower_audio.volume_db, target_volume, volume_lerp_speed * delta)
 	mower_audio.pitch_scale = lerp(mower_audio.pitch_scale, target_pitch, volume_lerp_speed * delta)
+
+	if not engine_running and mower_audio.playing \
+			and mower_audio.volume_db <= engine_off_volume_db + 1.0:
+		mower_audio.stop()
 
 	# --- END AUDIO SECTION ---
 
 
 
 	move_and_slide()
-	
-	## other input related functions
-	##calculate how much fuel has been used
-	if not model.is_mower_fuel_idle_counter(): 		  ##value is still less than counter
-		model.increment_mower_fuel_idle_counter(0.05) ##this is general fuel used due to idling
-	else:
-		model.set_mower_fuel(model.get_mower_fuel() - 1) ##substract one value of fuel due to counter being reached
-		model.set_mower_fuel_idle_counter(0)			 ##reset the counter to zero
-	
-	##collision signal is based if fuel is full or not
-	if model.get_mower_fuel() <= 0:
-		handle_collision("fuel_empty")
-		model.set_mower_fuel(100) #TODO !!!!! remove this when done testing
 
-	else:
+	## THE blade contract. `collided` is what the mowing grid cuts from, so an
+	## empty tank stops the blades for the same reason it stops the wheels -
+	## one fuel state, not a separate visual fudge.
+	if engine_running:
 		handle_collision("collided")
-		
-	
+	else:
+		handle_collision("fuel_empty")
+
+
+
+## Exponential approach towards the values the mouse asked for. Runs from
+## _physics_process so the feel does not change with frame rate.
+func handle_smoothed_mouse_movement(delta: float) -> void:
+	rotation.y = lerp_angle(
+		rotation.y,
+		target_body_yaw,
+		1.0 - exp(-mouse_yaw_smoothing * delta)
+	)
+	$Camera3D.rotation.x = lerp_angle(
+		$Camera3D.rotation.x,
+		target_camera_pitch,
+		1.0 - exp(-mouse_pitch_smoothing * delta)
+	)
 
 
 func handle_collision(signal_name):
@@ -129,16 +208,20 @@ func handle_collision(signal_name):
 
 
 func _input(event):
-	"""
-	"""
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		# rot_y moves the mower left and right
-		var rot_y:float = -event.relative.x * mouse_sensitivity
-		#rot_x_cam moves the camera up and down
-		var rot_x_cam:float = event.relative.y * mouse_sensitivity
-		
-		rotate_y(rot_y)
-		$Camera3D.rotate_x(rot_x_cam)
+		# Left/right turns the mower; smoothing is applied in _physics_process.
+		target_body_yaw -= event.relative.x * look_sensitivity()
+
+		# CONVENTIONAL: mouse up looks up. relative.y is positive downwards and
+		# camera pitch is positive upwards, so this subtracts.
+		var pitch_delta: float = -event.relative.y * look_sensitivity()
+		if GameSettings.invert_look_y():
+			pitch_delta = -pitch_delta
+		target_camera_pitch = clamp(
+			target_camera_pitch + pitch_delta,
+			deg_to_rad(min_camera_pitch_degrees),
+			deg_to_rad(max_camera_pitch_degrees)
+		)
 
 """
 	Encapsulation function to handle getting user input.
@@ -154,25 +237,27 @@ func get_input():
 	var input_direction = Vector3()
 #	var rotate_wheel = {"forward": 0, "backward": 0, "right": 0, "left": 0}
 
-	var use_fuel = false
+	var throttle_pressed := false
 	if Input.is_action_pressed("move_forward"):
 		input_direction += global_transform.basis.z
 #		rotate_wheel["forward"] = rotate_speed
-		use_fuel = true
+		throttle_pressed = true
 	if Input.is_action_pressed("move_back"):
 		input_direction += -global_transform.basis.z
 #		rotate_wheel["backward"] = -rotate_speed
-		use_fuel = true
+		throttle_pressed = true
 
-	##if movement happened then increment fuel counter
-	if use_fuel:
-		model.increment_mower_fuel_idle_counter(1)
+	## A powered mower with an empty tank has no propulsion.
+	if not MowerFuel.has_fuel():
+		_throttle = 0.0
+		return Vector3.ZERO
+
+	_throttle = 1.0 if throttle_pressed else 0.0
 
 #	##function to rotate all wheel according to given values
 #	rotate_wheels(rotate_wheel)
-	
 
-	return input_direction 
+	return input_direction
 func dev_hud():
 	var string_to_print:String = ""
 	string_to_print += str(round(position/16)) + "\n"

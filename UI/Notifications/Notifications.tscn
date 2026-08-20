@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://UI/Theme/Game UI.theme.tres" id="1_7tm6d"]
+[ext_resource type="Script" path="res://UI/Notifications/notifications.gd" id="2_sqxwu"]
+
+[node name="Notifications" type="Control" unique_id=284786808]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("1_7tm6d")
+script = ExtResource("2_sqxwu")
+
+[node name="Stack" type="Control" parent="." unique_id=137147333]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -404.0
+offset_top = 96.0
+offset_right = -24.0
+offset_bottom = 96.0
+grow_horizontal = 0
+mouse_filter = 2

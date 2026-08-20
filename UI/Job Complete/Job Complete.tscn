@@ -1,0 +1,367 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://UI/Theme/Game UI.theme.tres" id="1_kscml"]
+[ext_resource type="Script" path="res://UI/Job Complete/job_complete.gd" id="2_ixqmy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tqxvl"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.118, 0.145, 0.161, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vgo1p"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.075, 0.094, 0.106, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iu4e5"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nkwiy"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_st111"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.357, 0.5831, 0.30005, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x1qio"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u0aoe"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_waner"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="JobComplete" type="Control" unique_id=1094797837]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_kscml")
+script = ExtResource("2_ixqmy")
+
+[node name="Scrim" type="ColorRect" parent="." unique_id=1512323862]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.043, 0.059, 0.067, 0.55)
+
+[node name="CardHolder" type="CenterContainer" parent="." unique_id=1286911936]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="CardHolder" unique_id=1991397831]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tqxvl")
+
+[node name="Margin" type="MarginContainer" parent="CardHolder/Card" unique_id=200061520]
+layout_mode = 2
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 28
+
+[node name="Column" type="VBoxContainer" parent="CardHolder/Card/Margin" unique_id=1416482080]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AccentBar" type="ColorRect" parent="CardHolder/Card/Margin/Column" unique_id=2078184203]
+custom_minimum_size = Vector2(56, 3)
+layout_mode = 2
+size_flags_horizontal = 0
+color = Color(0.42, 0.686, 0.353, 1)
+
+[node name="TitleGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=972628606]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="CardHolder/Card/Margin/Column" unique_id=1650228893]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.635, 0.855, 0.545, 1)
+text = "JOB COMPLETE"
+
+[node name="CustomerName" type="Label" parent="CardHolder/Card/Margin/Column" unique_id=1789105695]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(452, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Miller Residence"
+autowrap_mode = 3
+
+[node name="StatsGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1468159810]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CompletionRow" type="HBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=346765356]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CardHolder/Card/Margin/Column/CompletionRow" unique_id=468542534]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Lawn Mowed"
+
+[node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/CompletionRow" unique_id=1446843482]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="CompletionValue" type="Label" parent="CardHolder/Card/Margin/Column/CompletionRow" unique_id=207021839]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "100%"
+
+[node name="BarGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1051916729]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CompletionBar" type="ProgressBar" parent="CardHolder/Card/Margin/Column" unique_id=1386338231]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_vgo1p")
+theme_override_styles/fill = SubResource("StyleBoxFlat_iu4e5")
+max_value = 1.0
+step = 0.0001
+show_percentage = false
+
+[node name="BarGap2" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=2143917303]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TimeRow" type="HBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=2140403878]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CardHolder/Card/Margin/Column/TimeRow" unique_id=324044649]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Time"
+
+[node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/TimeRow" unique_id=490021771]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="TimeValue" type="Label" parent="CardHolder/Card/Margin/Column/TimeRow" unique_id=1379141453]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "00:00"
+
+[node name="PayGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=250051233]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PayRule" type="ColorRect" parent="CardHolder/Card/Margin/Column" unique_id=173058892]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="PayGap2" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=64712011]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BasePayRow" type="HBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=216110166]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CardHolder/Card/Margin/Column/BasePayRow" unique_id=756601347]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Contract Pay"
+
+[node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/BasePayRow" unique_id=1757780903]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BasePayValue" type="Label" parent="CardHolder/Card/Margin/Column/BasePayRow" unique_id=782536629]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "$0"
+
+[node name="BonusGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1100603469]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BonusRow" type="HBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=1862512987]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BonusLabel" type="Label" parent="CardHolder/Card/Margin/Column/BonusRow" unique_id=1221124477]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Bonus"
+
+[node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/BonusRow" unique_id=840522986]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="BonusValue" type="Label" parent="CardHolder/Card/Margin/Column/BonusRow" unique_id=1815914452]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.855, 0.647, 0.31, 1)
+text = "$0"
+
+[node name="TotalGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1363794410]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TotalRule" type="ColorRect" parent="CardHolder/Card/Margin/Column" unique_id=1889473660]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="TotalGap2" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1635950237]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TotalRow" type="HBoxContainer" parent="CardHolder/Card/Margin/Column" unique_id=1293514343]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TotalLabel" type="Label" parent="CardHolder/Card/Margin/Column/TotalRow" unique_id=1188754197]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "Total"
+
+[node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/TotalRow" unique_id=1388573546]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="TotalValue" type="Label" parent="CardHolder/Card/Margin/Column/TotalRow" unique_id=1072943049]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(0.635, 0.855, 0.545, 1)
+text = "$0"
+
+[node name="ButtonGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1265850404]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ReturnButton" type="Button" parent="CardHolder/Card/Margin/Column" unique_id=172472834]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nkwiy")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_st111")
+theme_override_styles/hover = SubResource("StyleBoxFlat_x1qio")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_u0aoe")
+theme_override_styles/focus = SubResource("StyleBoxFlat_waner")
+theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 18
+text = "RETURN TO TOWN"

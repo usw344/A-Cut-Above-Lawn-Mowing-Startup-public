@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Dev tools/Validation/runner_boot.gd" id="1_boot"]
+[ext_resource type="Script" path="res://Game/Demo/Trailer/trailer_director.gd" id="2_director"]
+
+[node name="Trailer Capture" type="Node"]
+script = ExtResource("1_boot")
+runner_script = ExtResource("2_director")
+runner_name = "TrailerDirector"

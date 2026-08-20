@@ -1,0 +1,12 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Game/App/town_screen.gd" id="1_host"]
+[ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/BusinessTown.tscn" id="2_town"]
+[ext_resource type="PackedScene" path="res://Game/App/Pause Layer.tscn" id="3_pause"]
+
+[node name="Town Screen" type="Node3D"]
+script = ExtResource("1_host")
+
+[node name="Pause Layer" parent="." instance=ExtResource("3_pause")]
+
+[node name="BusinessTown" parent="." instance=ExtResource("2_town")]

@@ -42,6 +42,14 @@ func set_day(day: int) -> void:
 		day_label.text = "Day %d" % day
 
 
+## Fuller readout for a host that has a real world clock: day, time of day and
+## current weather in one line, e.g. "Day 3   09:41   Clear".
+func set_calendar(day: int, clock_text: String, weather: String) -> void:
+	if day_label == null:
+		return
+	day_label.text = "Day %d   %s   %s" % [day, clock_text, weather]
+
+
 
 func open_jobs() -> void:
 	if job_board == null:

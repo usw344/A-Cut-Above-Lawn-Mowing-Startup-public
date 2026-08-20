@@ -1,163 +1,147 @@
 # Startup and Runtime Flow
 
-Status: Confirmed current playable flow
+Status: **Current** — verified 2026-08-19 by `Dev tools/Validation/Flow Test.tscn`.
 
 ## Launch
 
 1. Godot loads `project.godot`.
-2. The `model` autoload is created from `Data Structures/Model.gd`.
-3. The UID configured as `run/main_scene` resolves to `Game/M.V.P/Minimum Viable Game.tscn`.
-4. The MVP scene instantiates its authored children:
+2. Autoloads are created **in declaration order**:
+   `model` → `WorldClock` → `JobManager` → `GameSettings` → `AppUI` → `GameSession`.
+   - `JobManager._ready()` starts its 0.25 s market poll timer on a *stopped*
+     default clock.
+   - `GameSettings._ready()` applies its defaults.
+   - `AppUI._ready()` builds the notification layer (CanvasLayer 120) and the
+     transition (CanvasLayer 128).
+   - **`GameSession._ready()` hands `ACAWorldClockTimeProvider` to
+     `JobManager.set_time_provider()`.** This is what starts the job market.
+     It also connects `begin_job_requested`, `job_accepted` and `job_generated`.
+3. `run/main_scene` = `res://Game/App/Main Menu Screen.tscn`.
 
-   - Rider mower.
-   - Custom Gridmap.
-   - CanvasLayer and MVP HUD.
-   - Ambient AudioStreamPlayer.
-   - Mountain-range backdrop.
-   - Preset Manager containing Sky3D and Rain Handler.
+## Main Menu
 
-## Scene initialization
+`Main Menu Screen.tscn` instances `main_menu_scenery.tscn`, which already
+composes `main_menu.tscn` inside its `MenuSafeOverlay` CanvasLayer. The host
+finds the menu by type (`MainMenuScreen`) rather than by a path the scenery
+package owns.
 
-Godot initializes child nodes before the parent root completes `_ready()`.
+- CONTINUE is greyed out unless `/root/SaveService` exists and reports a save.
+- OPTIONS opens the Settings component on the host's own `Menu UI` CanvasLayer.
+- NEW GAME calls `GameSession.start_new_game()`.
 
-Important child behavior:
+## New game
 
-- The rider mower captures the mouse, starts its 3D engine audio, and initializes camera targets.
-- The Preset Manager stops rain immediately.
-- The Rain Handler configures near/far particles as non-emitting and starts its rain stream silently when available.
-- The terrain and its baked environmental MultiMeshes already exist in the custom-grid child scene.
+```
+JobManager.debug_clear_all()
+WorldClock.start_new_world()        # 08:00, Spring, Clear, running
+money = STARTING_MONEY (250)
+JobManager.set_time_provider(...)   # re-anchor arrivals to the new world
+JobManager.seed_initial_offers(2)   # day one is not an empty board
+go_to_town()
+```
 
-`MVP._ready()` then:
+## Scene transitions
 
-1. Forces the Custom Gridmap to a hard-coded world position.
-2. Calls `test_custom_gridmap(256)`.
-3. Starts the ambient audio stream.
-4. Stores the current mower transform for resets.
-5. Moves the start area relative to the mowing surface.
-6. Positions the mower at the start area plus a small vertical offset.
-7. Applies the Day time preset.
-8. Gives the Preset Manager the ambient player for rain ducking.
+Every transition goes through `GameSession._swap_scene()`:
 
-## Mowing-grid construction
+1. `AppUI.set_transition_title(...)` then `AppUI.cover()`
+2. `await AppUI.screen_covered`
+3. `get_tree().call_deferred("change_scene_to_file", path)`
+4. two frames
+5. `AppUI.reveal()`
 
-For the current size:
+Concurrent requests are ignored while `GameSession.is_changing_scene()`.
 
-1. `test_custom_gridmap(256)` records a display-area radius derived from `256 × 0.55`.
-2. It resizes the mowing surface and collision shape.
-3. It configures a 256×256 grid with a batching size of 16.
-4. It produces 65,536 logical grass coordinates.
-5. It partitions them into 4×4 chunks.
-6. It constructs 4,096 `Multi_Mesh_Chunk` objects.
-7. Each chunk provides unmowed and mowed MultiMesh instances.
-8. Each initially unmowed grass position receives a collision body.
+## Town
 
-The generated MultiMesh nodes are parented under the `Mowing Area`. The chunk data objects themselves are stored in the Custom Gridmap dictionaries rather than added as scene-tree nodes.
+`Town Screen.tscn` → `BusinessTown.tscn`. The town raycasts against pick layer 9
+**from `_physics_process`** (required with threaded 3D physics). Clicking the
+Job Office opens `ACAJobBoard`, which `ACABusinessHUD._ready()` already bound to
+the `JobManager` autoload.
+
+The host feeds the HUD real money and `set_calendar(day, clock, weather)` at 2 Hz.
+
+## Accept and begin
+
+- ACCEPT → `JobManager.accept_job(id)` → job moves Available → Current, status
+  `ACCEPTED`, `accepted_game_time` stamped. Offer expiry stops applying.
+- BEGIN JOB → `JobManager.begin_new_job(id)` → status `IN_PROGRESS`, emits
+  `begin_job_requested(job)` **and stops**.
+- `GameSession._on_begin_job_requested()` performs the transition the Job System
+  deliberately refuses to do.
+
+## Mowing scene initialization
+
+`Game/M.V.P/Minimum Viable Game.tscn`, `MVP._ready()`:
+
+1. Custom Gridmap forced to its hard-coded world position.
+2. `test_custom_gridmap(_grid_size_for_current_job())` — **grid size comes from
+   `job.grid_size.x`** (96 / 144 / 192). Falls back to 256 when the scene is
+   opened standalone with no contract.
+3. Ambient audio starts; mower transform stored for resets.
+4. Start area repositioned; mower placed at start + `(0, 2, 0)`.
+5. Preset Manager given the ambient player for rain ducking.
+6. Legacy MVP HUD hidden (`hud.visible = false`).
+7. `_setup_job_runtime()`:
+   - `preset_manager.set_time_of_day_normalized(WorldClock.hour_of_day())`
+   - `preset_manager.apply_weather_preset(WorldClock.weather_preset())`
+   - connects `WorldClock.weather_changed` and
+     `Custom_Gridmap.mowing_progress_changed`
+
+`Gameplay UI.tscn` (a child of the scene) then shows the Job Intro with real
+contract data and brings up the production HUD.
+
+### Grid construction
+
+`test_custom_gridmap(n)` → radius `n × 0.55`, grid `n × n`, batching 16 → `n²`
+grass coordinates → 4×4 chunks → `Multi_Mesh_Chunk` objects, each with an unmowed
+and a mowed MultiMesh, and a StaticBody per unmowed instance.
+`recount_progress()` then captures the totals.
+
+A Small Lawn (96×96) is 9,216 instances; a Large Lawn (192×192) is 36,864.
 
 ## Active gameplay loop
 
-### Mower
+`MVP._physics_process`:
+- pushes the mower position into the Preset Manager (rain emitter follows)
+- `_tick_job_runtime(delta)`: accumulates `GameSession.add_job_elapsed(delta)`,
+  and every 0.5 s pushes `custom_gridmap.mowed_fraction()` into
+  `JobManager.update_job_progress()`
 
-Each mower physics frame:
+`gameplay_ui._process` pushes progress, fuel, clock text and weather into the HUD.
 
-1. Applies gravity.
-2. Reads forward/back input.
-3. Uses the global model speed to set horizontal velocity.
-4. Updates engine audio.
-5. Calls `move_and_slide()`.
-6. Updates fuel counters in `model`.
-7. Collects current slide collisions.
-8. Emits either `collided` or `fuel_empty`.
+Cutting: mower `collided` → `Custom_Gridmap.custom_grid_map_collision_handler` →
+`mow_item(name)` → `Multi_Mesh_Chunk.mow_item_by_name()`. That returns whether it
+really cut something, so the O(1) mowed counter cannot drift.
 
-The MVP currently resets fuel to 100 after an empty-fuel event as testing behavior.
+## Completion
 
-### Grass cutting
+One authoritative path. Natural 100% (`mowing_progress_changed` reaching 1.0) and
+the development helper (`dev_complete_current_job()`, F10) both call
+`MVP._finish_job()`:
 
-The active mower’s `collided` signal is connected to `Custom_Gridmap.custom_grid_map_collision_handler()`.
+```
+GameSession.complete_current_job(completion, elapsed)
+  JobManager.update_job_progress(id, completion)
+  JobManager.complete_job(id)      # Current -> Past, COMPLETED, timestamped
+  add_money(base_pay)
+  AppUI.notify_money(...)
+  emit job_settled(summary)
+```
 
-For each collision:
+`gameplay_ui._on_job_settled()` closes the whole pause stack, hides the HUD, and
+shows the Job Complete screen. Its RETURN TO TOWN button calls
+`GameSession.go_to_town()`.
 
-1. Ground, start-area, and mowing-area collisions are ignored by collider name.
-2. A grass collider name is interpreted as:
+If the mowing scene is opened standalone with no Gameplay UI, `MVP._on_job_settled()`
+returns to town itself rather than stranding the player.
 
-   ```text
-   chunk_id,x,y,z
-   ```
+## Pause stack
 
-3. The grid resolves the owning chunk.
-4. The chunk removes the corresponding collision body.
-5. The position moves from the unmowed coordinate array to the mowed array.
-6. The chunk rebuilds its two small MultiMesh resources.
+`PauseMenu` reads Escape and pauses the tree. Stack order in
+`Gameplay UI.tscn` is Pause → Settings → Controls Help → Confirmation Dialog;
+later siblings receive `_unhandled_input` first, so the topmost modal consumes
+Escape. `_maybe_unpause()` only unpauses when nothing else in the stack is open.
 
-### Environment
-
-The custom Terrain Manager supplies the surrounding terrain and decorative foliage. Its environmental MultiMeshes are independent of the mowable grass state.
-
-### Weather following
-
-Every MVP physics frame, the current mower’s global position is passed through the Preset Manager to the Rain Handler. The handler positions its near/far rain effect above the mower.
-
-### HUD
-
-The HUD updates FPS, static memory, and process/physics CPU timing each physics frame. It emits requests for:
-
-- Mower selection.
-- Grid reset.
-- Mower speed.
-- Time slider.
-- Day, Evening, and Night.
-- Clear, Foggy, and Rain.
-
-The MVP root translates those requests into model changes or calls on the Preset Manager.
-
-## Mower switching
-
-When a mower is selected:
-
-1. The current mower transform and mouse mode are saved.
-2. The current mower node is detached.
-3. A new mower scene is instantiated from the `push`, `powered`, or `rider` lookup.
-4. The saved transform is assigned.
-5. The new mower is added to the MVP root.
-6. Its `collided` signal is connected to the Custom Gridmap.
-7. The saved mouse mode is restored.
-
-The global speed and fuel state remain in `model`, so they are shared across mower instances.
-
-## Grid reset
-
-When Reset Map and Location is requested:
-
-1. The Custom Gridmap transform is saved.
-2. The existing grid is queued for deletion.
-3. A fresh Custom Gridmap scene is instantiated.
-4. The 256×256 grid is rebuilt.
-5. The saved grid transform is restored.
-6. The mower transform is restored.
-7. The mower collision signal is connected to the new grid.
-
-## Time and weather
-
-Time presets tween Sky3D time:
-
-- Day: 12.00.
-- Evening: 17.5.
-- Night: 22.00.
-
-Weather presets:
-
-- Clear: stops rain and restores clear Sky3D properties.
-- Foggy: stops rain and applies denser, shorter-range fog with flatter lighting.
-- Rain: starts rain, darkens the sky, increases clouds/fog, raises rain audio, and ducks ambience.
-
-## Current stopping boundaries
-
-The current runtime has no implemented application flow for:
-
-- Entering through the main menu.
-- Creating or selecting a profile before gameplay.
-- Accepting a generated job and configuring the MVP from it.
-- Writing a complete save file.
-- Loading a complete save file.
-- Returning from gameplay to a menu or business area.
-
-No project script currently calls `change_scene` or an equivalent scene-transition API.
+Restart / Abandon / Quit-to-menu each go through a confirmation dialog.
+Abandon calls `JobManager.discard_current_job()` — not completion, no pay, and
+**not** recorded as business history.

@@ -1,0 +1,24 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://Game/App/main_menu_screen.gd" id="1_host"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery/scenes/main_menu_scenery.tscn" id="2_scenery"]
+[ext_resource type="PackedScene" path="res://UI/Settings/Settings.tscn" id="3_set"]
+[ext_resource type="PackedScene" path="res://UI/Controls Help/Controls Help.tscn" id="4_help"]
+[ext_resource type="PackedScene" path="res://UI/Load Game/Load Game.tscn" id="5_load"]
+[ext_resource type="PackedScene" path="res://UI/Credits/Credits.tscn" id="6_credits"]
+
+[node name="Main Menu Screen" type="Node"]
+script = ExtResource("1_host")
+
+[node name="Scenery" parent="." instance=ExtResource("2_scenery")]
+
+[node name="Menu UI" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="Settings" parent="Menu UI" instance=ExtResource("3_set")]
+
+[node name="Controls Help" parent="Menu UI" instance=ExtResource("4_help")]
+
+[node name="Load Game" parent="Menu UI" instance=ExtResource("5_load")]
+
+[node name="Credits" parent="Menu UI" instance=ExtResource("6_credits")]

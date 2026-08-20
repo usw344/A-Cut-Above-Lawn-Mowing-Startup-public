@@ -1,24 +1,37 @@
 # Project Settings and Input
 
-Status: Confirmed from `project.godot`
+Status: **Current** — confirmed from `project.godot`, 2026-08-19
 
 ## Application
 
 | Setting | Value | Architectural relevance |
 |---|---|---|
-| Project name | `A Cut Above` | Display/export identity |
+| Project name | `A Cut Above: Claude Work Repo` | Display/export identity |
 | Feature tags | `4.6`, `Mobile` | Godot compatibility and renderer feature selection |
-| Main scene | UID for `Minimum Viable Game.tscn` | Authoritative runtime root |
+| Main scene | `res://Game/App/Main Menu Screen.tscn` | Authoritative runtime root. **Changed 2026-08-19** — was the MVP mowing bench. |
 | Maximum FPS | 144 | Main-loop cap |
 | Icon | `res://icon.svg` | Application icon |
 
-## Autoload
+## Autoloads
+
+**Declaration order matters** — later entries depend on earlier ones.
 
 ```text
 model="*res://Data Structures/Model.gd"
+MowerFuel="*res://Game/App/mower_fuel.gd"
+WorldClock="*res://Game/World/world_clock.gd"
+JobManager="*uid://dogmb0pup4bhg"          # ACA_JobSystem/job_system/manager/job_manager.gd
+GameSettings="*res://Game/App/game_settings.gd"
+AppUI="*res://Game/App/app_ui.gd"
+GameSession="*res://Game/App/game_session.gd"
+SaveService="*res://Game/App/save_service.gd"
 ```
 
-The leading `*` enables the autoload as a scene-tree node. Scripts access it with the lowercase global name `model`.
+The leading `*` enables the autoload as a scene-tree node. Scripts access each by
+its global name. `GameSession._ready()` depends on `WorldClock` and `JobManager`
+already existing, which is why it is declared last.
+
+See [application layer](application-layer.md) for what each one owns.
 
 ## Display
 
@@ -30,7 +43,7 @@ The leading `*` enables the autoload as a scene-tree node. Scripts access it wit
 | Handheld orientation | 1 |
 | VSync mode | 0 |
 
-The MVP HUD uses full-viewport Control layouts authored around this project resolution.
+The UI package is authored around this project resolution (1920x1080).
 
 ## Physics
 
@@ -48,6 +61,10 @@ The MVP HUD uses full-viewport Control layouts authored around this project reso
 The two differently named Jolt body-limit settings likely come from different configuration eras. Which one Godot 4.6 consumes should be verified before relying on a specific effective limit.
 
 The high tick rate and body limits are closely related to the grass system’s many individual collision bodies. See [Performance architecture](performance.md).
+
+**576 ticks per second is a trap for anything that counts frames.** The old fuel
+model added a fixed amount per physics tick and emptied a full tank in about
+four seconds. Anything that accumulates over time must multiply by `delta`.
 
 ## Rendering
 
@@ -111,6 +128,23 @@ HUD buttons expose most of the time/weather functions without requiring the nume
 | `Cloud_Decrease`, `Cloud_Increase`, `Testing` | No project-script consumer found |
 
 The `Day`, `Night`, and related terms also appear as weather/time preset names; that is separate from consuming the named input actions.
+
+## Audio buses
+
+`res://default_bus_layout.tres` (Godot's default path, so it is loaded without a
+project setting).
+
+```text
+Master
+  |- Mower       every mower's AudioStreamPlayer3D
+  |- Ambience    the mowing scene's ambience bed
+  |- Weather     rain and any future precipitation audio
+  +- UI          reserved; nothing plays on it yet
+```
+
+Every bus ships at 0 dB. The authored balance is `ACAAudioMix.TRIM_DB`, applied
+together with the player's volume sliders, because `AudioServer` has only one
+volume per bus. See [weather, time and audio](systems/weather-time-and-audio.md#audio).
 
 ## Export presets
 

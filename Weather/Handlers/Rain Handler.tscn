@@ -6,11 +6,6 @@
 
 [node name="Rain Handler" type="Node3D" unique_id=921088035]
 script = ExtResource("1_hw0r7")
-rain_audio_target_db = null
-rain_audio_silent_db = null
-ambience_clear_db = null
-ambience_rain_db = null
-rain_offset = null
 
 [node name="Near Rain" parent="." unique_id=1941541630 instance=ExtResource("2_krplb")]
 emitting = false
@@ -27,3 +22,4 @@ visibility_aabb = AABB(-20.948109, -15.942305, -20.729837, 42.259056, 16.642183,
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1497604630]
 stream = ExtResource("3_c0uai")
+bus = &"Weather"

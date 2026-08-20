@@ -29,7 +29,7 @@ The mowing surface and the surrounding terrain are related spatially but have di
 
 ## Current initialization
 
-The MVP calls:
+The mowing scene calls:
 
 ```gdscript
 custom_gridmap_object.test_custom_gridmap(256)
@@ -128,11 +128,14 @@ The name lookup prevents the same grass position from being mowed repeatedly.
 
 ## Start area
 
-The start area is positioned to one side of the mowing surface. The MVP calls `reset_start_area_global_position()` after placing the overall grid, then places the current mower at `get_mower_inital_position()` plus a vertical margin.
+The start area is positioned to one side of the mowing surface. `MVP.gd` calls `reset_start_area_global_position()` after placing the overall grid, then places the current mower at `get_mower_inital_position()` plus a vertical margin.
 
 ## Reset behavior
 
-The system is reset by replacing the entire Custom Gridmap scene and rebuilding all chunks. It does not restore cut-state data during the MVP reset operation.
+The system is reset by replacing the entire Custom Gridmap scene and rebuilding
+all chunks. It does not restore cut-state data. This is what the pause menu's
+RESTART JOB uses, via `MVP.restart_current_job()`, which also resets the reported
+job progress and the contract stopwatch.
 
 ## Save representation
 
@@ -192,3 +195,45 @@ The active 256×256 setup creates:
 Mower collisions are collected and emitted at the project’s 576 physics ticks per second. These characteristics explain the high body-limit and physics settings and should be measured whenever grid size, batch size, or collision strategy changes.
 
 See [Performance architecture](../performance.md).
+
+## Grid size comes from the contract
+
+**Changed 2026-08-19.** `MVP._ready()` no longer hard-codes 256. It calls
+`test_custom_gridmap(_grid_size_for_current_job())`, which reads
+`GameSession.current_job().grid_size.x`:
+
+| Lawn size | Grid | Grass instances |
+|---|---|---:|
+| Small | 96 x 96 | 9,216 |
+| Medium | 144 x 144 | 20,736 |
+| Large | 192 x 192 | 36,864 |
+
+Sizes live in `ACAJobBalance.LAWN_GRID`. With no active contract (scene opened
+standalone from the editor) it falls back to 256.
+
+## Mowing progress API
+
+**Added 2026-08-19.** Counters are maintained incrementally — totals are captured
+once when the grid is built, and the mowed count moves only when a chunk reports
+a real cut. There is no per-frame rescan of the chunk dictionary, which matters
+at 4,096 chunks.
+
+```gdscript
+# Custom_Gridmap
+signal mowing_progress_changed(fraction: float)   # emitted only on a real change
+total_item_count() -> int
+mowed_item_count() -> int
+mowed_fraction() -> float        # 0.0 - 1.0, safe on an unbuilt grid
+recount_progress() -> void       # rebuild counters (used after load_object())
+
+# Multi_Mesh_Chunk
+mow_item_by_name(name, coord) -> bool   # true only if it really cut something
+mowed_count() / unmowed_count() / item_count() -> int
+```
+
+`mow_item_by_name()` returning a bool is what keeps the counter from drifting:
+the collision handler can legitimately report the same instance twice.
+
+Consumers: `MVP._tick_job_runtime()` pushes `mowed_fraction()` into
+`ACAJobManager.update_job_progress()` at 2 Hz; `gameplay_ui` pushes it into the
+HUD each frame; reaching 1.0 triggers `MVP._finish_job()`.

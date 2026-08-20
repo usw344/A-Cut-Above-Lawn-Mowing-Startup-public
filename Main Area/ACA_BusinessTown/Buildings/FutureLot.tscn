@@ -22,7 +22,7 @@ size = Vector3(2.4, 0.14, 1.2)
 size = Vector3(2.4, 0.07, 0.08)
 
 [sub_resource type="BoxMesh" id="BoxMesh_o1mgi"]
-size = Vector3(0.08, 0.07, 1.2)
+size = Vector3(0.08, 0.07, 1.14)
 
 [sub_resource type="BoxMesh" id="BoxMesh_wi2bg"]
 size = Vector3(0.07, 0.62, 0.07)
@@ -55,7 +55,7 @@ size = Vector3(0.07, 0.62, 0.07)
 size = Vector3(0.8, 0.2, 0.5)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0v6va"]
-size = Vector3(0.8, 0.11, 0.07)
+size = Vector3(0.8, 0.11, 0.06)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_jj1rm"]
 top_radius = 0.03
@@ -127,7 +127,7 @@ material_override = ExtResource("4_fdiph")
 mesh = SubResource("BoxMesh_fhxou")
 
 [node name="SillPlateW" type="MeshInstance3D" parent="Visual" unique_id=707865634]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.46, 0.18, -0.3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.46, 0.18, -0.27)
 material_override = ExtResource("4_fdiph")
 mesh = SubResource("BoxMesh_o1mgi")
 

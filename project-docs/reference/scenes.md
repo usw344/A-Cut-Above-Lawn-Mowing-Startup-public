@@ -1,258 +1,216 @@
 # Scene Reference
 
-Status: Repository scene map  
-Scope: Project-owned gameplay scenes and important integrated addon scenes
+Status: **Current** — 2026-08-19. Paths are `res://`-relative.
 
-## Reading this reference
+## Application screens
 
-“Referenced by” describes confirmed text or UID relationships. A scene with no incoming path reference is not automatically unused; it may be opened directly in the editor, be loaded by UID, or be retained as a prototype.
+### Main Menu Screen — the entry point
 
-## Current playable scene graph
+| Property | Value |
+|---|---|
+| Path | `Game/App/Main Menu Screen.tscn` |
+| Root | `Main Menu Screen : Node` |
+| Script | `Game/App/main_menu_screen.gd` |
+| Configured as | `run/main_scene` |
 
-### Minimum Viable Game
+Children: `Scenery` (instance of `main_menu_scenery.tscn`, which **already
+contains** `main_menu.tscn` in its `MenuSafeOverlay`), and a `Menu UI` CanvasLayer
+(layer 20) holding `Settings`, `Controls Help`, `Load Game` and `Credits`.
+
+The host locates the menu by type (`MainMenuScreen`), not by path.
+
+### Town Screen
+
+| Property | Value |
+|---|---|
+| Path | `Game/App/Town Screen.tscn` |
+| Root | `Town Screen : Node3D` |
+| Script | `Game/App/town_screen.gd` |
+| Children | `Pause Layer`, then `BusinessTown` (instance of `BusinessTown.tscn`) |
+
+`town_screen.gd` also creates a `Town Light Adapter` child at runtime when
+`light_from_world_clock` is on.
+
+`Pause Layer` is **first** on purpose: `_unhandled_input` runs in reverse tree
+order, so the town gets Escape before the pause menu does. That lets Escape close
+a building panel or clear a selection first, and only open pause when the town
+has nothing to dismiss.
+
+### Pause Layer
+
+| Property | Value |
+|---|---|
+| Path | `Game/App/Pause Layer.tscn` |
+| Root | `Pause Layer : CanvasLayer` (layer 40, `PROCESS_MODE_ALWAYS`) |
+| Script | `Game/App/pause_layer.gd` (`ACAPauseLayer`) |
+| Children | `Pause Menu`, `Settings`, `Controls Help`, `Confirmation Dialog` |
+
+The same four component instances `Gameplay UI.tscn` holds. `ACAGameplayUI`
+**inherits** `ACAPauseLayer` rather than instancing this scene, which is why the
+node names in `Gameplay UI.tscn` are unchanged.
+
+### Gameplay UI
+
+| Property | Value |
+|---|---|
+| Path | `Game/App/Gameplay UI.tscn` |
+| Root | `Gameplay UI : CanvasLayer` (layer 10) |
+| Script | `Game/App/gameplay_ui.gd` (`ACAGameplayUI`, extends `ACAPauseLayer`) |
+| Instanced by | `Minimum Viable Game.tscn`, with `gameplay_host = NodePath("..")` |
+
+Child order is significant (later siblings get `_unhandled_input` first):
+Gameplay HUD → Job Intro → Job Complete → Pause Menu → Settings → Controls Help →
+Confirmation Dialog.
+
+## Gameplay
+
+### Minimum Viable Game — the mowing runtime
 
 | Property | Value |
 |---|---|
 | Path | `Game/M.V.P/Minimum Viable Game.tscn` |
 | Root | `Minimum Viable Game : Node3D` |
 | Script | `Game/M.V.P/MVP.gd` |
-| Role | Authoritative current runtime root |
-| Loaded by | `project.godot` main-scene UID |
+| Reached by | `GameSession.go_to_mowing()` |
 
-Important children:
+Children: `Rider Mower`, `Custom Gridmap`, `CanvasLayer/MVP_HUD` (dev-only,
+hidden), `AudioStreamPlayer` (ambience), `Mountain Range Backdrop`,
+`PresetManager (Sky3D)`, `Gameplay UI`.
 
-- Rider Mower instance.
-- Custom Gridmap instance.
-- CanvasLayer with MVP HUD.
-- Ambient AudioStreamPlayer.
-- Embedded mountain-range backdrop.
-- Preset Manager/Sky3D instance.
+Connections: mower `collided` → `Custom Gridmap.custom_grid_map_collision_handler`;
+ten MVP HUD signals → controller methods on the root.
 
-Important connections:
+**No longer the main scene** (it was until 2026-08-19). It can still be opened
+standalone from the editor: with no active contract it falls back to a 256 grid
+and returns to town itself on completion.
 
-- Rider mower `collided` → Custom Gridmap collision handler.
-- Ten MVP HUD signals → MVP controller methods.
-
-### MVP HUD
+### MVP HUD — development only
 
 | Property | Value |
 |---|---|
 | Path | `Game/M.V.P/MVP_HUD.tscn` |
 | Root | `MVP_HUD : Control` |
-| Script | `Game/M.V.P/mvp_hud.gd` |
-| Role | Current controls and development statistics |
 | Instanced by | Minimum Viable Game |
+| Visibility | **Hidden on load**; toggled with **F3** |
 
-Contains 27 nodes, including mower selection, performance label, time and speed sliders, reset, time/weather presets, controls, and third-party license panels.
+Retained as a diagnostics/development layer. Its weather buttons write to
+`WorldClock`, not to the scene.
 
 ### Custom Gridmap
 
 | Property | Value |
 |---|---|
 | Path | `Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn` |
-| Root | `Custom Gridmap : Node3D` |
-| Script | `custom_gridmap.gd` |
-| Role | Mowable-grid runtime and terrain container |
-| Instanced by | MVP and footage scenes |
+| Script | `custom_gridmap.gd` (`Custom_Gridmap`) |
+| Instanced by | Minimum Viable Game |
 
-Important children:
-
-- Mowing Area static body.
-- Hidden Start Area static body.
-- Canonical Terrain Manager instance.
+Contains `Mowing Area`, `Start Area`, and the Terrain Manager. Chunks are
+`Multi_Mesh_Chunk` **objects**, not scene nodes; their MultiMesh instances are
+parented under `Mowing Area`.
 
 ### Terrain Manager
 
 | Property | Value |
 |---|---|
 | Path | `Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/Terrain Manager.tscn` |
-| Root | `Ground : MeshInstance3D` |
-| Script | `Terrain Manager.gd` |
-| Role | Canonical terrain and environmental foliage |
-| Instanced by | Custom Gridmap |
+| Instanced by | `custom_gridmap.tscn` |
+| Depends on | `Terrain/Meshes/1x1 Ground Main Mesh.mesh`, `Terrain/Meshes/Gound 1x1 ColourMap.png` — **ACTIVE, do not remove** |
 
-Contains a ground mesh, hidden generation helper, and 216 baked environmental MultiMesh nodes.
+### Mowers
 
-### Preset Manager
+| Path | Notes |
+|---|---|
+| `Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn` | Authored into the mowing scene; the initial active mower |
+| `Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn` | Preloaded by `MVP.gd`, swapped in via the dev HUD |
+| `Assets/Vehicles and Mowers/Mowers/Push Mower.tscn` | Preloaded by `MVP.gd`, swapped in via the dev HUD |
+| `Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn` | Referenced by `Model.gd`'s `mower_scene_references` through `load()` |
+
+### Weather
+
+| Path | Notes |
+|---|---|
+| `Weather/Preset Manager/Preset Manager.tscn` | Contains Sky3D (Skydome, TimeOfDay) and the Rain Handler. Instanced in the mowing scene as `PresetManager (Sky3D)`. |
+| `Weather/Handlers/Rain Handler.tscn` | Near/far GPU rain particles |
+| `Weather/particles/rain_particles.tscn` | Used by the Rain Handler and the rain precipitation resources |
+| `Weather/particles/snow_particles.tscn` | Authored, **not yet reachable** from `apply_weather_preset()` |
+
+## Town
+
+| Path | Notes |
+|---|---|
+| `Main Area/ACA_BusinessTown/BusinessTown.tscn` | Root `ACABusinessTown`. Own `WorldEnvironment`, `Sun`, `FillLight`, `CameraRig`, `BusinessHUD`. Does **not** use Sky3D. |
+| `Buildings/JobOffice.tscn` | `building_id = job_office` — the only one wired to a real destination |
+| `Buildings/SupplyStore.tscn`, `MowerDealer.tscn`, `BusinessHQ.tscn`, `FutureLot.tscn` | Placeholder destinations |
+| `UI/BusinessHUD.tscn` | Title bar, building panel, placeholder screen, embedded Job Board |
+| `UI/BuildingPanel.tscn`, `UI/PlaceholderScreen.tscn` | Supporting UI |
+
+## Job system UI
+
+| Path | Notes |
+|---|---|
+| `Main Area/ACA_JobSystem/job_system/ui/JobBoard.tscn` | `ACAJobBoard`. Bound to the `JobManager` autoload by `ACABusinessHUD._ready()`. |
+| `Main Area/ACA_JobSystem/job_system/ui/JobCard.tscn` | `ACAJobCard` |
+
+## UI package (`res://UI/`)
+
+`Gameplay HUD`, `Job Intro`, `Job Complete`, `Pause Menu`, `Settings`,
+`Controls Help`, `Dialogs/Confirmation Dialog`, `Notifications` (+ `Notification
+Toast`), `Transitions/Transition`, `Main Menu/main_menu` (+ `radial_menu`),
+`Scenic Background for Menus/scenery/scenes/main_menu_scenery`, `Demo/UI Demo`.
+
+Every component scene assigns `res://UI/Theme/Game UI.theme.tres` to its root.
+That path is the one to re-point if the UI folder ever moves.
+
+## Tooling and demo scenes
+
+| Path | Notes |
+|---|---|
+| `Dev tools/Validation/Flow Test.tscn` | Full-loop test, 54 assertions |
+| `Dev tools/Validation/UI Smoke Test.tscn` | UI component test, 60 assertions |
+| `Dev tools/Validation/Save Test.tscn` | Save/load, 59 assertions |
+| `Dev tools/Validation/Pause Test.tscn` | Pause stack + cursor + look, 49 / 54 |
+| `Dev tools/Validation/Credits Test.tscn` | Credits loader and screen, 40 assertions |
+| `Dev tools/Validation/Weather Test.tscn` | Weather/time visuals **and the audio bus structure**, 56 assertions |
+| `Dev tools/Validation/Fuel Test.tscn` | The real fuel system, 56 assertions |
+| `Dev tools/Validation/Audio Mix Probe.tscn` | **Measures** bus peak levels per weather state, 15 assertions |
+| `Dev tools/Validation/Trailer Test.tscn` | Trailer static contract, 98 assertions |
+| `Dev tools/Validation/Town Probe.tscn` | Grazing-angle town shots plus a depth-tie diff. Needs a renderer. |
+| `Dev tools/Validation/Weather Matrix.tscn` | 4 times x 3 weathers + town; needs a renderer |
+| `Dev tools/Validation/Sun Probe.tscn` | Sky3D sun altitude per half hour |
+| `Dev tools/Validation/Sky Probe.tscn` | The sky alone, per weather look + a cloud-parameter sweep; needs a renderer |
+| `Dev tools/Validation/Screenshot Tour.tscn` | Per-screen capture; needs a renderer |
+| `Game/Demo/Trailer/Trailer Capture.tscn` | The automatic trailer. **Never the main scene.** |
+| `Main Area/ACA_JobSystem/tests/JobSystemTests.tscn` | 110 assertions |
+| `Main Area/ACA_JobSystem/demo/JobSystemDemo.tscn` | Standalone Job System demo |
+| `Main Area/ACA_JobSystem/tools/BuildJobUI.tscn` | Regenerates the Job Board scenes |
+| `Dev tools/Performance Monitor.tscn`, `Dev tools/Mesurement.tscn` | Instruments |
+| `UI/Demo/UI Demo.tscn` | UI component showcase |
+
+## Removed from the project
+
+`Main.tscn`, `Main Area/Old Main Area/*`, `UI/Main Screen - old/*`,
+`Managers/**`, `Data Structures/Job Data Structure/*`, `Mowing Section/UI/*`,
+`Grass Grid Item/*`, `Mowing Object/*`, `Game/Demo/Footage/*` — all in the
+workspace `Soft Delete/` folder. See its `MANIFEST.md`.
+
+## Known issue
+
+`addons/sky_3d/assets/resources/MoonRender.tscn` fails to load (missing
+`SimpleMoon.gdshader` in this copy of the addon). Nothing loads it.
+
+## Development / media scenes
+
+### Trailer Capture
 
 | Property | Value |
 |---|---|
-| Path | `Weather/Preset Manager/Preset Manager.tscn` |
-| Root | `PresetManager : Node3D` |
-| Script | `Weather/Preset Manager/preset_manager.gd` |
-| Role | Canonical time/weather and Sky3D integration |
-| Instanced by | Minimum Viable Game |
+| Path | `Game/Demo/Trailer/Trailer Capture.tscn` |
+| Root | `Trailer Capture : Node` (`runner_boot.gd` shim) |
+| Runner | `Game/Demo/Trailer/trailer_director.gd` (`ACATrailerDirector`) |
+| Reached by | opening it and pressing Play. **Never** as `run/main_scene`. |
 
-Important children:
-
-- Sky3D WorldEnvironment.
-- Sun and moon lights.
-- Skydome.
-- TimeOfDay.
-- Rain Handler instance.
-
-### Rain Handler
-
-| Property | Value |
-|---|---|
-| Path | `Weather/Handlers/Rain Handler.tscn` |
-| Root | `Rain Handler : Node3D` |
-| Script | `Weather/Handlers/rain_handler.gd` |
-| Role | Rain particles, following, and audio crossfade |
-| Instanced by | Preset Manager |
-
-Children:
-
-- Near Rain.
-- Far Rain.
-- Rain AudioStreamPlayer.
-
-### Rain particles
-
-| Property | Value |
-|---|---|
-| Path | `Weather/particles/rain_particles.tscn` |
-| Root | `RainParticles : GPUParticles3D` |
-| Role | Reusable canonical rain emitter |
-| Instanced by | Rain Handler and footage scenes |
-
-## Canonical mower scenes
-
-### Mower Rider
-
-| Property | Value |
-|---|---|
-| Path | `Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn` |
-| Root | `CharacterBody3D` |
-| Script | `mower_rider.gd` |
-| Role | Initial and selectable rider mower |
-| Used by | MVP and footage scenes |
-
-Children include a current camera, collision shape, multipart visual instance, development label, spotlight, and 3D audio.
-
-### Rider Mower (In Parts)
-
-| Property | Value |
-|---|---|
-| Path | `Mower Scenes/Rider Mower (In Parts).tscn` |
-| Root | `LawnTractor01 : MeshInstance3D` |
-| Script | `rider_mower_(in_parts).gd` |
-| Role | Rider visual-part animation |
-| Instanced by | Mower Rider |
-
-Contains bag, steering wheel, four wheel meshes, and a retained Timer connection to `straighten_wheel`. The current script no longer declares that method; active steering return occurs in `_physics_process()`. This stale connection should be reviewed before cleanup.
-
-### Non Rider Mower
-
-| Property | Value |
-|---|---|
-| Path | `Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn` |
-| Root | `CharacterBody3D` |
-| Script | `non_rider_mower.gd` |
-| Role | Selectable powered walk-behind mower |
-| Used by | MVP preload and Footage Normal |
-
-Instances `Non Rider Mower Mesh.tscn`.
-
-### Push Mower
-
-| Property | Value |
-|---|---|
-| Path | `Assets/Vehicles and Mowers/Mowers/Push Mower.tscn` |
-| Root | `Push Mower : CharacterBody3D` |
-| Script | `push_mower.gd` |
-| Role | Selectable manual push mower |
-| Used by | MVP preload and Footage Normal |
-
-Instances `Push Mower Mesh.tscn`.
-
-### Mower mesh scenes
-
-| Scene | Role | Status |
-|---|---|---|
-| `Non Rider Mower Mesh.tscn` | Imported/preserved powered mower visual hierarchy | Current component |
-| `Push Mower Mesh.tscn` | Imported/preserved push mower visual hierarchy | Current component |
-
-These scenes are large because they serialize visual mesh hierarchies. Gameplay behavior belongs to their CharacterBody wrapper scenes.
-
-## Partially integrated application scenes
-
-### Main-menu group
-
-| Scene | Root | Script | Status and role |
-|---|---|---|---|
-| `UI/Main Screen/Menu Hierarchy.tscn` | `Control` | `Menu Hierarchy.gd` | Menu container; custom menu actions not wired |
-| `UI/Main Screen/Main Menu/Main Menu.tscn` | `Control` | `main_menu.gd` | New/Load/Options buttons; emits unconsumed signals |
-| `UI/Main Screen/New Game Menu/New Game.tscn` | `Control` | `New Game.gd` | Profile-name entry and saves-directory setup |
-
-No scene transition connects this group to the current MVP.
-
-### Main Area
-
-| Scene | Root | Script | Status and role |
-|---|---|---|---|
-| `Main Area/Main Area.tscn` | `Main Area : Node3D` | None attached | Proposed business/storefront abstraction |
-| `Main Area/Information Bar/Information Bar.tscn` | `CanvasLayer` | `Information Bar.gd` | Proposed time/weather/money/settings bar |
-
-### Mowing and job UI
-
-| Scene | Root | Script | Status and role |
-|---|---|---|---|
-| `Mowing Section/UI/Information UI.tscn` | `Control` | `Information UI.gd` | Fuel/cuttings/time HUD prototype |
-| `Managers/Job manager/Job Display/Job_offer_display.tscn` | `Control` | `Job_offer_display.gd` | Offer browsing and decline UI; Accept not wired |
-
-## Job scene group
-
-| Scene | Root | Important children/connections | Status |
-|---|---|---|---|
-| `Managers/Job manager/job_manager.tscn` | `Job Manager : Node3D` | Job Generator; offer display CanvasLayer; generator signals | Partially integrated root |
-| `Job Generator/Job Generator.tscn` | `Job Generator : Node3D` | Add Job Timer → generator callback | Partially integrated component |
-| `Job Offer/job_offer.tscn` | `Job Offer : Node3D` | Script only | Wrapper exists; generator constructs class directly |
-| `Job/job.tscn` | `Job : Node3D` | Script only | Accepted-job placeholder |
-| `Data Structures/Job Data Structure/Job Data Structure.tscn` | `Node3D` | `Job_Data.gd` | Data wrapper; no incoming scene path |
-
-## Mowing support and prototype scenes
-
-| Scene | Root | Status |
-|---|---|---|
-| `Mowing Section/Mowing Area/MultiMesh Chunk/MultiMesh Chunk.tscn` | `Node3D` | Wrapper scene is not instantiated; its script class is active through `.new()` |
-| `Mowing Section/Mowing Area/Mowing Object/Mowing Object.tscn` | `Node3D` | Incomplete job/grid/save wrapper |
-| `Mowing Section/Mowing Area/Mowing Ground/Grass Grid Item/Grass Grid Item.tscn` | `Node3D` | Unconnected experiment with embedded duplicate script |
-
-## Legacy mower scene
-
-| Property | Value |
-|---|---|
-| Path | `Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn` |
-| Root | `Small Gas Mower : CharacterBody3D` |
-| Script | `Mowing Section/Mower/Mower.gd` |
-| Status | Legacy compatibility/historical implementation |
-
-It is referenced by the old `Model.mower_scene_references` dictionary but not used by the MVP.
-
-## Demo and capture scenes
-
-| Scene | Root | Main composition | Status |
-|---|---|---|---|
-| `Game/Demo/Footage/Footage.tscn` | `Footage : Node3D` | Terrain3D, custom grid, rider mower, rain, Sky3D | Media-capture demo |
-| `Footage_Normal.tscn` | `Footage_Normal : Node3D` | Three mowers, Terrain3D, custom grid, Sky3D, timer | Media-capture demo |
-| `Footage_Rain.tscn` | `Footage : Node3D` | Terrain3D, custom grid, rider, rain, Sky3D | Media-capture demo |
-
-These scenes retain deprecated Terrain3D dependencies for footage history. They are not alternate canonical game worlds.
-
-## Development scenes
-
-| Scene | Root | Purpose | Status |
-|---|---|---|---|
-| `Dev tools/Mesurement.tscn` | `Mesurement : Node` | Timing helper wrapper | Tooling; no incoming reference |
-| `Dev tools/Performance Monitor.tscn` | `Performance Monitor : Control` | FPS, memory, player and chunk diagnostics | Tooling; no incoming reference |
-| Terrain3D addon menu/tool scenes | Various Controls/Nodes | Third-party editor tooling | Deprecated with Terrain3D |
-
-## Other and historical scenes
-
-| Scene | Status |
-|---|---|
-| `Main.tscn` | Older minimal root; not configured main scene |
-| `Managers/Simulation Manager/Game Time Manager/Game Time Manager.tscn` | Timer-based skeleton; no implemented behavior |
-| `Weather/particles/snow_particles.tscn` | Local snow emitter retained but not integrated into canonical weather |
-| Sky3D `MoonRender.tscn` | Addon support resource; not directly part of MVP scene graph |
+Uses the same boot shim as the validation runners so the director survives the
+scene changes it drives. Its presentation layer lives in
+`Game/Demo/Trailer/Presentation/` -- a mower adapter, a lawn adapter, a weather
+adapter, a UI director and the cinematic camera. See
+`Game/Demo/Trailer/README.md`.

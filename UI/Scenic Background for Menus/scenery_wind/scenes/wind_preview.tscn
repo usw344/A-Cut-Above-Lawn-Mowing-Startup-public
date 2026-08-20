@@ -1,12 +1,12 @@
 [gd_scene load_steps=12 format=3]
 
-[ext_resource type="Script" path="res://scenery_wind/scripts/wind_preview.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://scenery_wind/scenes/scenery_wind_controller.tscn" id="2_controller"]
-[ext_resource type="PackedScene" path="res://scenery_wind/scenes/tree_1_a_wind.tscn" id="3_tree_1"]
-[ext_resource type="PackedScene" path="res://scenery_wind/scenes/tree_2_a_wind.tscn" id="4_tree_2a"]
-[ext_resource type="PackedScene" path="res://scenery_wind/scenes/tree_2_d_wind.tscn" id="5_tree_2d"]
-[ext_resource type="PackedScene" path="res://scenery_wind/scenes/grass_a1_wind.tscn" id="6_grass_1"]
-[ext_resource type="PackedScene" path="res://scenery_wind/scenes/grass_a2_wind.tscn" id="7_grass_2"]
+[ext_resource type="Script" path="res://UI/Scenic Background for Menus/scenery_wind/scripts/wind_preview.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery_wind/scenes/scenery_wind_controller.tscn" id="2_controller"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery_wind/scenes/tree_1_a_wind.tscn" id="3_tree_1"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery_wind/scenes/tree_2_a_wind.tscn" id="4_tree_2a"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery_wind/scenes/tree_2_d_wind.tscn" id="5_tree_2d"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery_wind/scenes/grass_a1_wind.tscn" id="6_grass_1"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/scenery_wind/scenes/grass_a2_wind.tscn" id="7_grass_2"]
 
 [sub_resource type="Environment" id="Environment_preview"]
 background_mode = 1

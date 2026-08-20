@@ -47,3 +47,4 @@ spot_angle = 35.8997
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1241889933]
 stream = ExtResource("3_px4o0")
 volume_db = 16.744
+bus = &"Mower"

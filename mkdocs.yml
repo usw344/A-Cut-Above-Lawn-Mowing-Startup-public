@@ -26,6 +26,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  - Application Layer: application-layer.md
   - Project Overview:
       - Overview: project-overview.md
       - Project Settings and Input: project-settings-and-input.md
@@ -43,6 +44,7 @@ nav:
   - Reference:
       - Scene Reference: reference/scenes.md
       - Important Script Reference: reference/important-scripts.md
+      - Validation and Development Tools: validation-and-dev-tools.md
   - Plugins and Performance:
       - Plugins and Third-Party Systems: plugins-and-third-party.md
       - Performance Architecture: performance.md

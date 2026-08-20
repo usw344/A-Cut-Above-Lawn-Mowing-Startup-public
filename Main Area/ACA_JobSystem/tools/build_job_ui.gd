@@ -5,16 +5,16 @@ extends Node
 ## project builds its own HUD scenes. Run BuildJobUI.tscn in the editor (or
 ## headless) after changing the UI layout:
 ##
-##     godot --headless --path <project> res://ACA_JobSystem/tools/BuildJobUI.tscn
+##     godot --headless --path <project> res://Main Area/ACA_JobSystem/tools/BuildJobUI.tscn
 ##
 ## Nothing in job_system/ or demo/ loads this file. It may be deleted from a
 ## shipping build without affecting anything.
 
-const UI_DIR := "res://ACA_JobSystem/job_system/ui/"
+const UI_DIR := "res://Main Area/ACA_JobSystem/job_system/ui/"
 const CARD_PATH := UI_DIR + "JobCard.tscn"
 const BOARD_PATH := UI_DIR + "JobBoard.tscn"
 
-const S := preload("res://ACA_JobSystem/job_system/ui/job_ui_style.gd")
+const S := preload("res://Main Area/ACA_JobSystem/job_system/ui/job_ui_style.gd")
 
 
 func _ready() -> void:

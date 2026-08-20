@@ -1,178 +1,139 @@
 # Jobs and Economy
 
-Status: Existing but partially integrated
+Status: **Current and integrated.** Verified 2026-08-19 by the Flow Test (54) and
+the Job System's own suite (110).
 
-## Scope
+## Owner
 
-The repository contains an implemented job-offer prototype with timers, random generation, display state, decline/timeout behavior, and base-pay calculation.
+`ACAJobManager` — `Main Area/ACA_JobSystem/job_system/manager/job_manager.gd`,
+autoloaded as **`JobManager`**.
 
-It is not instantiated by the current MVP, and accepting an offer does not yet configure or load gameplay.
+It is the single authoritative owner of every job. `available_jobs` /
+`current_jobs` / `past_jobs` live there and nowhere else. The UI is a read-only
+view; gameplay reports in through the public API. There is no job state in job
+nodes, in global dictionaries, or in accepted-job subclasses.
 
-## Components
+The older prototype (`Managers/Job manager/`, `Job_Offer`, `Job_Type`,
+`Job_Data_Container`) is **gone from `res://`** — see `Soft Delete/MANIFEST.md`.
+`Model.gd` no longer has a job-offer dictionary.
 
-| Component | Script/scene | Responsibility |
-|---|---|---|
-| Job Manager | `Managers/Job manager/job_manager.gd/.tscn` | Owns generator, active offer nodes, and display lifecycle |
-| Job Generator | `Job Generator/Job Generator.gd/.tscn` | Creates timed random offers |
-| Job Offer | `Job Offer/Job Offer.gd` | Offer data and acceptance timeout |
-| Job Offer Display | `Job Display/Job_offer_display.gd/.tscn` | Presents and browses available offers |
-| Job | `Job/job.gd` | Intended accepted-offer subclass |
-| Job Type | `Data Structures/Job_Type.gd` | Difficulty and size categories |
-| Job Data Container | `Data Structures/Job Data Structure/Job_Data.gd` | Proposed generated-level/save data |
-| Global offer registry | `Data Structures/Model.gd` | Shared offer dictionary |
+## Package layout
 
-## Intended offer lifecycle
-
-```mermaid
-flowchart LR
-    Timer["Job Generator timer"] --> Generate["Generate Job_Offer"]
-    Generate -->|"job_offer_waiting"| Manager["Job Manager"]
-    Manager --> Model["model.job_offers"]
-    Manager --> Tree["Offer added as child node"]
-    Manager --> Display["Job Offer Display refresh"]
-    Tree -->|"timeout/remove_offer"| Manager
-    Display -->|"decline_offer"| Manager
-    Display -. "Accept not wired" .-> Job["Job"]
+```
+Main Area/ACA_JobSystem/
+  job_system/
+    data/        job.gd (ACAJob : Resource), job_enums.gd, game_time.gd
+    config/      job_balance.gd (ALL tunables), job_catalog.gd (site names)
+    generation/  job_generator.gd  — deterministic from (seed, generator_version)
+    market/      job_market.gd     — season+economy+climate -> strength 0..5
+    time/        job_time_provider.gd  ← INTEGRATION POINT
+    debug/       debug_time_provider.gd (demo/tests only, NOT the game clock)
+    manager/     job_manager.gd
+    ui/          JobBoard.tscn, JobCard.tscn, job_ui_style.gd
+  demo/   tests/   tools/          — tooling, all working
 ```
 
-## Job Manager
+## ACAJob (Resource)
 
-The manager scene contains:
+Pure data — no timers, no `_process`, no scene tree, no UI.
 
-- Empty CanvasLayer for the dynamically created offer display.
-- Debug CanvasLayer and label.
-- Instanced Job Generator.
+`id`, `seed`, `generator_version`, `job_site`, `property_type`, `lawn_size`,
+`grid_size: Vector2i`, `base_pay`, `offer_duration_minutes`,
+`created_game_time`, `expiry_game_time`, `accepted_game_time`,
+`completed_game_time`, `status`, `progress`.
 
-On `_ready()`, it:
+**Reproduction key:** `ACAJobGenerator.generate_core(seed, generator_version)`
+rebuilds site, property type, lawn size, grid size, pay and offer duration from
+`(seed, version)` alone. Only the absolute timestamps depend on when the offer
+entered the market. This is the foundation the save system builds on.
 
-- Caches the Job Generator.
-- Creates and shows a Job Offer Display.
+**Draw order in the generator is part of the contract.** Inserting a draw, or
+reordering `ACAJobCatalog.GENERATED_PROPERTY_TYPES`, changes what existing seeds
+produce — bump `GENERATOR_VERSION` instead.
 
-When a new offer arrives, it:
+## Lifecycle
 
-1. Adds it to `model`.
-2. Adds the offer node as a manager child so its Timer can run.
-3. Connects its `remove_offer` signal.
-4. Updates or recreates the display in an empty-list edge case.
+`GENERATED → AVAILABLE → ACCEPTED → IN_PROGRESS → COMPLETED`, with
+`EXPIRED` for lapsed offers and for abandoned contracts.
 
-Timeout removes the offer from `model`, refreshes the display, and detaches the offer node.
+- Offer expiry applies to `AVAILABLE` only. Once accepted, a contract never
+  expires; a completion deadline is a separate, future system.
+- Expired offers are **not** business history — they never reach `past_jobs`.
+- `MAX_CURRENT_JOBS = 1`. `current_jobs` stays a collection so raising that
+  number is the only change required later.
 
-## Job Generator
+## Public API
 
-The generator:
+```
+set_time_provider(provider)      time_provider()      now()
+available_jobs() / current_jobs() / past_jobs()   -> Array[ACAJob] (copies)
+get_job(job_id) -> ACAJob        has_current_capacity()   max_current_jobs()
+market_strength()  max_available_jobs()  market_summary()  minutes_until_next_arrival()
+evaluate_now()
+seed_initial_offers(count = 2)
+accept_job(job_id) -> bool
+begin_new_job(job_id) -> bool          # emits begin_job_requested, changes NO scene
+update_job_progress(job_id, 0..1) -> bool
+complete_job(job_id) -> bool
+discard_current_job(job_id) -> bool    # abandon: not completion, not history
+estimated_time_minutes(job) / estimated_time_text(job)
+debug_force_offer() / debug_add_offer_with_seed(seed) / debug_clear_all()
+```
 
-- Starts with a random short delay.
-- Generates offers until the configured maximum active count.
-- Adjusts subsequent wait time using current offer count.
-- Emits offers to the manager rather than adding them directly to the model.
+**SIGNALS:** `available_jobs_changed`, `current_jobs_changed`, `past_jobs_changed`,
+`job_generated(job)`, `job_expired(job)`, `job_accepted(job)`, `job_completed(job)`,
+`job_accept_failed(job_id, reason)`, `market_strength_changed(strength)`,
+`begin_job_requested(job)`
 
-Generated offer fields:
+## Integration points — all three are now filled in
 
-- Unique random integer ID.
-- Difficulty category.
-- Size category.
-- Square grid size aligned to multiples of 16.
-- Completion-time dictionary.
-- Base pay.
-- Display name.
-- Acceptance timeout.
+| Point | Filled by |
+|---|---|
+| World time (`set_time_provider`) | `ACAWorldClockTimeProvider` wrapping `WorldClock`, set in `GameSession._ready()`. **Before this existed the manager ran on a stopped clock and no offer could ever be generated.** |
+| Gameplay handoff (`begin_job_requested`) | `GameSession._on_begin_job_requested()` does the scene transition. The Job System still never changes scenes. |
+| Progress reporting (`update_job_progress`) | `MVP._tick_job_runtime()` pushes `Custom_Gridmap.mowed_fraction()` at 2 Hz. |
 
-The current probability and balancing constants are prototype values and should not be treated as final economy design.
+`estimated_time_provider` is still **unset** — estimates come from
+`ACAJobBalance.PLACEHOLDER_CELLS_PER_REAL_MINUTE`. Setting it is the clean way to
+derive estimates from lawn size + mower capability later; do not edit gameplay
+code for it.
 
-## Job Offer
+## Market model
 
-A Job Offer stores:
+`ACAJobMarket.market_strength(season, economy, climate)` → 0..5, which **is** the
+maximum number of simultaneous offers (a capacity, not a quota).
+Spring 4 / Summer 3 / Autumn 2 / Winter 0; economy −2..+1; climate −1..+1;
+**Drought is a hard zero** that overrides everything.
 
-- `job_id`
-- `job_size`
-- `time_limit`
-- `base_pay`
-- `display_name`
-- `time_to_accept`
+Arrivals come one at a time on a game-minute interval banded by strength
+(strength 4 → 60–120 game minutes). Falling demand never deletes existing offers.
 
-When added to the scene tree, it creates a Timer and starts the acceptance countdown.
+Season comes from the time provider (calendar-driven). Economy and climate are
+exported on the manager and default to `NORMAL`; no system drives them yet.
 
-It can report:
+## Economy
 
-- Offer data as a debug string.
-- Remaining time percentage.
-- Remaining seconds.
+Deliberately minimal and honest:
 
-`accept_job()` currently returns a new empty `Job`. It does not copy offer fields or notify the manager.
+- `job.base_pay` is the size base value with seeded variation, rounded to $5.
+  Property type, mower, economy and climate **do not** affect pay in V1.
+- `GameSession` owns money. `STARTING_MONEY = 250`.
+- On completion `GameSession.complete_current_job()` adds `base_pay` and emits a
+  `job_settled` summary with `bonus: 0` — the Job Complete screen hides the bonus
+  row when it is zero. **No bonus/tip system was invented to fill the label.**
+- There is no spending yet. The Supply Store, Mower Dealer and Business HQ are
+  still placeholder destinations in the town.
 
-## Job Offer Display
+## Presentation
 
-The display maintains its own ordered dictionary keyed by job ID.
+`ACAJobBoard` (`JobBoard.tscn`) — Available / Current / Past, bound to the
+manager by `ACABusinessHUD._ready()`. One board-level 0.5 s timer drives every
+offer countdown; individual jobs and cards never own timers.
+Player-facing wording only: the raw grid dimension is never shown.
 
-It:
+## KNOWN ISSUES / NOT DONE
 
-- Synchronizes from `model.get_all_job_offers()`.
-- Removes expired offers.
-- Adds new offers.
-- Tracks the focused offer.
-- Refreshes labels and timeout progress every frame.
-- Wraps left/right navigation.
-- Declines the current offer.
-- Emits a close request.
-
-The Accept button exists but has no scene signal connection.
-
-## Accepted Job
-
-`Job` extends `Job_Offer` but currently overrides `_ready()` with an empty method. It has no accepted-job state, progression, completion, reward, or serialization behavior.
-
-## Job Data Container
-
-`Job_Data_Container` is a separate proposed representation for generated mowing-space data:
-
-- Width and length.
-- Grass size and scale.
-- Job ID.
-- Grass data dictionary.
-- Other-object data dictionary.
-- House type and variant.
-- House scale.
-- Initialization flags.
-
-Its save dictionary currently includes ID, dimensions, grass data, and other-object data. It does not include every field present on the object.
-
-## Economy state
-
-Existing economy foundations:
-
-- Job base-pay calculation.
-- Pay shown in the offer display.
-- Empty `model.get_game_money()` interface.
-- Money button in the Information Bar.
-- Model fields such as mower speed/blade length that can support upgrade effects.
-- Canonical mower variants that can become owned/selectable equipment.
-
-Not yet implemented:
-
-- Player balance.
-- Reward settlement.
-- Purchases.
-- Store inventory.
-- Upgrade definitions.
-- Equipment ownership.
-- Economy save schema.
-- Job completion/penalties.
-- Balancing rules.
-
-The economy and upgrade direction is therefore partially integrated at the data/interface foundation level, not a complete runtime loop.
-
-## Missing integration
-
-The current application still needs a defined path for:
-
-1. Making the Job Manager part of the application scene tree.
-2. Accepting an offer.
-3. Copying offer data into an accepted Job.
-4. Creating or loading job terrain/mowing state.
-5. Transitioning from selection to gameplay.
-6. Tracking completion.
-7. Awarding pay.
-8. Updating persistent economy and equipment.
-9. Returning to a business/menu context.
-
-These are integration and design tasks; they do not require replacing the existing architecture wholesale.
+- No completion deadline on accepted contracts.
+- No economy or climate simulation driving `market_strength`.
+- No trust/reputation, no bonuses, no spending.
+- Job persistence across save/load: see [save and load](save-and-load.md).

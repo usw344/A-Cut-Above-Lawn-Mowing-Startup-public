@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scenery_wind/scripts/vegetation_wind_instance.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://Assets/Tree_2_D_Color1.gltf" id="2_tree"]
-[ext_resource type="ShaderMaterial" path="res://scenery_wind/materials/tree_2_d_wind.tres" id="3_material"]
+[ext_resource type="Script" path="res://UI/Scenic Background for Menus/scenery_wind/scripts/vegetation_wind_instance.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://UI/Scenic Background for Menus/Assets/Tree_2_D_Color1.gltf" id="2_tree"]
+[ext_resource type="ShaderMaterial" path="res://UI/Scenic Background for Menus/scenery_wind/materials/tree_2_d_wind.tres" id="3_material"]
 
 [node name="Tree2DWind" type="Node3D"]
 script = ExtResource("1_script")

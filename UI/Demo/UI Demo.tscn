@@ -1,0 +1,2683 @@
+[gd_scene format=3 uid="uid://cwmim78wu17ym"]
+
+[ext_resource type="Theme" uid="uid://eh3hcme4ob1t" path="res://UI/Theme/Game UI.theme.tres" id="1_0dutk"]
+[ext_resource type="Script" uid="uid://crh3d3pxmnm1m" path="res://UI/Demo/ui_demo.gd" id="2_aa67y"]
+[ext_resource type="PackedScene" path="res://UI/Gameplay HUD/Gameplay HUD.tscn" id="3_fysol"]
+[ext_resource type="PackedScene" path="res://UI/Job Intro/Job Intro.tscn" id="5_xqp3n"]
+[ext_resource type="PackedScene" path="res://UI/Job Complete/Job Complete.tscn" id="7_uctfj"]
+[ext_resource type="PackedScene" path="res://UI/Pause Menu/Pause Menu.tscn" id="9_knclj"]
+[ext_resource type="PackedScene" path="res://UI/Settings/Settings.tscn" id="11_xnrfc"]
+[ext_resource type="PackedScene" path="res://UI/Controls Help/Controls Help.tscn" id="13_icq8l"]
+[ext_resource type="PackedScene" path="res://UI/Dialogs/Confirmation Dialog.tscn" id="15_7g8if"]
+[ext_resource type="PackedScene" path="res://UI/Notifications/Notifications.tscn" id="17_i8soj"]
+[ext_resource type="PackedScene" path="res://UI/Transitions/Transition.tscn" id="19_maslk"]
+
+[sub_resource type="Gradient" id="Gradient_de24x"]
+colors = PackedColorArray(0.443, 0.588, 0.671, 1, 0.686, 0.769, 0.78, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_e5bkp"]
+gradient = SubResource("Gradient_de24x")
+width = 8
+height = 128
+fill_to = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_mlelb"]
+colors = PackedColorArray(0.443, 0.588, 0.671, 1, 0.686, 0.769, 0.78, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cy5vr"]
+gradient = SubResource("Gradient_mlelb")
+width = 8
+height = 128
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bb2ub"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.118, 0.145, 0.161, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_03m44"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8iuxe"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.357, 0.5831, 0.30005, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hmq06"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pdasw"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8xun4"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u8ljk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_31uf6"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_egvv4"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o5fvo"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wrfcc"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4putk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3gnuh"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xjud"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kqhkw"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3im3n"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ma107"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qfmbe"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lvxwu"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wnrvw"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bf47i"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jgyvp"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.153, 0.184, 0.196, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.08)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v0yhd"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cknvv"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_awmo0"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_626ks"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3h74s"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f4nou"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cns5p"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1w2uc"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2kc01"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jthfx"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_260qo"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.42, 0.686, 0.353, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3k8ox"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.357, 0.5831, 0.30005, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_144w3"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l6aww"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_huw56"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4nopb"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w4dqe"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rslyp"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gv5y2"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_asxcq"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dh8ae"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e8mo7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j7mjk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xapum"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c24uq"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rwat8"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4a31o"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6g6vg"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i12xf"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qjvjh"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4w02a"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8yfxt"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3gl2h"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxf4f"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r0gwy"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5l6u"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4fuc7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_34bqx"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t25xh"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_senyt"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_utefo"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n7oxp"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0or43"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k4vq3"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_56y73"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5elc8"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7aumf"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5xfor"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qaj4a"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6sfrn"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dxwqp"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qqqx7"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o3qxh"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ofha3"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0cd6"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xcam8"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jna0j"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xfolu"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ou01y"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hcxns"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7tbke"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1dsn"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nv24o"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n2dxw"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ijd6"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yayl5"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ehskc"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2xafq"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ld7w"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_guqfu"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cb6us"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vvhj2"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77x7e"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e0gk6"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jg636"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ha2nb"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v18og"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gil82"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uxo84"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nj7wk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wv16"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_213i1"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5f81x"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cuhqn"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_svdn0"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mrjgl"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g6gek"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bywu8"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5rerf"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fcx3b"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0160p"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.235, 0.278, 0.294, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7pidm"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a87om"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_heueg"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.192, 0.216, 0.227, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1mdq"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0.04)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.635, 0.855, 0.545, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="UIDemo" type="Control" unique_id=592040913]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme = ExtResource("1_0dutk")
+script = ExtResource("2_aa67y")
+
+[node name="Backdrop" type="Control" parent="." unique_id=1654850717]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="TownBackdrop" type="Control" parent="Backdrop" unique_id=1039580270]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Sky" type="TextureRect" parent="Backdrop/TownBackdrop" unique_id=1914781021]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_e5bkp")
+expand_mode = 1
+
+[node name="Buildings" type="HBoxContainer" parent="Backdrop/TownBackdrop" unique_id=1551642204]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -560.0
+offset_bottom = -170.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="Building0" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=596727563]
+custom_minimum_size = Vector2(120, 190)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.325, 0.353, 0.396, 1)
+
+[node name="Building1" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=802672403]
+custom_minimum_size = Vector2(96, 300)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.396, 0.373, 0.361, 1)
+
+[node name="Building2" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=1501712486]
+custom_minimum_size = Vector2(140, 240)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.286, 0.318, 0.353, 1)
+
+[node name="Building3" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=1107026604]
+custom_minimum_size = Vector2(110, 350)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.427, 0.4, 0.361, 1)
+
+[node name="Building4" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=1867944538]
+custom_minimum_size = Vector2(150, 210)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.325, 0.353, 0.396, 1)
+
+[node name="Building5" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=877473771]
+custom_minimum_size = Vector2(92, 280)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.396, 0.373, 0.361, 1)
+
+[node name="Building6" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=1158997246]
+custom_minimum_size = Vector2(130, 160)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.286, 0.318, 0.353, 1)
+
+[node name="Building7" type="ColorRect" parent="Backdrop/TownBackdrop/Buildings" unique_id=568604172]
+custom_minimum_size = Vector2(104, 230)
+layout_mode = 2
+size_flags_vertical = 8
+mouse_filter = 2
+color = Color(0.427, 0.4, 0.361, 1)
+
+[node name="Ground" type="ColorRect" parent="Backdrop/TownBackdrop" unique_id=749616991]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -170.0
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.29, 0.353, 0.302, 1)
+
+[node name="Road" type="ColorRect" parent="Backdrop/TownBackdrop" unique_id=197007552]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -96.0
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.278, 0.294, 0.31, 1)
+
+[node name="LawnBackdrop" type="Control" parent="Backdrop" unique_id=1078141143]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Sky" type="TextureRect" parent="Backdrop/LawnBackdrop" unique_id=1940544148]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_cy5vr")
+expand_mode = 1
+
+[node name="LawnStripes" type="HBoxContainer" parent="Backdrop/LawnBackdrop" unique_id=1414775538]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_top = 0.28
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="TownScreen" type="Control" parent="." unique_id=1726760615]
+unique_name_in_owner = true
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Centre" type="CenterContainer" parent="TownScreen" unique_id=68243165]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -300.0
+mouse_filter = 2
+
+[node name="Card" type="PanelContainer" parent="TownScreen/Centre" unique_id=555082079]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bb2ub")
+
+[node name="Margin" type="MarginContainer" parent="TownScreen/Centre/Card" unique_id=813572567]
+layout_mode = 2
+theme_override_constants/margin_left = 34
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 34
+theme_override_constants/margin_bottom = 30
+
+[node name="Column" type="VBoxContainer" parent="TownScreen/Centre/Card/Margin" unique_id=2057904209]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AccentBar" type="ColorRect" parent="TownScreen/Centre/Card/Margin/Column" unique_id=565394435]
+custom_minimum_size = Vector2(52, 3)
+layout_mode = 2
+size_flags_horizontal = 0
+color = Color(0.42, 0.686, 0.353, 1)
+
+[node name="TitleGap" type="Control" parent="TownScreen/Centre/Card/Margin/Column" unique_id=1098095619]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="TownScreen/Centre/Card/Margin/Column" unique_id=1417232627]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 30
+text = "A CUT ABOVE"
+
+[node name="Subtitle" type="Label" parent="TownScreen/Centre/Card/Margin/Column" unique_id=318678627]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 13
+text = "Mow & Grow  -  Fake Town"
+
+[node name="ButtonGap" type="Control" parent="TownScreen/Centre/Card/Margin/Column" unique_id=1683355594]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Buttons" type="VBoxContainer" parent="TownScreen/Centre/Card/Margin/Column" unique_id=173686970]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BeginJobButton" type="Button" parent="TownScreen/Centre/Card/Margin/Column/Buttons" unique_id=500770021]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_03m44")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_8iuxe")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hmq06")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_pdasw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_8xun4")
+text = "BEGIN TEST JOB"
+
+[node name="TownSettingsButton" type="Button" parent="TownScreen/Centre/Card/Margin/Column/Buttons" unique_id=1620409312]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_u8ljk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_31uf6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_egvv4")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_o5fvo")
+theme_override_styles/focus = SubResource("StyleBoxFlat_wrfcc")
+text = "SETTINGS"
+
+[node name="TownNotifyButton" type="Button" parent="TownScreen/Centre/Card/Margin/Column/Buttons" unique_id=219811618]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_4putk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3gnuh")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2xjud")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_kqhkw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_3im3n")
+text = "SHOW NOTIFICATION"
+
+[node name="TownControlsButton" type="Button" parent="TownScreen/Centre/Card/Margin/Column/Buttons" unique_id=1002476320]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_ma107")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qfmbe")
+theme_override_styles/hover = SubResource("StyleBoxFlat_lvxwu")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_wnrvw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_bf47i")
+text = "VIEW CONTROLS"
+
+[node name="GameplayHUD" parent="." unique_id=715228790 instance=ExtResource("3_fysol")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="JobIntro" parent="." unique_id=1331134698 instance=ExtResource("5_xqp3n")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="JobComplete" parent="." unique_id=1094797837 instance=ExtResource("7_uctfj")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PauseMenu" parent="." unique_id=612203374 instance=ExtResource("9_knclj")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Settings" parent="." unique_id=1310293003 instance=ExtResource("11_xnrfc")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ControlsHelp" parent="." unique_id=1251826041 instance=ExtResource("13_icq8l")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ConfirmationDialog" parent="." unique_id=1491879218 instance=ExtResource("15_7g8if")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Notifications" parent="." unique_id=284786808 instance=ExtResource("17_i8soj")]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Transition" parent="." unique_id=2143990204 instance=ExtResource("19_maslk")]
+unique_name_in_owner = true
+
+[node name="DebugPanel" type="PanelContainer" parent="." unique_id=1553321297]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = 96.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jgyvp")
+
+[node name="Margin" type="MarginContainer" parent="DebugPanel" unique_id=661173987]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="Column" type="VBoxContainer" parent="DebugPanel/Margin" unique_id=1030474105]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="DebugPanel/Margin/Column" unique_id=828176309]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="DebugPanel/Margin/Column/Header" unique_id=1236433377]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_font_sizes/font_size = 13
+text = "DEMO CONTROLS"
+
+[node name="Gap" type="Control" parent="DebugPanel/Margin/Column/Header" unique_id=473558153]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="DebugToggle" type="Button" parent="DebugPanel/Margin/Column/Header" unique_id=520800641]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(58, 26)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_v0yhd")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cknvv")
+theme_override_styles/hover = SubResource("StyleBoxFlat_awmo0")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_626ks")
+theme_override_styles/focus = SubResource("StyleBoxFlat_3h74s")
+text = "HIDE"
+
+[node name="DebugBody" type="VBoxContainer" parent="DebugPanel/Margin/Column" unique_id=47946726]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Scroll" type="ScrollContainer" parent="DebugPanel/Margin/Column/DebugBody" unique_id=2108069361]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll" unique_id=634148579]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="StateRow" type="HBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=386538716]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/StateRow" unique_id=421557320]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 13
+text = "State"
+
+[node name="Gap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/StateRow" unique_id=1725223312]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="StateValue" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/StateRow" unique_id=850425163]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635, 0.855, 0.545, 1)
+theme_override_font_sizes/font_size = 13
+text = "TOWN"
+
+[node name="JobDataTopGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2129372093]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobDataRule" type="ColorRect" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1107467863]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="JobDataMidGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=158306558]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobDataHeading" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1995443560]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+text = "JOB DATA"
+
+[node name="JobDataBottomGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2111250237]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobNameOptionCaption" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1899512565]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Job Name"
+
+[node name="JobNameOptionGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=404113910]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobNameOption" type="OptionButton" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1256205584]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="JobNameOptionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1697156862]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobSizeOptionCaption" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1418376799]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Job Size"
+
+[node name="JobSizeOptionGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=802243526]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobSizeOption" type="OptionButton" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1350445404]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="JobSizeOptionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=840939697]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RewardOptionCaption" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=847020478]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Reward"
+
+[node name="RewardOptionGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1798465082]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="RewardOption" type="OptionButton" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=545695514]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RewardOptionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1740336094]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BonusOptionCaption" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=123520264]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Bonus"
+
+[node name="BonusOptionGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=28180436]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BonusOption" type="OptionButton" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1432280043]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BonusOptionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=527587008]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WeatherOptionCaption" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1433166301]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Weather"
+
+[node name="WeatherOptionGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1804364270]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WeatherOption" type="OptionButton" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1940761058]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="WeatherOptionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2058326814]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LiveValuesTopGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1342280308]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LiveValuesRule" type="ColorRect" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=155335022]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="LiveValuesMidGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2046753571]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LiveValuesHeading" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=812428079]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+text = "LIVE VALUES"
+
+[node name="LiveValuesBottomGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1233215777]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ProgressSliderRow" type="HBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=396685840]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ProgressSliderRow" unique_id=1939073229]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Progress"
+
+[node name="Gap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ProgressSliderRow" unique_id=1523494119]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ProgressValue" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ProgressSliderRow" unique_id=854968314]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 11
+text = "0%"
+
+[node name="ProgressSliderGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1575719810]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ProgressSlider" type="HSlider" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1501380195]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+
+[node name="ProgressSliderGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=374680629]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FuelSliderRow" type="HBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1432838151]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/FuelSliderRow" unique_id=1833107333]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Fuel"
+
+[node name="Gap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/FuelSliderRow" unique_id=1270220280]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="FuelValue" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/FuelSliderRow" unique_id=1297277553]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 11
+text = "100%"
+
+[node name="FuelSliderGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=822373191]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FuelSlider" type="HSlider" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1178223215]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="FuelSliderGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=21239457]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ClockSliderRow" type="HBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=222750250]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ClockSliderRow" unique_id=1567513253]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Game Time"
+
+[node name="Gap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ClockSliderRow" unique_id=1030687669]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ClockValue" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ClockSliderRow" unique_id=95058115]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 11
+text = "09:30"
+
+[node name="ClockSliderGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=779511123]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ClockSlider" type="HSlider" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=598653205]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 0.25
+
+[node name="ClockSliderGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=263852559]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ElapsedSliderRow" type="HBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1955451909]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ElapsedSliderRow" unique_id=2088648564]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 11
+text = "Elapsed"
+
+[node name="Gap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ElapsedSliderRow" unique_id=893899507]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ElapsedValue" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/ElapsedSliderRow" unique_id=334902491]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 11
+text = "08:42"
+
+[node name="ElapsedSliderGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1970523836]
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ElapsedSlider" type="HSlider" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=61320806]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 3600.0
+value = 522.0
+
+[node name="ElapsedSliderGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=425370442]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ActionsTopGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1414252076]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ActionsRule" type="ColorRect" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2087939232]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="ActionsMidGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=540848100]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ActionsHeading" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2048881265]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+text = "ACTIONS"
+
+[node name="ActionsBottomGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2079101789]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FinishButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1864873986]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_f4nou")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cns5p")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1w2uc")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_2kc01")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jthfx")
+text = "SET PROGRESS TO 100%"
+
+[node name="ActionGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=167523694]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CompleteButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=675213228]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_260qo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_3k8ox")
+theme_override_styles/hover = SubResource("StyleBoxFlat_144w3")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_l6aww")
+theme_override_styles/focus = SubResource("StyleBoxFlat_huw56")
+text = "COMPLETE JOB"
+
+[node name="ActionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=311129937]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="FuelButtons" type="HBoxContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1467183301]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LowFuelButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/FuelButtons" unique_id=373417047]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_4nopb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_w4dqe")
+theme_override_styles/hover = SubResource("StyleBoxFlat_rslyp")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_gv5y2")
+theme_override_styles/focus = SubResource("StyleBoxFlat_asxcq")
+text = "LOW FUEL"
+
+[node name="RefuelButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/FuelButtons" unique_id=114128425]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_dh8ae")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_e8mo7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_j7mjk")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_xapum")
+theme_override_styles/focus = SubResource("StyleBoxFlat_c24uq")
+text = "REFUEL"
+
+[node name="NotificationsTopGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=613405141]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NotificationsRule" type="ColorRect" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=274127852]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="NotificationsMidGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1818415009]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NotificationsHeading" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=259381695]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+text = "NOTIFICATIONS"
+
+[node name="NotificationsBottomGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=304403978]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NotifyGrid" type="GridContainer" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2090536381]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="NotifyInfoButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/NotifyGrid" unique_id=400395824]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_rwat8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4a31o")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6g6vg")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_i12xf")
+theme_override_styles/focus = SubResource("StyleBoxFlat_qjvjh")
+text = "INFO"
+
+[node name="NotifySuccessButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/NotifyGrid" unique_id=1251099421]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_4w02a")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_8yfxt")
+theme_override_styles/hover = SubResource("StyleBoxFlat_3gl2h")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_dxf4f")
+theme_override_styles/focus = SubResource("StyleBoxFlat_r0gwy")
+text = "SUCCESS"
+
+[node name="NotifyWarningButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/NotifyGrid" unique_id=135672868]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_l5l6u")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_4fuc7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_34bqx")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_t25xh")
+theme_override_styles/focus = SubResource("StyleBoxFlat_senyt")
+text = "WARNING"
+
+[node name="NotifyErrorButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/NotifyGrid" unique_id=1166807920]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_utefo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_n7oxp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0or43")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_k4vq3")
+theme_override_styles/focus = SubResource("StyleBoxFlat_56y73")
+text = "ERROR"
+
+[node name="NotifyMoneyButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/NotifyGrid" unique_id=1690747441]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_5elc8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7aumf")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5xfor")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_qaj4a")
+theme_override_styles/focus = SubResource("StyleBoxFlat_6sfrn")
+text = "MONEY"
+
+[node name="NotifyBurstButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content/NotifyGrid" unique_id=166528668]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_dxwqp")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qqqx7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_o3qxh")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_ofha3")
+theme_override_styles/focus = SubResource("StyleBoxFlat_e0cd6")
+text = "BURST x6"
+
+[node name="ScreensTopGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=585627414]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ScreensRule" type="ColorRect" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=259222957]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="ScreensMidGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1424604837]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ScreensHeading" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=395187696]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+text = "SCREENS"
+
+[node name="ScreensBottomGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=208706044]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PauseButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2112455490]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_xcam8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_jna0j")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xfolu")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_ou01y")
+theme_override_styles/focus = SubResource("StyleBoxFlat_hcxns")
+text = "PAUSE MENU"
+
+[node name="PauseButtonGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=726257597]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TransitionButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=838994120]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_7tbke")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_m1dsn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nv24o")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_n2dxw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_5ijd6")
+text = "TRANSITION TEST"
+
+[node name="TransitionButtonGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=195162130]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ControlsButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1473780430]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_yayl5")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ehskc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2xafq")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_5ld7w")
+theme_override_styles/focus = SubResource("StyleBoxFlat_guqfu")
+text = "CONTROLS HELP"
+
+[node name="ControlsButtonGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=96231282]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="SettingsButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1958156287]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_cb6us")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_vvhj2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_77x7e")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_e0gk6")
+theme_override_styles/focus = SubResource("StyleBoxFlat_jg636")
+text = "SETTINGS"
+
+[node name="SettingsButtonGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=651381523]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DialogButton" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=2076527673]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_ha2nb")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_v18og")
+theme_override_styles/hover = SubResource("StyleBoxFlat_gil82")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_uxo84")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nj7wk")
+text = "CONFIRM DIALOG"
+
+[node name="DialogButtonGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=993526763]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WindowTopGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1279364354]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WindowRule" type="ColorRect" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=413045528]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="WindowMidGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1851211332]
+custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="WindowHeading" type="Label" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1678450540]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+text = "WINDOW SIZE"
+
+[node name="WindowBottomGap" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=756188618]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ResolutionButton0" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1047952763]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_5wv16")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_213i1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5f81x")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cuhqn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_svdn0")
+text = "1920 x 1080"
+
+[node name="ResolutionGap0" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1049823904]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ResolutionButton1" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=1004031294]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_mrjgl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_g6gek")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bywu8")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_5rerf")
+theme_override_styles/focus = SubResource("StyleBoxFlat_fcx3b")
+text = "1600 x 900"
+
+[node name="ResolutionGap1" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=593515438]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ResolutionButton2" type="Button" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=783315495]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_0160p")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7pidm")
+theme_override_styles/hover = SubResource("StyleBoxFlat_a87om")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_heueg")
+theme_override_styles/focus = SubResource("StyleBoxFlat_e1mdq")
+text = "1280 x 720"
+
+[node name="ResolutionGap2" type="Control" parent="DebugPanel/Margin/Column/DebugBody/Scroll/Content" unique_id=238485344]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+mouse_filter = 2

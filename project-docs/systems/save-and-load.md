@@ -1,161 +1,277 @@
 # Save and Load
 
-Status: Existing foundations, not a complete runtime system
+Status: **Implemented** — save format version **1**, added 2026-08-19.
 
-## Current position
+## Owner
 
-Several scripts define serializable dictionaries or save-related APIs, but no authoritative end-to-end save file exists.
+`SaveService` — `Game/App/save_service.gd`, autoloaded as **`SaveService`**.
 
-The current MVP:
+It is the only thing that touches save files. It does not own game state: it asks
+each owning system for a dictionary and hands one back on load.
 
-- Does not create or select a profile.
-- Does not write gameplay state.
-- Does not load gameplay state.
-- Does not autosave.
-- Does not expose return-to-menu flow.
-
-## Existing components
-
-| Component | Existing capability | Integration status |
-|---|---|---|
-| `Game_Profile` | Version, profile name, data dictionary | Class exists; not created by working model code |
-| `New Game.gd` | Validates name and opens/creates `user://saves` | Stops before profile creation or scene load |
-| `Model.gd` | Declares save/load/profile methods | Methods are empty or discard constructed data |
-| `Job_Data_Container` | Saves key generated-job fields | Not connected to current gameplay |
-| `Custom_Gridmap` | Saves grid parameters, lookup dictionaries, and chunks | Implemented dictionary round-trip; not written by app flow |
-| `Multi_Mesh_Chunk` | Saves mowed/unmowed coordinates and chunk parameters | Used by grid save representation |
-| `Mowing Object` | Intended save/load wrapper | Methods are empty |
-
-## Intended storage location
-
-`New Game.gd` uses:
-
-```text
-user://saves
+```
+SaveService
+  ├─ WorldClock.to_save_dict()   / from_save_dict()
+  ├─ JobManager.save_state()     / load_state()
+  ├─ GameSession.to_save_dict()  / from_save_dict()
+  ├─ GameSettings.to_save_dict() / from_save_dict()     (separate file)
+  ├─ model  (mower/fuel fields, read directly — Model.gd has no save API)
+  │           `mower_fuel` is a FLOAT since Milestone 9. It round trips exactly,
+  │           and an EMPTY tank loads empty — the old forced refill to 100 is
+  │           gone. `mower_fuel_idle_counter` / `idle_fuel_use` are still
+  │           written but nothing reads them; they are legacy fields of the
+  │           current save format. See systems/mowers-and-controls.md.
+  └─ Custom_Gridmap.mowed_item_names() / restore_mowed_items()
 ```
 
-It:
+## Storage
 
-1. Attempts `DirAccess.open("user://saves")`.
-2. Creates the directory when absent.
-3. Returns an opened `DirAccess`.
+| Context | Root |
+|---|---|
+| Production default | `user://saves/` |
+| Override | `--save-root=<absolute path>` on the command line |
 
-This is the appropriate broad location for release save files.
+The override exists so automated tests never write outside the working
+directory. It is read once in `SaveService._ready()` from both
+`OS.get_cmdline_args()` and `OS.get_cmdline_user_args()`.
 
-## Game profile object
+```
+godot --headless --path . "res://Dev tools/Validation/Save Test.tscn" -- "--save-root=D:/some/dir/saves"
+```
 
-`Data Structures/Game Profile.gd` declares `class_name Game_Profile`.
+Files in the root:
 
-Fields:
+| File | Contents |
+|---|---|
+| `<slot>.json` | One save |
+| `<slot>.json.bak` | The previous version of that save |
+| `<slot>.json.tmp` | Only exists mid-write |
+| `settings.json` | Presentation settings — global, **not** per-save |
 
-- `version` dictionary with Major, Minor, and Smallest values.
-- `profile_name`.
-- Generic `data` dictionary.
+## Write safety
 
-The constructor expects all version parts, a name, and the data dictionary.
+`save_game()` writes temp-then-replace:
 
-No script currently constructs a valid profile because `model.get_game_profile_object()` is empty.
+1. Serialize and write `<slot>.json.tmp`.
+2. If `<slot>.json` exists, copy it to `<slot>.json.bak`.
+3. Remove `<slot>.json`, rename `.tmp` to `<slot>.json`.
 
-## Model save API
+An interrupted save therefore leaves the previous save intact, plus a stray
+`.tmp` that the next write overwrites.
 
-`Model.save_game_data(file_name)` currently constructs:
+`load_game()` falls back to `<slot>.json.bak` if the main file is missing or
+fails to parse. Every failure path returns `false` and pushes an error; nothing
+throws.
 
-```text
+## Schema — version 1
+
+```jsonc
 {
-  "speed": ...,
-  "blade_length": ...,
-  "mower_fuel": ...,
-  "mower_fuel_idle_counter": ...,
-  "idle_fuel_use": ...
+  "save_format_version": 1,
+  "saved_at_unix": 1755590000,
+  "saved_at_text": "2026-08-19 04:33:20",
+  "slot_name": "slot1",
+
+  "profile": {
+    "profile_name": "Player",
+    "money": 355
+  },
+
+  "world": {                       // WorldClock.to_save_dict()
+    "minutes": 533.4,              // absolute game minutes since the epoch
+    "season": 0,                   // ACAJobEnums.Season
+    "weather": "Rain",             // one of WorldClock.WEATHER_PRESETS
+    "running": true,
+    "minutes_per_real_second": 6.0
+  },
+
+  "jobs": {                        // JobManager.save_state()
+    "generator_version": 1,
+    "market_strength": 4,
+    "economy": 2,
+    "climate": 1,
+    "next_arrival_time": 611.2,    // absolute game minutes; INF -> null
+    "available": [ /* job */ ],
+    "current":   [ /* job */ ],
+    "past":      [ /* job */ ]
+  },
+
+  "session": {                     // GameSession.to_save_dict()
+    "money": 355,
+    "screen": 2,                   // ACAGameSession.Screen — TOWN or MOWING only
+    "session_active": true,
+    "job_elapsed_seconds": 41.5
+  },
+
+  "mower": {                       // read from the `model` autoload
+    "current_mower": "Small Gas Mower",
+    "speed": 10,
+    "blade_length": 1,
+    "mower_fuel": 96.4,
+    "mower_fuel_idle_counter": 12,
+    "idle_fuel_use": 26,
+    "stored_cuttings": 0,
+    "cuttings_in_mower": 0
+  },
+
+  "mowing": {                      // present ONLY when screen == MOWING
+    "job_id": "job_1605987657_v1_48000",
+    "grid_size": 96,
+    "mowed_items": ["12,4,0,6", "12,4,0,8"],   // "chunk_id,x,y,z"
+    "mower_position": [12.5, 2.0, -3.25],
+    "mower_rotation": [0.0, 1.57, 0.0]
+  }
 }
 ```
 
-It does not:
+### A job
 
-- Return the dictionary.
-- Open a file.
-- Store data.
-- Use `file_name`.
-
-`load_game_data()` and `get_game_profile_object()` are empty.
-
-## Job data representation
-
-`Job_Data_Container.save_object()` returns:
-
-```text
+```jsonc
 {
-  "id": ...,
-  "width": ...,
-  "length": ...,
-  "grass_data": ...,
-  "object_data": ...
+  "id": "job_1605987657_v1_48000",
+  "seed": 1605987657,
+  "generator_version": 1,
+  "job_site": "Small Office Grounds",
+  "property_type": 1,
+  "lawn_size": 1,
+  "grid_size_x": 96, "grid_size_y": 96,
+  "base_pay": 105,
+  "offer_duration_minutes": 195.0,
+  "created_game_time": 480.0,
+  "expiry_game_time": 675.0,
+  "accepted_game_time": 495.2,
+  "completed_game_time": -1.0,
+  "status": 3,
+  "progress": 0.42
 }
 ```
 
-Its `load_object()` restores those fields.
+`seed` + `generator_version` are stored even though every generated field is also
+stored. That pair reproduces the whole core contract through
+`ACAJobGenerator.generate_core()`, so a future migration can regenerate rather
+than guess. **Never reorder generator draws without bumping `GENERATOR_VERSION`.**
 
-Other fields such as house metadata, scale data, and initialization flags are currently omitted from that save dictionary.
+## What persists — and what deliberately does not
 
-## Mowing-grid representation
+**Persists:** money; world time, day, season, weather preset, time scale; every
+available / current / past job with its absolute timestamps; market strength,
+economy, climate and the next arrival time; which screen the player was on;
+mower selection and fuel/cuttings state; **and, mid-job, exactly which grass
+instances have been cut**, plus the mower's position and rotation.
 
-The grid and chunk dictionary formats are documented in [Mowing grid and grass removal](mowing-grid.md).
+**Does not persist, by design:**
 
-They preserve:
+- Nodes, tweens, timers, audio players, particles, any transient visual state.
+- The grass grid's full structure. It is **reconstructed** by
+  `test_custom_gridmap(grid_size)` and then the saved mowed set is replayed. Only
+  the mowed portion is stored, so an untouched Large Lawn costs nothing and a
+  fully mowed one costs ~36,864 short strings.
+- `Custom_Gridmap.save_object()` / `load_object()` — the pre-existing pair. They
+  serialize *every* coordinate of *every* chunk plus two lookup dictionaries
+  keyed by `Vector3i`, which is both far larger than necessary and not
+  JSON-representable. They were left untouched (still used by nothing) rather
+  than removed; see KNOWN LIMITATIONS.
+- Settings, which live in their own `settings.json` because they are a property
+  of the installation, not of a save.
 
-- Grid dimensions and batching.
-- Coordinate/chunk lookup dictionaries.
-- Per-chunk position and identity.
-- Mowed and unmowed coordinates.
-- Global-to-local coordinate references.
+## Resume
 
-Loading recreates MultiMeshes and can recreate grass collision bodies.
+`SaveService.load_game()`:
 
-## Development save test
+1. Reads and validates the file (version, required sections).
+2. `WorldClock.from_save_dict()`, `JobManager.load_state()`,
+   `GameSession.from_save_dict()`, mower fields onto `model`.
+3. If `session.screen == MOWING` **and** the current job still exists, it stashes
+   the `mowing` block and calls `GameSession.go_to_mowing()`. Otherwise
+   `GameSession.go_to_town()`.
+4. The mowing scene builds its grid from the restored contract, then calls
+   `SaveService.take_pending_mowing_state()` — a one-shot handoff — and applies
+   the mowed set and mower transform.
 
-`Custom_Gridmap.test_save_loading()` uses:
+`take_pending_mowing_state()` clears itself, so a later manual visit to the same
+job never re-applies a stale grid.
 
-```text
-res://Saves/testing/load_save_testing.txt
+## Public API
+
+```gdscript
+SaveService.storage_root() -> String
+SaveService.has_any_save() -> bool
+SaveService.list_saves() -> Array[Dictionary]   # slot, path, saved_at_*, day, money, valid
+SaveService.save_game(slot_name := "") -> bool  # "" -> DEFAULT_SLOT
+SaveService.load_game(slot_name) -> bool
+SaveService.load_most_recent() -> bool
+SaveService.delete_save(slot_name) -> bool
+SaveService.take_pending_mowing_state() -> Dictionary
+SaveService.save_settings() / load_settings()
 ```
 
-and `FileAccess.store_var(..., true)`.
+**SIGNALS:** `game_saved(slot_name)`, `game_loaded(slot_name)`,
+`save_failed(reason)`, `load_failed(reason)`
 
-The test call is disabled in normal `_process()`. This is not a release save path and should not be described as the canonical storage format.
+## Grid restore support added to the mowing system
 
-The script also contains a CSV writer with a hard-coded path outside the repository. That is development instrumentation, not game persistence.
+```gdscript
+# Custom_Gridmap
+mowed_item_names() -> PackedStringArray
+restore_mowed_items(names: PackedStringArray) -> int   # returns how many applied
 
-## Missing orchestration
+# Multi_Mesh_Chunk
+mowed_item_names() -> PackedStringArray
+mow_item_silent(item_name, coord) -> bool   # no multimesh rebuild
+rebuild_multimeshes() -> void
+```
 
-A complete system still needs:
+`restore_mowed_items()` groups by chunk and rebuilds each affected chunk's
+MultiMesh **once**, instead of once per blade. Replaying 36,864 individual
+`mow_item()` calls would rebuild the meshes 36,864 times.
 
-- Profile creation and filename rules.
-- Duplicate-name handling.
-- Versioned top-level schema.
-- Serialization and atomic write strategy.
-- Error handling and backup policy.
-- Load menu enumeration.
-- Mapping from saved mower IDs to canonical mower scenes.
-- Job offer versus accepted-job persistence rules.
-- Economy/equipment state.
-- Time/weather state.
-- Grid-state size and performance validation.
-- Scene transition into loaded gameplay.
-- Migration strategy.
+## Version policy
 
-## Compatibility guidance
+`save_format_version` is checked on load. Version 1 is the only version, so there
+is no migration code and none should be written speculatively. When the schema
+changes:
 
-There is no released authoritative schema yet, but the first formal schema should:
+- Additive change (new optional field): keep version 1, default it on read.
+- Breaking change: bump the version and add one explicit upgrade step.
 
-- Store a clear format version.
-- Use stable logical IDs rather than node names where possible.
-- Separate profile state from current-scene transient state.
-- Treat canonical mower IDs as data, not raw node references.
-- Make omitted/default fields explicit.
-- Support adding fields without invalidating older saves.
-- Define whether job offers continue counting down while not loaded.
-- Avoid writing release saves under `res://`.
+Missing fields already fall back to defaults everywhere via `data.get(key, default)`.
 
-## Authority
+## Where the player reaches it
 
-`Documentation.odt` must not be used to infer a save format. It is obsolete. The source files listed here and future approved schema decisions are the relevant authorities.
+| Action | Where |
+|---|---|
+| Save | Pause menu -> **SAVE GAME** (during a job), or **F5** anywhere in a live session |
+| Load | Main menu -> **LOAD GAME** (slot picker), **CONTINUE** (most recent), or **F9** |
+| Delete | Main menu -> LOAD GAME -> DELETE on a row |
+
+F5/F9 are handled in `GameSession._unhandled_input()` rather than in a screen,
+because the Town has no pause menu of its own and quick-save is an
+application-level concern.
+
+`UI/Load Game/load_game.gd` (`LoadGameScreen`) is built from script rather than
+authored as a scene, so it always matches `UITheme` and there is no `.tscn`
+palette to re-point. It is presentation only: the host supplies
+`SaveService.list_saves()` and acts on `load_requested` / `delete_requested` /
+`back_requested`.
+
+## KNOWN LIMITATIONS
+
+- **Saving always writes the same slot** (`slot1`) from the in-game controls. The
+  service supports arbitrary slot names and the picker lists every slot it finds,
+  but there is no "save as" UI, so multiple slots only appear if something else
+  creates them (the test harness does).
+- **No autosave.** Saving is explicit.
+- Saving from the Town is only available via F5 — the town has no pause menu.
+- `Custom_Gridmap.save_object()` / `load_object()` are now dead weight next to the
+  lighter mowed-set approach. Left in place because removing working serialization
+  code was out of scope for this pass.
+- `Data Structures/Game Profile.gd` (`class_name Game_Profile`) is **not used** by
+  this system. It predates it and stores a version triple plus a copy of the
+  model. Kept for review; the schema above supersedes it.
+
+## Settings keys (2026-08-19)
+
+`settings.json` is written from `GameSettings.values()`, so it picks up new keys
+automatically. `invert_look_y` (bool, default `false`) was added in Milestone 5
+and needs no save-format change — settings are versionless and merged over
+`DEFAULTS`, so an older file simply falls back to the default.

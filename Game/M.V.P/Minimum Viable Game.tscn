@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://hb6fgwwrn1mn" path="res://Weather/Preset Manager/Preset Manager.tscn" id="7_58uqj"]
 [ext_resource type="Material" uid="uid://kkdgw1hnpq32" path="res://Mowing Section/Mowing_Area/Dirt Material.tres" id="16_0tesn"]
 [ext_resource type="AudioStream" uid="uid://btat76x4schwa" path="res://Assets/Sounds/Ambience Sound.wav" id="17_am1k4"]
+[ext_resource type="PackedScene" path="res://Game/App/Gameplay UI.tscn" id="18_gpui"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_w614l"]
 _surfaces = [{
@@ -37,6 +38,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -311.935, -492.23422, -140.18
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=982319094]
 stream = ExtResource("17_am1k4")
 volume_db = -16.855
+bus = &"Ambience"
 
 [node name="Mountain Range Backdrop" type="MeshInstance3D" parent="." unique_id=1057346624]
 transform = Transform3D(3, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0)
@@ -49,8 +51,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -496.68634, -467.05133, -95.5
 custom_gridmap_path = NodePath("")
 time_preset_transition_duration = 2.5
 
+[node name="Gameplay UI" parent="." node_paths=PackedStringArray("gameplay_host") instance=ExtResource("18_gpui")]
+gameplay_host = NodePath("..")
+
 [connection signal="collided" from="Rider Mower" to="Custom Gridmap" method="custom_grid_map_collision_handler"]
+[connection signal="auto_refuel_toggled" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_auto_refuel_toggled"]
+[connection signal="drain_fuel_requested" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_drain_fuel_requested"]
 [connection signal="mower_change_selected" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_mower_change_selected"]
+[connection signal="refuel_requested" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_refuel_requested"]
 [connection signal="ms_slider_value_changed" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_ms_slider_value_changed"]
 [connection signal="reset_map_and_location" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_reset_map_and_location"]
 [connection signal="tod_day_requested" from="CanvasLayer/MVP_HUD" to="." method="_on_mvp_hud_tod_day_requested"]

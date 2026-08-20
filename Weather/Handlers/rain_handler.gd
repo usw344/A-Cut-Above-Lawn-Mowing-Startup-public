@@ -13,14 +13,28 @@ class_name Rain_Handler
 # for debugging
 @export var toggle_rain_smooth:bool = false
 
-# Audio variables
+# ------------------------------------------------------------------- AUDIO
+#
+# The rain stream plays on the **Weather** bus and the ambience bed on
+# **Ambience** (see Game/App/audio_mix.gd). The balance between rain, ambience
+# and the mower engine is a BUS TRIM, not a value here. What this file owns is
+# only the fade in and out, and a gentle duck of the ambience while it rains.
+#
+# Changed 2026-08-19 (Milestone 9): the duck used to write ABSOLUTE decibels on
+# to the ambience player - `ambience_clear_db = 0.0`. The ambience is authored
+# at -16.855 dB, so the first Rain -> Clear transition raised it by nearly 17 dB
+# and left it there permanently. The duck is now RELATIVE to whatever the
+# player was authored at, which is captured once when it is handed over.
 @onready var rain_audio: AudioStreamPlayer = $AudioStreamPlayer
 var base_ambience_audio: AudioStreamPlayer
+## The ambience player's authored level, captured on hand-over. The duck is
+## always relative to this, so Clear always returns to exactly the authored mix.
+var ambience_base_db: float = 0.0
 
-@export var rain_audio_target_db: float = -8.0
+@export var rain_audio_target_db: float = -6.0
 @export var rain_audio_silent_db: float = -40.0
-@export var ambience_clear_db: float = 0.0
-@export var ambience_rain_db: float = -18.0
+## How far the ambience bed steps down underneath heavy rain. Relative.
+@export var ambience_rain_duck_db: float = -7.0
 
 var audio_transition_tween: Tween = null
 
@@ -60,7 +74,11 @@ func _process(delta: float) -> void:
 
 func set_ambience_sound_player(ambience_stream_player:AudioStreamPlayer):
 	base_ambience_audio = ambience_stream_player
-	
+	# Capture the AUTHORED level once. Everything after this is relative to it,
+	# so Clear always returns to the mix the scene was authored with.
+	if base_ambience_audio != null:
+		ambience_base_db = base_ambience_audio.volume_db
+
 @export var rain_offset: Vector3 = Vector3(0, 10, 0)
 
 func set_mower_global_position(mower_global_pos: Vector3) -> void:
@@ -158,6 +176,12 @@ func stop_rain_instant() -> void:
 	if far_rain:
 		far_rain.amount_ratio = 0.0
 		far_rain.emitting = false
+
+	# Audio has to snap too, or a scene loaded in Clear could start ducked from
+	# whatever the previous state was mid-tween.
+	reset_ambience_level()
+
+
 func _____AUDIO______():
 	pass
 func _transition_rain_audio(enable: bool, duration: float = -1.0) -> void:
@@ -185,6 +209,18 @@ func _transition_rain_audio(enable: bool, duration: float = -1.0) -> void:
 		audio_transition_tween.tween_property(
 			base_ambience_audio,
 			"volume_db",
-			ambience_rain_db if enable else ambience_clear_db,
+			ambience_base_db + (ambience_rain_duck_db if enable else 0.0),
 			duration
 		)
+
+
+## Put the ambience bed back to its authored level with no transition. Used by
+## the instant paths, so a scene that loads in Clear never starts ducked.
+func reset_ambience_level() -> void:
+	if audio_transition_tween:
+		audio_transition_tween.kill()
+		audio_transition_tween = null
+	if base_ambience_audio != null:
+		base_ambience_audio.volume_db = ambience_base_db
+	if rain_audio != null:
+		rain_audio.volume_db = rain_audio_silent_db

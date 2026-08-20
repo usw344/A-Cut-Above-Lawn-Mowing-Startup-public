@@ -1,6 +1,6 @@
 extends SceneTree
 
-const SCENE_PATH := "res://scenery/scenes/main_menu_scenery.tscn"
+const SCENE_PATH := "res://UI/Scenic Background for Menus/scenery/scenes/main_menu_scenery.tscn"
 
 
 func _init() -> void:
@@ -35,7 +35,7 @@ func _init() -> void:
 		sky_environment != null
 		and sky_environment.environment != null
 		and sky_environment.environment.resource_path
-		!= "res://scenery/environments/main_menu_environment.tres"
+		!= "res://UI/Scenic Background for Menus/scenery/environments/main_menu_environment.tres"
 	):
 		failures.append("Menu environment is no longer using the reusable saved resource")
 	var repeated_scenery := packed.instantiate()
@@ -142,17 +142,17 @@ func _init() -> void:
 		failures.append("Expected layered vegetation/rocks; found only %d grounded anchors" % grounded_count)
 
 	for resource_path in [
-		"res://scenery/materials/rolling_ground.tres",
-		"res://scenery/materials/menu_safe_overlay.tres",
-		"res://scenery/materials/mountain_far.tres",
-		"res://scenery/materials/mountain_mid.tres",
-		"res://scenery/materials/procedural_rock_warm.tres",
-		"res://scenery/materials/procedural_rock_cool.tres",
+		"res://UI/Scenic Background for Menus/scenery/materials/rolling_ground.tres",
+		"res://UI/Scenic Background for Menus/scenery/materials/menu_safe_overlay.tres",
+		"res://UI/Scenic Background for Menus/scenery/materials/mountain_far.tres",
+		"res://UI/Scenic Background for Menus/scenery/materials/mountain_mid.tres",
+		"res://UI/Scenic Background for Menus/scenery/materials/procedural_rock_warm.tres",
+		"res://UI/Scenic Background for Menus/scenery/materials/procedural_rock_cool.tres",
 	]:
 		var material := load(resource_path) as ShaderMaterial
 		if material == null or material.shader == null:
 			failures.append("Could not load saved shader material: %s" % resource_path)
-	var ground_material := load("res://scenery/materials/rolling_ground.tres") as ShaderMaterial
+	var ground_material := load("res://UI/Scenic Background for Menus/scenery/materials/rolling_ground.tres") as ShaderMaterial
 	if ground_material != null:
 		var ground_color: Vector3 = ground_material.get_shader_parameter("high_color")
 		if ground_color.x <= ground_color.y:

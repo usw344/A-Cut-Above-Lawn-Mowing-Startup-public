@@ -1,43 +1,68 @@
 # A Cut Above: Mow & Grow — Developer Documentation
 
-Status: Internal developer documentation  
-Last repository review: 2026-08-02  
-Authoritative playable entry point: `res://Game/M.V.P/Minimum Viable Game.tscn`
+Status: Internal developer documentation
+Last repository review: **2026-08-19** (polish and presentation pass: pause/controls, credits, weather visuals, trailer)
+Configured entry point: **`res://Game/App/Main Menu Screen.tscn`**
 
 ## Purpose
 
-This documentation describes the current Godot 4 architecture, the systems already present in the repository, their integration status, and known legacy or cleanup areas.
+This documentation describes the current Godot 4.6 architecture, the systems in
+the repository, their integration status, and known legacy or cleanup areas.
+It is written for future AI coding agents: prefer structured technical facts
+over prose.
 
-It is intentionally separate from `docs/index.html`. The `docs/` root is the public GitHub Pages site; its presentation copy and roadmap are not authoritative engineering plans.
+It is separate from `docs/index.html`, which is the public GitHub Pages site and
+is not an authoritative engineering plan. `Documentation.odt` is obsolete
+migration-era material and is not a source for these pages.
 
-`Documentation.odt` is obsolete migration-era material and is not a source for these pages.
+## Read this first
+
+**[Application layer](application-layer.md)** — the autoloads, screen routing,
+world clock, and the one job-completion pathway. It is the layer that makes the
+separate systems into a running game, and most integration questions are
+answered there.
 
 ## Status vocabulary
 
-- **Current playable runtime** — loaded directly or transitively by `Minimum Viable Game.tscn`.
-- **Partially integrated** — meaningful implementation exists, but the current playable runtime does not complete or expose the whole flow.
-- **Tooling or demo** — intended for development, editor assistance, performance observation, or media capture.
-- **Legacy** — retained for compatibility or historical reference but superseded by a canonical implementation.
-- **Deprecated** — no longer part of the intended game direction.
-- **Cleanup debt** — safe removal may be appropriate later, but only after a separate reference and runtime validation pass.
+- **Current** — part of the running application.
+- **Tooling / demo** — for development, editor assistance, performance
+  observation, or media capture. Unreferenced by design.
+- **Legacy** — superseded. Anything confirmed legacy has been moved **out of
+  `res://`** to the workspace `Soft Delete/` folder; see
+  [legacy and experimental](legacy-and-experimental.md).
+- **Uncertain** — investigated, not confidently classifiable, left in place and
+  documented.
 
-An unreferenced file is not automatically called unused. Status is based on scene reachability, explicit resource references, implementation completeness, and confirmed project direction.
+An unreferenced file is not automatically unused. GDScript `class_name` and
+`load()` calls do not appear as scene references.
 
 ## Canonical systems
 
-- Runtime composition: `Game/M.V.P/Minimum Viable Game.tscn`
-- Global runtime state: `Data Structures/Model.gd` as the `model` autoload
-- Mowers: scenes under `Assets/Vehicles and Mowers/Mowers/`
-- Grass cutting: the custom grid and `Multi_Mesh_Chunk` implementation
-- Terrain and foliage: the custom `Terrain Manager.tscn` and `Terrain Manager.gd`
-- Sky: the open-source Sky3D addon
-- Weather: `Weather/Preset Manager` and `Weather/Handlers/Rain Handler`
-- Runtime interface: `Game/M.V.P/MVP_HUD.tscn`
+| Concern | Canonical implementation |
+|---|---|
+| Entry point | `Game/App/Main Menu Screen.tscn` |
+| Application flow | `GameSession` autoload — `Game/App/game_session.gd` |
+| World time / weather state | `WorldClock` autoload — `Game/World/world_clock.gd` |
+| Jobs | `JobManager` autoload — `Main Area/ACA_JobSystem/` (`ACAJobManager`) |
+| Town | `Main Area/ACA_BusinessTown/BusinessTown.tscn` |
+| Mowing runtime | `Game/M.V.P/Minimum Viable Game.tscn` + `MVP.gd` |
+| Grass cutting | `Custom_Gridmap` + `Multi_Mesh_Chunk` |
+| Terrain / foliage | `Custom Gridmap solution/Terrain Manager.tscn` |
+| Sky | `addons/sky_3d` (the only installed addon) |
+| Weather routing | `Weather/Preset Manager` + `Weather/Handlers/Rain Handler` |
+| Weather LOOK | `Weather/Visual/weather_visual_adapter.gd` (mowing), `town_light_adapter.gd` (town) |
+| Player UI | `res://UI/` driven by `Game/App/gameplay_ui.gd` |
+| Pause stack | `Game/App/pause_layer.gd` (`ACAPauseLayer`) — one implementation, both screens |
+| Cursor ownership | `AppUI` — the only writer of `Input.mouse_mode` |
+| Credits | `res://Credits/` scanned by `UI/Credits/credits_loader.gd` |
+| Trailer capture | `Game/Demo/Trailer/` — development / media tooling only |
+| Legacy global state | `model` autoload — `Data Structures/Model.gd` |
 
 ## Documentation map
 
 ### Project and architecture
 
+- [Application layer](application-layer.md) ← start here
 - [Project overview](project-overview.md)
 - [Architecture and system relationships](architecture.md)
 - [Startup and runtime flow](runtime-flow.md)
@@ -62,22 +87,13 @@ An unreferenced file is not automatically called unused. Status is based on scen
 - [Plugins and third-party systems](plugins-and-third-party.md)
 - [Performance architecture](performance.md)
 - [Legacy, deprecated, demo, and experimental areas](legacy-and-experimental.md)
+- [Validation and development tools](validation-and-dev-tools.md)
 
 ## Authority and maintenance rules
 
-When code and documentation disagree:
+When code and documentation disagree, **the repository wins**:
 
-1. Verify the configured main scene and the scene/script/resource graph.
+1. Verify `project.godot` (main scene, autoloads) and the scene/script graph.
 2. Treat the repository and confirmed project decisions as authoritative.
-3. Update these internal pages with the implementation change.
+3. Update these pages with the implementation change.
 4. Do not infer current architecture from `docs/index.html` or `Documentation.odt`.
-
-When adding a new system page, identify:
-
-- Its status.
-- Its owning scene or autoload.
-- Its inputs and outputs.
-- Its dependencies.
-- Its save-state implications.
-- Its performance implications.
-- Which implementation is canonical if alternatives exist.

@@ -1,32 +1,47 @@
 # Project Overview
 
-Status: Current repository overview  
-Godot project feature version: 4.6  
-Project name: A Cut Above
+Status: **Current repository overview** — 2026-08-19
+Godot project feature version: 4.6 (verified against Godot 4.6.1 stable)
+Project name: A Cut Above: Mow & Grow
 
 ## Current playable scope
 
-The repository currently launches directly into a playable mowing demonstration. The player can:
+The repository launches into a complete, connected application loop:
 
-- Drive one of three mower variants.
-- Cut a generated grid of grass.
-- Reset the mowing area.
-- Change mower speed.
-- Switch between mower types.
-- Select time-of-day and weather presets.
-- Observe basic FPS, memory, and CPU statistics.
+**Main Menu → New Game → Town → Job Board → accept a real generated contract →
+Job Intro → Mowing → completion → Job Complete → return to Town → the contract is
+recorded in business history.**
 
-Menus, job generation, profiles, saving/loading, economy, upgrades, and a fuller HUD have implementations or scaffolding in the repository, but they are not completely integrated into the current playable flow.
+Working today:
+
+- Radial main menu over a 3D scenic backdrop; Settings and Controls Help.
+- A persistent world clock (time, day, season) and weather preset that survive
+  every scene change.
+- A seeded job market: offers arrive on game time, expire on game time, and are
+  accepted, begun, progressed and completed through one authoritative manager.
+- The mowing grid is sized from the accepted contract (96/144/192).
+- Drive one of three mower variants and cut a generated grid of grass.
+- Production HUD, job intro, fullscreen transitions, results screen, pause menu,
+  settings, controls help, confirmation dialogs, notification toasts.
+- Money: a starting balance and contract payouts.
+- A development fast-completion helper (F10) that uses the real completion path.
+
+Not yet implemented: save/load, spending, upgrades, reputation, completion
+deadlines, and any economy simulation driving market strength. The town's
+Supply Store, Mower Dealer and Business HQ are placeholder destinations.
 
 ## Entry point
 
 `project.godot` sets:
 
 ```text
-run/main_scene="uid://b85h5nq688wra"
+run/main_scene="res://Game/App/Main Menu Screen.tscn"
 ```
 
-That UID belongs to:
+**Changed 2026-08-19** — the entry point was previously the MVP mowing bench.
+That scene is still the mowing runtime, now reached through the job flow.
+
+The entry scene is:
 
 ```text
 res://Game/M.V.P/Minimum Viable Game.tscn

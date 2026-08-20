@@ -1,0 +1,149 @@
+[gd_scene format=3]
+
+[ext_resource type="Theme" path="res://UI/Theme/Game UI.theme.tres" id="1_2ul3x"]
+[ext_resource type="Script" path="res://UI/Job Intro/job_intro.gd" id="2_cws5s"]
+
+[node name="JobIntro" type="Control" unique_id=1331134698]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1_2ul3x")
+script = ExtResource("2_cws5s")
+
+[node name="Scrim" type="ColorRect" parent="." unique_id=797005709]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.051, 0.067, 0.075, 1)
+
+[node name="CardHolder" type="CenterContainer" parent="." unique_id=1474434564]
+unique_name_in_owner = true
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Column" type="VBoxContainer" parent="CardHolder" unique_id=1716965547]
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ContractType" type="Label" parent="CardHolder/Column" unique_id=1681023985]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+text = "RESIDENTIAL CONTRACT"
+
+[node name="NameGap" type="Control" parent="CardHolder/Column" unique_id=148365937]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="JobName" type="Label" parent="CardHolder/Column" unique_id=448770072]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(520, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "MILLER RESIDENCE"
+autowrap_mode = 3
+
+[node name="JobSize" type="Label" parent="CardHolder/Column" unique_id=1984695826]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Medium Lawn"
+
+[node name="RuleGap" type="Control" parent="CardHolder/Column" unique_id=1456068915]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="TopRule" type="ColorRect" parent="CardHolder/Column" unique_id=1925946026]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="RowsGap" type="Control" parent="CardHolder/Column" unique_id=1275814034]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EstimatedTimeRow" type="HBoxContainer" parent="CardHolder/Column" unique_id=887518217]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CardHolder/Column/EstimatedTimeRow" unique_id=1173371979]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Estimated Time"
+
+[node name="Gap" type="Control" parent="CardHolder/Column/EstimatedTimeRow" unique_id=2071870681]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="EstimatedTimeValue" type="Label" parent="CardHolder/Column/EstimatedTimeRow" unique_id=1595536127]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+text = "12 min"
+
+[node name="RowGap" type="Control" parent="CardHolder/Column" unique_id=1932038687]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ContractValueRow" type="HBoxContainer" parent="CardHolder/Column" unique_id=1859632348]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="CardHolder/Column/ContractValueRow" unique_id=2085455908]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+text = "Contract Value"
+
+[node name="Gap" type="Control" parent="CardHolder/Column/ContractValueRow" unique_id=446007212]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="ContractValue" type="Label" parent="CardHolder/Column/ContractValueRow" unique_id=1458445553]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.635, 0.855, 0.545, 1)
+text = "$240"
+
+[node name="BottomRuleGap" type="Control" parent="CardHolder/Column" unique_id=1635306203]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="BottomRule" type="ColorRect" parent="CardHolder/Column" unique_id=926833736]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0.08)
+
+[node name="StatusGap" type="Control" parent="CardHolder/Column" unique_id=1287277510]
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="StatusLabel" type="Label" parent="CardHolder/Column" unique_id=1423847847]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.478, 0.529, 0.545, 1)
+text = "PREPARING EQUIPMENT..."

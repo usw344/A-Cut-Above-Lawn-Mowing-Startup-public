@@ -1,0 +1,28 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://Game/App/gameplay_ui.gd" id="1_ui"]
+[ext_resource type="PackedScene" path="res://UI/Gameplay HUD/Gameplay HUD.tscn" id="2_hud"]
+[ext_resource type="PackedScene" path="res://UI/Job Intro/Job Intro.tscn" id="3_intro"]
+[ext_resource type="PackedScene" path="res://UI/Job Complete/Job Complete.tscn" id="4_done"]
+[ext_resource type="PackedScene" path="res://UI/Pause Menu/Pause Menu.tscn" id="5_pause"]
+[ext_resource type="PackedScene" path="res://UI/Settings/Settings.tscn" id="6_set"]
+[ext_resource type="PackedScene" path="res://UI/Controls Help/Controls Help.tscn" id="7_help"]
+[ext_resource type="PackedScene" path="res://UI/Dialogs/Confirmation Dialog.tscn" id="8_dialog"]
+
+[node name="Gameplay UI" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_ui")
+
+[node name="Gameplay HUD" parent="." instance=ExtResource("2_hud")]
+
+[node name="Job Intro" parent="." instance=ExtResource("3_intro")]
+
+[node name="Job Complete" parent="." instance=ExtResource("4_done")]
+
+[node name="Pause Menu" parent="." instance=ExtResource("5_pause")]
+
+[node name="Settings" parent="." instance=ExtResource("6_set")]
+
+[node name="Controls Help" parent="." instance=ExtResource("7_help")]
+
+[node name="Confirmation Dialog" parent="." instance=ExtResource("8_dialog")]
