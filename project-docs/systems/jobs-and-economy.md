@@ -10,6 +10,20 @@ Important paths:
 - `Game/Economy/mower_upgrades.gd`
 - `Main Area/ACA_BusinessTown/UI/business_services.gd`
 
+## Integration points the host fills in
+
+`ACAJobManager` carries optional `Callable`s the host sets once. The Job System
+never touches a mower node, an economy or a lawn itself.
+
+| | |
+|---|---|
+| `estimated_time_provider` | real minutes a contract is expected to take. Still unset — see the known limitations |
+| `pay_multiplier_provider` | the market index and the difficulty's pay scale, applied ONCE when an offer is created |
+| `site_note_provider` | a short phrase describing the site, printed on the offer's work order. `ACAGameSession` sets it to the SAME derivation the property generator uses, so a card that says "House and garden" is a card whose property has a house on it |
+
+`ACAJobEnums.PropertyType` is the whole of the Job System's vocabulary for what a
+property is. The host owns the rest and hands over a string.
+
 ## Purpose
 
 Generate work, price it against a market that moves, pay for it, and let the
@@ -18,10 +32,10 @@ money buy fuel and machine upgrades that change how the game plays.
 ## Ownership
 
 ```
-WorldClock.day_changed
-        |
+WorldClock.day_changed                    ACADifficulty (seven numbers)
+        |                                          |
    Economy.advance_to_day()      <- the ONLY thing that moves the market
-        |
+        |                                          |
    condition + event + drift  ->  job index / fuel price / equipment index
         |
         +--> JobManager      priced at GENERATION only
@@ -39,6 +53,84 @@ WorldClock.day_changed
 | Upgrade levels and their effects | `MowerUpgrades` | the mower scenes |
 | Shop presentation | `ACABusinessServices` | any of the above |
 
+## Difficulty — `Game/Economy/difficulty.gd`
+
+An **economy** setting, not a graphics setting. It is chosen when a game starts,
+saved with that game, and changes seven numbers and nothing else.
+
+| | Easy ("Steady") | Medium ("Working") | Hard ("Lean Season") | `legacy` |
+|---|---:|---:|---:|---:|
+| Starting money | $320 | $250 | $200 | $250 |
+| Job pay scale | 1.15 | 1.00 | 0.88 | 1.00 |
+| Base fuel price | $0.90 | $1.00 | $1.15 | $1.10 |
+| Event daily chance | 0.10 | 0.11 | 0.15 | 0.11 |
+| Recession job scale | 0.75 | 1.00 | 1.25 | 1.00 |
+| ...effective payout | 0.88 | 0.84 | 0.80 | 0.84 |
+| Upgrade cost scale | 0.85 | 1.00 | 1.15 | 1.00 |
+| Full-tank seconds | 560 | 500 | 430 | 480 |
+
+!!! danger "`recession_job_scale` is not the recession multiplier"
+    It scales the **deviation from neutral**:
+    `effective = 1.0 + (0.84 - 1.0) * scale`. This was read out of the offline
+    simulator rather than assumed from the parameter's name, which reads as
+    though it were the multiplier itself.
+
+`legacy` is never offered to a new game. It is exactly the constants the game
+shipped with, and it is what a save written before difficulty existed loads as —
+so a business somebody has run for a hundred in-game days does not have its fuel
+price and its contract rates moved underneath it by a patch.
+
+`ACADifficulty` holds the numbers; **`GameSession` is the only thing that calls
+`set_active()`**, because which profile is in force is session state. The active
+profile is a static var rather than an autoload: fuel burn is read every physics
+frame at 576 Hz, so the read has to be free.
+
+Where each number is applied — once each, and never twice:
+
+| Number | Applied in |
+|---|---|
+| starting money | `GameSession.start_new_game()` |
+| job pay scale | `GameSession`'s `pay_multiplier_provider`, alongside the market |
+| base fuel price | `Economy.base_fuel_price()` |
+| event chance | `Economy.event_daily_chance()` |
+| recession depth | `Economy._modifier()`, Recession/`job` only |
+| upgrade cost | `MowerUpgrades.next_cost()`, before the market |
+| fuel economy | `MowerFuel.full_tank_driving_seconds()` |
+
+Fuel economy is deliberately NOT applied in the mower controllers: each already
+multiplies `delta` by its own `MowerUpgrades.fuel_multiplier()`, and applying
+difficulty there too would tangle the two across three files.
+
+Validated at 1,000 simulated business-years per difficulty. See
+`../../ECONOMY_REBALANCE_REPORT.md` at the workspace root.
+
+## The recession market bridge
+
+`Economy` owns the condition. `ACAJobManager` owns the market. Neither knows the
+other exists. The application layer connects them:
+
+```
+Economy.condition_changed  ->  GameSession._apply_economy_to_market()
+                           ->  JobManager.set_economy(RECESSION | NORMAL)
+                           ->  ACAJobMarket.market_strength()
+```
+
+Under the current Spring / Normal world that is the Job System's own existing
+`-2` recession modifier on a Spring base of 4, so **offer capacity falls from 4
+to 2 for as long as the downturn lasts** and returns to 4 when it ends. Nothing
+was invented: the modifier has been in `ACAJobMarket` all along with nothing
+driving it.
+
+## Drought is dormant, and deliberately still dormant
+
+`ACAJobMarket.market_strength()` has a `Climate.DROUGHT` branch that forces
+market strength to zero. Nothing drives it — `GameSession` never calls
+`set_climate()`, `WorldClock` has no climate progression, and `Economy` has no
+drought in `CONDITIONS` or `EVENTS`. Activating it would mean inventing a
+probability, a duration and a severity with no evidence behind any of them, for
+a condition whose only existing rule is "no work at all". Recorded as future
+work; the branch was left where it is.
+
 ## The market
 
 Four conditions and one temporary event at a time.
@@ -55,7 +147,7 @@ Boom, Supply Delay), 2–8 days each, 11% chance per dry day, with a 3-day
 cooldown so back-to-back events do not read as one permanent modifier.
 
 Fuel adds a **mean-reverting daily drift** (AR(1), ±3.5% step, retention 0.72,
-clamped to ±9%), so the price wanders rather than teleporting. The final fuel
+clamped to ±9%), so the price wanders rather than jumping. The final fuel
 multiplier is clamped to 0.70 – 1.45 whatever conditions and events conspire to
 produce.
 
@@ -189,7 +281,7 @@ that when the world next moves.
 
 ## Validation
 
-`Economy Test` — 88 assertions plus a **90-day simulation with a fixed seed**
+`Economy Test` — 120 assertions plus a **90-day simulation with a fixed seed**
 that prints what the market actually did. Unit tests prove the economy is
 consistent; they cannot say whether it is any good to live in.
 
@@ -210,5 +302,15 @@ Representative run (seed 20260820):
 1. No mower ownership or dealership. All three machines are available.
 2. No fuel inventory or gas cans. Fuel goes into the tank.
 3. Job payouts do not yet consider the mower used or the time taken — only lawn
-   size, the authored variation, and the market.
+   size, the authored variation, the market and the difficulty pay scale.
 4. One event at a time by design. Stacked modifiers become unreadable.
+5. `ACAJobManager.estimated_time_provider` is still unset, so `drive` and
+   `steering` upgrades change how the machine handles but not how long the
+   business thinks a contract takes. The offline study therefore scores them as
+   nearly worthless, which is a limitation of the integration rather than a
+   verdict on the upgrades — and is why their prices were NOT cut on the
+   strength of it.
+6. Upgrade uptake is low (about one run in five ever buys one) at every
+   difficulty. What was changed in response was information, not price: the
+   Mower Workshop now states what a purchase leaves, in money and in tanks of
+   fuel at today's price.

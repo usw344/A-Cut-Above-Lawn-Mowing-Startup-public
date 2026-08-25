@@ -51,6 +51,14 @@ signal faded_out()
 
 
 func setup(title: String, message: String, accent: Color) -> void:
+	# A TOAST IS PAPER TOO. It is drawn over the world beside the mowing HUD's
+	# cream cards, and a charcoal box next to them was the last thing on that
+	# screen still speaking the old language. The accent stripe keeps whatever
+	# colour it was given: it is the part that says which KIND of message this
+	# is, and it is the only colour on the toast.
+	add_theme_stylebox_override("panel", UITheme.hud_panel(UITheme.RADIUS_CARD, 0.0, 0.0))
+	_title.add_theme_color_override("font_color", UITheme.PAPER_INK)
+	_message.add_theme_color_override("font_color", UITheme.PAPER_INK_DIM)
 	_title.text = title
 	_message.text = message
 	_message.visible = not message.is_empty()

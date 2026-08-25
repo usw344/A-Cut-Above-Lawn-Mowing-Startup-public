@@ -41,7 +41,8 @@ The current build connects the full playable loop from the main menu to town, co
 ## Technical highlights
 
 - Godot 4.6 and GDScript
-- Custom chunked MultiMesh grass for large mowable areas
+- Procedurally generated mowing properties: terrain, lawn, forest, hills and ponds from one seed
+- Mowing as a mathematical query against compact cell state, with no per-blade physics
 - Contract-sized lawns with live completion tracking
 - Deterministic contract generation and day-based market changes
 - Central application flow across menu, town, jobs, settlement, and return

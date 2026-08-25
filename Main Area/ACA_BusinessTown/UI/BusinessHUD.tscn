@@ -10,14 +10,14 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.118, 0.145, 0.161, 0.94)
+bg_color = Color(0.114, 0.133, 0.114, 0.940)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_voi68"]
 content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.208, 0.251, 0.259, 0.9)
+bg_color = Color(0.196, 0.224, 0.188, 0.900)
 corner_radius_top_left = 9
 corner_radius_top_right = 9
 corner_radius_bottom_right = 9
@@ -28,7 +28,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.208, 0.251, 0.259, 0.9)
+bg_color = Color(0.196, 0.224, 0.188, 0.900)
 corner_radius_top_left = 9
 corner_radius_top_right = 9
 corner_radius_bottom_right = 9
@@ -39,7 +39,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.078, 0.098, 0.106, 0.72)
+bg_color = Color(0.082, 0.098, 0.082, 0.720)
 corner_radius_top_left = 9
 corner_radius_top_right = 9
 corner_radius_bottom_right = 9
@@ -50,12 +50,12 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.118, 0.145, 0.161, 0.94)
+bg_color = Color(0.114, 0.133, 0.114, 0.940)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.08)
+border_color = Color(0.960, 0.933, 0.882, 0.100)
 corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
@@ -108,13 +108,13 @@ theme_override_constants/separation = -2
 
 [node name="Title" type="Label" parent="Root/TopBar/Margin/Row/Brand" unique_id=1117422161]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 theme_override_font_sizes/font_size = 20
 text = "A CUT ABOVE"
 
 [node name="Subtitle" type="Label" parent="Root/TopBar/Margin/Row/Brand" unique_id=268970030]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_colors/font_color = Color(0.216, 0.427, 0.267, 1.000)
 theme_override_font_sizes/font_size = 10
 text = "MOW & GROW"
 
@@ -131,7 +131,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_voi68")
 
 [node name="Funds" type="Label" parent="Root/TopBar/Margin/Row/FundsChip" unique_id=68278126]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.635, 0.855, 0.545, 1)
+theme_override_colors/font_color = Color(0.545, 0.780, 0.478, 1.000)
 theme_override_font_sizes/font_size = 17
 text = "$0"
 
@@ -143,7 +143,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_sfrbh")
 
 [node name="Day" type="Label" parent="Root/TopBar/Margin/Row/DayChip" unique_id=78511468]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 theme_override_font_sizes/font_size = 17
 text = "Day 1"
 
@@ -160,8 +160,8 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_jx04a")
 
 [node name="Hint" type="Label" parent="Root/HintChip" unique_id=1259171729]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
+theme_override_font_sizes/font_size = 14
 text = "Click a location to visit it"
 
 [node name="BuildingPanel" parent="Root" unique_id=2121014950 instance=ExtResource("2_qppc6")]

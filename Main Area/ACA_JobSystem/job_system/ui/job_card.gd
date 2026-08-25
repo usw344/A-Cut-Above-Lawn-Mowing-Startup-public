@@ -71,36 +71,44 @@ func bind(target: ACAJob, manager: ACAJobManager, mode: int) -> void:
 
 func _bind_available() -> void:
 	_set_row(row_a_key, row_a_value, "Estimated Time", _manager.estimated_time_text(_job),
-		ACAJobUIStyle.INK)
-	_set_row(row_b_key, row_b_value, "Pay", _job.pay_text(), ACAJobUIStyle.ACCENT_BRIGHT)
-	_show(row_c, false)
+		ACAJobUIStyle.PAPER_INK)
+	_set_row(row_b_key, row_b_value, "Pay", _job.pay_text(), ACAJobUIStyle.PAPER_MONEY)
+	# WHAT KIND OF PLACE IT IS, when the host has told the manager. The third row
+	# already exists and is unused on an offer, so a work order gains a line
+	# without the card gaining a node.
+	var note := _manager.site_note(_job)
+	if note.is_empty():
+		_show(row_c, false)
+	else:
+		_set_row(row_c_key, row_c_value, "Site", note, ACAJobUIStyle.PAPER_INK_DIM)
+		_show(row_c, true)
 	_show(progress_bar, false)
 	if accent_bar != null:
-		accent_bar.color = ACAJobUIStyle.ACCENT
+		accent_bar.color = ACAJobUIStyle.ORANGE
 	_show(footer, true)
 	if action_button != null:
 		action_button.text = "ACCEPT"
 		action_button.disabled = false
-		ACAJobUIStyle.style_button(action_button, true)
+		ACAJobUIStyle.style_paper_button(action_button, true)
 	refresh_countdown()
 
 
 func _bind_current() -> void:
-	_set_row(row_a_key, row_a_value, "Pay", _job.pay_text(), ACAJobUIStyle.ACCENT_BRIGHT)
+	_set_row(row_a_key, row_a_value, "Pay", _job.pay_text(), ACAJobUIStyle.PAPER_MONEY)
 	_set_row(row_b_key, row_b_value, "Estimated Time", _manager.estimated_time_text(_job),
-		ACAJobUIStyle.INK)
+		ACAJobUIStyle.PAPER_INK)
 	_set_row(row_c_key, row_c_value, "Progress", "%d%%" % _job.progress_percent(),
-		ACAJobUIStyle.INK)
+		ACAJobUIStyle.PAPER_INK)
 	_show(row_c, true)
 	_show(progress_bar, true)
 	if progress_bar != null:
 		progress_bar.value = _job.progress_percent()
 	if accent_bar != null:
-		accent_bar.color = ACAJobUIStyle.ACCENT_BRIGHT
+		accent_bar.color = ACAJobUIStyle.ACCENT
 	_show(footer, true)
 	if footer_label != null:
 		footer_label.text = _job.status_name()
-		footer_label.add_theme_color_override("font_color", ACAJobUIStyle.INK_DIM)
+		footer_label.add_theme_color_override("font_color", ACAJobUIStyle.PAPER_INK_DIM)
 	if action_button != null:
 		if _job.progress >= 1.0:
 			action_button.text = "COMPLETE JOB"
@@ -110,16 +118,16 @@ func _bind_current() -> void:
 			action_button.text = "BEGIN JOB"
 
 		action_button.disabled = false
-		ACAJobUIStyle.style_button(action_button, true)
+		ACAJobUIStyle.style_paper_button(action_button, true)
 
 
 func _bind_past() -> void:
-	_set_row(row_a_key, row_a_value, "Pay", _job.pay_text(), ACAJobUIStyle.ACCENT_BRIGHT)
-	_set_row(row_b_key, row_b_value, "Completed", _completed_text(), ACAJobUIStyle.INK_DIM)
+	_set_row(row_a_key, row_a_value, "Pay", _job.pay_text(), ACAJobUIStyle.PAPER_MONEY)
+	_set_row(row_b_key, row_b_value, "Completed", _completed_text(), ACAJobUIStyle.PAPER_INK_DIM)
 	_show(row_c, false)
 	_show(progress_bar, false)
 	if accent_bar != null:
-		accent_bar.color = ACAJobUIStyle.INK_FAINT
+		accent_bar.color = ACAJobUIStyle.PAPER_INK_FAINT
 	_show(footer, false)
 
 

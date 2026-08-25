@@ -73,16 +73,20 @@ Confirmation Dialog.
 | Script | `Game/M.V.P/MVP.gd` |
 | Reached by | `GameSession.go_to_mowing()` |
 
-Children: `Rider Mower`, `Custom Gridmap`, `CanvasLayer/MVP_HUD` (dev-only,
-hidden), `AudioStreamPlayer` (ambience), `Mountain Range Backdrop`,
-`PresetManager (Sky3D)`, `Gameplay UI`.
+Children: `Property` (`ACAProperty`), `Rider Mower`, `CanvasLayer/MVP_HUD`
+(dev-only, hidden), `AudioStreamPlayer` (ambience), `PresetManager (Sky3D)`,
+`Gameplay UI`. `Mower Cutter` (`ACAMowerCutter`) is added in code.
 
-Connections: mower `collided` → `Custom Gridmap.custom_grid_map_collision_handler`;
-ten MVP HUD signals → controller methods on the root.
+Connections: thirteen MVP HUD signals to controller methods on the root. The
+mower's `collided` signal is connected IN CODE to the cutter, because the cutter
+is created at runtime and re-bound whenever the player switches machines.
+
+The root exposes `property()` and `lawn()`, so `SaveService`, the trailer
+director and the validation runners never reach for a node by name.
 
 **No longer the main scene** (it was until 2026-08-19). It can still be opened
-standalone from the editor: with no active contract it falls back to a 256 grid
-and returns to town itself on completion.
+standalone from the editor: with no active contract it generates a default
+property and returns to town itself on completion.
 
 ### MVP HUD — development only
 
@@ -96,25 +100,20 @@ and returns to town itself on completion.
 Retained as a diagnostics/development layer. Its weather buttons write to
 `WorldClock`, not to the scene.
 
-### Custom Gridmap
+### Property
 
 | Property | Value |
 |---|---|
-| Path | `Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn` |
-| Script | `custom_gridmap.gd` (`Custom_Gridmap`) |
+| Path | authored as a bare `Node3D` in the mowing scene |
+| Script | `Mowing Section/Property/aca_property.gd` (`ACAProperty`) |
 | Instanced by | Minimum Viable Game |
 
-Contains `Mowing Area`, `Start Area`, and the Terrain Manager. Chunks are
-`Multi_Mesh_Chunk` **objects**, not scene nodes; their MultiMesh instances are
-parented under `Mowing Area`.
+There is no property SCENE. Everything under it, `Terrain`, `Lawn`, `Grass`,
+`Foliage` and any feature nodes such as `Pond Water`, is generated in `build()`
+from `ACAPropertyParams`. Nothing about a property is authored, and nothing
+about it is saved as geometry.
 
-### Terrain Manager
-
-| Property | Value |
-|---|---|
-| Path | `Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/Terrain Manager.tscn` |
-| Instanced by | `custom_gridmap.tscn` |
-| Depends on | `Terrain/Meshes/1x1 Ground Main Mesh.mesh`, `Terrain/Meshes/Gound 1x1 ColourMap.png` — **ACTIVE, do not remove** |
+See [Property, terrain and lawn](../systems/property-and-lawn.md).
 
 ### Mowers
 

@@ -216,15 +216,21 @@ static func base_cost(category: String, target_level: int) -> int:
 	return int(round(cost))
 
 
-## What the NEXT level costs right now, with the market applied. Returns -1 when
-## the category is already maxed, so callers cannot show a price for nothing.
+## What the NEXT level costs right now, with the DIFFICULTY and then the market
+## applied. Returns -1 when the category is already maxed, so callers cannot
+## show a price for nothing.
+##
+## THE UI NEVER APPLIES EITHER. It shows what this returns and the player is
+## charged what this returns, so a displayed price and a charged price cannot
+## drift apart - which is the one thing a shop must never do.
 func next_cost(mower_id: String, category: String) -> int:
 	if is_maxed(mower_id, category):
 		return -1
-	var raw := base_cost(category, level(mower_id, category) + 1)
+	var raw := int(round(float(base_cost(category, level(mower_id, category) + 1))
+		* ACADifficulty.value("upgrade_cost_scale", 1.0)))
 	var economy := get_node_or_null(^"/root/Economy")
 	if economy == null:
-		return raw
+		return maxi(int(round(float(raw) / 5.0)) * 5, 0)
 	return economy.equipment_price(raw)
 
 

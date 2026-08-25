@@ -1,7 +1,7 @@
 # A Cut Above: Mow & Grow — Developer Documentation
 
 Status: Internal developer documentation
-Last repository review: **2026-08-20** (session 7: reusable environment package, town lighting, economy and upgrades, pond prototype, documentation audit)
+Last repository review: **2026-08-20** (session 8: the procedural property, terrain and lawn replaced the custom grid map and the authored terrain)
 Configured entry point: **`res://Game/App/Main Menu Screen.tscn`**
 
 ## Purpose
@@ -26,8 +26,9 @@ stop as soon as you have what you need:
 2. **[Architecture](architecture.md)** — the layering, the runtime graph, and
    **the boundaries that must not be crossed**.
 3. **The system page for whatever you are touching** — see the map below.
-4. **[Reference](reference/important-scripts.md)** — exact paths, class names
-   and owners.
+4. **[Public API reference](reference/public-apis.md)** — what each owner
+   exposes, and the invariants callers must respect. Then
+   **[Reference](reference/important-scripts.md)** for exact paths and owners.
 5. **[Decisions and open questions](decisions-and-open-questions.md)** — why
    something is the way it is, and what is still unresolved. Check here before
    "fixing" anything that looks odd.
@@ -35,7 +36,7 @@ stop as soon as you have what you need:
    prove you did not break it.
 
 The workspace root also has `CURRENT_STATUS.md` (where the project is now) and
-`CLAUDE_WORKLOG.md` (chronological history). **These pages describe the system;
+`DEVELOPMENT_WORKLOG.md` (chronological history). **These pages describe the system;
 the worklog describes how it got here. Do not put history in here.**
 
 ## Status vocabulary
@@ -62,17 +63,22 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 | Jobs | `JobManager` autoload — `Main Area/ACA_JobSystem/` (`ACAJobManager`) |
 | Town | `Main Area/ACA_BusinessTown/BusinessTown.tscn` |
 | Mowing runtime | `Game/M.V.P/Minimum Viable Game.tscn` + `MVP.gd` |
-| Grass cutting | `Custom_Gridmap` + `Multi_Mesh_Chunk` |
-| Terrain / foliage | `Custom Gridmap solution/Terrain Manager.tscn` |
+| Property generation | `ACAProperty` — `Mowing Section/Property/aca_property.gd` |
+| What kind of place a property is | `ACAPropertyArchetype` — `Mowing Section/Property/aca_property_archetype.gd` |
+| Clear ground a solid feature owes the deck | `ACAMowerClearance` — `Mowing Section/Property/aca_mower_clearance.gd` |
+| What stands outside the fence | `ACAPropertySurrounds` — `Mowing Section/Property/aca_property_surrounds.gd` |
+| Grass cutting | `ACALawn` + `ACAMowerCutter` — compact cell state, no physics bodies |
+| Terrain / foliage | `ACATerrain`, `ACALawnGrass`, `ACAForest` — all procedural |
 | Money | `GameSession` — **the one balance** |
 | Market and prices | `Economy` autoload — `Game/Economy/economy_manager.gd` |
 | Mower upgrades | `MowerUpgrades` autoload — `Game/Economy/mower_upgrades.gd` |
 | Town services | `Main Area/ACA_BusinessTown/UI/business_services.gd` |
+| Town traffic | `ACATownTraffic` — `Main Area/ACA_BusinessTown/aca_town_traffic.gd` |
 | Sky | `addons/sky_3d` — third party, **read-only** |
 | Weather routing | `Weather/Preset Manager` + `Weather/Handlers/Rain Handler` |
 | Weather LOOK | `addons/aca_sky3d_environment/` (reusable package) via `Weather/Visual/weather_visual_adapter.gd`; `town_light_adapter.gd` for the town |
 | Rain particles | `ACAPrecipitationRig`, built in code inside the package |
-| Ponds | `Mowing Section/Experimental/Pond/` — **EXPERIMENTAL, unused by gameplay** |
+| Ponds | `ACAPondFeature`, built on the carver in `Mowing Section/Experimental/Pond/` |
 | Player UI | `res://UI/` driven by `Game/App/gameplay_ui.gd` |
 | Pause stack | `Game/App/pause_layer.gd` (`ACAPauseLayer`) — one implementation, both screens |
 | Cursor ownership | `AppUI` — the only writer of `Input.mouse_mode` |
@@ -95,16 +101,17 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 
 - [Global model and runtime state](systems/global-model.md)
 - [Mowers and player controls](systems/mowers-and-controls.md)
-- [Mowing grid and grass removal](systems/mowing-grid.md)
-- [Terrain and foliage](systems/terrain-and-foliage.md)
+- [Property, terrain and lawn](systems/property-and-lawn.md)
 - [Weather, time of day, and audio](systems/weather-time-and-audio.md)
 - [HUD, menus, and interface systems](systems/ui-hud-and-menus.md)
 - [Jobs and economy](systems/jobs-and-economy.md)
-- [Pond prototype](systems/pond-prototype.md) — **experimental**
+- [Pond prototype](systems/pond-prototype.md) — the carver, now integrated
 - [Save and load](systems/save-and-load.md)
 
 ### Reference and maintenance
 
+- [Public API reference](reference/public-apis.md) — the boundaries other code
+  is allowed to call
 - [Scene reference](reference/scenes.md)
 - [Important script reference](reference/important-scripts.md)
 - [Plugins and third-party systems](plugins-and-third-party.md)

@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://UI/Scenic Background for Menus/property_menu/menu_property_scenery.gd" id="1_scenery"]
+[ext_resource type="Material" path="res://UI/Scenic Background for Menus/scenery/materials/menu_safe_overlay.tres" id="2_overlay"]
+[ext_resource type="PackedScene" uid="uid://br3pdn2gwa65h" path="res://UI/Main Menu/main_menu.tscn" id="3_menu"]
+
+[node name="MenuPropertyScenery" type="Node3D"]
+script = ExtResource("1_scenery")
+
+[node name="MenuSafeOverlay" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Gradient" type="ColorRect" parent="MenuSafeOverlay"]
+material = ExtResource("2_overlay")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MainMenuPrototype" parent="MenuSafeOverlay" instance=ExtResource("3_menu")]

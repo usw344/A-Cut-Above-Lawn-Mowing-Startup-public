@@ -35,8 +35,17 @@ uniform float wave_scale : hint_range(0.05, 8.0) = 0.42;
 uniform float ripple_strength : hint_range(0.0, 2.0) = 0.22;
 
 uniform float roughness_value : hint_range(0.0, 1.0) = 0.06;
+// How hard the surface reflects. The fresnel term above is only half of what
+// makes water pale: the renderer reflects the sky through ROUGHNESS and
+// SPECULAR whatever the shader says its albedo is, and a small pond under an
+// open sky at a glancing angle is almost entirely that reflection.
+uniform float specular_value : hint_range(0.0, 1.0) = 0.6;
 uniform float fresnel_power : hint_range(0.5, 8.0) = 4.0;
 uniform vec4 fresnel_color : source_color = vec4(0.72, 0.82, 0.92, 1.0);
+// How much of the surface the glancing-angle reflection is allowed to take.
+// Most of a small pond is seen at a glancing angle, so this is the difference
+// between water and a sheet of pale plastic.
+uniform float fresnel_amount : hint_range(0.0, 1.0) = 0.42;
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 
@@ -129,14 +138,18 @@ void fragment() {
 
 	// 0.65 put a hard white band along the far shore, where the view is most
 	// glancing. A pond is not a mirror.
-	ALBEDO = mix(water, fresnel_color.rgb, fresnel * 0.42);
+	ALBEDO = mix(water, fresnel_color.rgb, fresnel * fresnel_amount);
 	ROUGHNESS = roughness_value;
 	METALLIC = 0.0;
-	SPECULAR = 0.6;
+	SPECULAR = specular_value;
 
 	// THE SHORELINE. Fade out as the bed comes up to meet the surface, so the
 	// water disappears into the bank instead of ending at a hard rim. Fresnel
 	// is added back in so the very edge keeps a highlight rather than vanishing.
+	// Squared, so the surface holds its body across the middle of the pond and
+	// gives up its last centimetres quickly against the bank. A linear ramp
+	// thins the whole pond towards its edge and reads as a shallow dish.
 	float shore = clamp(through / max(shore_fade, 0.01), 0.0, 1.0);
+	shore = shore * (2.0 - shore);
 	ALPHA = clamp(max_alpha * shore + fresnel * 0.25 * shore, 0.0, 1.0);
 }

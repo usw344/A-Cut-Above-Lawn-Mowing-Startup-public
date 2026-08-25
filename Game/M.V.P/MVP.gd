@@ -1,21 +1,49 @@
 extends Node3D
+## ROLE
+## The mowing runtime. It reads the accepted contract, builds the property for
+## it, puts a machine on it, reports progress, and hands completion to
+## GameSession. It owns no grass, no terrain and no mowing state; ACAProperty
+## owns those and this scene composes them.
+##
+## PUBLIC API
+##   property() -> ACAProperty          the generated property
+##   lawn() -> ACALawn                  the mowing state, for saves and tooling
+##   mowing_progress() -> float
+##   mower_fuel_fraction() / current_mower_is_powered()
+##   restart_current_job()
+##   dev_* helpers, development only
+##
+## SIGNALS: None of its own.
+##
+## PERSISTENCE OWNERSHIP
+##   None. SaveService asks `property()` and `lawn()` for their own blocks.
 
 
-@onready var custom_gridmap_object:Custom_Gridmap = $"Custom Gridmap"
+## THE property. Generated in _ready() from the accepted contract.
+@onready var property_node: ACAProperty = $Property
 @onready var sound:AudioStreamPlayer = $AudioStreamPlayer
 @onready var current_mower:CharacterBody3D = $"Rider Mower"
 
-# define scenes of the mower 
+# define scenes of the mower
 
 var rider_mower_scene = preload("res://Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn")
 var powered_mower_scene = preload("res://Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn")
 var push_mower_scene = preload("res://Assets/Vehicles and Mowers/Mowers/Push Mower.tscn")
 
-var mowers_scene_list = {"push":push_mower_scene, 
-"powered":powered_mower_scene,"rider":rider_mower_scene} 
+var mowers_scene_list = {"push":push_mower_scene,
+"powered":powered_mower_scene,"rider":rider_mower_scene}
 
 var original_mower_transform = null # for reset use
-var custom_gridmap_scene = preload("res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.tscn") # for reset use
+
+## The join between the machine and the lawn. Created here, bound to whichever
+## mower is current, and re-bound when the player switches machines.
+var cutter: ACAMowerCutter = null
+
+## PRESENTATION ONLY. Clippings thrown by the deck, and the pollen and insects
+## in the air. Neither has any effect on the cut, the contract or the save;
+## both follow the machine and are re-bound with it.
+var effects: ACAMowingEffects = null
+var ambient: ACAAmbientLife = null
 
 
 ## The old MVP HUD. Kept as a development/diagnostics layer, not player UI:
@@ -34,20 +62,36 @@ func _physics_process(delta: float) -> void:
 
 
 func _ready() -> void:
-	# in case this gets moved around. This current Hardcoded value works.
-	custom_gridmap_object.position = Vector3(-311.935,-492.234,-140.184)
-	
-	# Grid size comes from the accepted contract when there is one; the old
-	# hard-coded 256 stays as the standalone fallback so this scene can still be
-	# opened on its own from the editor.
-	custom_gridmap_object.test_custom_gridmap(_grid_size_for_current_job())
+	# A resumed save carries the property it was saved on. Taking the handoff
+	# BEFORE the property is generated is what lets a reload rebuild the same
+	# address rather than a new one that happens to share a seed.
+	_take_pending_state()
+
+	# THE PROPERTY IS BUILT AT THE ORIGIN. The old lawn was authored five hundred
+	# units below it, which is why the weather system had to be told where the
+	# ground was by hand; a generated property has no reason to be anywhere else.
+	property_node.build(_property_params_for_this_visit())
+	_report_property()
+
 	sound.play() # start background ambience sound
+
+	# The machine arrives at the property rather than being dropped on to it.
+	_place_mower(property_node.mower_start_transform())
 	original_mower_transform = current_mower.transform
-	
-	## now we can move the mower around without concern. This line will snap it to the correct start position
-	custom_gridmap_object.reset_start_area_global_position()
-	 # add a small margin in on the y
-	current_mower.global_position = custom_gridmap_object.get_mower_inital_position() + Vector3(0,2,0)
+
+	cutter = ACAMowerCutter.new()
+	cutter.name = "Mower Cutter"
+	add_child(cutter)
+
+	effects = ACAMowingEffects.new()
+	effects.name = "Mowing Effects"
+	add_child(effects)
+	ambient = ACAAmbientLife.new()
+	ambient.name = "Ambient Life"
+	add_child(ambient)
+
+	_bind_mower_to_lawn()
+	_bind_ambient_life()
 
 	## to manage sound effect of rain and stuff
 	preset_manager_object.set_audio_player(sound)
@@ -108,13 +152,13 @@ func _track_weather_to_camera() -> void:
 	preset_manager_object.set_weather_tracking_target(
 		cam if cam != null else current_mower)
 
-	# Height fog is measured from an ABSOLUTE world Y, and this lawn is authored
-	# about five hundred units below the origin. Measured from the grid's own
-	# visible ground rather than guessed from the camera - the same node the
-	# trailer measures for the mower's ride height.
-	var plane := custom_gridmap_object.get_node_or_null(^"Mowing Area") as Node3D
-	if plane != null:
-		preset_manager_object.set_weather_ground_reference(plane.global_position.y)
+	# Height fog is measured from an ABSOLUTE world Y. It comes from the terrain
+	# itself now - the height at the middle of the lawn - rather than from a
+	# stand-in plane, so it stays right on ground that is no longer flat.
+	if property_node != null and property_node.is_built():
+		var centre := property_node.lawn().lawn_centre()
+		preset_manager_object.set_weather_ground_reference(
+			property_node.ground_height_at(centre.x, centre.z))
 
 
 func _____Debug_Functions_____():
@@ -131,27 +175,22 @@ func _on_mvp_hud_mower_change_selected(mower_id: Variant) -> void:
 	new_mower.transform = current_transform
 	add_child(new_mower)
 	current_mower = new_mower
-	current_mower.collided.connect(custom_gridmap_object.custom_grid_map_collision_handler)
+	# Each machine has its own deck, so switching mowers re-resolves the cut
+	# footprint rather than carrying the previous one over.
+	_bind_mower_to_lawn()
+	_bind_ambient_life()
 	_track_weather_to_camera()
 	AppUI.set_mouse_context(current_mouse_context)
 
+
+## RESTART JOB. The property is NOT regenerated: the player asked to start the
+## contract again, not to be sent to a different address. Only the cut state is
+## put back, which is also why this is now instant instead of a rebuild.
 func _on_mvp_hud_reset_map_and_location() -> void:
-	# since for MVP I moved the gridmap to its location I need to store it here
-	var old_gridmap_transform = custom_gridmap_object.transform
-	custom_gridmap_object.queue_free() # delete old gridmap
-	
-	#make a new one and add it
-	custom_gridmap_object = custom_gridmap_scene.instantiate()
-	add_child(custom_gridmap_object)
-	
-	# the test gridmap function makes the new gridmap and mowing area
-	custom_gridmap_object.test_custom_gridmap(_grid_size_for_current_job())
-	custom_gridmap_object.mowing_progress_changed.connect(_on_mowing_progress_changed)
-	
-	#now move the gridmap back to orignal place
-	custom_gridmap_object.transform =old_gridmap_transform
-	current_mower.transform = original_mower_transform
-	current_mower.collided.connect(custom_gridmap_object.custom_grid_map_collision_handler)
+	property_node.lawn().reset()
+	_place_mower(property_node.mower_start_transform())
+	if cutter != null:
+		cutter.resync()
 
 # control the speed of the mower using a slider
 func _on_mvp_hud_ms_slider_value_changed(value: Variant) -> void:
@@ -225,9 +264,7 @@ func _____Job_Integration_____():
 ## old MVP behaviour so the scene can be run from the editor on its own.
 ## ---------------------------------------------------------------------------
 
-const FALLBACK_GRID_SIZE := 256
-
-## How often progress is pushed into the Job System, in seconds. The grid emits
+## How often progress is pushed into the Job System, in seconds. The lawn emits
 ## on every cut; the manager does not need that resolution.
 const PROGRESS_REPORT_INTERVAL := 0.5
 
@@ -236,16 +273,119 @@ var _job_finished: bool = false
 var _progress_report_accumulator: float = 0.0
 var _last_reported_progress: float = -1.0
 
-
-func _grid_size_for_current_job() -> int:
-	var job: ACAJob = GameSession.current_job() if _has_session() else null
-	if job == null or job.grid_size.x <= 0:
-		return FALLBACK_GRID_SIZE
-	return job.grid_size.x
+## The save handoff, taken once in _ready() because the property has to be
+## generated from it before anything else can be restored on to it.
+var _pending_mowing: Dictionary = {}
 
 
 func _has_session() -> bool:
 	return get_node_or_null(^"/root/GameSession") != null
+
+
+## ONE-SHOT. Anything left here after _ready() is for the current contract.
+func _take_pending_state() -> void:
+	_pending_mowing = {}
+	var save_service := get_node_or_null(^"/root/SaveService")
+	if save_service == null:
+		return
+	var state: Dictionary = save_service.call(&"take_pending_mowing_state")
+	if state.is_empty():
+		return
+	var job: ACAJob = GameSession.current_job() if _has_session() else null
+	if job == null or String(state.get("job_id", "")) != String(job.id):
+		push_warning("[MOWING] Saved mowing state is for a different contract; ignoring.")
+		return
+	_pending_mowing = state
+
+
+## The property to build. A resumed contract rebuilds the SAVED property, so a
+## later change to how a seed is turned into a property cannot move the player
+## to a different address mid-job. A fresh contract derives its property from
+## the contract's own seed.
+func _property_params_for_this_visit() -> ACAPropertyParams:
+	var saved: Variant = _pending_mowing.get("property", null)
+	if saved is Dictionary:
+		return ACAPropertyParams.from_dictionary(saved as Dictionary)
+	return ACAPropertyParams.for_job(
+		GameSession.current_job() if _has_session() else null)
+
+
+## THE property this scene is standing on.
+func property() -> ACAProperty:
+	return property_node
+
+
+## THE mowing state. SaveService and the trailer's lawn adapter ask for this
+## rather than reaching for a node by name.
+func lawn() -> ACALawn:
+	return property_node.lawn() if property_node != null else null
+
+
+func _report_property() -> void:
+	var stats := property_node.statistics()
+	var params := property_node.params()
+	print("[MOWING] Property seed %d | lawn %d | forestiness %.2f | pond %s"
+		% [params.seed, params.lawn_size, params.forestiness, params.pond_enabled])
+	print("[MOWING] built in %.0f ms | %d mowable cells of %d | %d grass, %d foliage instances"
+		% [stats["total_ms"], stats["lawn_mowable"], stats["lawn_cells"],
+			stats["grass"]["instances"], stats["foliage"]["instances"]])
+
+
+## Put the machine somewhere without disturbing the scale it was authored at.
+func _place_mower(where: Transform3D) -> void:
+	if current_mower == null:
+		return
+	var scale := current_mower.transform.basis.get_scale()
+	current_mower.global_transform = Transform3D(
+		where.basis.scaled(scale), where.origin)
+
+
+## Hand the current machine to the cutter, and route its blade signal there.
+##
+## `collided` fires every physics frame while the engine is running and stops
+## when the tank is empty. That contract is unchanged from the old lawn, which
+## is why no mower controller had to be told the grass moved.
+func _bind_mower_to_lawn() -> void:
+	if cutter == null or current_mower == null or property_node == null:
+		return
+	cutter.bind(current_mower, property_node.lawn())
+	if not current_mower.collided.is_connected(cutter.on_blades_active):
+		current_mower.collided.connect(cutter.on_blades_active)
+
+	# The clippings ride the SAME signal the cut does, which is what guarantees
+	# they can never appear over ground that was already mown: `cut` is emitted
+	# only when a sweep turned uncut cells into cut ones.
+	if effects != null:
+		effects.bind(current_mower, cutter, property_node.params())
+		if not cutter.cut.is_connected(effects.on_cut):
+			cutter.cut.connect(effects.on_cut)
+
+
+## Pollen and insects follow the LENS, like the rain does, because what matters
+## is the air the player is looking through rather than the air around the
+## machine. They are switched off in rain: the sky already has something in it.
+func _bind_ambient_life() -> void:
+	if ambient == null or current_mower == null:
+		return
+	var cam := current_mower.get_node_or_null(^"Camera3D") as Node3D
+	ambient.follow(cam if cam != null else current_mower)
+	ambient.set_density(_ambient_density())
+	ambient.set_enabled(WorldClock.weather_preset() != "Rain")
+
+
+## The player's graphics setting decides how much of it there is. Low turns it
+## off; see `ACAAmbientLife.set_density()`.
+func _ambient_density() -> float:
+	var settings := get_node_or_null(^"/root/GameSettings")
+	if settings == null or not settings.has_method(&"graphics_quality"):
+		return 1.0
+	match String(settings.call(&"graphics_quality")):
+		"low":
+			return 0.0
+		"medium":
+			return 0.6
+		_:
+			return 1.0
 
 
 func _setup_job_runtime() -> void:
@@ -255,13 +395,13 @@ func _setup_job_runtime() -> void:
 	_apply_world_state()
 	WorldClock.weather_changed.connect(_on_world_weather_changed)
 
-	custom_gridmap_object.mowing_progress_changed.connect(_on_mowing_progress_changed)
+	property_node.lawn().mowing_progress_changed.connect(_on_mowing_progress_changed)
 
 	if _active_job == null:
 		print("[MOWING] No active contract - running as a standalone mowing bench.")
 		return
 
-	print("[MOWING] Contract %s | %s | %s | grid %dx%d | $%d" % [
+	print("[MOWING] Contract %s | %s | %s | lawn %dx%d | $%d" % [
 		_active_job.id, _active_job.job_site, _active_job.lawn_size_name(),
 		_active_job.grid_size.x, _active_job.grid_size.y, _active_job.base_pay,
 	])
@@ -275,31 +415,92 @@ func _setup_job_runtime() -> void:
 ## If this scene was entered by loading a save, put the lawn and the mower back
 ## the way they were. The handoff is one-shot, so simply re-entering the same
 ## contract later never re-applies stale state.
+##
+## Two formats are accepted. The current one is a compact cut mask; the older
+## one is the per-blade list the previous lawn wrote, which is translated by
+## `ACALawn.apply_legacy_mowed_items()` rather than discarded.
 func _restore_saved_mowing_state() -> void:
-	var save_service := get_node_or_null(^"/root/SaveService")
-	if save_service == null:
-		return
-	var state: Dictionary = save_service.call(&"take_pending_mowing_state")
+	var state := _pending_mowing
 	if state.is_empty():
 		return
 
-	if String(state.get("job_id", "")) != String(_active_job.id):
-		push_warning("[MOWING] Saved mowing state is for a different contract; ignoring.")
-		return
-
-	var names := PackedStringArray(state.get("mowed_items", []))
-	var applied := custom_gridmap_object.restore_mowed_items(names)
-	print("[MOWING] Restored %d/%d cut items (%.1f%%)" % [
-		applied, names.size(), custom_gridmap_object.mowed_fraction() * 100.0])
+	var this_lawn := property_node.lawn()
+	var cut_state: Variant = state.get("cut_state", null)
+	if cut_state is Dictionary:
+		if this_lawn.restore_cut_state(cut_state as Dictionary):
+			print("[MOWING] Restored cut state, lawn is %.1f%% mown."
+				% (this_lawn.mowed_fraction() * 100.0))
+	else:
+		var names := PackedStringArray(state.get("mowed_items", []))
+		if names.size() > 0:
+			var legacy_size := int(state.get("grid_size", _active_job.grid_size.x))
+			var applied := this_lawn.apply_legacy_mowed_items(names, legacy_size)
+			print("[MOWING] Migrated %d legacy cut records into %d cells (%.1f%%)."
+				% [names.size(), applied, this_lawn.mowed_fraction() * 100.0])
 
 	var pos: Array = state.get("mower_position", [])
-	if pos.size() == 3:
-		current_mower.global_position = Vector3(pos[0], pos[1], pos[2])
 	var rot: Array = state.get("mower_rotation", [])
-	if rot.size() == 3:
+	if pos.size() == 3:
+		_restore_mower_position(Vector3(pos[0], pos[1], pos[2]),
+			Vector3(rot[0], rot[1], rot[2]) if rot.size() == 3 else Vector3.ZERO)
+	elif rot.size() == 3:
 		current_mower.rotation = Vector3(rot[0], rot[1], rot[2])
+	if cutter != null:
+		cutter.resync()
 
-	_last_reported_progress = custom_gridmap_object.mowed_fraction()
+	_last_reported_progress = this_lawn.mowed_fraction()
+
+
+## A SAVED POSITION IS NOT ALWAYS A POSITION.
+##
+## The property now has a fence round it, and a machine put down outside that
+## fence cannot get back in. Two saves can do exactly that:
+##
+##   * A LEGACY save. The lawn this game used to have was authored about five
+##     hundred units from the origin; a generated property is built AT it. A
+##     mid-contract save from that era carries a coordinate from a world that no
+##     longer exists, and restoring it faithfully lands the machine four hundred
+##     units out in the scenery with a fence between it and the contract. The
+##     Legacy Save Test found precisely this.
+##   * A CURRENT save taken with the machine pressed against the fence, where
+##     float error either way could put the restored transform a hair outside it.
+##
+## So a restored position is checked against the property it is being restored
+## on to. A small overshoot is pulled back inside; anything further out is not a
+## position at all, and the machine arrives the way it would for a fresh
+## contract instead. The CUT STATE is untouched by any of this - the player keeps
+## every square unit of progress either way.
+
+## How far outside the boundary a restored position is quietly pulled back in,
+## in world units, before it is treated as belonging to a different world.
+const RESTORE_NUDGE_LIMIT := 12.0
+## ...and how far inside the fence it is put when it is pulled back.
+const RESTORE_INSET := 3.0
+
+
+func _restore_mower_position(saved: Vector3, saved_rotation: Vector3) -> void:
+	var boundary := property_node.boundary() if property_node != null else null
+	var outside: float = boundary.distance_outside(saved.x, saved.z) 		if boundary != null else 0.0
+
+	if outside > RESTORE_NUDGE_LIMIT:
+		var start := property_node.mower_start_transform()
+		_place_mower(start)
+		push_warning("[MOWING] The saved machine position is %.0f units outside "
+			% outside
+			+ "this property; it belongs to an older world. Arriving at the "
+			+ "property instead. The cut state is unaffected.")
+		return
+
+	var at := saved
+	if outside > 0.0 and boundary != null:
+		# Pull it back to just inside the fence, keeping the direction it was in.
+		var centre := boundary.centre()
+		var half: float = boundary.half_extent() - RESTORE_INSET
+		at.x = clampf(at.x, centre.x - half, centre.x + half)
+		at.z = clampf(at.z, centre.z - half, centre.z + half)
+		at.y = property_node.ground_height_at(at.x, at.z) + ACAProperty.ARRIVAL_CLEARANCE
+	current_mower.global_position = at
+	current_mower.rotation = saved_rotation
 
 
 ## Time of day comes from the authoritative clock; weather comes from the
@@ -314,6 +515,8 @@ func _apply_world_state() -> void:
 
 func _on_world_weather_changed(preset: String) -> void:
 	preset_manager_object.apply_weather_preset(preset)
+	if ambient != null:
+		ambient.set_enabled(preset != "Rain")
 
 
 ## Runs from _physics_process. Accumulates the contract stopwatch and pushes
@@ -329,7 +532,7 @@ func _tick_job_runtime(delta: float) -> void:
 		return
 	_progress_report_accumulator = 0.0
 
-	var fraction := custom_gridmap_object.mowed_fraction()
+	var fraction := property_node.lawn().mowed_fraction()
 	if is_equal_approx(fraction, _last_reported_progress):
 		return
 	_last_reported_progress = fraction
@@ -378,7 +581,7 @@ func _____Gameplay_UI_Interface_____():
 
 ## 0.0 - 1.0 of the lawn cut.
 func mowing_progress() -> float:
-	return custom_gridmap_object.mowed_fraction()
+	return property_node.lawn().mowed_fraction()
 
 
 ## 0.0 - 1.0 of the tank, straight from the fuel authority. This is the REAL

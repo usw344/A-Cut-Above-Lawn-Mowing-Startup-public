@@ -6,6 +6,7 @@
 script = ExtResource("1_utolb")
 sun_horizon_light_color = Color(0.98, 0.66, 0.44, 1)
 atm_horizon_light_tint = Color(0.96, 0.72, 0.56, 1)
+ambient_energy = 1.16
 aerial_density = 0.00062
 aerial_end = 1200.0
 aerial_falloff = 3.2

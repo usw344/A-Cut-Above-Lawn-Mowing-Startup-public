@@ -37,10 +37,20 @@ bridge between the two. It is constructed in `GameSession._ready()`.
 
 | Script | class_name | Notes |
 |---|---|---|
-| `Game/M.V.P/MVP.gd` | — | Mowing scene root. Sizes the grid from the contract, applies world time/weather, reports progress, owns `_finish_job()` and the **dev-only** helpers. |
-| `Mowing Section/.../custom_gridmap.gd` | `Custom_Gridmap` | Grid construction, mowing, `save_object()`/`load_object()`, progress counters |
-| `Mowing Section/.../MultiMesh Chunk.gd` | `Multi_Mesh_Chunk` | Per-chunk MultiMeshes + per-instance collision. **Not a scene node** — constructed with `.new()`. |
-| `Mowing Section/.../Terrain Manager.gd` | — | Ground mesh + baked environment MultiMeshes |
+| `Game/M.V.P/MVP.gd` | — | Mowing scene root. Builds the property from the contract, applies world time/weather, reports progress, owns `_finish_job()` and the **dev-only** helpers. Exposes `property()` and `lawn()`. |
+| `Mowing Section/Property/aca_property.gd` | `ACAProperty` | Composes one generated property and decides the build ORDER |
+| `Mowing Section/Property/aca_property_params.gd` | `ACAPropertyParams` | The whole property as compact data. `for_job()` is the entire Job System integration |
+| `Mowing Section/Property/aca_terrain.gd` | `ACATerrain` | Procedural height field, mesh, distant rings, `HeightMapShape3D` collision, and the height/normal/bounds queries |
+| `Mowing Section/Property/aca_lawn.gd` | `ACALawn` | THE mowing state: one byte per cell, the cut mask texture, `mow_deck()`, progress, the compact save and the legacy migration |
+| `Mowing Section/Property/aca_mower_deck.gd` | `ACAMowerDeck` | Resolves a machine's cutting footprint, in world units |
+| `Mowing Section/Property/aca_mower_cutter.gd` | `ACAMowerCutter` | The join: listens to `collided`, sweeps the deck across the lawn |
+| `Mowing Section/Property/aca_lawn_grass.gd` | `ACALawnGrass` | Grass placement and rendering. Does nothing while the player mows |
+| `Mowing Section/Property/aca_grass_mesh.gd` | `ACAGrassMesh` | Generates the tuft meshes at runtime |
+| `Mowing Section/Property/aca_forest.gd` | `ACAForest` | Trees, shrubs and rocks; `forestiness` |
+| `Mowing Section/Property/aca_tree_proxy.gd` | `ACATreeProxy` | The simplified distant stand-ins |
+| `Mowing Section/Property/aca_property_feature.gd` | `ACAPropertyFeature` | The generic feature and exclusion interface |
+| `Mowing Section/Property/aca_feature_set.gd` | `ACAFeatureSet` | The collection, and the one place "is this position available?" is answered |
+| `Mowing Section/Property/aca_pond_feature.gd` | `ACAPondFeature` | The pond as a feature, built on `ACAPondCarver` |
 | `Assets/Vehicles and Mowers/Mowers/mower_rider.gd` | — | Rider mower. `POWERED = true`. Emits `collided`, or `fuel_empty` when the tank is dry. |
 | `Assets/Vehicles and Mowers/Mowers/non_rider_mower.gd` | — | Powered walk-behind. `POWERED = true`. |
 | `Assets/Vehicles and Mowers/Mowers/push_mower.gd` | — | Push mower. **`POWERED = false`** — a manual reel mower. No fuel, no `fuel_empty`. |

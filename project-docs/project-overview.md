@@ -88,8 +88,8 @@ The current MVP root owns orchestration. Specialized child scenes own mower beha
 | Runtime world | `Minimum Viable Game.tscn` |
 | Shared runtime state | `model` autoload |
 | Mower implementation | `Assets/Vehicles and Mowers/Mowers/` |
-| Mowing | Custom grid plus `Multi_Mesh_Chunk` |
-| Terrain/foliage | Custom `Terrain Manager` |
+| Mowing | `ACALawn` compact cell state plus `ACAMowerCutter` |
+| Terrain/foliage | `ACATerrain`, `ACALawnGrass`, `ACAForest`, all procedural |
 | Sky | Sky3D |
 | Weather | Preset Manager plus Rain Handler |
 | Physics | Jolt Physics |

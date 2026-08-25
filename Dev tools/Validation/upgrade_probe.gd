@@ -23,7 +23,7 @@ extends Node
 
 ## Seconds of held throttle per measurement.
 const DRIVE_SECONDS := 1.6
-## Frames to let the scene settle after a mower swap or a teleport.
+## Frames to let the scene settle after a mower swap or a reposition.
 const SETTLE_FRAMES := 40
 
 var _pass := 0

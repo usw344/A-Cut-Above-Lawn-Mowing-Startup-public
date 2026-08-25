@@ -11,7 +11,7 @@ extends Node
 ##       GameSession.to_save_dict()  / from_save_dict()
 ##       GameSettings.to_save_dict() / from_save_dict()   (separate file)
 ##       model                       (read directly - Model.gd has no save API)
-##       Custom_Gridmap.mowed_item_names() / restore_mowed_items()
+##       ACAProperty.params() + ACALawn.cut_state()   (the mowing block)
 ##
 ## See project-docs/systems/save-and-load.md for the full schema.
 
@@ -208,19 +208,28 @@ func _collect_mower() -> Dictionary:
 	}
 
 
+## The mowing block: which property, and how much of it is cut.
+##
+## Neither is stored as geometry. The property is its parameters, and the cut is
+## a bitset - so a Large lawn mid-contract costs a few kilobytes rather than
+## tens of thousands of coordinate strings, and reloading rebuilds the same
+## ground rather than restoring a copy of it.
 func _collect_mowing() -> Dictionary:
 	var scene := get_tree().current_scene
-	if scene == null:
+	if scene == null or not scene.has_method(&"lawn"):
 		return {}
-	var grid := scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
-	if grid == null:
+	var lawn: ACALawn = scene.call(&"lawn")
+	var property: ACAProperty = scene.call(&"property") \
+		if scene.has_method(&"property") else null
+	if lawn == null or property == null:
 		return {}
 
 	var job := GameSession.current_job()
 	var out := {
 		"job_id": String(job.id) if job != null else "",
-		"grid_size": grid.grid_width,
-		"mowed_items": grid.mowed_item_names(),
+		"lawn_size": lawn.cell_count(),
+		"property": property.params().to_dictionary(),
+		"cut_state": lawn.cut_state(),
 	}
 
 	var mower := scene.get(&"current_mower") as Node3D

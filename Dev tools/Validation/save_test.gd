@@ -122,7 +122,7 @@ func _test_b_active_job_save() -> void:
 	_check("B: entered gameplay", true)
 
 	var scene := get_tree().current_scene
-	var grid := scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
+	var grid: ACALawn = scene.call(&"lawn")
 
 	# Create a controlled, non-zero partial mowing state by cutting a known
 	# subset through the real mowing path.
@@ -140,7 +140,7 @@ func _test_b_active_job_save() -> void:
 	var saved_mowed := grid.mowed_item_count()
 	var saved_total := grid.total_item_count()
 	var saved_fraction := grid.mowed_fraction()
-	var saved_grid_width := grid.grid_width
+	var saved_lawn_size := grid.cell_count()
 	var saved_pay := JobManager.get_job(job_id).base_pay
 	var saved_minutes := WorldClock.game_minutes()
 	WorldClock.set_weather("Rain")
@@ -167,10 +167,10 @@ func _test_b_active_job_save() -> void:
 	_check("B: contract is IN_PROGRESS",
 		job != null and job.status == ACAJobEnums.Status.IN_PROGRESS)
 
-	var grid2 := get_tree().current_scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
-	_check("B: grid rebuilt at the contract size",
-		grid2 != null and grid2.grid_width == saved_grid_width)
-	_check("B: grid instance total matches",
+	var grid2: ACALawn = get_tree().current_scene.call(&"lawn")
+	_check("B: lawn rebuilt at the contract size",
+		grid2 != null and grid2.cell_count() == saved_lawn_size)
+	_check("B: mowable cell total matches",
 		grid2 != null and grid2.total_item_count() == saved_total)
 	_check("B: mowing progress restored exactly",
 		grid2 != null and grid2.mowed_item_count() == saved_mowed)
@@ -321,18 +321,24 @@ func _test_robustness() -> void:
 
 # ================================================================== helpers
 
-## Cut up to `count` instances through the real mowing path.
-func _cut_some(grid: Custom_Gridmap, count: int) -> int:
-	if grid == null:
+## Cut roughly `count` cells through the real mowing path: a deck swept across
+## the lawn, exactly as a machine would do it.
+func _cut_some(lawn: ACALawn, count: int) -> int:
+	if lawn == null:
 		return 0
+	var deck := ACAMowerDeck.make(5.6, 2.4)
+	var centre := lawn.lawn_centre()
+	var half := lawn.lawn_half_extent()
 	var cut := 0
-	for id in grid.chunk_id_to_chunk_dictionary:
-		var chunk: Multi_Mesh_Chunk = grid.chunk_id_to_chunk_dictionary[id]
-		for item_name in chunk.collisions_static_bodies.keys():
-			grid.mow_item(item_name)
-			cut += 1
-			if cut >= count:
-				return cut
+	var lane := 0
+	while cut < count and lane < 40:
+		var z: float = centre.z - half + 3.0 + float(lane) * deck.half_width * 2.0
+		var basis := Basis(Vector3.UP, PI * 0.5)
+		var from := Vector3(centre.x - half + 1.0, centre.y, z)
+		var to := Vector3(from.x + float(count - cut) / (deck.half_width * 2.0), centre.y, z)
+		to.x = minf(to.x, centre.x + half - 1.0)
+		cut += lawn.mow_deck(Transform3D(basis, from), Transform3D(basis, to), deck)
+		lane += 1
 	return cut
 
 

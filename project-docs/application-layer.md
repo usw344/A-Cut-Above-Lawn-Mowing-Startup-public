@@ -70,7 +70,7 @@ unchanged.
 3. **THE ONE authoritative job-completion pathway.**
 
 It does **not** own job state (`ACAJobManager` does), world time or weather
-(`ACAWorldClock` does), the mowing grid (`Custom_Gridmap` does), or presentation.
+(`ACAWorldClock` does), the mowing state (`ACALawn` does), or presentation.
 
 **PUBLIC API**
 ```

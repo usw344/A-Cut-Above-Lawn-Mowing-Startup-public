@@ -35,14 +35,15 @@ nav:
   - Systems:
       - Global Model and Runtime State: systems/global-model.md
       - Mowers and Player Controls: systems/mowers-and-controls.md
-      - Mowing Grid and Grass Removal: systems/mowing-grid.md
-      - Terrain and Foliage: systems/terrain-and-foliage.md
+      - Property, Terrain and Lawn: systems/property-and-lawn.md
       - Weather, Time of Day, and Audio: systems/weather-time-and-audio.md
       - HUD, Menus, and Interface Systems: systems/ui-hud-and-menus.md
       - Jobs and Economy: systems/jobs-and-economy.md
+      - Business Town: systems/business-town.md
       - Pond Prototype (experimental): systems/pond-prototype.md
       - Save and Load: systems/save-and-load.md
   - Reference:
+      - Public API Reference: reference/public-apis.md
       - Scene Reference: reference/scenes.md
       - Important Script Reference: reference/important-scripts.md
       - Validation and Development Tools: validation-and-dev-tools.md

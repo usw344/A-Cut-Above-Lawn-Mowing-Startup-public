@@ -59,7 +59,29 @@ func _run() -> void:
 		credits.close()
 		await _settle(20)
 
-	GameSession.start_new_game()
+	# The difficulty choice NEW GAME leads into. Captured before the session
+	# starts, because it is the first decision the player makes.
+	var new_game: NewGameScreen = menu_ui.get_node_or_null(^"New Game") if menu_ui != null else null
+	if new_game != null:
+		# THE RADIAL MENU IS HIDDEN WHILE THIS IS OPEN, because a difficulty is a
+		# full-screen decision rather than a panel over the menu. The host does
+		# this in `_open_new_game()`; the tour opens the component directly, so it
+		# has to do the same or the capture is of a state the game never shows.
+		var radial := _find_main_menu()
+		if radial != null:
+			radial.visible = false
+		new_game.open()
+		# LONGER THAN THE OTHER SETTLES. Everything else here is already at rest
+		# when it is captured; this one is mid-fade at thirty frames, and the
+		# first capture of it came back with the cards three-quarters opaque.
+		await _settle(60)
+		await _capture("01d-new-game-difficulty")
+		new_game.close()
+		await _settle(20)
+		if radial != null:
+			radial.visible = true
+
+	GameSession.start_new_game(ACADifficulty.DEFAULT_ID)
 	await _await_screen(ACAGameSession.Screen.TOWN, "Town Screen")
 	await _settle(45)
 	await _capture("02-town")
@@ -254,4 +276,15 @@ func _gameplay_ui() -> ACAGameplayUI:
 func _find_board(hud: ACABusinessHUD) -> ACAJobBoard:
 	for node in hud.find_children("*", "ACAJobBoard", true, false):
 		return node as ACAJobBoard
+	return null
+
+
+## The radial menu is composed inside the scenery package, so it is found by
+## type rather than by a path that package owns.
+func _find_main_menu() -> Control:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return null
+	for node in scene.find_children("*", "MainMenuScreen", true, false):
+		return node as Control
 	return null

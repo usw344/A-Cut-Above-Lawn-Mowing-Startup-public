@@ -221,6 +221,31 @@ static func shore_factor_at(v: Vector3, params: Params) -> float:
 	return _shore_factor(v, params, _make_noise(params))
 
 
+## The seeded noise this shape uses. Build it ONCE and hand it to
+## `shore_factor_with()` when sampling thousands of points; `shore_factor_at()`
+## rebuilds it per call, which is fine for a handful of queries and wasteful for
+## a terrain bake.
+static func make_shape_noise(params: Params) -> FastNoiseLite:
+	return _make_noise(params)
+
+
+## `shore_factor_at()` with the noise supplied by the caller.
+static func shore_factor_with(v: Vector3, params: Params, noise: FastNoiseLite) -> float:
+	return _shore_factor(v, params, noise)
+
+
+## Vertical displacement this pond applies at a point, in local units. Negative
+## means the ground drops.
+##
+## `carve()` moves a vertex by exactly this amount, and the procedural terrain
+## adds exactly this amount to its generated height. One function, so a
+## generated heightfield, its collision, the water line and every exclusion
+## query can never disagree about where the hole is.
+static func depth_offset_at(v: Vector3, params: Params, noise: FastNoiseLite = null) -> float:
+	var n: FastNoiseLite = noise if noise != null else _make_noise(params)
+	return -params.depth * _shore_factor(v, params, n)
+
+
 static func _make_noise(params: Params) -> FastNoiseLite:
 	if params.irregularity <= 0.0:
 		return null

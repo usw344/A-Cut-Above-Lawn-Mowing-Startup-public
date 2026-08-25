@@ -45,7 +45,7 @@ The root README statement saying the public version excludes “GodotSky” is s
 |---|---|
 | Path | *(absent)* |
 | Enabled | No — the addon folder does not exist |
-| Runtime status | **Removed.** The custom Terrain Manager is canonical. |
+| Runtime status | **Removed.** `ACATerrain` generates the ground procedurally. |
 
 As of 2026-08-19 `addons/` contains only `sky_3d`. The Terrain3D addon was
 already gone; the orphaned content that depended on it

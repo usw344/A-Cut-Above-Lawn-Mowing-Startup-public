@@ -177,7 +177,7 @@ func _make_layer(spec: Array) -> GPUParticles3D:
 	# The whole point: Y down the velocity, Z to the camera.
 	p.transform_align = GPUParticles3D.TRANSFORM_ALIGN_Z_BILLBOARD_Y_TO_VELOCITY
 	p.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
-	# World space, so the emitter can be teleported without dragging drops.
+	# World space, so the emitter can be moved without dragging drops.
 	p.local_coords = false
 	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	p.position = Vector3(0, height, 0)

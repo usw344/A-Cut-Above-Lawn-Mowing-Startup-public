@@ -30,11 +30,14 @@ extends ACAPauseLayer
 @export var intro_seconds: float = 2.4
 
 @onready var _hud: GameplayHUD = $"Gameplay HUD"
+@onready var _minimap: MinimapPanel = get_node_or_null(^"Minimap")
 @onready var _intro: JobIntroScreen = $"Job Intro"
 @onready var _results: JobCompleteScreen = $"Job Complete"
 
 ## Set while the results screen is up, so the HUD stops fighting it for updates.
 var _finished: bool = false
+## Whether the map has been given the property yet. See `_bind_minimap()`.
+var _minimap_bound: bool = false
 
 
 func _ready() -> void:
@@ -54,6 +57,7 @@ func _ready() -> void:
 
 	_populate_from_job()
 	_refresh_environment()
+	_bind_minimap()
 	_hud.show_hud()
 	_play_intro()
 
@@ -66,9 +70,14 @@ func control_bindings() -> PackedStringArray:
 func _process(_delta: float) -> void:
 	if _finished or gameplay_host == null:
 		return
-	_hud.set_progress(gameplay_host.call(&"mowing_progress"))
+	var progress: float = gameplay_host.call(&"mowing_progress")
+	_hud.set_progress(progress)
 	_hud.set_fuel(gameplay_host.call(&"mower_fuel_fraction"))
 	_refresh_environment()
+	_refresh_site_readout()
+	if not _minimap_bound:
+		_bind_minimap()
+	_track_mower_on_minimap(progress)
 
 
 # =================================================================== contract
@@ -78,17 +87,128 @@ func _populate_from_job() -> void:
 	if job == null:
 		_hud.set_job_name("Practice Lawn")
 		_hud.set_job_size("")
+		_hud.set_property_type("")
 		_hud.set_reward(0)
 		return
 	_hud.set_job_name(job.job_site)
 	_hud.set_job_size(job.lawn_size_name())
+	_hud.set_property_type(job.property_type_name())
 	_hud.set_reward(job.base_pay)
-	_hud.set_status("Mowing")
+	_hud.set_status("Mow the entire lawn")
 
 
 func _refresh_environment() -> void:
 	_hud.set_game_time(WorldClock.clock_text())
 	_hud.set_weather(WorldClock.weather_preset())
+	_hud.set_day("Day %d" % WorldClock.day_number())
+
+
+## THE CHECKLIST NUMBERS, and they come from the property rather than from the
+## contract: the lawn's own mowable total is what completion is measured
+## against, and what is standing on the ground is whatever the feature set
+## actually built. A card that read those off the job would eventually promise a
+## pond the property does not have.
+func _refresh_site_readout() -> void:
+	var property := _property()
+	if property == null or not property.is_built():
+		return
+	var lawn := property.lawn()
+	if lawn != null:
+		_hud.set_area(lawn.mowed_item_count(), lawn.total_item_count())
+	var features := property.features()
+	if features == null:
+		return
+	var pond := false
+	var obstacles := 0
+	for feature in features.features():
+		if feature is ACAPondFeature:
+			pond = true
+		elif feature is ACALawnObstacles:
+			obstacles = (feature as ACALawnObstacles).count()
+	_hud.set_site_notes(pond, obstacles)
+
+
+# ==================================================================== minimap
+##
+## THE MAP IS FED FROM THE PROPERTY, ONCE. Everything static about it - the
+## playable rectangle, the lawn, the pond outline, the obstacles, the cut mask -
+## is handed over at the start of the contract and never rebuilt, because none
+## of it changes while the player mows. The only per-frame call is where the
+## machine is.
+##
+## Every one of those is the AUTHORITATIVE object: the boundary's own rectangle,
+## the shoreline the pond's collision ring was traced from, the obstacle list
+## the exclusion queries read, and the lawn's own cut mask texture. The map
+## cannot be wrong about the property without the game being wrong about it too.
+
+## CHILDREN ARE READY BEFORE THEIR PARENT, and that is why this is retried from
+## `_process` rather than done once in `_ready()`.
+##
+## This UI stack is a child of the mowing scene, so `_ready()` here runs BEFORE
+## the mowing scene's own `_ready()` - which means before its `@onready` node
+## references are assigned and long before it has generated a property. Asking
+## for the property at that moment gets null back, and the first attempt at this
+## responded by hiding the map, permanently. The screenshot showed an empty
+## corner and no error anywhere, which is exactly the kind of bug that survives
+## a green test suite.
+##
+## So the map binds on the first frame the property is actually there, and the
+## check costs one boolean per frame afterwards.
+func _bind_minimap() -> void:
+	if _minimap == null:
+		return
+	var property := _property()
+	if property == null or not property.is_built():
+		_minimap.visible = false
+		return
+	_minimap_bound = true
+	_minimap.visible = true
+	_minimap.set_property_rect(property.playable_rect())
+
+	var lawn := property.lawn()
+	if lawn != null:
+		var centre := lawn.lawn_centre()
+		var half := lawn.lawn_half_extent()
+		_minimap.set_lawn_rect(Rect2(centre.x - half, centre.z - half,
+			half * 2.0, half * 2.0))
+		_minimap.set_cut_mask(lawn.cut_mask(),
+			Vector2(centre.x, centre.z), half * 2.0)
+
+	var features := property.features()
+	if features != null:
+		for feature in features.features():
+			if feature is ACAPondFeature:
+				_minimap.set_pond(
+					(feature as ACAPondFeature).shoreline_points(property.terrain()))
+			elif feature is ACALawnObstacles:
+				_minimap.set_obstacles((feature as ACALawnObstacles).obstacles())
+
+	var job := GameSession.current_job()
+	_minimap.set_caption(job.job_site if job != null else "Property")
+
+
+func _track_mower_on_minimap(progress: float) -> void:
+	if _minimap == null or not _minimap.visible:
+		return
+	var mower := _mower()
+	if mower == null:
+		return
+	var at := mower.global_position
+	_minimap.set_mower(Vector2(at.x, at.z), mower.global_rotation.y)
+	_minimap.set_progress(progress)
+
+
+func _property() -> ACAProperty:
+	if gameplay_host == null or not gameplay_host.has_method(&"property"):
+		return null
+	return gameplay_host.call(&"property")
+
+
+func _mower() -> Node3D:
+	if gameplay_host == null:
+		return null
+	var mower := gameplay_host.get(&"current_mower") as Node3D
+	return mower if mower != null and is_instance_valid(mower) else null
 
 
 # ====================================================================== intro
@@ -98,6 +218,7 @@ func _play_intro() -> void:
 	if job == null:
 		return
 	_intro.set_contract_type("%s Contract" % job.property_type_name())
+	_intro.set_site_notes(_site_sentence())
 	_intro.show_job(
 		job.job_site,
 		job.lawn_size_name(),
@@ -105,6 +226,36 @@ func _play_intro() -> void:
 		int(round(JobManager.estimated_time_minutes(job))))
 	_intro.set_status("Preparing equipment...")
 	_dismiss_intro_after(intro_seconds)
+
+
+## One plain sentence about what is on the ground, read off the GENERATED
+## property. Empty while the property is still building, which is the honest
+## answer - the intro is up during exactly that window, so the line appears when
+## there is something true to put in it.
+func _site_sentence() -> String:
+	var property := _property()
+	if property == null or not property.is_built():
+		return ""
+	var features := property.features()
+	if features == null:
+		return ""
+	var pond := false
+	var obstacles := 0
+	for feature in features.features():
+		if feature is ACAPondFeature:
+			pond = true
+		elif feature is ACALawnObstacles:
+			obstacles = (feature as ACALawnObstacles).count()
+	var parts := PackedStringArray()
+	if pond:
+		parts.append("a pond")
+	if obstacles == 1:
+		parts.append("one obstacle to mow around")
+	elif obstacles > 1:
+		parts.append("%d obstacles to mow around" % obstacles)
+	if parts.is_empty():
+		return "Open ground, nothing in the way."
+	return "On site: %s." % " and ".join(parts)
 
 
 func _dismiss_intro_after(seconds: float) -> void:
@@ -176,6 +327,9 @@ func _on_job_settled(summary: Dictionary) -> void:
 	AppUI.hold_mouse(AppUI.MOUSE_HOLD_RESULTS)
 	_hud.set_progress_immediate(summary.get("completion", 1.0))
 	_hud.hide_hud()
+	if _minimap != null:
+		var fade := create_tween()
+		fade.tween_property(_minimap, "modulate:a", 0.0, UITheme.FADE)
 	if _intro.is_open():
 		_intro.hide_intro()
 	_results.show_results(

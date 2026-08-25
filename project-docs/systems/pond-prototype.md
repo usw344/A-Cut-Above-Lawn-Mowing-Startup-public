@@ -12,9 +12,10 @@ the mowing grid is overhauled there is a **working, tested tool to integrate**
 rather than a blank page.
 
 !!! danger "Nothing in gameplay builds a pond"
-    No job generates one. `Custom_Gridmap` is untouched. The only place a pond
-    is constructed is `Pond Demo.tscn`, which loads none of the game. Integration
-    is deliberately deferred to the terrain overhaul.
+    Superseded on 2026-08-20. The carver IS in gameplay now, through
+    `ACAPondFeature`. This page describes the prototype and its demo scene; for
+    how a pond is generated on a real contract see
+    [Property, terrain and lawn](property-and-lawn.md).
 
 ## Files
 

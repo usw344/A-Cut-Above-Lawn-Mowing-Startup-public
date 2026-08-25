@@ -1,29 +1,58 @@
 # Performance Architecture
 
-Status: Current workload map and measurement priorities
+Status: **Current** — measured 2026-08-21, after the property rewrite.
 
 ## Primary performance characteristic
 
-The mowable grass system exchanges node count and physics-body count for direct collision-based identification of every grass position.
+**Changed 2026-08-20.** The mowable lawn used to exchange node count and physics
+body count for collision-based identification of every grass position: one
+`StaticBody3D` and one `CollisionShape3D` per blade. It no longer does.
 
-At the fallback standalone call (`test_custom_gridmap(256)`):
+Mowing is now a rectangle test against a byte array. The lawn is one byte per
+square world unit; the whole property contributes ONE physics body, the terrain's
+height field.
 
-```gdscript
-test_custom_gridmap(256)
-```
+### Before and after, measured
 
-and batching size 16:
+Both headless on the development machine. The old numbers come from
+`legacy_lawn_baseline.gd` (now in `Soft Delete/`), the new ones from
+`Property Test`'s cost tables and `Property Probe`'s node counts.
 
-| Item | Count |
+| Lawn | | logical cells | build ms | nodes | physics bodies | mowing state |
+|---|---|---:|---:|---:|---:|---|
+| Small 96 | old | 9,216 | 72 | 19,809 | 9,218 | one body + 2 MultiMesh nodes per 16 blades |
+| | **new** | 9,216 | **12** | **1** | **0** | 9,216 bytes |
+| Medium 144 | old | 20,736 | 156 | 44,289 | 20,738 | |
+| | **new** | 20,736 | **26** | **1** | **0** | 20,736 bytes |
+| Large 192 | old | 36,864 | 267 | 78,561 | 36,866 | |
+| | **new** | 36,864 | **46** | **1** | **0** | 36,864 bytes |
+
+"nodes" and "physics bodies" above are the LAWN's own. The property as a whole
+adds the terrain (2 mesh nodes, 1 static body), the grass tiles and the foliage
+batches:
+
+| Property (Medium, wooded, with a pond) | |
 |---|---:|
-| Logical grass positions | 65,536 |
-| Grass positions per chunk | 16 |
-| Chunk data objects | 4,096 |
-| Mowed/unmowed MultiMesh nodes per chunk | 2 |
-| Grass MultiMesh instance nodes | 8,192 |
-| Initial per-grass static collision bodies | 65,536 |
+| total scene nodes | ~280 |
+| total physics bodies | **1** |
+| grass instances | ~52,000 in ~200 MultiMesh nodes |
+| foliage instances | ~5,000 trees, ~270 shrubs, ~30 rocks in ~95 nodes |
+| terrain triangles | 71k core + 22k distant |
+| whole property build | ~750 ms |
 
-These values follow directly from the grid and chunk loops. Runtime measurements should verify actual node/body totals after initialization.
+The old lawn alone was 44,289 nodes and 20,738 bodies for the same contract.
+
+### What cutting costs now
+
+Nothing is rebuilt. A cut writes bytes into an `Image` and marks it dirty; the
+mask texture is uploaded at most ONCE PER FRAME regardless of how much was cut.
+No MultiMesh is regenerated, no node is created or freed, and no instance
+transform is written. The grass and ground shaders read the mask.
+
+`ACAMowerCutter` runs off the mower's `collided` signal at the physics rate. At
+a mower speed of 30 units/s that is about 0.05 units of travel per tick, so one
+stamp of a roughly 7 x 5 cell footprint - about 35 cell tests, most of which exit
+on the first flag check because the cell is already cut.
 
 ## Physics configuration
 
@@ -40,35 +69,38 @@ The physics rate is four times the 144 FPS cap. Mower physics, fuel counters, co
 
 ## Mower collision workload
 
-Every canonical mower physics frame:
+Every canonical mower physics frame still calls `move_and_slide()`, collects its
+slide collisions and emits `collided`. That is unchanged, and deliberately so:
+the signal is what stops the blades when the tank runs dry.
 
-1. Calls `move_and_slide()`.
-2. Iterates all slide collisions.
-3. Creates a new collision array.
-4. Emits `collided`, including when the array is empty.
-5. Causes the grid handler to inspect each collider name.
+What changed is the LISTENER. The collision array is now ignored; the cutter
+reads the machine's transform and asks the lawn to mow the swept deck. There is
+nothing for a collider name to be parsed out of, because the grass has no
+colliders.
 
-Every newly cut grass position removes a collision body and rebuilds both 16-position-or-smaller MultiMeshes for its chunk.
+## Property construction and reset
 
-The small chunk size bounds per-cut MultiMesh reconstruction, while the large number of collision bodies and nodes dominates initialization and physics-space scale.
+Construction is synchronous from `MVP._ready()`, behind the fullscreen transition
+and the Job Intro screen, so the cost is masked rather than removed. Roughly, for
+a Medium contract:
 
-## Grid initialization and reset
+| Stage | ms |
+|---|---:|
+| features | <1 |
+| terrain: bake, core mesh, rings, collision | ~150 |
+| lawn: cell layout and the mask image | ~26 |
+| feature nodes (water) | <1 |
+| grass placement | ~420 |
+| foliage placement | ~130 |
 
-Grid creation is synchronous from `MVP._ready()`, behind the fullscreen
-transition and the Job Intro screen, so the cost is masked rather than removed.
+Grass placement dominates and is the obvious target if the budget tightens; the
+MultiMesh buffers are already written whole rather than instance by instance,
+which was worth about a factor of three.
 
-Initialization performs:
-
-- Coordinate-array construction.
-- Partitioning.
-- Dictionary population.
-- 4,096 chunk-object allocations.
-- 8,192 MultiMesh node additions.
-- 65,536 static-body and collision-shape additions.
-
-Reset repeats the whole process by replacing the Custom Gridmap.
-
-User-visible startup/reset latency and peak allocation should be measured on each target platform.
+**RESTART JOB no longer rebuilds anything.** It calls `ACALawn.reset()`, which
+clears the cut bits and re-uploads the mask. The property is not regenerated,
+because the player asked to start the contract again, not to be sent to a
+different address.
 
 ## MultiMesh strengths
 
@@ -80,28 +112,29 @@ The project correctly uses MultiMesh for:
 - Trees.
 - Shrubs.
 
-This reduces draw-node and draw-call cost relative to one `MeshInstance3D` per visible plant.
+This reduces draw-node and draw-call cost relative to one `MeshInstance3D` per
+visible plant, and since 2026-08-20 visual batching is the ONLY batching the
+lawn needs: there is no physics side to batch.
 
-The mowable system still uses one physics body per unmowed grass position, so visual batching does not imply physics batching.
+## Terrain workload
 
-## Canonical terrain workload
+Nothing is serialised. The ground is generated from a seed every time the scene
+loads, which costs about 150 ms for a Medium property and saves 91 MB of
+imported mesh.
 
-The active custom terrain scene serializes:
+| | Small | Medium | Large |
+|---|---:|---:|---:|
+| baked height samples | 34,225 | 54,289 | 78,961 |
+| core mesh triangles | 39,200 | 70,688 | 111,392 |
+| distant ring triangles | 16,940 | 22,372 | 27,140 |
+| bake ms | 43 | 71 | 99 |
+| total terrain ms | 80 | 131 | 183 |
 
-- One large terrain mesh.
-- 216 environmental MultiMesh nodes.
-- Decorative grass visibility ranges.
-- A far-grass overlay shader.
-
-Its generator does not run at startup under current settings. That avoids runtime mesh extraction, ground triangle generation, random placement, and scene ownership operations during normal play.
-
-If runtime generation is enabled later, measure:
-
-- `TriangleMesh` generation.
-- Vertical segment sampling.
-- Random placement retries.
-- Foliage occupancy checks.
-- MultiMesh serialization/addition.
+Two optimisations account for most of that. Mesh normals come from the baked
+lattice by central difference rather than from re-evaluating the noise, and the
+distant rings halve their tangential resolution as their radial step grows, with
+a three-triangle fan bridging the two. Before both, Large took 570 ms and the
+rings alone were 87k triangles.
 
 ## Weather and Sky3D
 
@@ -199,18 +232,167 @@ gameplay is well below the 256 fallback:
 | Large | 192 | 36,864 | 2,304 |
 | *(standalone fallback)* | 256 | 65,536 | 4,096 |
 
-Each unmowed instance still gets its own `StaticBody3D` + `CollisionShape3D`, so
-body count tracks the first column directly.
+Since 2026-08-20 a cell is a BYTE, not a node. The "Chunks" column no longer
+applies; the lawn is one flat array and one small texture.
 
 ## Progress accounting is O(1)
 
-Mowing progress is tracked with incremental counters on `Custom_Gridmap`, updated
-only when `Multi_Mesh_Chunk.mow_item_by_name()` reports a real cut. Nothing walks
-the chunk dictionary per frame. `recount_progress()` is the only full scan and
-runs twice: after `make_grid()` and after `load_object()`.
+Mowing progress is tracked with incremental counters on `ACALawn`, moved only
+when a cell really changes state. Nothing walks the lawn per frame. The only
+full passes are the initial layout, `reset()`, and a save restore.
 
 `MVP._tick_job_runtime()` pushes progress into `ACAJobManager` at 2 Hz, not per
 frame. The town refreshes its clock label at 2 Hz for the same reason.
+
+## Session 8 measurements — the property rewrite
+
+### Frame cost, by property
+
+`Property Probe --property-fps`, ninety frames held per viewpoint after a
+warm-up pass that visits every viewpoint once. The warm-up matters: the first
+frame from a new angle compiles shader variants, and a measurement taken across
+that reports the compiler rather than the scene. `arrival` is the first shot and
+still carries some of that.
+
+Development machine, Intel Arc B580, 1920 x 1080, Clear at noon, lawn half mown.
+
+| Property | mower-eye | close-turf | overview | treeline | horizon | pond |
+|---|---:|---:|---:|---:|---:|---:|
+| Open, 96 | 233 | 148 | 138 | 151 | 184 | — |
+| Light forest, 144 | 166 | 171 | 167 | 116 | 152 | — |
+| Wooded, 192 | 190 | 121 | 150 | 151 | 140 | — |
+| Wooded pond, 192 | 226 | 116 | 150 | 156 | 152 | 154 |
+
+Draw calls stay between 90 and 171. Triangles per frame run 0.6M (Open, 96) to
+2.1M (Wooded pond, 192, from the overview).
+
+### Weather and time of day
+
+`Weather Matrix`, twelve time/weather combinations in the real mowing scene on a
+generated Medium contract:
+
+| | old environment | new property |
+|---|---|---|
+| fps range across 12 shots | 114 – 146 | 100 – 172 |
+
+The new scene shows a far larger world — a full landscape out to 3.6 km, a
+wooded perimeter, distant hills — and is no slower.
+
+### Two changes that paid for most of that
+
+| Change | Effect |
+|---|---|
+| The ground mesh stopped CASTING shadows (it still receives them) | about 450k fewer triangles per frame on a Large property; a gentle lawn shadows almost nothing of itself |
+| Trees past `TREE_SHADOW_RADIUS` (115 units) stopped casting | draw calls 185 → 133 and triangles 3.4M → 1.9M on the Wooded 192 overview |
+
+Neither is visible in a capture. Both were found by measuring, not by guessing.
+
+### Graphics quality is wired to the grass
+
+`ACALawnGrass.bind_to_settings()` follows `GameSettings.graphics_quality()` and
+keeps following it if the player changes it mid-contract. Quality trims the
+DISTANCE BANDS rather than the density, because a thinner lawn looks broken
+while a shorter draw distance looks like weather.
+
+| Setting | near band | mid band |
+|---|---:|---:|
+| low | 29 units | 83 |
+| medium | 38 | 124 |
+| high / ultra | 46 | 165 |
+
+## Large-lawn scalability sweep — 2026-08-23
+
+`Large Lawn Stress Test`, one real property per run, Intel Arc B580, 1920x1080,
+Godot 4.6.1, seed 20260823, bare sun (the weather stack is deliberately out of
+this measurement). Frame rates are the average and the worst of three held
+viewpoints — inside the machine at the lawn edge, mid-lawn looking down the
+property, and an overview above the corner — after a warm-up pass over all
+three. **This is a laboratory, not a contract.** Real contracts are 96 - 192.
+
+| Lawn | logical cells | grass tufts | MultiMesh nodes | property nodes | physics bodies | build | memory | fps avg | fps worst |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 256 | 65,536 | 166,972 | 450 | 553 | **1** | 2.0 s | 114 MB | 177 | 101 |
+| 512 | 262,144 | 593,119 | 1,250 | 1,291 | **1** | 6.0 s | 224 MB | 192 | 110 |
+| 1000 | 1,000,000 | 2,134,211 | 4,232 | 4,269 | **1** | 19.7 s | 631 MB | 188 | 164 |
+| 1500 | 2,250,000 | 4,704,387 | 8,978 | 9,003 | **1** | 42.2 s | 1.27 GB | 156 | 149 |
+| 2000 | 4,000,000 | 8,278,952 | 15,138 | 15,163 | **1** | 74.5 s | 2.19 GB | 118 | 103 |
+| 2048 | 4,194,304 | 8,674,670 | 15,842 | 15,867 | **1** | 80.3 s | — | — | — |
+
+Draw calls per frame stayed between 126 and 178 at **every** size, because what
+is drawn is bounded by the grass draw distance rather than by the property.
+
+### Where the time goes
+
+Each stage is **linear in area**, and the constants are stable across a
+sixty-fold range of cell counts:
+
+| Stage | cost per unit | 256 | 2000 |
+|---|---|---:|---:|
+| Lawn layout | ~195 ms per million cells | 12.7 ms | 775 ms |
+| Terrain bake + mesh + collision | ~2.5 us per height sample | 329 ms | 10.7 s |
+| Grass placement | ~7.6 us per tuft | 1.38 s | 62.7 s |
+| Foliage | **does not scale** | 295 ms | 308 ms |
+
+**The grass placer is the whole story: 82 - 85% of the build time and 85% of the
+memory at every size past 512.** Building 1000 m with `enable_grass` off takes
+3.4 s instead of 19.7 and costs 82 MB instead of 631; at 2000 m it is 11.7 s and
+333 MB instead of 74.5 s and 2.19 GB.
+
+The foliage row is not a rounding error, it is the design: `ACAForest` plants a
+BELT around the property and a scatter on the hills, both sized from fixed
+radii. A larger lawn pushes the belt outward, it does not fill the middle. Tree
+counts actually FALL slightly with size (4,815 at 256 down to 1,688 at 2000)
+because more of the fixed-radius scatter area is now lawn.
+
+### Where it starts to hurt, and what actually hurts
+
+Nothing collapses, and nothing behaves worse than linearly. What degrades is
+absolute cost:
+
+- **Up to 512** everything is comfortable: six seconds and a quarter of a
+  gigabyte.
+- **At 1000** the architecture still runs well — 164 fps at worst, one physics
+  body, a megabyte-scale lawn state — but the **build takes twenty seconds**,
+  which is a loading screen, not a pause.
+- **At 1500 - 2000** the build is 42 - 75 seconds and 1.3 - 2.2 GB. Frame rate
+  is still over a hundred; it is the *build* that has become impractical.
+
+Frame rate declining from 188 at 1000 m to 118 at 2000 m is **not** more grass
+being drawn — the draw calls and the near-field density are unchanged. It is the
+fixed per-frame cost of culling fifteen thousand MultiMesh instances plus one
+8.4-million-triangle ground mesh that cannot be culled in pieces because it is a
+single `ArrayMesh`.
+
+**No optimisation has been done in response to any of this**, deliberately. The
+bottleneck is named and measured; whether it is worth anything is a separate
+decision, and the sizes that expose it are sizes the game does not ask for.
+
+### Against the old system, at 256
+
+The pre-redesign lawn ran a 256 property at roughly 140 fps with per-instance
+physics. The comparison worth making is not the frame rate:
+
+| At 256 x 256 | old | new |
+|---|---:|---:|
+| logical cells | 65,536 | 65,536 |
+| lawn nodes | ~78,000+ | **1** |
+| physics bodies | ~65,000 | **1** |
+| mowing state | one body + shape per blade | 65,536 bytes + a 256x256 texture |
+| frame rate | ~140 | **177 avg, 101 worst** |
+| largest lawn that works at all | 256 was the ceiling | **2048**, 64x the cells |
+
+The old architecture could not have been asked this question. Sixty-five
+thousand bodies at 256 would have been four million at 2000, which is past the
+configured Jolt body limit and far past anything the physics step could carry.
+
+### Mowing still works at every size
+
+`--stress-drive` holds the real `move_forward` action down through the real
+controller for five seconds and reports what happened. At 1000 m: the machine
+travelled 51.1 units, stayed within **0.12 units** of the terrain surface, cut
+**276 cells** (51.1 x 5.6 deck = 286 expected), and the lawn emitted 23 real
+progress changes. Whole-scene physics bodies: **2** — the ground and the
+machine.
 
 ## Session 7 measurements — the environment rewrite
 
@@ -271,3 +453,161 @@ The old rain was **more** particles than the new rain, and each one was a
   deadband — driving them per tick would spawn tweens per tick.
 - The Town sun's basis is written only when the yaw has moved a quarter of a
   degree. See [decisions](decisions-and-open-questions.md), R-022.
+
+---
+
+# Profiler 2.0 and the presentation pass (2026-08-24)
+
+## The instrument
+
+`Dev tools/Validation/Large Lawn Stress Test.tscn` was extended rather than
+replaced, so every measurement in this document taken before this date is still
+directly comparable with every measurement taken after it. The original CSV
+(`user://large_lawn_stress_results.csv`) is still written in its original schema;
+a second, wider one (`user://profiler2_results.csv`) carries everything below.
+
+### Three environment profiles, and they are not interchangeable
+
+| Profile | What it measures |
+|---|---|
+| `SYSTEM_BASELINE` | a bare sun and a procedural sky. The property architecture on its own: terrain, lawn, grass, foliage, with none of the production presentation on top. **Every historical number in this document was taken with this.** |
+| `PRODUCTION_CLEAR` | the REAL `Weather/Preset Manager` scene — the project's own Sky3D integration, its lighting, its atmosphere — held at a clear day. What a player sees on a fine morning. |
+| `PRODUCTION_HEAVY` | the same production stack under rain: its precipitation rig, its heavier atmosphere, its darker sky. A condition the game ships and a player meets on an ordinary contract, NOT an everything-maximised torture test. |
+
+The production profiles instantiate the real preset manager rather than
+approximating it, with `follow_world_clock` off and the state applied
+immediately, so two runs of one profile light the property identically.
+
+### Three benchmark modes
+
+`STATIC` (parked machine, fixed camera), `CAMERA` (a repeatable path through the
+same viewpoints), `DRIVE` (the real mower on the real controller, throttle held,
+cutting real grass — the only mode whose frames include the cost of cutting).
+
+### Methodology
+
+```
+warm-up (every viewpoint, nothing recorded)  ->  settle  ->  fixed window  ->  summary
+```
+
+Two things about this are load-bearing:
+
+- **The window is a DURATION, not a frame count**, so a heavy configuration and
+  a light one are given the same wall clock and their percentiles mean the same
+  thing.
+- **Frame times are measured as wall time between frames, and the frame cap is
+  lifted for the window.** `Performance.TIME_FPS` is a smoothed value the engine
+  refreshes about once a second, so every sample inside a window comes back
+  identical — which is exactly the measurement a percentile exists to avoid. And
+  the project ships `max_fps = 240`, which is sensible for a game and useless
+  for a benchmark: every frame cheaper than 4.17 ms comes back as 4.17 ms.
+
+Recorded per run: average fps, worst fps, median / p95 / p99 frame time, draw
+calls, primitives, static memory, video memory, every build stage's cost, tuft
+and instance counts, node and body counts, plus the things that decide whether
+two rows may be compared at all — seed, size, profile, mode, weather, hour,
+resolution, graphics level and window length.
+
+## Before and after the presentation pass
+
+Same machine, same seed (20260824), same viewpoints, four-second windows.
+"Before" is backup 24, "after" is the finished pass.
+
+### The production Large contract, 192 x 192
+
+| Profile | Mode | before | after | change |
+|---|---|---:|---:|---:|
+| SYSTEM_BASELINE | STATIC | 447.8 | 431.8 | -3.6% |
+| SYSTEM_BASELINE | CAMERA | 435.2 | 418.2 | -3.9% |
+| SYSTEM_BASELINE | DRIVE | 393.6 | 347.2 | **-11.8%** |
+| PRODUCTION_CLEAR | STATIC | 291.8 | 281.5 | -3.5% |
+| PRODUCTION_CLEAR | CAMERA | 286.0 | 275.3 | -3.7% |
+| PRODUCTION_CLEAR | DRIVE | 270.1 | 240.2 | **-11.1%** |
+| PRODUCTION_HEAVY | STATIC | 219.1 | 214.3 | -2.2% |
+| PRODUCTION_HEAVY | CAMERA | 219.1 | 211.5 | -3.5% |
+| PRODUCTION_HEAVY | DRIVE | 202.5 | 181.8 | **-10.2%** |
+
+### The stress sizes, STATIC
+
+| Size | Profile | before | after | change |
+|---|---|---:|---:|---:|
+| 256 | SYSTEM_BASELINE | 522.7 | 474.7 | -9.2% |
+| 256 | PRODUCTION_CLEAR | 322.5 | 299.0 | -7.3% |
+| 256 | PRODUCTION_HEAVY | 251.8 | 229.7 | -8.8% |
+| 512 | SYSTEM_BASELINE | 550.1 | 448.3 | **-18.5%** |
+| 512 | PRODUCTION_CLEAR | 328.4 | 282.4 | -14.0% |
+| 512 | PRODUCTION_HEAVY | 277.8 | 238.3 | -14.2% |
+| 1000 | SYSTEM_BASELINE | 447.8 | 379.9 | **-15.2%** |
+| 1000 | PRODUCTION_CLEAR | 286.9 | 252.1 | -12.1% |
+
+## What the regression is, measured rather than guessed
+
+The DRIVE regression crossed the 15% threshold in the first measurement, so it
+was isolated rather than accepted. Current build, 192, `SYSTEM_BASELINE`:
+
+| | grass on | grass off |
+|---|---:|---:|
+| STATIC | 415.4 | 659.3 |
+| DRIVE | 329.9 | 631.8 |
+
+**With the grass off, DRIVE and STATIC are within 4% of each other.** The
+boundary's collision, the pond's shoreline ring and the obstacle bodies — the
+three physics bodies this pass added — cost about 0.06 ms between them at
+576 Hz. The whole regression is the taller lawn being rendered, and it is
+concentrated in DRIVE because that mode looks along the ground from the seat,
+where a lawn that is now most of twice as tall fills far more of the frame.
+
+A second A/B checked whether the extra blade segment was worth its cost:
+
+| Near tuft | 192 DRIVE, SYSTEM_BASELINE |
+|---|---:|
+| 2 segments | 352.4 fps |
+| 3 segments | 343.7 fps |
+
+2.5%, for an arc rather than a hinge on a blade that is now much longer. Kept.
+The MID tuft's second segment was reverted in the same experiment — a hinge
+forty-six units away is smaller than a pixel — and that recovered about 4%.
+
+**Nothing was reverted for the rest.** The taller lawn is the point of the pass:
+it is what makes the before-and-after of mowing worth doing. It is understood,
+attributed, measured, and it leaves the heaviest player-facing configuration
+(`PRODUCTION_HEAVY` / `DRIVE` on a Large contract) at **182 fps average and a
+p99 of 8.3 ms**.
+
+## The collision model after the pass
+
+| | before | after |
+|---|---:|---:|
+| physics bodies on a generated property | 1 | **4** |
+| ...the ground heightmap | 1 | 1 |
+| ...the playable boundary | – | 1 |
+| ...the pond's shoreline ring | – | 1 |
+| ...the lawn obstacles | – | 1 |
+| physics bodies on the wood | 0 | **0** |
+
+The boundary and the obstacles are ONE body each carrying many shapes, not a
+body each. A Large property's boundary is about 180 box shapes on a single
+static body; the pond ring is 48; the obstacles are eight to twelve spheres.
+
+Scene nodes grew with them — 430 to 553 on a Large — almost entirely
+`CollisionShape3D` children of those two bodies. The wall is segmented every five
+world units so it follows the ground, so that count is linear in the property's
+perimeter: about 180 shapes at 192, and about 840 at the 512 stress size. At the
+sizes the game actually asks for it is not a cost worth optimising; at stress
+sizes it is worth knowing about.
+
+Memory moved by under 1% at every size.
+
+## The three profiles as a picture of where the frame goes
+
+At 192, STATIC, on this machine:
+
+| | ms/frame | attributable to |
+|---|---:|---|
+| `SYSTEM_BASELINE` | 2.30 | terrain, lawn, grass, foliage |
+| `PRODUCTION_CLEAR` | 3.25 | + Sky3D, production lighting and atmosphere (+0.95) |
+| `PRODUCTION_HEAVY` | 4.56 | + rain and its heavier sky (+1.31) |
+
+The production presentation costs about as much as the whole property does. That
+is the single most useful thing Profiler 2.0 reports, and it was invisible before
+it existed, because every previous measurement was taken under a bare sun.

@@ -14,6 +14,7 @@ class_name JobIntroScreen
 #       estimated_minutes: int)    # 12  -> "12 min"
 #
 #   set_contract_type(value: String)   # "Residential Contract"
+#   set_site_notes(value: String)      # "A pond and six obstacles."
 #   set_status(value: String)          # "PREPARING EQUIPMENT..."
 #
 #   show_intro()
@@ -92,6 +93,9 @@ signal intro_hidden()
 @onready var _reward_value: Label = %ContractValue
 @onready var _status: Label = %StatusLabel
 
+## Built in `_become_a_work_order()` rather than by the scene.
+var _site_notes: Label = null
+
 var _open: bool = false
 var _tween: Tween
 var _status_tween: Tween
@@ -102,6 +106,46 @@ func _ready() -> void:
 	modulate.a = 0.0
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_become_a_work_order()
+
+
+## ---------------------------------------------------------------------------
+## THE INTRO IS THE WORK ORDER, NOT A TITLE CARD
+## ---------------------------------------------------------------------------
+## This screen was cream text floating on a dark scrim - readable, and
+## indistinguishable from a loading screen in any other game. What the player is
+## actually being shown is the paperwork for the contract they just accepted,
+## and the rest of the interface now draws paperwork on paper.
+##
+## So the existing column is wrapped in a cream sheet and repainted. The LAYOUT
+## is untouched: it was already a heading, a rule, two rows and a status line,
+## which is what a work order looks like.
+func _become_a_work_order() -> void:
+	var column := _holder.get_node_or_null(^"Column") as Control
+	if column == null or column.get_parent() is PanelContainer:
+		return
+	var sheet := PanelContainer.new()
+	sheet.name = "Sheet"
+	sheet.add_theme_stylebox_override("panel",
+		UITheme.hud_panel(UITheme.RADIUS_PANEL, 40.0, 30.0))
+	# NO minimum size of its own. The column inside already declares 520, and a
+	# sheet narrower than its contents does not shrink them - it lets them hang
+	# over both edges, which is exactly what the first attempt did.
+	_holder.remove_child(column)
+	_holder.add_child(sheet)
+	sheet.add_child(column)
+
+	# The site line, for anything the property has on it that is worth knowing
+	# before the machine is unloaded. Built here because the scene predates it.
+	_site_notes = UITheme.label(column, "SiteNotes", "", UITheme.FONT_LABEL,
+		UITheme.PAPER_INK_FAINT, true)
+	column.move_child(_site_notes, _job_size.get_index() + 1)
+	_site_notes.visible = false
+
+	UITheme.repaint_to_paper(sheet)
+	# The heading is the one thing on the sheet that is green.
+	_job_name.add_theme_color_override("font_color", UITheme.HUD_GREEN)
+	_contract_type.add_theme_color_override("font_color", UITheme.PAPER_INK_FAINT)
 
 
 # ================================================================== content
@@ -113,6 +157,16 @@ func show_job(job_name: String, job_size: String, reward: int,
 	_reward_value.text = UITheme.format_money(reward)
 	_time_value.text = "%d min" % maxi(estimated_minutes, 0)
 	show_intro()
+
+
+## What the property has standing on it, in one plain sentence. Supplied by the
+## host from the GENERATED property rather than from the contract, so it can
+## never promise a pond that is not there. Empty hides the line.
+func set_site_notes(value: String) -> void:
+	if _site_notes == null:
+		return
+	_site_notes.text = value
+	_site_notes.visible = not value.is_empty()
 
 
 ## The line above the job name, e.g. "Residential Contract".

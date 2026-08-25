@@ -68,6 +68,20 @@ const POWERED := true
 ## scene file cannot invalidate it.
 const MOWER_ID := &"rider"
 
+## ------------------------------------------------------------- CUTTING DECK
+##
+## The footprint this machine cuts, in WORLD units, resolved by `ACAMowerDeck`
+## and swept across the lawn by `ACAMowerCutter`. It is a GAMEPLAY value and is
+## deliberately NOT derived from the model or the collision box: re-scaling the
+## mower to look better must never change how long a contract takes or whether
+## a tank of fuel is enough to finish one.
+##
+## The rider has the widest deck of the three, which is the reason to own it.
+const DECK_WIDTH := 5.6
+const DECK_LENGTH := 2.4
+## Along the machine's local +Z, which is forward.
+const DECK_FORWARD := 0.4
+
 ## Uniform across the canonical mowers so nothing has to check a scene name.
 func is_powered() -> bool:
 	return POWERED

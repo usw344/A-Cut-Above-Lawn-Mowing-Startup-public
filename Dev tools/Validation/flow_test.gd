@@ -151,21 +151,24 @@ func _test_gameplay_scene() -> void:
 	_check("Gameplay loaded: mowing scene is current",
 		scene != null and scene.name == "Minimum Viable Game")
 
-	var grid := scene.get_node_or_null(^"Custom Gridmap") if scene != null else null
-	_check("Gameplay loaded: grass grid built",
-		grid != null and grid.total_item_count() > 0)
-	if grid != null:
-		print("           -> %d grass instances, %.1f%% mowed"
-			% [grid.total_item_count(), grid.mowed_fraction() * 100.0])
+	# The mowing scene exposes its lawn rather than being reached into by node
+	# name, so this asks the same question the save system does.
+	var lawn: ACALawn = scene.call(&"lawn") \
+		if scene != null and scene.has_method(&"lawn") else null
+	_check("Gameplay loaded: lawn built",
+		lawn != null and lawn.total_item_count() > 0)
+	if lawn != null:
+		print("           -> %d mowable cells, %.1f%% mowed"
+			% [lawn.total_item_count(), lawn.mowed_fraction() * 100.0])
 
 	var job := GameSession.current_job()
 	_check("Gameplay loaded: same accepted job is still current",
 		job != null and job.id == _job_id)
 	_check("Gameplay loaded: job is IN_PROGRESS",
 		job != null and job.status == ACAJobEnums.Status.IN_PROGRESS)
-	if job != null and grid != null:
-		_check("Gameplay loaded: grid matches the contract size",
-			grid.grid_width == job.grid_size.x)
+	if job != null and lawn != null:
+		_check("Gameplay loaded: lawn matches the contract size",
+			lawn.cell_count() == job.grid_size.x)
 
 
 func _test_gameplay_ui() -> void:
@@ -183,12 +186,16 @@ func _test_gameplay_ui() -> void:
 
 	var job := GameSession.current_job()
 	if hud != null and job != null:
+		# ASKED, NOT WALKED. This used to read `%JobName` and friends out of the
+		# HUD's scene tree, and it silently stopped running the moment the HUD
+		# was laid out in code instead - eight checks vanished from this suite
+		# and it still reported zero failures. The component answers now.
 		_check("Gameplay UI: HUD shows the real contract",
-			hud.get_node(^"%JobName").text == job.job_site.to_upper())
+			hud.job_name_text() == job.job_site.to_upper())
 		_check("Gameplay UI: HUD shows the real reward",
-			hud.get_node(^"%RewardValue").text == UITheme.format_money(job.base_pay))
+			hud.reward_text() == UITheme.format_money(job.base_pay))
 		_check("Gameplay UI: HUD shows the world clock",
-			hud.get_node(^"%TimeValue").text == WorldClock.clock_text())
+			hud.game_time_text() == WorldClock.clock_text())
 
 	_check("Gameplay UI: job intro played", intro != null and intro.is_open())
 

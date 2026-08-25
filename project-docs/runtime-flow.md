@@ -73,45 +73,54 @@ The host feeds the HUD real money and `set_calendar(day, clock, weather)` at 2 H
 
 `Game/M.V.P/Minimum Viable Game.tscn`, `MVP._ready()`:
 
-1. Custom Gridmap forced to its hard-coded world position.
-2. `test_custom_gridmap(_grid_size_for_current_job())` — **grid size comes from
-   `job.grid_size.x`** (96 / 144 / 192). Falls back to 256 when the scene is
-   opened standalone with no contract.
-3. Ambient audio starts; mower transform stored for resets.
-4. Start area repositioned; mower placed at start + `(0, 2, 0)`.
-5. Preset Manager given the ambient player for rain ducking.
-6. Legacy MVP HUD hidden (`hud.visible = false`).
-7. `_setup_job_runtime()`:
-   - `preset_manager.set_time_of_day_normalized(WorldClock.hour_of_day())`
-   - `preset_manager.apply_weather_preset(WorldClock.weather_preset())`
+1. The save handoff is taken FIRST, so a resumed contract can rebuild the
+   property it was saved on rather than a fresh one.
+2. `Property.build(...)` — the whole property, generated at the world ORIGIN
+   from `ACAPropertyParams.for_job(job)`. Lawn size comes from
+   `job.grid_size.x` (96 / 144 / 192).
+3. Ambient audio starts.
+4. The mower is placed at `property.mower_start_transform()`, just off the lawn
+   edge facing across it, at the real terrain height.
+5. `ACAMowerCutter` is created and the mower's `collided` signal is routed to it.
+6. Preset Manager given the ambient player for rain ducking, and the terrain's
+   own height at the lawn centre as the fog ground reference.
+7. Legacy MVP HUD hidden (`hud.visible = false`).
+8. `_setup_job_runtime()`:
+   - `preset_manager.apply_world_state_immediate(weather, hour)`
    - connects `WorldClock.weather_changed` and
-     `Custom_Gridmap.mowing_progress_changed`
+     `ACALawn.mowing_progress_changed`
+   - restores the saved cut state, if there is one
 
 `Gameplay UI.tscn` (a child of the scene) then shows the Job Intro with real
 contract data and brings up the production HUD.
 
-### Grid construction
+### Property construction
 
-`test_custom_gridmap(n)` → radius `n × 0.55`, grid `n × n`, batching 16 → `n²`
-grass coordinates → 4×4 chunks → `Multi_Mesh_Chunk` objects, each with an unmowed
-and a mowed MultiMesh, and a StaticBody per unmowed instance.
-`recount_progress()` then captures the totals.
+Features are chosen from the seed, the terrain bakes with their offsets already
+applied, the lawn lays out one cell per square world unit and asks the features
+which are mowable, feature nodes are added, then grass and foliage are placed.
+All synchronous; every query is valid the moment `build()` returns.
 
-A Small Lawn (96×96) is 9,216 instances; a Large Lawn (192×192) is 36,864.
+A Small Lawn is 96 × 96 = 9,216 cells; a Large Lawn is 192 × 192 = 36,864. The
+cells are BYTES, not nodes: the property has one physics body, the terrain's
+height map. See [Property, terrain and lawn](systems/property-and-lawn.md).
 
 ## Active gameplay loop
 
 `MVP._physics_process`:
 - pushes the mower position into the Preset Manager (rain emitter follows)
 - `_tick_job_runtime(delta)`: accumulates `GameSession.add_job_elapsed(delta)`,
-  and every 0.5 s pushes `custom_gridmap.mowed_fraction()` into
+  and every 0.5 s pushes `lawn().mowed_fraction()` into
   `JobManager.update_job_progress()`
 
 `gameplay_ui._process` pushes progress, fuel, clock text and weather into the HUD.
 
-Cutting: mower `collided` → `Custom_Gridmap.custom_grid_map_collision_handler` →
-`mow_item(name)` → `Multi_Mesh_Chunk.mow_item_by_name()`. That returns whether it
-really cut something, so the O(1) mowed counter cannot drift.
+Cutting: mower `collided` → `ACAMowerCutter.on_blades_active()` →
+`ACALawn.mow_deck(previous, current, deck)`. The signal is unchanged — it still
+fires every physics frame while the engine runs and stops when the tank is empty
+— but the payload is ignored and the cut is decided by GEOMETRY: the machine's
+deck rectangle, swept along the ground it actually covered. `mow_deck()` returns
+how many cells really changed, so the O(1) counter cannot drift.
 
 ## Completion
 

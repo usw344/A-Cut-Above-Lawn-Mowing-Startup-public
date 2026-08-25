@@ -12,6 +12,7 @@ extends Node
 @onready var _help: ControlsHelp = $"Menu UI/Controls Help"
 @onready var _load_menu: LoadGameScreen = $"Menu UI/Load Game"
 @onready var _credits: CreditsScreen = $"Menu UI/Credits"
+@onready var _new_game: NewGameScreen = $"Menu UI/New Game"
 
 var _menu: MainMenuScreen
 
@@ -43,6 +44,14 @@ func _ready() -> void:
 
 	_credits.back_requested.connect(_close_credits)
 
+	# NEW GAME leads into the difficulty choice rather than straight into a
+	# session. The component knows nothing about what a difficulty does; this
+	# host reads the profile table and acts on the answer.
+	_new_game.set_options(_difficulty_options())
+	_new_game.select(ACADifficulty.DEFAULT_ID)
+	_new_game.difficulty_chosen.connect(_on_difficulty_chosen)
+	_new_game.back_requested.connect(_close_new_game)
+
 	_load_menu.load_requested.connect(_on_load_requested)
 	_load_menu.delete_requested.connect(_on_delete_requested)
 	_load_menu.back_requested.connect(_close_load_menu)
@@ -57,7 +66,7 @@ func _find_menu() -> MainMenuScreen:
 func _on_option_selected(option_id: StringName) -> void:
 	match option_id:
 		&"new_game":
-			GameSession.start_new_game()
+			_open_new_game()
 		&"continue":
 			_continue_latest()
 		&"load_game":
@@ -70,6 +79,46 @@ func _on_option_selected(option_id: StringName) -> void:
 			get_tree().quit()
 		_:
 			push_warning("Main Menu: unhandled option %s" % option_id)
+
+
+# ================================================================== new game
+
+## The player-facing profiles, in the order `ACADifficulty` lists them, turned
+## into the plain dictionaries the component expects. No multipliers cross this
+## line: what the player is shown is a name, a sentence and a few
+## characteristics, because the numbers underneath are a designer's business.
+func _difficulty_options() -> Array:
+	var out: Array = []
+	for id: StringName in ACADifficulty.PLAYER_IDS:
+		out.append({
+			"id": id,
+			"name": ACADifficulty.display_name(id),
+			"description": ACADifficulty.description(id),
+			"characteristics": ACADifficulty.characteristics(id),
+		})
+	return out
+
+
+## THE RADIAL MENU GOES AWAY while the difficulty is being chosen. The first
+## capture of this screen showed both at once - the radial ring reading straight
+## through the cards and the two titles overlapping in the top left - because
+## the difficulty screen is a full-screen decision rather than a panel over the
+## menu, and nothing had said so.
+func _open_new_game() -> void:
+	_menu.visible = false
+	_new_game.open()
+
+
+func _on_difficulty_chosen(id: StringName) -> void:
+	_new_game.close()
+	_menu.visible = true
+	GameSession.start_new_game(id)
+
+
+func _close_new_game() -> void:
+	_new_game.close()
+	_menu.visible = true
+	_menu.reset_menu(false)
 
 
 # ================================================================== save/load

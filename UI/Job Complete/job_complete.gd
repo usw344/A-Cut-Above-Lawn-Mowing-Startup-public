@@ -107,6 +107,20 @@ func _ready() -> void:
 	modulate.a = 0.0
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_button.pressed.connect(func() -> void: return_to_town_requested.emit())
+	# THE RESULTS SHEET IS PAPER, for the same reason the job board's offers are:
+	# what the player is looking at is the finished work order. Repainted rather
+	# than rebuilt - the layout was already right.
+	var card := _holder.get_node_or_null(^"Card") as Control
+	if card != null:
+		UITheme.repaint_to_paper(card)
+		card.add_theme_stylebox_override("panel",
+			UITheme.hud_panel(UITheme.RADIUS_PANEL, 0.0, 0.0))
+		var title := card.find_child("Title", true, false) as Label
+		if title != null:
+			title.add_theme_color_override("font_color", UITheme.HUD_GREEN)
+		var accent := card.find_child("AccentBar", true, false) as ColorRect
+		if accent != null:
+			accent.color = UITheme.ORANGE
 
 
 func _gui_input(event: InputEvent) -> void:

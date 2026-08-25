@@ -23,17 +23,30 @@ Godot executable used for all of these: **4.6.1 stable**.
 | `Dev tools/Validation/Fuel Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Fuel Test.tscn" -- "--save-root=<dir>"` | The real fuel system: burn rates, time-vs-tick, empty stops the wheels AND the blades, refuel recovers, Auto Refuel both ways, the HUD gauge, save/load of a partial and an empty tank, and the Push Mower being manual. 56 assertions. **Pass `--save-root`.** |
 | `Dev tools/Validation/Audio Mix Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Audio Mix Probe.tscn" -- "--save-root=<dir>"` | **Measures** the mix: plays the real scene in Clear / Foggy / Rain at idle and mowing and reports the peak level each bus reaches, then asserts the relationships. 15 assertions. Re-run it after changing a source level or a bus trim. |
 | `Dev tools/Validation/Trailer Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Trailer Test.tscn"` | The Trailer Capture scene's STRUCTURAL contract: it loads, the presentation adapters exist, the storyboard is in order and inside 35-48s with varied shot lengths, the adapters put back everything they borrow, gameplay tuning is untouched, the mowing shots are slower than gameplay, and it is not the main scene. 101 assertions. |
-| `Dev tools/Validation/Town Probe.tscn` | `godot --path . "res://Dev tools/Validation/Town Probe.tscn" -- "--town-output=<dir>"` | Grazing-angle close-ups of the real Business Town, each rendered TWICE with the camera's far plane nudged so depth ties can be counted. **Needs a real renderer.** |
+| `Dev tools/Validation/Town Probe.tscn` | `godot --path . "res://Dev tools/Validation/Town Probe.tscn" -- "--town-output=<dir>"` | Grazing-angle close-ups of the real Business Town, each rendered TWICE with the camera's far plane nudged so depth ties can be counted. Fourteen shots, four of them added with the back street: `backstreet-graze`, `backstreet-high`, `connector-junction` and `sidestreet-junction`. **Needs a real renderer.** |
 | `Dev tools/Validation/coplanar_probe.gd` | `godot --headless --path . --script "res://Dev tools/Validation/coplanar_probe.gd" -- "--coplanar-scene=<scene>"` | Finds Z-fighting BEFORE it is rendered: reports every pair of meshes that share a face plane while overlapping on the other two axes. |
 | `Main Area/ACA_JobSystem/tests/JobSystemTests.tscn` | `godot --headless --path . "res://Main Area/ACA_JobSystem/tests/JobSystemTests.tscn"` | The Job System's own suite, 110 assertions. |
 | `Dev tools/Validation/environment_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/environment_test.gd"` | Guards the REUSABLE environment package: that it contains no A Cut Above paths or class names, bundles no binary assets, composes with nothing bound, measures fog height from the declared ground, survives interrupted transitions, and that its quality levels remove real work. **28 assertions.** |
-| `Dev tools/Validation/Economy Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Economy Test.tscn" -- "--save-root=<dir>"` | The market, the shops and the upgrades — plus a **90-day simulation** and a **6-seed x 365-day sweep** that print what the market actually did. `--economy-days=` and `--economy-seeds=` widen the sweep. **93 assertions.** **Pass `--save-root`.** |
+| `Dev tools/Validation/Economy Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Economy Test.tscn" -- "--save-root=<dir>"` | The market, the shops, the upgrades, the **three difficulty profiles** and the **recession market bridge** — plus a **90-day simulation** and a **6-seed x 365-day sweep** that print what the market actually did. `--economy-days=` and `--economy-seeds=` widen the sweep. **120 assertions.** **Pass `--save-root`.** |
 | `Dev tools/Validation/Upgrade Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Upgrade Probe.tscn" -- "--save-root=<dir>"` | **Drives the real mowers** with real `Input` actions and measures displacement per second and fuel burned per second, stock against upgraded, for all three machines. **15 assertions.** |
 | `Dev tools/Validation/Town Services Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Town Services Probe.tscn" -- "--save-root=<dir>"` | Drives the Supply Store, Mower Workshop and Business Office through their **real `Button` nodes** — checks what they say, presses them, and checks what changed. **29 assertions.** |
+| `Dev tools/Validation/property_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/property_test.gd"` | The procedural property, with no renderer: mesh winding, terrain determinism, `height_at()` against the committed mesh arrays, lawn slope limits, the pond carve and its exclusions, lawn layout, the swept deck (including a sixty unit leap leaving no gap), **all three machines reaching exactly 100%**, a pond property reaching exactly 100% with nothing cut under the water, the compact save round trip, and the legacy per-blade migration. **52 assertions**, plus printed cost tables. |
+| `Dev tools/Validation/Mowing Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Mowing Test.tscn" -- "--save-root=<dir>"` | Drives the REAL mowers in the REAL mowing scene with real `Input` actions: driving cuts grass, the cut lands where it drove and not beside it, progress reaches the Job System, an empty tank stops the blades, each machine cuts its own declared width, and finishing the lawn completes the contract. **19 assertions.** |
 | `Dev tools/Validation/pond_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/pond_test.gd"` | The EXPERIMENTAL pond carver: non-destructiveness, the density refusal, geometry, normals, shape controls, the exclusion API, collision, and the edge cases an integrator will hit (a pond bigger than the mesh, one straddling its boundary, one centred off it entirely, zero irregularity, a bathtub bank, a null mesh). **37 assertions.** No renderer needed. |
 | `Dev tools/Validation/docs_audit.gd` | `godot --headless --path . --script "res://Dev tools/Validation/docs_audit.gd"` | Checks the DOCUMENTATION against the repository: every `res://` path exists, relative links resolve, the mkdocs nav and the page set agree, and no page mentions a class or path this build removed. **5 checks.** |
 | `Dev tools/Validation/Flicker Probe.tscn` | `godot --path . "res://Dev tools/Validation/Flicker Probe.tscn" -- "--flicker-output=<dir>"` | **Measures temporal instability** in the Town: holds the camera still and reports the mean absolute difference between consecutive frames, under three conditions it forces itself. **Needs a real renderer.** |
 | `addons/aca_sky3d_environment/demo/Environment Demo.tscn` | `godot --path . "res://addons/aca_sky3d_environment/demo/Environment Demo.tscn" -- "--demo-shots=<dir>"` | The environment package's STANDALONE demo — loads none of the game. Renders the whole quality x weather x time matrix (36 shots) and quits. **Needs a real renderer.** |
+| `Dev tools/Validation/Property Probe.tscn` | `godot --path . "res://Dev tools/Validation/Property Probe.tscn" -- "--property-output=<dir>" "--property-preset=wooded_pond"` | Builds one generated property and renders it from six or eight fixed viewpoints — arrival, mower eye, close turf, overview, treeline, horizon, and the pond pair — then prints build timings, cell counts, instance counts and node/body totals. `--property-seed=`, `--property-size=`, `--property-weather=`, `--property-hour=`, `--property-cut=`, `--property-shots=` and `--property-archetype=` (`rural` / `suburban` / `park` / `landscaped`) narrow the run. **Needs a real renderer.** This is the tool the grass, the forest, the terrain material and the pond were tuned with. |
+| ...`--property-fps` | as above, plus the flag | Holds each viewpoint for ninety frames after a warm-up pass and reports average fps, worst fps, draw calls and triangles. **The warm-up matters:** the first frame from a new angle compiles shader variants, and a measurement taken across that reports the compiler rather than the scene. |
+| ...`--property-cut=` | as above, plus the argument | Lays finished passes across that fraction of the lawn before capturing. **It walks each lane in strides no longer than the deck.** `mow_deck` bounds one call's sweep at sixty-four stamps, which is right for a machine reporting every physics frame and hopeless for a single call spanning a two hundred unit lane: the stamps end up further apart than the deck is long, and every pass comes out as a ladder of cut and uncut rungs. The staged captures were showing corduroy that no real mowing produces, and the lanes also overlap now, the way an operator mows. |
+| ...`--property-wind` | as above, plus the flag | Captures two frames about half a second apart from a STATIONARY camera and reports what fraction of the image changed. Wind cannot be judged from a still; this answers both halves of the question — that the grass moves, and that it is a breeze rather than a shake. A healthy reading is a few per cent of pixels with a mean difference in the thousandths. |
+| `Dev tools/Validation/Large Lawn Stress Test.tscn` | `godot --path . "res://Dev tools/Validation/Large Lawn Stress Test.tscn" -- "--stress-size=1000" "--stress-benchmark"` | **Scalability, not correctness.** Builds ONE REAL property at a size chosen in the Inspector — 256 m up to 2048 m — puts the canonical Rider Mower on it, and reports build timings, cell counts, instance counts, node and body counts, memory and frame rate. `--stress-drive` holds the throttle down and reports that the machine still drives and still cuts. `--stress-no-grass` / `--stress-no-forest` isolate a cost group. Runs headless for the build numbers; **needs a real renderer** for the fps ones. |
+| `Dev tools/Validation/Containment Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Containment Test.tscn" -- "--save-root=<dir>"` | **Drives the REAL machine at the things that are supposed to stop it.** Four head-on charges at the fence and four at the corners; eight approaches to the pond, square on and oblique; four lawn rocks driven into head on. Also asserts that the wood carries no physics bodies at all and that the whole property is four. **8 assertions.** A wall can be in exactly the right place and still be too thin to stop a machine at speed, which is why this presses `move_forward` rather than checking geometry. |
+| `Dev tools/Validation/Legacy Save Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Legacy Save Test.tscn" -- "--save-root=<a COPY of Test User Data/baseline-saves>"` | Loads REAL saves written on 2026-08-20 — before difficulty, before the boundary, before a compulsory pond, before anything solid on the lawn — and checks they still work. Asserts each loads as the `legacy` economy profile with the shipped fuel price and tank length, that its balance is untouched, and that a MID-CONTRACT save resumes with the machine inside the fence, out of the water, not inside a rock, and with its cut state intact. **37 assertions.** `Save Test` proves the round trip; only this proves compatibility, because only this reads files this build did not write. **Point `--save-root` at a COPY** — it must never write to the originals. |
+| `Dev tools/Validation/composition_audit.gd` | `godot --headless --path . --script "res://Dev tools/Validation/composition_audit.gd" -- "--audit-seeds=160"` | **Measures the GENERATOR across hundreds of seeds** and prints the distribution: forestiness, boundary margin, pond radius and share of lawn, obstacle count, excluded share of the contract, fence treatment mix, and the count of every geometric rule violated. Renders answer "is this property nice to look at"; they cannot answer "do one property in forty come out with the pond touching the fence". Prints tables and **never fails a build** — judging a distribution is a design decision, and the rules that must always hold live in `Property Test`. |
+| ...`--stress-profile=` | `system_baseline` / `production_clear` / `production_heavy` | **Profiler 2.0.** Which presentation the property is measured underneath. A number is meaningless without the profile it came from; see `performance.md`. |
+| ...`--stress-mode=` | `static` / `drive` / `camera` | What MOVES while the frames are counted. |
+| ...`--stress-seconds=` / `--stress-label=` / `--stress-weather=` / `--stress-hour=` | | The measurement window, a build tag written into the CSV, and the production profiles' weather and time of day. |
 | `Mowing Section/Experimental/Pond/Pond Demo.tscn` | `godot --path . "res://Mowing Section/Experimental/Pond/Pond Demo.tscn" -- "--pond-shots=<dir>"` | The pond prototype's standalone scene. Renders a review set, then prints the density-refusal and exclusion-API results. **Needs a real renderer.** |
 
 ### Why these are scenes, not `--script`
@@ -344,7 +357,7 @@ All of it is asserted by `Trailer Test`:
 
 | | |
 |---|---|
-| `Custom_Gridmap.mow_swath(from, to, half_width)` / `mow_disc()` | the grid's OWN cut — same `mow_item_silent`, same MultiMesh rebuild, same counters, same signal — selected by geometry instead of by a physics contact. Needed because the mower adapter owns the transform, so there are no slide collisions. Nothing in normal gameplay calls it. |
+| `ACALawn.mow_swath(from, to, half_width)` / `mow_disc()` | the lawn's OWN cut — the same cells, the same cut mask, the same counters and the same signal — selected by geometry instead of by a driven pass. Needed because the mower adapter owns the transform, so the cutter never sees the machine move. Nothing in normal gameplay calls it. |
 | `ACAWeatherVisualAdapter.set_presentation_override(layer)` | one extra composition layer in the same `scale` / `set` shape as the shipped weather layers, applied last. Empty in normal gameplay. |
 
 ### Reviewing it — measuring beats guessing
@@ -378,7 +391,7 @@ exactly three changed files.
 
 | Was | Is |
 |---|---|
-| the mower planted where its own physics settled — on top of three-unit grass colliders, above a collision box half a unit proud of the visible dirt, so it FLEW | `_measure_ground_y()`: the visible `Mowing Area` plane plus `ACATrailerMowerAdapter.visual_lift()`, measured from the mower's own meshes |
+| the mower planted where its own physics settled — on top of three-unit grass colliders, above a collision box half a unit proud of the visible dirt, so it FLEW | neither fault exists now. `_measure_ground_y()` asks `ACAProperty.ground_height_at()` and adds `ACATrailerMowerAdapter.visual_lift()`, and the adapter is handed the terrain query so a driven shot follows the land |
 | mowing shots at 38-55 u/s, so every lens had to be far away | 13-24 u/s, SLOWER than gameplay's 30, so every lens can be close. `Trailer Test` guards it |
 | five mower angles, one of them a wide plate where the mower was 4% of the frame | three shots, all close, all framing the cut/uncut boundary |
 | one bob/roll for every shot | `set_suspension()` per shot — a MOUNTED lens turns a bob into camera shake |
@@ -392,6 +405,95 @@ game gets to a first-person view without a first-person camera existing.
 Two tools in this list exist because the thing being judged is not visible in a
 single frame, and both were built the same way: decide what the claim actually
 is, then find a number that expresses it.
+
+### `Large Lawn Stress Test` — how far the new lawn scales
+
+The mowing scene builds one property per contract, and contracts are 96, 144 or
+192 units on a side. **Nothing in the game ever asks the architecture for a
+kilometre.** This scene does, so that the shape of the curve is known before
+anyone needs it, and so that a claim about the redesign is a measurement rather
+than an argument.
+
+It is a **development scene only**: not the main scene, not reachable from
+gameplay, and not a promise that giant properties are supported.
+
+#### Running it
+
+Open `Dev tools/Validation/Large Lawn Stress Test.tscn`, set
+`lawn_size_meters` on the root node, press Play. Drive with WASD and the mouse.
+
+| Key | |
+|---|---|
+| **F2** | switch between the machine and the development overview camera. The mower is **paused** while the overview camera flies, because both read the same mouse. |
+| **F3** | the measurement overlay |
+| **F5** | reprint the build report |
+| **Escape** | release or recapture the mouse |
+
+On the overview camera, WASD flies, Space and Ctrl go up and down, Shift is
+eight times faster and Alt is five times slower.
+
+#### The exported controls
+
+| Group | Field | |
+|---|---|---|
+| Size | `lawn_size_meters` | **The authority.** Side of the mowable square in world units, 64 - 2048. One world unit is one logical mowing cell, so this is also the cell count per side. |
+| | `size_preset` | A shortcut for 256 / 512 / 1000 / 1500 / 2000. `INSPECTOR_VALUE` leaves the field above in charge; nothing is hard-coded to the presets. |
+| | `property_seed` | Everything generated is a function of this and the size. |
+| | `allow_beyond_safe_limits` | Build even when the prediction is over budget. See below. |
+| Cost groups | `enable_grass` | Build `ACALawnGrass` at all. |
+| | `enable_forest` | Build `ACAForest` at all: trees, shrubs, reeds, rocks. |
+| | `enable_rocks` | Rock density to zero, wood untouched. |
+| | `enable_pond` | Drop a pond the seed rolled, so the lawn is a plain rectangle. |
+| | `forestiness` | Override the seeded woodland character. Negative keeps the seed's own draw. |
+| Scene | `spawn_mower` | Put the canonical Rider Mower on the property and bind it to the lawn. |
+| | `start_in_free_camera` | Start on the overview camera. |
+| | `show_hud` | Show the overlay from the first frame. |
+
+Every one of these except the two `ACAProperty` skips is an ordinary
+`ACAPropertyParams` field. **The property is the real one** — real
+`ACATerrain`, real `ACALawn`, real `ACALawnGrass`, real `ACAForest`, real
+`HeightMapShape3D` collision, real `ACAMowerCutter`. The only production change
+this scene needed was two development flags, `dev_skip_grass` and
+`dev_skip_foliage`, on `ACAProperty`. They are there rather than in this scene
+because the ORDER of the build is `ACAProperty`'s business: a debug scene that
+composed the subsystems itself to skip one of them would be measuring its own
+copy of that order, and would drift from the real one the first time it changed.
+
+#### The safeguard
+
+A size is **predicted before it is built**, from measured per-tuft and
+per-sample costs, and the build is **refused** — cleanly, with nothing
+generated — when the prediction is over three gigabytes or over 60% of what the
+machine currently has free. Nothing is ever silently substituted: a size outside
+64 - 2048 is clamped and **said out loud**, and a refusal prints what it
+predicted, what the limit was, and how to override it.
+
+The prediction is checked against the real numbers after every build and any
+disagreement over 15% is printed, so the constants it uses cannot rot quietly.
+
+**Why 2048 and not 4096.** Frame rate is not what stops it — a 2000 m property
+still ran at over a hundred fps. Build time and memory are: 2000 m takes about
+75 seconds and 2.2 GB, and both grow as the square of the size, so 4096 would be
+five minutes and nine gigabytes for one property. 2048 is the last size that
+still builds in about a minute and a half on a machine a developer plausibly
+has.
+
+#### What the numbers mean
+
+| Reading | |
+|---|---|
+| `cells` | Logical mowing cells: `size x size`, one byte of flags and one of heading each. |
+| `mowable` | Cells that count towards completion. Lower than `cells` only where a feature excludes ground. |
+| `terrain ms` / `samples` | Baking the height lattice and building the ground mesh, collision included. One sample per cell. |
+| `lawn ms` | Laying out `ACALawn`: the flags, the headings and the cut mask image. |
+| `grass ms` / `tufts` / `nodes` | `ACALawnGrass`. `nodes` is MultiMesh instances — two per populated 24 m tile, near and mid. |
+| `foliage ms` | `ACAForest`. Does **not** scale with the lawn: the wood is a belt around the property, not a fill of it. |
+| `property bodies` | Physics bodies **inside the property**. This number is 1 at every size — the ground's single `HeightMapShape3D` — and it is the one that proves per-grass physics has not come back. |
+| `cells cut/s` | Cells the running machine changed in the last second. |
+| `memory added by build` | `Performance.MEMORY_STATIC` across the build. |
+
+Every run appends a row to `user://large_lawn_stress_results.csv`, so two sizes
+can be compared without reading two logs.
 
 ### `Flicker Probe` — the Town's shadows
 

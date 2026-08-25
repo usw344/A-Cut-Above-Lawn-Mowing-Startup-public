@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Dev tools/Validation/runner_boot.gd" id="1_boot"]
+[ext_resource type="Script" path="res://Dev tools/Validation/containment_test.gd" id="2_cont"]
+
+[node name="Containment Test Boot" type="Node"]
+script = ExtResource("1_boot")
+runner_script = ExtResource("2_cont")
+runner_name = "ContainmentTest"

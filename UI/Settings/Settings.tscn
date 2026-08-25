@@ -8,12 +8,12 @@ content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0.118, 0.145, 0.161, 1)
+bg_color = Color(0.114, 0.133, 0.114, 1.000)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.08)
+border_color = Color(0.960, 0.933, 0.882, 0.100)
 corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
@@ -24,7 +24,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.235, 0.278, 0.294, 1)
+bg_color = Color(0.227, 0.259, 0.216, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -35,7 +35,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+bg_color = Color(0.193, 0.220, 0.184, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -46,7 +46,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+bg_color = Color(0.320, 0.348, 0.310, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -57,7 +57,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.192, 0.216, 0.227, 0.8)
+bg_color = Color(0.184, 0.204, 0.176, 0.800)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -68,12 +68,12 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(1, 1, 1, 0.04)
+bg_color = Color(0.957, 0.929, 0.874, 0.050)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.635, 0.855, 0.545, 1)
+border_color = Color(0.545, 0.780, 0.478, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -84,7 +84,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.235, 0.278, 0.294, 1)
+bg_color = Color(0.227, 0.259, 0.216, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -95,7 +95,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.19975, 0.2363, 0.24990001, 1)
+bg_color = Color(0.193, 0.220, 0.184, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -106,7 +106,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.3268, 0.36464, 0.37872, 1)
+bg_color = Color(0.320, 0.348, 0.310, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -117,7 +117,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.192, 0.216, 0.227, 0.8)
+bg_color = Color(0.184, 0.204, 0.176, 0.800)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -128,12 +128,12 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(1, 1, 1, 0.04)
+bg_color = Color(0.957, 0.929, 0.874, 0.050)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.635, 0.855, 0.545, 1)
+border_color = Color(0.545, 0.780, 0.478, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -144,7 +144,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.42, 0.686, 0.353, 1)
+bg_color = Color(0.216, 0.427, 0.267, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -155,7 +155,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.357, 0.5831, 0.30005, 1)
+bg_color = Color(0.184, 0.363, 0.227, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -166,7 +166,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+bg_color = Color(0.310, 0.496, 0.355, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -177,7 +177,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.192, 0.216, 0.227, 0.8)
+bg_color = Color(0.184, 0.204, 0.176, 0.800)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -188,12 +188,12 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(1, 1, 1, 0.04)
+bg_color = Color(0.957, 0.929, 0.874, 0.050)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.635, 0.855, 0.545, 1)
+border_color = Color(0.545, 0.780, 0.478, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -212,7 +212,7 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.043, 0.059, 0.067, 0.88)
+color = Color(0.047, 0.059, 0.047, 0.880)
 
 [node name="CardHolder" type="CenterContainer" parent="." unique_id=1164122265]
 unique_name_in_owner = true
@@ -241,7 +241,7 @@ theme_override_constants/separation = 0
 custom_minimum_size = Vector2(48, 3)
 layout_mode = 2
 size_flags_horizontal = 0
-color = Color(0.42, 0.686, 0.353, 1)
+color = Color(0.216, 0.427, 0.267, 1.000)
 
 [node name="TitleGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=2080061888]
 custom_minimum_size = Vector2(0, 14)
@@ -251,7 +251,7 @@ mouse_filter = 2
 [node name="Title" type="Label" parent="CardHolder/Card/Margin/Column" unique_id=857543905]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 text = "SETTINGS"
 
 [node name="ColumnsGap" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=36237531]
@@ -270,8 +270,8 @@ theme_override_constants/separation = 0
 
 [node name="GameplaySection" type="Label" parent="CardHolder/Card/Margin/Column/Columns/Left" unique_id=1837122437]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.216, 0.427, 0.267, 1.000)
 text = "GAMEPLAY"
 
 [node name="GameplaySectionGap" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Left" unique_id=1752501168]
@@ -283,7 +283,7 @@ mouse_filter = 2
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 0.08)
+color = Color(0.960, 0.933, 0.882, 0.100)
 
 [node name="GameplaySectionGap2" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Left" unique_id=1455141953]
 custom_minimum_size = Vector2(0, 14)
@@ -298,7 +298,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Mouse Sensitivity"
 
 [node name="SensitivitySlider" type="HSlider" parent="CardHolder/Card/Margin/Column/Columns/Left/SensitivityRow" unique_id=263044527]
@@ -316,8 +316,8 @@ value = 1.0
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 text = "1.00"
 horizontal_alignment = 2
 
@@ -334,7 +334,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Invert Look Y"
 
 [node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Left/InvertYRow" unique_id=470393323]
@@ -355,8 +355,8 @@ mouse_filter = 2
 
 [node name="GraphicsSection" type="Label" parent="CardHolder/Card/Margin/Column/Columns/Left" unique_id=1295761460]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.216, 0.427, 0.267, 1.000)
 text = "GRAPHICS"
 
 [node name="GraphicsSectionGap" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Left" unique_id=1535663977]
@@ -368,7 +368,7 @@ mouse_filter = 2
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 0.08)
+color = Color(0.960, 0.933, 0.882, 0.100)
 
 [node name="GraphicsSectionGap2" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Left" unique_id=555058945]
 custom_minimum_size = Vector2(0, 14)
@@ -383,7 +383,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Quality"
 
 [node name="QualityOption" type="OptionButton" parent="CardHolder/Card/Margin/Column/Columns/Left/QualityRow" unique_id=1313434050]
@@ -405,7 +405,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Fullscreen"
 
 [node name="Gap" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Left/FullscreenRow" unique_id=868890881]
@@ -432,7 +432,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Resolution"
 
 [node name="ResolutionOption" type="OptionButton" parent="CardHolder/Card/Margin/Column/Columns/Left/ResolutionRow" unique_id=853040334]
@@ -448,8 +448,8 @@ theme_override_constants/separation = 0
 
 [node name="AudioSection" type="Label" parent="CardHolder/Card/Margin/Column/Columns/Right" unique_id=749987053]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.216, 0.427, 0.267, 1.000)
 text = "AUDIO"
 
 [node name="AudioSectionGap" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Right" unique_id=1853966074]
@@ -461,7 +461,7 @@ mouse_filter = 2
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 0.08)
+color = Color(0.960, 0.933, 0.882, 0.100)
 
 [node name="AudioSectionGap2" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Right" unique_id=1628195797]
 custom_minimum_size = Vector2(0, 14)
@@ -476,7 +476,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Master"
 
 [node name="MasterSlider" type="HSlider" parent="CardHolder/Card/Margin/Column/Columns/Right/MasterRow" unique_id=1956295224]
@@ -493,8 +493,8 @@ value = 0.8
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 text = "80%"
 horizontal_alignment = 2
 
@@ -511,7 +511,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Ambience"
 
 [node name="AmbienceSlider" type="HSlider" parent="CardHolder/Card/Margin/Column/Columns/Right/AmbienceRow" unique_id=611454952]
@@ -528,8 +528,8 @@ value = 0.6
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 text = "60%"
 horizontal_alignment = 2
 
@@ -546,7 +546,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 text = "Mower"
 
 [node name="MowerSlider" type="HSlider" parent="CardHolder/Card/Margin/Column/Columns/Right/MowerRow" unique_id=976085607]
@@ -563,8 +563,8 @@ value = 0.7
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 text = "70%"
 horizontal_alignment = 2
 
@@ -575,8 +575,8 @@ mouse_filter = 2
 
 [node name="ControlsSection" type="Label" parent="CardHolder/Card/Margin/Column/Columns/Right" unique_id=847609285]
 layout_mode = 2
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.42, 0.686, 0.353, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.216, 0.427, 0.267, 1.000)
 text = "CONTROLS"
 
 [node name="ControlsSectionGap" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Right" unique_id=2074841754]
@@ -588,7 +588,7 @@ mouse_filter = 2
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 0.08)
+color = Color(0.960, 0.933, 0.882, 0.100)
 
 [node name="ControlsSectionGap2" type="Control" parent="CardHolder/Card/Margin/Column/Columns/Right" unique_id=1817539982]
 custom_minimum_size = Vector2(0, 14)
@@ -604,11 +604,11 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_bi60j")
 theme_override_styles/hover = SubResource("StyleBoxFlat_hbvkj")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_1l8yp")
 theme_override_styles/focus = SubResource("StyleBoxFlat_s1qyb")
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_focus_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_pressed_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_hover_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_disabled_color = Color(0.588, 0.576, 0.522, 1.000)
 theme_override_font_sizes/font_size = 15
 text = "VIEW CONTROLS"
 
@@ -621,7 +621,7 @@ mouse_filter = 2
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 mouse_filter = 2
-color = Color(1, 1, 1, 0.08)
+color = Color(0.960, 0.933, 0.882, 0.100)
 
 [node name="FooterGap2" type="Control" parent="CardHolder/Card/Margin/Column" unique_id=1827609761]
 custom_minimum_size = Vector2(0, 18)
@@ -641,11 +641,11 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_hoi7o")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ihd64")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_3m2rt")
 theme_override_styles/focus = SubResource("StyleBoxFlat_vw7wv")
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_focus_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_pressed_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_hover_color = Color(0.937, 0.949, 0.937, 1)
-theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_focus_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_pressed_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_hover_color = Color(0.957, 0.929, 0.874, 1.000)
+theme_override_colors/font_disabled_color = Color(0.588, 0.576, 0.522, 1.000)
 theme_override_font_sizes/font_size = 15
 text = "BACK"
 
@@ -664,10 +664,10 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_ldlxi")
 theme_override_styles/hover = SubResource("StyleBoxFlat_wib5k")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_d5ra2")
 theme_override_styles/focus = SubResource("StyleBoxFlat_o4wxy")
-theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_colors/font_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_focus_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_pressed_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_hover_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_disabled_color = Color(0.588, 0.576, 0.522, 1.000)
 theme_override_font_sizes/font_size = 15
 text = "APPLY"

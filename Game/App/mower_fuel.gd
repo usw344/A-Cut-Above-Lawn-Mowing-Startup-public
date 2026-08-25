@@ -51,10 +51,17 @@ signal auto_refuel_changed(enabled: bool)
 const CAPACITY := 100.0
 
 ## Seconds of CONTINUOUS powered mowing (throttle held down) that a full tank
-## lasts. Eight real minutes, chosen against the Job System's own estimates:
-## a Small lawn is estimated at 4.6 minutes and a Large lawn at 18.4, so one
-## tank comfortably covers a small contract and a big one genuinely needs a
-## refuel. See project-docs/systems/mowers-and-controls.md.
+## lasts at the LEGACY difficulty. Eight real minutes, chosen against the Job
+## System's own estimates: a Small lawn is estimated at 4.6 minutes and a Large
+## lawn at 18.4, so one tank comfortably covers a small contract and a big one
+## genuinely needs a refuel. See project-docs/systems/mowers-and-controls.md.
+##
+## Read through `full_tank_driving_seconds()`, which is where the active
+## difficulty profile is applied - and it is applied THERE, once, rather than in
+## the mower controllers. Each controller already multiplies `delta` by its own
+## `MowerUpgrades.fuel_multiplier()`; if difficulty were applied there too the
+## two would be tangled together in three places and a future mower would be
+## able to forget one of them.
 const FULL_TANK_DRIVING_SECONDS := 480.0
 
 ## Idle burn as a fraction of the driving burn. A powered mower left running
@@ -108,8 +115,15 @@ func has_fuel() -> bool:
 
 ## Fuel per second at a given throttle. `throttle` is 0.0 (idling) to 1.0
 ## (driving). Exposed so validation can assert the rate without a scene.
+## How long a full tank lasts under the active difficulty. THE one place fuel
+## economy is scaled.
+func full_tank_driving_seconds() -> float:
+	return maxf(ACADifficulty.value("full_tank_driving_seconds",
+		FULL_TANK_DRIVING_SECONDS), 1.0)
+
+
 func burn_rate_per_second(throttle: float) -> float:
-	var driving := CAPACITY / maxf(FULL_TANK_DRIVING_SECONDS, 0.001)
+	var driving := CAPACITY / maxf(full_tank_driving_seconds(), 0.001)
 	return lerpf(driving * IDLE_BURN_FRACTION, driving, clampf(throttle, 0.0, 1.0))
 
 

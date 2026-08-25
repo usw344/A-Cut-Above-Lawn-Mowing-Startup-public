@@ -110,7 +110,7 @@ func _cursor(mode: int) -> void:
 
 
 ## Put a real cursor on a real control, so a click in the trailer looks aimed
-## rather than teleported. A no-op on a headless DisplayServer, which is
+## rather than moved instantly. A no-op on a headless DisplayServer, which is
 ## exactly right there.
 func point_at(control: Control) -> void:
 	if control == null or not is_instance_valid(control):

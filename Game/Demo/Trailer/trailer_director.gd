@@ -997,25 +997,26 @@ func _bind_mowing_scene() -> void:
 	if scene == null:
 		return
 
-	var grid := scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
-	if grid != null:
-		_lawn.bind(grid)
-		_measure_lawn(grid)
+	var property: ACAProperty = scene.call(&"property") \
+		if scene.has_method(&"property") else null
+	var lawn: ACALawn = scene.call(&"lawn") if scene.has_method(&"lawn") else null
+	if lawn != null:
+		_lawn.bind(lawn)
+		_measure_lawn(lawn)
 
 	var mower := scene.get(&"current_mower") as CharacterBody3D
 	if mower == null:
 		push_warning("[TRAILER] no mower in the mowing scene")
 		return
-	# Let its own gravity run first: the mower is authored two units up, and the
-	# adapter must not take the wheel mid-fall. Where it comes to rest is NOT
-	# where the trailer plants it -- see `_measure_ground_y()`.
+	# Let its own gravity run first: the machine is placed a little above the
+	# ground, and the adapter must not take the wheel mid-fall.
 	await _wait(0.8)
-	_ground_y = _measure_ground_y(grid, mower)
+	_ground_y = _measure_ground_y(property, mower)
+	# THE GROUND IS NO LONGER FLAT. The adapter is given the terrain's own height
+	# query, so a driven shot follows the land instead of hovering over it.
+	if property != null:
+		_mowers.set_ground_provider(property.ground_height_at)
 	_mowers.bind(mower, _ground_y)
-	# THE LAWN IS NOT AT THE ORIGIN. `MVP._ready()` parks the whole grid at
-	# roughly (-312, -492, -140), so every shot position in this file is written
-	# relative to `_lawn_centre` and that centre has to carry the real height or
-	# each camera ends up five hundred units above the grass.
 	_lawn_centre.y = _ground_y
 
 	var pm := scene.get_node_or_null(^"PresetManager (Sky3D)")
@@ -1028,63 +1029,38 @@ func _bind_mowing_scene() -> void:
 		% [_lawn_centre, _lawn_half, _ground_y])
 
 
-## WHERE THE GROUND ACTUALLY IS. This is the Milestone 13 fix.
+## WHERE THE GROUND ACTUALLY IS.
 ##
-## Up to V3 the trailer let the mower's own physics settle and used the height
-## it came to rest at. That height is wrong twice over, and the mowing footage
-## showed it: the machine hung in the air with a gap of daylight under every
-## wheel, which is the "flying" and "bouncing" the review called out.
+## Up to V3 the trailer let the mower's own physics settle and used the height it
+## came to rest at, then corrected for two faults of the old lawn: every blade
+## was a three unit tall static body the machine landed ON, and the visible
+## ground was a plane whose collision box stood half a unit proud of it.
 ##
-##   1. EVERY BLADE OF GRASS IS A REAL `StaticBody3D`, about three units tall.
-##      A mower dropped on to an uncut lawn does not land on the lawn. It lands
-##      on the grass, and stays there.
-##   2. THE GROUND YOU CAN SEE IS NOT THE GROUND PHYSICS USES. `Mowing Area` is
-##      a `PlaneMesh` at the body's own origin with a 50 x 1 x 50 `BoxShape3D`
-##      centred on it, so its collision surface stands HALF A UNIT proud of the
-##      visible dirt even where the grass has been cut.
+## Neither fault exists now. The terrain answers its own height, the collision is
+## that same height field, and the only correction still needed is how far the
+## mower's origin sits above its lowest visible point.
 ##
-## So neither the settle nor a downward ray answers the question. Both parts are
-## measured instead: the visible plane from the grid's own node, and how far the
-## mower's origin sits above its lowest visible point from its own meshes. The
-## sum plants the wheels on the dirt the camera can see.
-##
-## Falls back to the settled height if the grid is not shaped as expected, which
-## is worse footage but never a mower under the lawn.
-func _measure_ground_y(grid: Custom_Gridmap, mower: Node3D) -> float:
+## Falls back to the settled height if there is no property to ask, which is
+## worse footage but never a mower under the lawn.
+func _measure_ground_y(property: ACAProperty, mower: Node3D) -> float:
 	var settled: float = mower.global_position.y
 	var lift: float = ACATrailerMowerAdapter.visual_lift(mower)
-	var ground := grid.get_node_or_null(^"Mowing Area") as Node3D if grid != null else null
-	if ground == null:
-		push_warning("[TRAILER] no Mowing Area to measure; using the settled height")
+	if property == null or not property.is_built():
+		push_warning("[TRAILER] no property to measure; using the settled height")
 		return settled
-	var planted: float = ground.global_position.y + lift
-	print("[TRAILER]   ground: plane %.2f + mower lift %.2f = %.2f  (settled %.2f, %+.2f)"
-		% [ground.global_position.y, lift, planted, settled, planted - settled])
+	var centre := property.lawn().lawn_centre()
+	var planted: float = property.ground_height_at(centre.x, centre.z) + lift
+	print("[TRAILER]   ground: terrain %.2f + mower lift %.2f = %.2f  (settled %.2f, %+.2f)"
+		% [planted - lift, lift, planted, settled, planted - settled])
 	return planted
 
 
-## The lawn's real extent, taken from where the chunks actually are rather than
-## from the grid's display radius - the two are not the same number and shots
-## composed on the wrong one run off the edge into the dirt border.
-func _measure_lawn(grid: Custom_Gridmap) -> void:
-	var min_p := Vector3(INF, 0.0, INF)
-	var max_p := Vector3(-INF, 0.0, -INF)
-	var found := false
-	for id in grid.chunk_id_to_chunk_dictionary:
-		var chunk: Multi_Mesh_Chunk = grid.chunk_id_to_chunk_dictionary[id]
-		var node: Node3D = chunk.multimesh_instance_unmowed
-		if node == null or not is_instance_valid(node) or not node.is_inside_tree():
-			continue
-		var p := node.global_position
-		min_p.x = minf(min_p.x, p.x)
-		min_p.z = minf(min_p.z, p.z)
-		max_p.x = maxf(max_p.x, p.x)
-		max_p.z = maxf(max_p.z, p.z)
-		found = true
-	if not found:
-		return
-	_lawn_centre = Vector3((min_p.x + max_p.x) * 0.5, 0.0, (min_p.z + max_p.z) * 0.5)
-	_lawn_half = minf(max_p.x - min_p.x, max_p.z - min_p.z) * 0.5
+## The lawn's real extent, straight from the lawn. Shots are composed against
+## this, so a contract of any size frames the same way.
+func _measure_lawn(lawn: ACALawn) -> void:
+	var centre := lawn.lawn_centre()
+	_lawn_centre = Vector3(centre.x, 0.0, centre.z)
+	_lawn_half = lawn.lawn_half_extent()
 
 
 # =================================================================== helpers

@@ -234,19 +234,20 @@ func _test_mower_adapter() -> void:
 	mower.queue_free()
 
 
-## 12F. The staged cut is the grid's own cut, not a fake shader.
+## 12F. The staged cut is the lawn's own cut, not a fake shader.
 func _test_lawn_adapter() -> void:
-	var grid_script := load("res://Mowing Section/Mowing Area/Mowing Ground/Custom Gridmap solution/custom_gridmap.gd")
-	_check("Lawn adapter: the mowing grid script loads", grid_script != null)
-
-	var grid := Custom_Gridmap.new()
-	_check("Lawn adapter: the grid exposes mow_swath", grid.has_method("mow_swath"))
-	_check("Lawn adapter: the grid exposes mow_disc", grid.has_method("mow_disc"))
-	# An unbuilt grid must answer rather than crash - the adapter can be asked
+	var lawn := ACALawn.new()
+	_check("Lawn adapter: the lawn exposes mow_swath", lawn.has_method("mow_swath"))
+	_check("Lawn adapter: the lawn exposes mow_disc", lawn.has_method("mow_disc"))
+	_check("Lawn adapter: the lawn exposes the progress signal",
+		lawn.has_signal("mowing_progress_changed"))
+	# An unbuilt lawn must answer rather than crash - the adapter can be asked
 	# about the lawn before the scene exists.
-	_check("Lawn adapter: mow_swath on an empty grid cuts nothing",
-		grid.mow_swath(Vector3.ZERO, Vector3(10, 0, 0), 4.0) == 0)
-	grid.free()
+	_check("Lawn adapter: mow_swath on an empty lawn cuts nothing",
+		lawn.mow_swath(Vector3.ZERO, Vector3(10, 0, 0), 4.0) == 0)
+	_check("Lawn adapter: an empty lawn reports no progress",
+		is_zero_approx(lawn.mowed_fraction()))
+	lawn.free()
 
 	var adapter := ACATrailerLawnAdapter.new()
 	get_tree().root.add_child(adapter)

@@ -83,7 +83,7 @@ signal transition_finished()
 ## Seconds for one direction of the fade when the caller passes -1.0.
 @export var default_duration: float = 0.35
 ## Painted over the screen. Palette near-black rather than pure black.
-@export var cover_colour: Color = Color(0.043, 0.059, 0.067, 1.0):
+@export var cover_colour: Color = Color(0.047, 0.059, 0.047, 1.000):
 	set(value):
 		cover_colour = value
 		if is_node_ready():

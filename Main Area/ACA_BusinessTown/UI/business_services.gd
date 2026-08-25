@@ -34,6 +34,8 @@ var _scrim: ColorRect
 var _panel: PanelContainer
 var _title: Label
 var _subtitle: Label
+var _mark: UIGlyph
+var _accent: ColorRect
 var _body: VBoxContainer
 var _back: Button
 var _tween: Tween
@@ -74,9 +76,13 @@ func _build() -> void:
 	centre.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(centre)
 
+	# THE COUNTER IS PAPER. Every one of these three screens is a transaction the
+	# business is doing - a fuel receipt, a work order for an upgrade, a page of
+	# the books - and the rest of the game now draws its paperwork on cream. The
+	# Job Board's offers already did; this is the rest of the town catching up.
 	_panel = PanelContainer.new()
 	_panel.add_theme_stylebox_override("panel",
-		UITheme.stylebox(UITheme.PANEL_SOLID, UITheme.RADIUS_PANEL, 1.0, UITheme.HAIRLINE))
+		UITheme.paper_panel(UITheme.RADIUS_PANEL, 0.0, 0.0))
 	_panel.custom_minimum_size = Vector2(680, 0)
 	centre.add_child(_panel)
 
@@ -89,12 +95,32 @@ func _build() -> void:
 	column.add_theme_constant_override("separation", 14)
 	margin.add_child(column)
 
-	_title = UITheme.label(column, "Title", "", UITheme.FONT_TITLE, UITheme.INK)
-	_subtitle = UITheme.label(column, "Subtitle", "", UITheme.FONT_BODY, UITheme.INK_DIM)
+	# EACH SERVICE GETS ITS OWN MARK AND ITS OWN ACCENT, and that is the whole of
+	# the differentiation between the three. They are the same counter with the
+	# same layout doing three different jobs, and dressing them as three
+	# different screens would be three screens to maintain and one interface to
+	# unlearn.
+	_accent = ColorRect.new()
+	_accent.name = "Accent"
+	_accent.custom_minimum_size = Vector2(0, 3)
+	column.add_child(_accent)
+
+	var heading := HBoxContainer.new()
+	heading.name = "Heading"
+	heading.add_theme_constant_override("separation", 12)
+	column.add_child(heading)
+	_mark = UIGlyph.make(UIGlyph.Kind.LEAF, 26.0, UITheme.HUD_GREEN)
+	_mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	heading.add_child(_mark)
+	_title = UITheme.label(heading, "Title", "", UITheme.FONT_TITLE,
+		UITheme.PAPER_INK)
+
+	_subtitle = UITheme.label(column, "Subtitle", "", UITheme.FONT_BODY,
+		UITheme.PAPER_INK_DIM)
 	_subtitle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 	var rule := ColorRect.new()
-	rule.color = UITheme.HAIRLINE
+	rule.color = UITheme.PAPER_RULE
 	rule.custom_minimum_size = Vector2(0, 1)
 	column.add_child(rule)
 
@@ -164,9 +190,28 @@ func _refresh() -> void:
 	for child in _body.get_children():
 		child.queue_free()
 	match _service:
-		Service.SUPPLY: _build_supply()
-		Service.BUSINESS: _build_business()
-		Service.MOWERS: _build_mowers()
+		Service.SUPPLY:
+			_set_identity(UIGlyph.Kind.DROP, UITheme.ORANGE)
+			_build_supply()
+		Service.BUSINESS:
+			_set_identity(UIGlyph.Kind.MAP, UITheme.HUD_GREEN)
+			_build_business()
+		Service.MOWERS:
+			_set_identity(UIGlyph.Kind.STRIPES, UITheme.SAGE.darkened(0.35))
+			_build_mowers()
+	# The body is composed with the shared slate palette, exactly as it always
+	# was; this moves it on to the paper family in one pass rather than making
+	# three build functions each remember to.
+	UITheme.repaint_to_paper(_body)
+
+
+## The mark and the accent stripe that say which counter this is.
+func _set_identity(kind: UIGlyph.Kind, accent: Color) -> void:
+	if _mark != null:
+		_mark.set_kind(kind)
+		_mark.set_colour(accent)
+	if _accent != null:
+		_accent.color = accent
 
 
 # -------------------------------------------------------------- supply store
@@ -345,6 +390,7 @@ func _build_mowers() -> void:
 	_body.add_child(tabs)
 
 	_stat_row("Your funds", UITheme.format_money(GameSession.money()), UITheme.MONEY)
+	_stat_row("Business difficulty", GameSession.difficulty_name(), UITheme.INK_DIM)
 	_spacer(4)
 
 	for entry: Dictionary in MowerUpgrades.summary(_mower_id):
@@ -401,8 +447,40 @@ func _upgrade_row(entry: Dictionary) -> Control:
 		buy.disabled = not GameSession.can_afford(cost)
 		var category := String(entry["category"])
 		buy.pressed.connect(func() -> void: _purchase_upgrade(category))
+		# WHAT IS LEFT AFTERWARDS, stated before the purchase rather than
+		# discovered after it. The economy study found that buying equipment
+		# early is the single most reliable way to end a business, and that
+		# almost every failed run in the baseline was an aggressive upgrade
+		# policy running itself out of fuel money. This is not advice and it is
+		# not a warning system; it is the one number the player was already
+		# doing in their head, done for them.
+		UITheme.label(text, "After",
+			_after_purchase_text(cost), UITheme.FONT_META,
+			UITheme.WARN if _leaves_thin_reserve(cost) else UITheme.INK_FAINT)
 	row.add_child(buy)
 	return card
+
+
+## How much fuel a balance buys at today's price, so "what is left" is expressed
+## in the thing the player actually needs it for.
+func _after_purchase_text(cost: int) -> String:
+	var remaining := GameSession.money() - cost
+	if remaining < 0:
+		return "You are %s short." % UITheme.format_money(-remaining)
+	var price := Economy.fuel_price_per_unit()
+	var tanks: float = float(remaining) / maxf(price * MowerFuel.capacity(), 1.0)
+	return "Leaves %s - about %.1f tanks of fuel at today's price." % [
+		UITheme.format_money(remaining), tanks]
+
+
+## Under one full tank left is thin, whatever the number says. Reported by
+## CHANGING THE WORDING as well as the colour, so the caution does not depend on
+## being able to tell amber from grey.
+func _leaves_thin_reserve(cost: int) -> bool:
+	var remaining := GameSession.money() - cost
+	if remaining < 0:
+		return true
+	return float(remaining) < Economy.fuel_price_per_unit() * MowerFuel.capacity()
 
 
 ## Reads the stat the right way round: fuel is the one where lower is better.

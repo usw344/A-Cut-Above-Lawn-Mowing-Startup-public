@@ -148,18 +148,22 @@ func pending_count() -> int:
 
 
 ## The accent colour used for each type. Change it here to restyle.
+##
+## These are read against a CREAM toast, which is why success and money are the
+## HUD's deeper green rather than `ACCENT_BRIGHT`: the bright one was picked to
+## sit on charcoal and washes out on paper.
 static func type_colour(type: NotificationType) -> Color:
 	match type:
 		NotificationType.SUCCESS:
-			return UITheme.ACCENT
+			return UITheme.HUD_GREEN
 		NotificationType.WARNING:
-			return UITheme.WARN
+			return UITheme.ORANGE
 		NotificationType.ERROR:
 			return UITheme.URGENT
 		NotificationType.MONEY:
-			return UITheme.MONEY
+			return UITheme.HUD_GREEN
 		_:
-			return UITheme.INK_FAINT
+			return UITheme.PAPER_INK_FAINT
 
 
 # ================================================================ internals

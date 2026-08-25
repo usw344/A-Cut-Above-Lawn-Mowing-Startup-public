@@ -37,6 +37,12 @@ const SHOTS := [
 	["mainstreet-graze", Vector3(-15.5, 0.9, 4.2), Vector3(10.0, 0.10, -0.2), 32.0],
 	["frontage-graze", Vector3(-14.0, 0.75, -4.6), Vector3(8.0, 0.09, -2.0), 30.0],
 	["overview-persp", Vector3(-13.0, 9.5, 15.0), Vector3(-0.5, 0.6, -1.5), 45.0],
+	# THE BACK STREET and the connector that reaches it. Added when the second
+	# row of buildings stopped standing on open grass and got a road.
+	["backstreet-graze", Vector3(-15.0, 0.85, -6.0), Vector3(9.0, 0.10, -6.0), 32.0],
+	["backstreet-high", Vector3(-2.0, 7.5, 4.0), Vector3(-2.0, 0.3, -7.0), 50.0],
+	["connector-junction", Vector3(-4.0, 4.2, 3.5), Vector3(-4.0, 0.15, -6.0), 42.0],
+	["sidestreet-junction", Vector3(2.0, 4.2, 3.5), Vector3(2.0, 0.15, -6.5), 42.0],
 ]
 
 var _dir: String = DEFAULT_OUTPUT_DIR

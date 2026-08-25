@@ -25,7 +25,8 @@ const FORBIDDEN_PATHS: PackedStringArray = [
 ]
 const FORBIDDEN_IDENTIFIERS: PackedStringArray = [
 	"WorldClock", "JobManager", "GameSession", "SaveService", "AppUI",
-	"MowerFuel", "Custom_Gridmap", "BusinessTown", "ACAWeatherVisualAdapter",
+	"MowerFuel", "ACALawn", "ACAProperty", "ACATerrain", "BusinessTown",
+	"ACAWeatherVisualAdapter",
 	"ACATrailer", "Rain_Handler", "ACAJob", "ACATownLightAdapter",
 ]
 ## Extensions that are code or data. Anything else under the package is an

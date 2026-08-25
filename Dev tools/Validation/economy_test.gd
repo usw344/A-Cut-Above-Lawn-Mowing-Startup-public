@@ -33,6 +33,10 @@ func _run() -> void:
 	_test_upgrade_effects()
 	_test_job_pricing_and_lock()
 	await _test_persistence()
+	_test_difficulty_profiles()
+	_test_difficulty_prices()
+	await _test_difficulty_persistence()
+	await _test_recession_market_bridge()
 	_simulate_ninety_days()
 	_sweep_seeds()
 
@@ -650,3 +654,159 @@ func _check(label: String, condition: bool) -> void:
 	else:
 		_fail += 1
 		printerr("[ECON] %s: FAIL" % label)
+
+
+# ================================================================== difficulty
+
+## The profile TABLE, before anything reads a price from it. Every one of these
+## is a claim the balance report makes, so every one of them is asserted rather
+## than trusted.
+func _test_difficulty_profiles() -> void:
+	_check("difficulty: three profiles are offered to a new game",
+		ACADifficulty.PLAYER_IDS.size() == 3
+			and ACADifficulty.PLAYER_IDS.has(&"easy")
+			and ACADifficulty.PLAYER_IDS.has(&"medium")
+			and ACADifficulty.PLAYER_IDS.has(&"hard"))
+	_check("difficulty: legacy exists and is NOT offered to a new game",
+		ACADifficulty.is_valid(ACADifficulty.LEGACY_ID)
+			and not ACADifficulty.PLAYER_IDS.has(ACADifficulty.LEGACY_ID))
+	_check("difficulty: medium is the default", ACADifficulty.DEFAULT_ID == &"medium")
+
+	# LEGACY IS THE SHIPPED GAME. If any of these drift, an old save's economy
+	# has been changed underneath it, which is the one thing this profile exists
+	# to prevent.
+	var legacy: Dictionary = ACADifficulty.profile(ACADifficulty.LEGACY_ID)
+	_check("difficulty: legacy money is the shipped constant",
+		int(legacy["starting_money"]) == ACAGameSession.STARTING_MONEY)
+	_check("difficulty: legacy fuel price is the shipped constant",
+		is_equal_approx(float(legacy["base_fuel_price"]),
+			ACAEconomyManager.BASE_FUEL_PRICE))
+	_check("difficulty: legacy event chance is the shipped constant",
+		is_equal_approx(float(legacy["event_daily_chance"]),
+			ACAEconomyManager.EVENT_DAILY_CHANCE))
+	_check("difficulty: legacy tank is the shipped constant",
+		is_equal_approx(float(legacy["full_tank_driving_seconds"]),
+			ACAMowerFuel.FULL_TANK_DRIVING_SECONDS))
+	_check("difficulty: legacy scales nothing",
+		is_equal_approx(float(legacy["job_pay_scale"]), 1.0)
+			and is_equal_approx(float(legacy["upgrade_cost_scale"]), 1.0)
+			and is_equal_approx(float(legacy["recession_job_scale"]), 1.0))
+
+	# The recession scale is a scale on the DEVIATION. This is the formula the
+	# report documents, checked against the production condition table.
+	_check("difficulty: the recession base matches the production condition",
+		is_equal_approx(ACADifficulty.RECESSION_BASE_JOB,
+			float(ACAEconomyManager.CONDITIONS[
+				ACAEconomyManager.Condition.RECESSION]["job"])))
+	var restore := ACADifficulty.active_id()
+	var effective := {}
+	for id: StringName in [&"easy", &"medium", &"hard"]:
+		ACADifficulty.set_active(id)
+		effective[id] = ACADifficulty.recession_job_multiplier()
+	ACADifficulty.set_active(restore)
+	_check("difficulty: medium reproduces the shipped recession multiplier exactly",
+		is_equal_approx(float(effective[&"medium"]), 0.84))
+	_check("difficulty: the downturn deepens Easy -> Medium -> Hard (%.3f / %.3f / %.3f)"
+		% [effective[&"easy"], effective[&"medium"], effective[&"hard"]],
+		float(effective[&"easy"]) > float(effective[&"medium"])
+			and float(effective[&"medium"]) > float(effective[&"hard"]))
+
+	# A profile that does not exist must not silently become an empty one.
+	ACADifficulty.set_active(&"nonsense")
+	_check("difficulty: an unknown id falls back to the default",
+		ACADifficulty.active_id() == ACADifficulty.DEFAULT_ID)
+	ACADifficulty.set_active(restore)
+
+
+## The prices themselves, read through the same public API the shops use.
+func _test_difficulty_prices() -> void:
+	var restore := ACADifficulty.active_id()
+	var fuel := {}
+	var upgrade := {}
+	for id: StringName in [&"easy", &"medium", &"hard"]:
+		ACADifficulty.set_active(id)
+		fuel[id] = Economy.base_fuel_price()
+		upgrade[id] = MowerUpgrades.base_cost("fuel_system", 1) \
+			* ACADifficulty.value("upgrade_cost_scale", 1.0)
+	ACADifficulty.set_active(restore)
+
+	_check("difficulty: fuel gets dearer Easy -> Medium -> Hard ($%.2f / $%.2f / $%.2f)"
+		% [fuel[&"easy"], fuel[&"medium"], fuel[&"hard"]],
+		float(fuel[&"easy"]) < float(fuel[&"medium"])
+			and float(fuel[&"medium"]) < float(fuel[&"hard"]))
+	_check("difficulty: equipment gets dearer Easy -> Medium -> Hard",
+		float(upgrade[&"easy"]) < float(upgrade[&"medium"])
+			and float(upgrade[&"medium"]) < float(upgrade[&"hard"]))
+
+	# THE SHOP MUST CHARGE WHAT IT SHOWS. `next_cost()` is the only price in the
+	# game, and it already has both the difficulty and the market on it, so a UI
+	# that applies either again would be wrong twice over.
+	ACADifficulty.set_active(&"hard")
+	var shown := MowerUpgrades.next_cost("rider", "fuel_system")
+	var before := GameSession.money()
+	GameSession.add_money(shown + 500)
+	var bought := MowerUpgrades.try_purchase("rider", "fuel_system")
+	var spent := (before + shown + 500) - GameSession.money()
+	_check("difficulty: the price charged is exactly the price shown ($%d)" % shown,
+		bought and spent == shown)
+	MowerUpgrades.reset_all()
+	ACADifficulty.set_active(restore)
+
+
+## The difficulty is part of the save, an old save keeps the economy it was
+## played on, and neither costs a save format version.
+func _test_difficulty_persistence() -> void:
+	var restore := GameSession.difficulty()
+
+	GameSession.start_new_game(&"hard")
+	await _await_screen(ACAGameSession.Screen.TOWN)
+	_check("difficulty: a new game starts on the profile it was asked for",
+		GameSession.difficulty() == &"hard")
+	_check("difficulty: the opening float comes from the profile ($%d)"
+		% GameSession.money(),
+		GameSession.money() == int(ACADifficulty.profile(&"hard")["starting_money"]))
+	var written := GameSession.to_save_dict()
+	_check("difficulty: it is written into the session block",
+		String(written.get("difficulty", "")) == "hard")
+
+	GameSession.from_save_dict(written)
+	_check("difficulty: it round trips through a save",
+		GameSession.difficulty() == &"hard")
+
+	# A SAVE FROM BEFORE ANY OF THIS EXISTED.
+	var old_save := {"money": 900, "session_active": true, "job_elapsed_seconds": 0.0}
+	GameSession.from_save_dict(old_save)
+	_check("difficulty: a save with no difficulty loads as legacy",
+		GameSession.difficulty() == ACADifficulty.LEGACY_ID)
+	_check("difficulty: ...and legacy restores the shipped fuel price",
+		is_equal_approx(Economy.base_fuel_price(), ACAEconomyManager.BASE_FUEL_PRICE))
+	_check("difficulty: ...and the save's own money is untouched",
+		GameSession.money() == 900)
+
+	GameSession.start_new_game(restore)
+	await _await_screen(ACAGameSession.Screen.TOWN)
+
+
+## THE RECESSION MARKET BRIDGE. `Economy` says there is a downturn; the Job
+## System reduces how many contracts are on the board. Neither knows about the
+## other, so what is under test is the application layer that joins them.
+func _test_recession_market_bridge() -> void:
+	var normal_strength := JobManager.market_strength()
+	_check("recession: ordinary trading leaves the market at full strength (%d)"
+		% normal_strength, normal_strength == 4)
+
+	# Drive the CONDITION, not the market, and let the bridge do the rest.
+	Economy.debug_force_condition(ACAEconomyManager.Condition.RECESSION)
+	await get_tree().process_frame
+	var recession_strength := JobManager.market_strength()
+	_check("recession: a downturn cuts offer capacity from 4 to 2 (got %d)"
+		% recession_strength, recession_strength == 2)
+	_check("recession: the Job System was told through its own economy input",
+		int(JobManager.economy) == int(ACAJobEnums.Economy.RECESSION))
+
+	Economy.debug_force_condition(ACAEconomyManager.Condition.STABLE)
+	await get_tree().process_frame
+	_check("recession: capacity comes back when the downturn ends (%d)"
+		% JobManager.market_strength(), JobManager.market_strength() == 4)
+	_check("recession: ...and so does the Job System's economy input",
+		int(JobManager.economy) == int(ACAJobEnums.Economy.NORMAL))

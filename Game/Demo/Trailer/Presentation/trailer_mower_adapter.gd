@@ -27,17 +27,16 @@ extends Node
 ## Everything is restored by `release()`, which `Trailer Test` asserts.
 ##
 ## ---------------------------------------------------------------------------
-## WHY THE GROUND HEIGHT IS MEASURED, NOT RAYCAST
+## WHY THE GROUND HEIGHT IS ASKED FOR, NOT RAYCAST
 ## ---------------------------------------------------------------------------
-## The obvious answer is a downward ray. It is the wrong tool HERE: every blade
-## of grass in this game is a real `StaticBody3D` about three units tall, so a
-## ray cast down at the mower hits GRASS, not ground, and parks the mower on top
-## of the lawn.
+## The obvious answer is a downward ray, and it was the wrong tool when every
+## blade of grass was a three unit static body: the ray hit GRASS and parked the
+## machine on top of the lawn.
 ##
-## Instead the real physics is allowed to settle the mower once, behind a
-## covered screen, and the height it comes to rest at is captured. The mowing
-## lawn is a flat plane, so that value is exact for the whole surface. If the
-## lawn ever stops being flat, `_ground_y_at()` is the one place to change.
+## The terrain now answers its own height directly, so the director hands this
+## adapter that query through `set_ground_provider()` and a driven shot follows
+## the land. Without a provider it falls back to the single height the director
+## measured, which is what a flat property amounts to anyway.
 
 ## Wheel spin is `speed * 2 * delta` radians in the real visual script. At
 ## trailer speed that strobes, so the visual is fed a capped speed. It still
@@ -70,6 +69,12 @@ signal moved(from: Vector3, to: Vector3)
 var _mower: CharacterBody3D = null
 var _parts: Node = null
 var _ground_y: float = 0.0
+## Optional (x, z) -> ground height query, supplied by the director from the
+## property's terrain. Empty means the flat fallback above.
+var _ground_provider: Callable = Callable()
+## How far the measured plant height sat above the raw terrain, so a provider
+## keeps the same wheels-on-the-dirt offset the director worked out.
+var _ride_height: float = 0.0
 var _bound: bool = false
 
 var _path: Curve3D = null
@@ -97,7 +102,15 @@ func _ready() -> void:
 
 # ================================================================== ownership
 
-## Take the mower over. `ground_y` is the height its own physics settled at.
+## THE terrain height query, (x, z) -> float. Set before `bind()` so the ride
+## height can be worked out from the same measurement the director made. An
+## invalid Callable puts the adapter back on a single flat height.
+func set_ground_provider(provider: Callable) -> void:
+	_ground_provider = provider
+
+
+## Take the mower over. `ground_y` is where the director decided the wheels
+## belong at the middle of the lawn.
 func bind(mower: CharacterBody3D, ground_y: float) -> void:
 	if mower == null or not is_instance_valid(mower):
 		return
@@ -105,6 +118,10 @@ func bind(mower: CharacterBody3D, ground_y: float) -> void:
 	_mower = mower
 	_parts = mower.get_node_or_null(^"LawnTractor01")
 	_ground_y = ground_y
+	# How far this machine's origin sits above its lowest visible point. Added
+	# to whatever the terrain answers, so the wheels stay on the ground the
+	# camera can see wherever the shot takes it.
+	_ride_height = visual_lift(mower)
 	_saved_physics_process = mower.is_physics_processing()
 	_saved_process = mower.is_processing()
 	# THE handover. With this off the controller reads no input, applies no
@@ -348,7 +365,9 @@ func _feed_visuals(delta: float, yaw_rate: float) -> void:
 		_parts.call(&"send_rotation_data", yaw_rate * delta)
 
 
-## Flat lawn: one measured height. See the note at the top of the file for why
-## this is not a raycast.
-func _ground_y_at(_where: Vector3) -> float:
+## Ask the terrain, or fall back to the measured height. See the note at the top
+## of the file for why this is not a raycast.
+func _ground_y_at(where: Vector3) -> float:
+	if _ground_provider.is_valid():
+		return float(_ground_provider.call(where.x, where.z)) + _ride_height
 	return _ground_y

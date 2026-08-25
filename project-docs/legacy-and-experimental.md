@@ -1,6 +1,7 @@
 # Legacy, Deprecated, Demo, and Experimental Areas
 
-Status: **Current** — cleanup pass completed 2026-08-19.
+Status: **Current** — cleanup pass 2026-08-19, lawn and terrain retirement
+2026-08-20.
 
 ## Where legacy lives now
 
@@ -10,10 +11,24 @@ deliberate: Godot no longer imports or resolves any of it.
 
 **Nothing was deleted.** Original relative paths are preserved, so restoring is a
 straight copy back. Per-item reason, evidence, dependencies checked and restore
-notes are in **`Soft Delete/MANIFEST.md`**.
+notes are in **`Soft Delete/MANIFEST.md`** and, for the lawn and terrain, in
+**`Soft Delete/2026-08-20 Legacy Lawn and Terrain/MANIFEST.md`**.
 
-86 files were quarantined. Post-move regression: Flow Test 54/54, UI Smoke 54/54,
-Job System Tests 110/110, headless and GPU.
+86 files were quarantined in the first pass. Post-move regression: Flow Test
+54/54, UI Smoke 54/54, Job System Tests 110/110, headless and GPU.
+
+## The lawn and terrain retirement (2026-08-20)
+
+`Custom_Gridmap`, `Multi_Mesh_Chunk`, the authored `Terrain Manager`, the imported
+grass meshes and the 91 MB `Terrain/Meshes/` folder all left the project when
+`Mowing Section/Property/` replaced them. Each was confirmed unreferenced by
+grepping every `.gd`, `.tscn`, `.tres`, `.gdshader` and `.cfg` under `res://` for
+its paths and class names first.
+
+Post-move regression, all headless: `validate_all` 150 scripts / 89 of 90 scenes
+(the known `MoonRender.tscn`), Flow 54/54, Save 59/59, Fuel 56/56, Pause 49/49,
+Weather 75/75, Trailer 102/102, Mowing 19/19, Property 52/52, Pond 37/37, UI
+Smoke 60/60, Job System 110/110, Economy 93/93.
 
 ## What left the project
 
@@ -26,7 +41,7 @@ Job System Tests 110/110, headless and GPU.
 | `Managers/Simulation Manager/Game Time Manager/` (an empty stub) | `WorldClock` |
 | `Data Structures/Job Data Structure/`, `Job_Type.gd` | `ACAJob`, `ACAJobEnums` |
 | `Mowing Section/UI/` (Information UI) | `UI/Gameplay HUD/` |
-| `Mowing Section/…/Grass Grid Item/` | `Multi_Mesh_Chunk` |
+| `Mowing Section/…/Grass Grid Item/` | the chunked MultiMesh lawn, itself retired on 2026-08-20 |
 | `Mowing Section/…/Mowing Object/` | the mowing scene + `GameSession` |
 | `Game/Demo/Footage/` + `Terrain/Footage-Demo Data/` | nothing — the **Terrain3D addon is not installed**, so they cannot function |
 | `backupmowingarea`, `errors.txt` | stray files at the project root |
@@ -70,9 +85,9 @@ remove them.
 
 ## Not legacy — actively used, despite appearances
 
-- `Terrain/Meshes/` (91 MB) — the ground mesh and colour map used by
-  `Custom Gridmap solution/Terrain Manager.tscn`. **Do not remove.** Only
-  `Terrain/Footage-Demo Data/` was Terrain3D orphan.
+- `Mowing Section/Experimental/Pond/` — the carver is no longer experimental.
+  `ACAPondFeature` is built on it and every generated pond comes from its shape
+  function. The demo scene and `Pond Test` still stand on their own.
 - `Mowing Section/Mower/Mower_Normal/` — referenced by `Model.gd`'s
   `mower_scene_references` dictionary through `load()`, which no scene graph shows.
 - Every `job_system/` script — used via `class_name`, not by path.

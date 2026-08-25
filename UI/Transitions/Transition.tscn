@@ -22,7 +22,7 @@ layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.043, 0.059, 0.067, 1)
+color = Color(0.047, 0.059, 0.047, 1.000)
 
 [node name="Centre" type="CenterContainer" parent="Screen" unique_id=1697674967]
 layout_mode = 0
@@ -39,7 +39,7 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.957, 0.929, 0.874, 1.000)
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Screen/Centre/Column" unique_id=270939794]
@@ -47,5 +47,5 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_colors/font_color = Color(0.769, 0.745, 0.686, 1.000)
 horizontal_alignment = 1

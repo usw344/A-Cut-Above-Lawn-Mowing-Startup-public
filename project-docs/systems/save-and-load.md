@@ -21,7 +21,7 @@ SaveService
   │           gone. `mower_fuel_idle_counter` / `idle_fuel_use` are still
   │           written but nothing reads them; they are legacy fields of the
   │           current save format. See systems/mowers-and-controls.md.
-  └─ Custom_Gridmap.mowed_item_names() / restore_mowed_items()
+  └─ ACAProperty.params() + ACALawn.cut_state()   (the mowing block)
 ```
 
 ## Storage
@@ -97,6 +97,7 @@ throws.
   },
 
   "session": {                     // GameSession.to_save_dict()
+    "difficulty": "medium",        // ADDITIVE, no version bump; absent -> "legacy"
     "money": 355,
     "screen": 2,                   // ACAGameSession.Screen — TOWN or MOWING only
     "session_active": true,
@@ -180,15 +181,12 @@ instances have been cut**, plus the mower's position and rotation.
 **Does not persist, by design:**
 
 - Nodes, tweens, timers, audio players, particles, any transient visual state.
-- The grass grid's full structure. It is **reconstructed** by
-  `test_custom_gridmap(grid_size)` and then the saved mowed set is replayed. Only
-  the mowed portion is stored, so an untouched Large Lawn costs nothing and a
-  fully mowed one costs ~36,864 short strings.
-- `Custom_Gridmap.save_object()` / `load_object()` — the pre-existing pair. They
-  serialize *every* coordinate of *every* chunk plus two lookup dictionaries
-  keyed by `Vector3i`, which is both far larger than necessary and not
-  JSON-representable. They were left untouched (still used by nothing) rather
-  than removed; see KNOWN LIMITATIONS.
+- **The property itself.** Terrain, grass, trees, rocks and the pond are
+  RECONSTRUCTED from `ACAPropertyParams`, which is thirty numbers. No mesh, no
+  height map, no foliage transform and no vertex buffer is ever written.
+- **Which blades are cut.** The lawn is a bitset, one bit per square world unit,
+  compressed and base64 encoded. A fully mown Large lawn costs about 780 bytes
+  of text, against the 36,864 coordinate strings the previous format wrote.
 - Settings, which live in their own `settings.json` because they are a property
   of the installation, not of a save.
 
@@ -226,22 +224,95 @@ SaveService.save_settings() / load_settings()
 **SIGNALS:** `game_saved(slot_name)`, `game_loaded(slot_name)`,
 `save_failed(reason)`, `load_failed(reason)`
 
-## Grid restore support added to the mowing system
+## The mowing block
 
-```gdscript
-# Custom_Gridmap
-mowed_item_names() -> PackedStringArray
-restore_mowed_items(names: PackedStringArray) -> int   # returns how many applied
+**Changed 2026-08-20**, when the procedural property replaced the custom grid
+map. The version was NOT bumped: `mowing` is optional, its contents are read
+with defaults, and the old shape is still understood (see migration below).
 
-# Multi_Mesh_Chunk
-mowed_item_names() -> PackedStringArray
-mow_item_silent(item_name, coord) -> bool   # no multimesh rebuild
-rebuild_multimeshes() -> void
+```jsonc
+"mowing": {
+  "job_id": "job_1605987657_v1_48000",
+  "lawn_size": 144,
+  "property": { "seed": 2142910396, "lawn_size": 144, "forestiness": 0.78, ... },
+  "cut_state": {
+    "version": 2,
+    "cells": 144,
+    "cut_count": 8321,
+    "bits_size": 2592,
+    "dirs_size": 20736,
+    "cut_bits": "<base64 of a zstd-compressed bitset>",
+    "cut_dirs": "<base64 of the zstd-compressed heading bytes>"
+  },
+  "mower_position": [12.5, 2.0, -3.25],
+  "mower_rotation": [0.0, 1.57, 0.0]
+}
 ```
 
-`restore_mowed_items()` groups by chunk and rebuilds each affected chunk's
-MultiMesh **once**, instead of once per blade. Replaying 36,864 individual
-`mow_item()` calls would rebuild the meshes 36,864 times.
+```gdscript
+# ACALawn
+cut_state() -> Dictionary
+restore_cut_state(data: Dictionary) -> bool          # false, and no change, on a mismatch
+apply_legacy_mowed_items(names, legacy_grid_size) -> int
+mowed_item_names() / restore_mowed_items(names)      # kept for tooling
+```
+
+`restore_cut_state()` refuses a state whose cell count does not match the lawn
+it is being applied to, and changes nothing when it refuses. A save can never
+quietly leave the player on a property that does not match their progress.
+
+Both arrays are compressed before encoding because both are enormously
+repetitive: a mown lawn is long runs of the same bit and long runs of the same
+heading.
+
+### A restored position is checked against the property
+
+The property has a fence round it now, and a machine put down outside that fence
+cannot get back in. Two saves can do exactly that:
+
+- **A legacy save.** The lawn this game used to have was authored about five
+  hundred units from the origin; a generated property is built AT it. A
+  mid-contract save from that era carries a coordinate from a world that no
+  longer exists — `Legacy Save Test` measured a real one at **406 units outside
+  the fence**.
+- **A current save** taken with the machine pressed against the fence, where
+  float error either way could land the restored transform a hair outside it.
+
+So `MVP._restore_mower_position()` asks the boundary. Under twelve units out, the
+position is pulled back to just inside the fence, keeping the direction it was
+in. Further out than that it is not a position at all, and the machine arrives
+the way it would for a fresh contract, with a warning saying so.
+
+**The cut state is untouched by any of this.** The player keeps every square unit
+of progress either way.
+
+### Resuming a property
+
+`MVP._ready()` takes the handoff BEFORE it generates anything. If the block
+carries a `property` dictionary, the property is rebuilt from THAT rather than
+from the contract's seed, so a later change to how a seed becomes a property
+cannot move the player to a different address mid-contract.
+
+### Migration from the per-blade format
+
+A save written before 2026-08-20 has `mowed_items` (one `"chunk_id,x,y,z"`
+string per cut blade) and `grid_size` instead of `cut_state` and `property`.
+`MVP._restore_saved_mowing_state()` detects that and calls
+`ACALawn.apply_legacy_mowed_items()`.
+
+Those blades sat on a TWO unit lattice, so replaying them one cell at a time
+would restore a quarter of the area actually cut and silently rob the player of
+most of their progress. Each recorded blade is therefore replayed as the
+two-by-two patch of ground it really represented. `Property Test` asserts that a
+fully mown legacy lawn comes back above 98.5%, and that a half mown one comes
+back at about half.
+
+The property itself cannot be recovered from such a save, because the old lawn
+had no property to record. A resumed legacy contract therefore generates the
+property its contract seed describes, and the migrated cut state is laid over
+it. **This is the one case where a resumed contract can look different from the
+one that was left** - the progress percentage is preserved, the address is not.
+A legacy save with no `mowing` block at all is unaffected.
 
 ## Version policy
 
@@ -309,9 +380,9 @@ palette to re-point. It is presentation only: the host supplies
   creates them (the test harness does).
 - **No autosave.** Saving is explicit.
 - Saving from the Town is only available via F5 — the town has no pause menu.
-- `Custom_Gridmap.save_object()` / `load_object()` are now dead weight next to the
-  lighter mowed-set approach. Left in place because removing working serialization
-  code was out of scope for this pass.
+- **A legacy mid-job save is restored on to a NEWLY GENERATED property.** The
+  percentage and the machine's transform survive; the ground does not, because
+  the old lawn never recorded any. See the migration section above.
 - `Data Structures/Game Profile.gd` (`class_name Game_Profile`) is **not used** by
   this system. It predates it and stores a version triple plus a copy of the
   model. Kept for review; the schema above supersedes it.

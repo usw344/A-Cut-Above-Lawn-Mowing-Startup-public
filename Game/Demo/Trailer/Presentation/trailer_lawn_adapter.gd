@@ -12,16 +12,16 @@ extends Node
 ##    cut. Without this the trailer mower would drive over tall grass and leave
 ##    it standing.
 ##
-## 2. A Large Lawn is 36,864 blades. Forty seconds of footage cannot cut a
+## 2. A Large Lawn is 36,864 cells. Forty seconds of footage cannot cut a
 ##    meaningful fraction of it by driving, so every shot in Trailer V2 was
 ##    filmed on an almost untouched lawn and the mowing never read as progress.
 ##
-## Both are solved by cutting through the grid's OWN api, selected by geometry:
-## `Custom_Gridmap.mow_swath()` runs exactly the bookkeeping a collision would --
-## the same `mow_item_silent`, the same MultiMesh rebuild, the same progress
-## counter and the same `mowing_progress_changed` signal. The grass that
-## disappears is really gone, the HUD percentage is really that percentage, and
-## a save taken mid-trailer would round-trip.
+## Both are solved by cutting through the lawn's OWN api, selected by geometry:
+## `ACALawn.mow_swath()` runs exactly the bookkeeping a driven pass would -- the
+## same cells, the same cut mask, the same progress counter and the same
+## `mowing_progress_changed` signal. The grass that lies down is really cut, the
+## HUD percentage is really that percentage, and a save taken mid-trailer would
+## round-trip.
 ##
 ## What is STAGED is only WHICH blades get cut and WHEN -- which is exactly the
 ## thing a trailer is allowed to stage.
@@ -31,14 +31,14 @@ extends Node
 ## stripe read on video without looking like a bulldozer.
 const CUT_HALF_WIDTH := 5.2
 
-var _grid: Custom_Gridmap = null
+var _grid: ACALawn = null
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 
 
-func bind(grid: Custom_Gridmap) -> void:
+func bind(grid: ACALawn) -> void:
 	_grid = grid
 
 

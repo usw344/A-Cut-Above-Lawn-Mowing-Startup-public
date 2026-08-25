@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://Game/App/gameplay_ui.gd" id="1_ui"]
 [ext_resource type="PackedScene" path="res://UI/Gameplay HUD/Gameplay HUD.tscn" id="2_hud"]
@@ -8,12 +8,22 @@
 [ext_resource type="PackedScene" path="res://UI/Settings/Settings.tscn" id="6_set"]
 [ext_resource type="PackedScene" path="res://UI/Controls Help/Controls Help.tscn" id="7_help"]
 [ext_resource type="PackedScene" path="res://UI/Dialogs/Confirmation Dialog.tscn" id="8_dialog"]
+[ext_resource type="PackedScene" path="res://UI/Minimap/Minimap.tscn" id="9_minimap"]
 
 [node name="Gameplay UI" type="CanvasLayer"]
 layer = 10
 script = ExtResource("1_ui")
 
 [node name="Gameplay HUD" parent="." instance=ExtResource("2_hud")]
+
+[node name="Minimap" parent="." instance=ExtResource("9_minimap")]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 22.0
+offset_top = -260.0
+offset_right = 260.0
+offset_bottom = -22.0
+grow_vertical = 0
 
 [node name="Job Intro" parent="." instance=ExtResource("3_intro")]
 

@@ -86,8 +86,30 @@ func _test_rules() -> void:
 		drive_seconds, drive_seconds / 60.0,
 		ACAMowerFuel.CAPACITY / MowerFuel.burn_rate_per_second(0.0),
 		ACAMowerFuel.CAPACITY / MowerFuel.burn_rate_per_second(0.0) / 60.0])
-	_check("Rules: a full tank lasts %.0f s of driving, as documented" % drive_seconds,
-		is_equal_approx(drive_seconds, ACAMowerFuel.FULL_TANK_DRIVING_SECONDS))
+	# THE TANK IS A DIFFICULTY SETTING NOW, so the claim is asserted against the
+	# rule layer's own answer rather than against the constant - and then each
+	# profile is checked to produce the length its table says it does. Asserting
+	# the constant alone would have gone on passing with difficulty ignored
+	# entirely, which is exactly the bug worth catching.
+	_check("Rules: a full tank lasts %.0f s of driving, as the rule layer says"
+		% drive_seconds,
+		is_equal_approx(drive_seconds, MowerFuel.full_tank_driving_seconds()))
+	var restore_difficulty := ACADifficulty.active_id()
+	var profile_mismatches := 0
+	for id: StringName in [&"legacy", &"easy", &"medium", &"hard"]:
+		ACADifficulty.set_active(id)
+		var expected := float(ACADifficulty.profile(id)["full_tank_driving_seconds"])
+		var measured := ACAMowerFuel.CAPACITY / MowerFuel.burn_rate_per_second(1.0)
+		print("[FUEL] %-7s tank: %.0f s (%.1f min)" % [id, measured, measured / 60.0])
+		if not is_equal_approx(measured, expected):
+			profile_mismatches += 1
+	ACADifficulty.set_active(restore_difficulty)
+	_check("Rules: every difficulty burns at its own documented rate",
+		profile_mismatches == 0)
+	_check("Rules: the legacy profile is exactly the shipped constant",
+		is_equal_approx(
+			float(ACADifficulty.profile(&"legacy")["full_tank_driving_seconds"]),
+			ACAMowerFuel.FULL_TANK_DRIVING_SECONDS))
 	_check("Rules: a tank outlasts a small contract but not a large one"
 		+ " (%.1f min vs 4.6 / 18.4 min estimates)" % [drive_seconds / 60.0],
 		drive_seconds / 60.0 > 4.6 and drive_seconds / 60.0 < 18.4)
@@ -186,7 +208,7 @@ func _test_powered_mower() -> void:
 		return
 
 	var scene := get_tree().current_scene
-	var grid := scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
+	var grid: ACALawn = scene.call(&"lawn")
 	var mower: Node3D = scene.get(&"current_mower")
 	_check("Powered: the rider is the active mower",
 		mower != null and bool(mower.call(&"is_powered")))
@@ -287,7 +309,7 @@ func _test_push_mower_is_manual() -> void:
 
 	scene.call(&"_on_mvp_hud_mower_change_selected", "push")
 	await _step(10)
-	var grid := scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
+	var grid: ACALawn = scene.call(&"lawn")
 	var mower: Node3D = scene.get(&"current_mower")
 	_check("Push: the push mower is active",
 		mower != null and mower.has_method("is_powered")
@@ -366,7 +388,7 @@ func _test_persistence() -> void:
 	# ...and gameplay obeys the restored state, then recovers from it.
 	if GameSession.current_screen() == ACAGameSession.Screen.MOWING:
 		var scene := get_tree().current_scene
-		var grid := scene.get_node_or_null(^"Custom Gridmap") as Custom_Gridmap
+		var grid: ACALawn = scene.call(&"lawn")
 		if grid != null:
 			var cut_before := grid.mowed_item_count()
 			var moved := await _drive(DRIVE_FRAMES)

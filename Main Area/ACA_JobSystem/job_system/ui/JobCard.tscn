@@ -7,12 +7,12 @@ content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0.106, 0.129, 0.145, 0.92)
+bg_color = Color(0.949, 0.925, 0.867, 1.000)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 1, 1, 0.08)
+border_color = Color(0.157, 0.180, 0.153, 0.160)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -23,7 +23,7 @@ content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0.075, 0.094, 0.106, 0.9)
+bg_color = Color(0.157, 0.180, 0.153, 0.140)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -34,7 +34,7 @@ content_margin_left = 0.0
 content_margin_top = 0.0
 content_margin_right = 0.0
 content_margin_bottom = 0.0
-bg_color = Color(0.42, 0.686, 0.353, 1)
+bg_color = Color(0.851, 0.478, 0.169, 1.000)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -45,7 +45,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.42, 0.686, 0.353, 1)
+bg_color = Color(0.851, 0.478, 0.169, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -56,7 +56,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.357, 0.5831, 0.30005, 1)
+bg_color = Color(0.639, 0.361, 0.129, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -67,7 +67,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.4896, 0.72368, 0.43063998, 1)
+bg_color = Color(0.882, 0.541, 0.267, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -78,7 +78,7 @@ content_margin_left = 14.0
 content_margin_top = 8.0
 content_margin_right = 14.0
 content_margin_bottom = 8.0
-bg_color = Color(0.192, 0.216, 0.227, 0.8)
+bg_color = Color(0.184, 0.204, 0.176, 0.800)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -94,7 +94,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.678, 0.714, 0.729, 1)
+border_color = Color(0.353, 0.396, 0.337, 1.000)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -132,19 +132,19 @@ theme_override_constants/separation = 10
 [node name="AccentBar" type="ColorRect" parent="Margin/Column" unique_id=1500958367]
 custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
-color = Color(0.42, 0.686, 0.353, 1)
+color = Color(0.851, 0.478, 0.169, 1.000)
 
 [node name="Title" type="Label" parent="Margin/Column" unique_id=863823227]
 layout_mode = 2
 theme_override_constants/line_spacing = 0
 theme_override_font_sizes/font_size = 20
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.157, 0.180, 0.153, 1.000)
 text = "JOB SITE"
 
 [node name="Meta" type="Label" parent="Margin/Column" unique_id=779914422]
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.353, 0.396, 0.337, 1.000)
 text = "Property   -   Lawn"
 
 [node name="Rows" type="VBoxContainer" parent="Margin/Column" unique_id=1285586567]
@@ -158,14 +158,14 @@ theme_override_constants/separation = 10
 [node name="Key" type="Label" parent="Margin/Column/Rows/RowA" unique_id=1469381023]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.353, 0.396, 0.337, 1.000)
 text = "Estimated Time"
 
 [node name="Value" type="Label" parent="Margin/Column/Rows/RowA" unique_id=583186282]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.157, 0.180, 0.153, 1.000)
 text = "-"
 horizontal_alignment = 2
 
@@ -176,14 +176,14 @@ theme_override_constants/separation = 10
 [node name="Key" type="Label" parent="Margin/Column/Rows/RowB" unique_id=1148816031]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.353, 0.396, 0.337, 1.000)
 text = "Pay"
 
 [node name="Value" type="Label" parent="Margin/Column/Rows/RowB" unique_id=1033830184]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.157, 0.180, 0.153, 1.000)
 text = "-"
 horizontal_alignment = 2
 
@@ -194,14 +194,14 @@ theme_override_constants/separation = 10
 [node name="Key" type="Label" parent="Margin/Column/Rows/RowC" unique_id=1796820289]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.353, 0.396, 0.337, 1.000)
 text = "Progress"
 
 [node name="Value" type="Label" parent="Margin/Column/Rows/RowC" unique_id=927880802]
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
-theme_override_colors/font_color = Color(0.937, 0.949, 0.937, 1)
+theme_override_colors/font_color = Color(0.157, 0.180, 0.153, 1.000)
 text = "0%"
 horizontal_alignment = 2
 
@@ -219,8 +219,8 @@ theme_override_constants/separation = 12
 [node name="FooterLabel" type="Label" parent="Margin/Column/Footer" unique_id=926111128]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.678, 0.714, 0.729, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.353, 0.396, 0.337, 1.000)
 text = "Offer expires in -"
 
 [node name="ActionButton" type="Button" parent="Margin/Column/Footer" unique_id=1857722222]
@@ -231,10 +231,10 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_tqx1b")
 theme_override_styles/hover = SubResource("StyleBoxFlat_en24l")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_2nd25")
 theme_override_styles/focus = SubResource("StyleBoxFlat_0e0ib")
-theme_override_colors/font_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_focus_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_pressed_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_hover_color = Color(0.075, 0.114, 0.086, 1)
-theme_override_colors/font_disabled_color = Color(0.478, 0.529, 0.545, 1)
+theme_override_colors/font_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_focus_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_pressed_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_hover_color = Color(0.965, 0.945, 0.898, 1.000)
+theme_override_colors/font_disabled_color = Color(0.502, 0.537, 0.478, 1.000)
 theme_override_font_sizes/font_size = 14
 text = "ACCEPT"

@@ -13,7 +13,7 @@ APPLICATION   GameSession  WorldClock  SaveService  AppUI  GameSettings
               owns: routing, session state, time and weather STATE, the market,
                     file I/O, and THE completion pathway
 
-DOMAIN        JobManager (ACAJobManager)     Custom_Gridmap + Multi_Mesh_Chunk
+DOMAIN        JobManager (ACAJobManager)     ACAProperty + ACALawn
               model (legacy shared state)    preset_manager -> environment
               owns: game state. Never changes scenes. Never touches UI.
 
@@ -76,14 +76,14 @@ flowchart TD
     Session -->|"go_to_mowing"| MVPScene["Game/M.V.P/Minimum Viable Game.tscn"]
     MVPScene --> MVP["MVP.gd"]
     MVPScene --> Mower["Current mower scene"]
-    MVPScene --> Grid["Custom Gridmap"]
+    MVPScene --> Grid["Property (ACAProperty)"]
     MVPScene --> Presets["Preset Manager"]
     MVPScene --> GPUI["Gameplay UI.tscn"]
 
     Mower -->|"collided(collision_array)"| Grid
     Mower --> Upg
     Mower --> Fuel
-    Grid --> Chunks["Multi_Mesh_Chunk objects"]
+    Grid --> Chunks["ACATerrain / ACALawn / ACALawnGrass / ACAForest"]
 
     Grid -->|"mowing_progress_changed"| MVP
     MVP -->|"complete_current_job"| Session
@@ -159,7 +159,7 @@ reusable addon.
 |---|---|---|
 | Runtime world | `Minimum Viable Game.tscn` | `Main.tscn` |
 | Mowers | `Assets/Vehicles and Mowers/Mowers/` | `Mower Scenes/`, `Mowing Section/Mower/` |
-| Terrain | Custom Terrain Manager | Terrain3D experiment (removed) |
+| Terrain | `ACATerrain`, procedural | authored Terrain Manager (retired), Terrain3D (removed) |
 | Weather look | `addons/aca_sky3d_environment/` | in-adapter tables (session 7) |
 | Rain particles | `ACAPrecipitationRig` (code-built) | authored `rain_particles.tscn` (removed) |
 | Precipitation resources | — | `Weather/precipitation/*.tres`, **dead** |

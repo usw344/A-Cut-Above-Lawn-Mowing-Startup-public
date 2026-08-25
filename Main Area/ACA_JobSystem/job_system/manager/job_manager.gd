@@ -68,6 +68,18 @@ signal begin_job_requested(job: ACAJob)
 ## The manager never touches mower nodes itself.
 var estimated_time_provider: Callable = Callable()
 
+## INTEGRATION POINT - what kind of place a contract is.
+## Optional Callable taking (job: ACAJob) and returning a SHORT phrase - three
+## or four words - describing the site, which the job board prints on the card.
+## Leave it unset and no such line appears.
+##
+##     manager.site_note_provider = func(job): return world.describe(job)
+##
+## THE JOB SYSTEM DOES NOT KNOW WHAT A LAWN LOOKS LIKE, and this is what keeps
+## it that way. `ACAJobEnums.PropertyType` is the whole of its vocabulary for
+## what a property is; the host owns the rest and hands over a string.
+var site_note_provider: Callable = Callable()
+
 # --------------------------------------------------------------------- state
 var _time: ACAJobTimeProvider = ACAJobTimeProvider.new()
 var _rng := RandomNumberGenerator.new()
@@ -395,6 +407,14 @@ func complete_job(job_id: StringName) -> bool:
 
 ## Real minutes the job is expected to take. Uses estimated_time_provider when
 ## the host has supplied one, otherwise the placeholder rate in ACAJobBalance.
+## A short phrase describing the site, or an empty string when no host has
+## supplied a provider.
+func site_note(job: ACAJob) -> String:
+	if job == null or not site_note_provider.is_valid():
+		return ""
+	return String(site_note_provider.call(job))
+
+
 func estimated_time_minutes(job: ACAJob) -> float:
 	if job == null:
 		return 0.0

@@ -31,13 +31,19 @@ Still genuinely absent: save/load, spending, upgrades, reputation.
 
 Decision:
 
-The custom `Terrain Manager.tscn` and `Terrain Manager.gd` are canonical.
+Terrain is generated, not authored. `ACATerrain` is canonical.
 
 Terrain3D is not planned for the final game.
 
 **Executed 2026-08-19:** the Terrain3D addon is not installed at all; its orphaned
 content (`Terrain/Footage-Demo Data/`, `Game/Demo/Footage/`) was moved to
-`Soft Delete/`. `Terrain/Meshes/` is ACTIVE and stayed.
+`Soft Delete/`.
+
+**Superseded 2026-08-20:** the authored `Terrain Manager` scene and the 91 MB
+`Terrain/Meshes/` folder it loaded were themselves retired in favour of a
+procedural height field. A property is now rebuilt from a seed and about thirty
+numbers, so nothing about the ground is imported and nothing about it is saved.
+See [Property, terrain and lawn](systems/property-and-lawn.md).
 
 Remaining: `export_presets.cfg` still lists a non-existent
 `res://addons/terrain_3d/` tree.
@@ -126,8 +132,9 @@ Decide:
 
 - An offer becomes an accepted contract through `ACAJobManager.accept_job()`.
   **The same `ACAJob` instance persists**; no parallel "gameplay job" object exists.
-- `MVP._grid_size_for_current_job()` reads `job.grid_size.x` and passes it to
-  `Custom_Gridmap.test_custom_gridmap()`.
+- `ACAPropertyParams.for_job(job)` reads `job.seed` and `job.grid_size.x` and
+  derives the ENTIRE property from them. That one function is the whole of the
+  Job System integration; no field was added to `ACAJob`.
 - Completion state lives in `ACAJobManager` (`past_jobs`, status `COMPLETED`,
   `completed_game_time`).
 - Pay is settled by `GameSession.complete_current_job()`, which adds
@@ -154,15 +161,17 @@ Decide:
 - **Removed** to `Soft Delete/`: Mowing Information UI, Information Bar,
   Job Offer Display, the old menu prototypes.
 
-### R-006 — Terrain generation workflow
+### R-006 — Terrain generation workflow — **RESOLVED 2026-08-20**
 
-The canonical Terrain Manager scene currently contains baked MultiMeshes while its script contains toggled generation tools.
+Runtime generation, deterministic from a seed, owned by nothing that persists.
 
-Decide:
-
-- Editor plugin/tool versus runtime generation.
-- Deterministic seeds.
-- Generated-scene ownership.
+- **Runtime, not an editor tool.** `ACATerrain.build()` runs synchronously in
+  `MVP._ready()`. Every query is valid the moment it returns.
+- **Deterministic seeds.** `ACAPropertyParams.seed` drives every draw.
+  `Property Test` asserts that two builds from equal parameters agree exactly,
+  and that a different seed makes different ground.
+- **Generated-scene ownership: none.** Nothing generated is saved or committed.
+  The save file stores the parameters.
 - Bake and rebuild procedure.
 - Collision requirements for decorative foliage.
 
@@ -187,9 +196,9 @@ Confirm which Jolt maximum-body setting Godot 4.6 uses before removing or reconc
   real `Class "Grass_Grid_Item" hides a global script class` parse error on every
   project scan. The whole `Grass Grid Item/` folder was unused and moved to
   `Soft Delete/`; the error is gone.
-- **Still open:** the two similarly named mowed-grass mesh resources
-  (`Mowed_Grass_OBJ.obj` vs `Mowed_Grass_With_LOD_attempt1.res` — only the
-  second is loaded by `Multi_Mesh_Chunk`).
+- **Closed 2026-08-20:** both mowed-grass mesh resources left the project with
+  the lawn that loaded them. Grass tufts are generated at runtime by
+  `ACAGrassMesh`, so there is no imported grass mesh to be ambiguous about.
 
 ### R-010 — Rider-parts Timer
 
@@ -500,11 +509,14 @@ The mower adapter owns the transform, so there are no slide collisions and the
 grid would never be told anything was cut. And a Large Lawn is 36,864 blades, so
 forty seconds of footage cannot cut a visible fraction of it by driving.
 
-`Custom_Gridmap.mow_swath()` selects by geometry and then runs exactly the
-bookkeeping a collision would — the same `mow_item_silent`, the same MultiMesh
-rebuild, the same counter, the same `mowing_progress_changed`. The grass that
-disappears is really gone, the HUD percentage is true, and a save taken
-mid-trailer would round-trip. What is staged is only WHICH blades and WHEN.
+`ACALawn.mow_swath()` selects by geometry and then runs exactly the bookkeeping
+a driven pass would — the same cells, the same cut mask, the same counter, the
+same `mowing_progress_changed`. The grass that lies down is really cut, the HUD
+percentage is true, and a save taken mid-trailer would round-trip. What is
+staged is only WHICH ground and WHEN.
+
+The method survived the 2026-08-20 lawn replacement unchanged in signature, which
+is why the trailer's storyboard did not have to be touched.
 
 Rejected: a trailer-only grass shader unrelated to the mowing system, and
 faking the HUD number.
@@ -642,9 +654,13 @@ Pushing the Sky3D quad harder is what produced the white wall, and it cannot be
 fixed inside the addon without editing it.
 
 A consequence worth recording: `Environment.fog_height` is an **absolute world
-Y**, and the mowing lawn is authored at about y = -508. Height fog measured from
-the origin renders that scene as a flat white screen. `ground_reference` exists
-for exactly this, and `MVP` measures it from the grid's own `Mowing Area`.
+Y**. The old mowing lawn was authored at about y = -508, and height fog measured
+from the origin rendered that scene as a flat white screen. `ground_reference`
+exists for exactly this.
+
+Since 2026-08-20 the property is generated at the world ORIGIN, so the offset is
+small — but the ground is no longer flat, so `MVP` still supplies a reference,
+taken from `ACAProperty.ground_height_at()` at the middle of the lawn.
 
 ### D-022 — There is one money balance, and it is GameSession's — **DECIDED 2026-08-20**
 

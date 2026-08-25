@@ -47,8 +47,12 @@ enum Condition { STABLE, GROWTH, INFLATION, RECESSION }
 
 # ----------------------------------------------------------------- constants
 
-## Price of one unit of fuel in a completely neutral market. `MowerFuel` treats
-## a tank as 100 units, so this is also "a full tank costs about $110".
+## Price of one unit of fuel in a completely neutral market, at the LEGACY
+## difficulty. `MowerFuel` treats a tank as 100 units, so this is also "a full
+## tank costs about $110".
+##
+## Read through `base_fuel_price()` rather than directly: the active difficulty
+## profile supplies its own, and this is the fallback when none is set.
 const BASE_FUEL_PRICE := 1.10
 
 ## Conditions last WEEKS, not days. The point of a regime is that the player
@@ -122,14 +126,20 @@ const EVENTS := [
 	},
 ]
 
-## Chance per day of an event starting, when none is running.
+## Chance per day of an event starting, when none is running, at the LEGACY
+## difficulty. Read through `event_daily_chance()`.
+##
+## THIS IS NOT A DIFFICULTY SLIDER and the profiles do not treat it as one.
+## Events run both ways - a fuel surplus is as likely as a shortage - so a
+## higher chance is more VOLATILITY rather than more hardship, which is why
+## Hard has the most and Easy has slightly fewer than Medium.
 const EVENT_DAILY_CHANCE := 0.11
 ## Days after an event ends before another can start. Stops back-to-back events
 ## reading as one long permanent modifier.
 const EVENT_COOLDOWN_DAYS := 3
 
 ## Daily fuel noise. Mean-reverting rather than independent, so the price
-## DRIFTS instead of teleporting: single-digit percentages day to day, as a
+## DRIFTS instead of jumping: single-digit percentages day to day, as a
 ## fuel price behaves.
 const FUEL_NOISE_STEP := 0.035
 const FUEL_NOISE_RETENTION := 0.72
@@ -224,7 +234,7 @@ func _advance_one_day(day: int) -> void:
 			event_ended.emit(ended)
 	elif _event_cooldown > 0:
 		_event_cooldown -= 1
-	elif _rng.randf() < EVENT_DAILY_CHANCE:
+	elif _rng.randf() < event_daily_chance():
 		_start_event(_pick_event())
 
 	# Then the regime.
@@ -343,8 +353,31 @@ func last_processed_day() -> int:
 	return _last_day
 
 
+# ------------------------------------------------------- difficulty inputs
+##
+## THREE numbers the active difficulty profile supplies. They are read here,
+## once each, rather than being scattered through the price functions, and each
+## falls back to the constant above when no profile is set - which is what makes
+## this class still work in a probe with no session around it.
+
+## Dollars per unit of fuel before any market movement.
+func base_fuel_price() -> float:
+	return ACADifficulty.value("base_fuel_price", BASE_FUEL_PRICE)
+
+
+## Chance per day that a temporary event starts, when none is running.
+func event_daily_chance() -> float:
+	return ACADifficulty.value("event_daily_chance", EVENT_DAILY_CHANCE)
+
+
 func _modifier(key: String) -> float:
 	var base := float(CONDITIONS[_condition].get(key, 1.0))
+	# THE DOWNTURN'S DEPTH IS A DIFFICULTY SETTING, and it is the only condition
+	# value that is. The profile scales how far Recession's payout DEVIATES from
+	# neutral rather than the multiplier itself, so a scale of 1.0 reproduces
+	# 0.84 exactly. See the note in `ACADifficulty`.
+	if _condition == Condition.RECESSION and key == "job":
+		base = ACADifficulty.recession_job_multiplier()
 	var e := event_spec()
 	return base * float(e.get(key, 1.0))
 
@@ -373,7 +406,7 @@ func fuel_index() -> float:
 ## Dollars per unit of fuel. `MowerFuel` capacity is 100 units, so a full tank
 ## from empty is roughly a hundred times this.
 func fuel_price_per_unit() -> float:
-	return BASE_FUEL_PRICE * fuel_index()
+	return base_fuel_price() * fuel_index()
 
 
 ## What it costs to put `units` of fuel in a tank, rounded up to the cent.
@@ -461,6 +494,22 @@ func from_save_dict(data: Dictionary) -> void:
 		_event_days_left = 0
 
 	condition_changed.emit(_condition)
+	prices_changed.emit()
+
+
+# ================================================================ development
+
+## DEVELOPMENT AND VALIDATION ONLY. Put the market into a condition now, through
+## the same `_change_condition()` a natural transition uses, so the behaviour
+## that FOLLOWS a downturn can be tested without waiting for one to be rolled.
+##
+## It does not touch the seed or the day, so the market carries on from here
+## exactly as it would have if this condition had come up on its own.
+func debug_force_condition(next: int) -> void:
+	if not CONDITIONS.has(next):
+		push_warning("[ECONOMY] unknown condition %s" % next)
+		return
+	_change_condition(next)
 	prices_changed.emit()
 
 

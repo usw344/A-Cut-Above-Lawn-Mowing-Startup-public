@@ -1,8 +1,9 @@
 # HUD, Menus, and Interface Systems
 
 Status: **Current.** The polished `res://UI/` package is integrated throughout
-the application. Verified 2026-08-19 by the UI Smoke Test (54 assertions), the
-Flow Test (54), and a 14-screen screenshot review at 1920×1080.
+the application, and was re-styled onto one visual identity on 2026-08-24.
+Verified by the UI Smoke Test (60 assertions), the Flow Test (54), and a
+21-screen screenshot review at 1920×1080.
 
 ## Architectural rule
 
@@ -19,15 +20,69 @@ lives in exactly two host scripts:
 
 Plus the persistent `AppUI` autoload for transitions and notifications.
 
+## The visual identity
+
+**Modern rustic with cozy illustrated accents** — roughly three parts grounded
+structure to one part personality. Warm, inviting, readable, rural, low-poly.
+
+The palette is five colours and their weights:
+
+| | |
+|---|---|
+| warm cream | every piece of text, and the surface of anything that reads as PAPER |
+| charcoal green | every panel drawn over the world |
+| forest green | the primary action, and progress |
+| muted sage | secondary information and rules |
+| mower orange | ONE accent, used sparingly, for the thing that most wants the eye |
+
+**Charcoal with a green cast, never blue-grey.** Over a green world a blue-grey
+panel reads as a foreign object laid on top of the game rather than as part of
+it, and that one change is most of why the interface now looks like it belongs.
+
+### Two surface families, and they are not interchangeable
+
+| Family | Constants | Used for |
+|---|---|---|
+| SLATE | `PANEL_BG` / `CARD_BG` / `CHIP_BG` with `INK` | everything drawn over the world: the HUD, the minimap, pause, settings, notifications |
+| PAPER | `PAPER_BG` / `PAPER_BG2` with `PAPER_INK` | anything whose fiction is a printed document: the job board's work orders, the difficulty cards |
+
+`INK` on a paper surface is unreadable and is meant to be. The Job System keeps
+its own copy of the paper constants in `job_ui_style.gd`, because that folder is
+deliberately portable and loads nothing from outside itself.
+
+### Accessibility — requirements, not preferences
+
+- `INK` on `PANEL_BG` and `PAPER_INK` on `PAPER_BG` both clear 4.5:1.
+  `INK_ON_ACCENT` on `ACCENT` is about 5.2:1, so a primary button's label passes
+  for BODY text rather than only for headings.
+- `INK_FAINT` is for decoration, never for information.
+- **Nothing is communicated by colour alone.** The fuel gauge changes its
+  CAPTION as well as its colour; a selected difficulty card is raised, ruled and
+  captioned; an offer running out of time changes its wording; the workshop says
+  a purchase "leaves a thin reserve" as well as colouring it.
+- Focus is a two-pixel `ACCENT_BRIGHT` ring present on every interactive style.
+- `FONT_MICRO` is the floor and it is **12**, up from 11.
+- Animation is restrained: `FADE` is a fifth of a second.
+
 ## Shared theme — `UI/Theme/`
 
 `ui_theme.gd` (`class_name UITheme`, a `RefCounted` with only constants and
 static helpers) is the single source for palette, radii, type scale and timing.
 `Game UI.theme.tres` is assigned to the root node of every component scene.
 
-Helpers worth knowing: `stylebox()`, `style_button()`, `style_danger_button()`,
-`style_progress()`, `format_money(1234) -> "$1,234"`,
-`format_clock(522.0) -> "08:42"`, `percent_text(0.723) -> "72%"`.
+Helpers worth knowing: `stylebox()`, `style_button()`, `style_accent_button()`,
+`style_danger_button()`, `style_progress()`, `paper_panel()`, `status_colour()`,
+`format_money(1234) -> "$1,234"`, `format_clock(522.0) -> "08:42"`,
+`percent_text(0.723) -> "72%"`.
+
+!!! note "How the re-palette was applied"
+    The component scenes are generated from GDScript, so nearly every `Color()`
+    literal baked into them was either a `UITheme` constant or a
+    `lightened()` / `darkened()` variant of one. The re-style was therefore a
+    mechanical old-to-new substitution over 476 literals across 17 files, with
+    anything the map could not account for REPORTED rather than left silent —
+    so a colour somebody had typed by hand showed up as work to do instead of
+    as a seam.
 
 No fonts are imported — everything uses the Godot default font. To swap in a real
 font, set `default_font` on `Game UI.theme.tres`: one place, whole UI.
@@ -48,10 +103,188 @@ font, set `default_font` on `Game UI.theme.tres`: one place, whole UI.
 | `UI/Main Menu/` | `MainMenuScreen`, `RadialMainMenu` | main menu | option ids: `continue, new_game, load_game, options, credits, quit` |
 | `UI/Credits/` | `CreditsScreen`, `ACACreditsLoader` | main menu | the `res://Credits/` folder |
 | `UI/Load Game/` | `LoadGameScreen` | main menu | `SaveService.list_saves()` |
-| `UI/Scenic Background for Menus/` | `MainMenuScenery` | main menu | 3D backdrop; **already composes `main_menu.tscn` inside its `MenuSafeOverlay`** |
+| `UI/Minimap/` | `MinimapPanel` | mowing scene | the authoritative property state — see below |
+| `UI/New Game/` | `NewGameScreen` | main menu | the `ACADifficulty` profile table, as plain dictionaries |
+| `UI/Scenic Background for Menus/property_menu/` | `ACAMenuPropertyScenery` | main menu | a REAL generated property — see below; **composes `main_menu.tscn` inside its `MenuSafeOverlay`** |
+| `UI/Scenic Background for Menus/scenery/` | `MainMenuScenery` | retired from the menu | the previous hand-built backdrop, kept and still loadable |
 | `UI/Demo/UI Demo.tscn` | — | not shipped | component showcase, tooling |
 | `Main Area/ACA_JobSystem/job_system/ui/` | `ACAJobBoard`, `ACAJobCard` | town | `JobManager` |
 | `Main Area/ACA_BusinessTown/UI/` | `ACABusinessHUD`, `ACABuildingPanel`, `ACAPlaceholderScreen` | town | `town_screen.gd` |
+
+## Two surface families, and which screens get which
+
+The theme has always had two surfaces. What changed is the rule for choosing
+between them.
+
+| | |
+|---|---|
+| **PAPER** — warm cream, `PAPER_INK` on it | the game's own documents and the operator's own instruments: the mowing HUD, the minimap, the job board's offers, the contract introduction, the results sheet, the notification toasts, the three town service counters, the difficulty cards |
+| **SLATE** — charcoal green, `INK` on it | system chrome: the main menu, pause, settings, controls, load game, and the board those paper offers are pinned to |
+
+The old rule was "paper for documents, slate for anything drawn over the world",
+and it produced a correct, legible and completely forgettable mowing interface:
+a dark grey box on a green field. What the game wants over the lawn is the thing
+the operator would really have with them, which is the job sheet - and a job
+sheet is paper.
+
+So paper comes outside, at the alpha and the edge treatment a panel needs when
+there is a moving world behind it:
+
+| | |
+|---|---|
+| `HUD_BG` / `HUD_BG2` | cream, a few percent open so the lawn is felt through it |
+| `HUD_EDGE` | a warm brown-green rule. Over a bright lawn a sixteen-percent black line disappears |
+| `HUD_SHADOW` | what actually separates the card from the world. A soft dark band under the panel does more for legibility than another ten percent of opacity, and costs the view nothing |
+| `HUD_GREEN` / `HUD_GREEN_BRIGHT` | progress and header green, a touch deeper than `ACCENT` so it holds against cream |
+| `PAPER_TRACK` | the empty part of a bar drawn on paper. `TRACK_BG` is nearly black and reads as a hole punched in the card |
+
+Helpers: `hud_panel()`, `hud_chip()`, `style_paper_progress()`.
+
+### Repainting a slate screen as paper
+
+`UITheme.repaint_to_paper(root)` walks a subtree and swaps one family for the
+other by name. It is a small, total mapping — `INK` to `PAPER_INK`, `INK_DIM` to
+`PAPER_INK_DIM`, `INK_FAINT` and `SAGE` to `PAPER_INK_FAINT`, `ACCENT` /
+`ACCENT_BRIGHT` / `MONEY` to `HUD_GREEN`, `HAIRLINE` to `PAPER_RULE` — so what it
+does can be predicted by reading it rather than by running it.
+
+`WARN`, `URGENT` and `ORANGE` are left alone: all three were chosen to carry a
+warning and all three still carry it on cream. So are **buttons**: a button is a
+control rather than a surface, it already has its own fill, and restyling them
+flattened every secondary button into the primary green.
+
+It exists because several screens were laid out correctly on the old family and
+only their colours were wrong. Rebuilding each scene to change its colours would
+be a great deal of risk for a repaint.
+
+## Drawn marks — `UI/Theme/ui_glyph.gd`
+
+Nine small marks: a leaf, a sun, a cloud, rain, a fuel drop, a folded map, mown
+stripes, a stone and a ripple. They are polygons drawn in a unit square and
+scaled, not an icon font and not a folder of PNGs — six accents at twelve to
+twenty pixels did not justify a new dependency, a new licence and a resolution
+to argue about. They take their colour from whatever sets them.
+
+**Nothing is ever communicated by a mark alone.** The weather glyph follows the
+weather WORD; the fuel drop changes colour with a caption that also changes.
+
+## The mowing HUD
+
+`UI/Gameplay HUD/`. The layout is built in code; the scene is a bare `Control`
+carrying the script and the shared theme.
+
+That is a deliberate reversal. The scene held about forty nodes and a dozen
+inline `StyleBoxFlat` sub-resources, each a copy of a colour that also lives in
+`UITheme`, and restyling it meant editing colour literals in a text file no
+reviewer could read. The layout is now one function readable top to bottom and
+every colour comes from the theme by name. The public API is unchanged.
+
+The four corners, and the middle left empty:
+
+| | |
+|---|---|
+| top left | the contract. Site, property type and lawn size, the one objective with a percentage and a bar, and a three-line checklist |
+| top centre | day, clock and weather, in one pill |
+| top right | fuel — the only thing on this HUD allowed to shout, and the only place orange appears |
+| bottom left | the minimap. Placed by the host, styled to match |
+| bottom right | the pause hint, and nothing else |
+
+### The checklist is fed from the property, not from the contract
+
+`ACAGameplayUI._refresh_site_readout()` reads the lawn's own mowable total and
+whatever the feature set actually built:
+
+```
+Cut all grass                 18,220 / 20,736 m²
+Mow around the pond and rocks              6
+Contract                                 $215
+```
+
+A card that read those off the job would eventually promise a pond the property
+does not have.
+
+### What it deliberately does not do
+
+Pointed at a reference image, it takes the warmth, the checklist, the edge
+anchoring and the illustrated accents. It does not take the scattered decorative
+flowers, the second decorative frame around every panel, the legend card
+explaining the game to a player who is already playing it, or any ornament that
+carries no information.
+
+### Read-backs
+
+`job_name_text()`, `reward_text()`, `game_time_text()`, `weather_text()`,
+`progress()`, `fuel()`.
+
+These exist because `Flow Test` used to reach into the scene for `%JobName` and
+read its `.text`. When the layout moved into code those unique names went with
+the scene that held them, eight checks silently stopped running, and the suite
+still reported zero failures. The component answers by name now.
+
+## The minimap — `UI/Minimap/`
+
+`MinimapPanel` is presentation-only like every other component: the host hands it
+everything, and **every one of those things is the object the game is already
+using**.
+
+| Drawn | Comes from |
+|---|---|
+| the playable rectangle | `ACAPropertyBoundary.rect()` |
+| the contract | `ACALawn.lawn_centre()` / `lawn_half_extent()` |
+| what has been cut | `ACALawn.cut_mask()` — the very texture the grass shader samples |
+| the pond | `ACAPondFeature.shoreline_points()` — the outline its collision ring was traced from |
+| solid obstacles | `ACALawnObstacles.obstacles()` — the list the exclusion queries read |
+| the machine | the mower's own transform |
+
+A minimap that kept its own idea of where the pond was would eventually be wrong,
+and a minimap that is wrong is worse than none.
+
+Three implementation notes worth keeping:
+
+- **Three drawing layers, not one.** The cut mask needs a shader
+  (`minimap_cut.gdshader`) because an uncut mowable cell is `(0,0,0,1)` and
+  drawing it as an ordinary modulated texture paints the lawn solid black. The
+  red channel becomes the alpha of one flat colour instead. A material belongs to
+  a whole `CanvasItem`, so base / cut / overlay are separate `Control`s.
+- **North is up and the map does not rotate.** A plan the player can build a
+  mental model of beats one that is always correct and never the same twice.
+- **The marker is interpolated.** The machine's transform jitters at 576 Hz.
+- **It is drawn on the same paper as the rest of the HUD**, in five named
+  colours that are a legend whether one is drawn or not: `PAGE_COLOUR` for the
+  ground beyond the fence, `PLAYABLE_COLOUR` inside the boundary,
+  `UNCUT_COLOUR` for the contract standing, `CUT_COLOUR` over it from the lawn's
+  own mask, and `EDGE_COLOUR` for the one line the machine cannot cross. It used
+  to be a dark slate panel, which was right against the old HUD and was the last
+  charcoal box in the corner of a cream interface.
+- **A compass mark.** A plan that does not rotate has to say which way is up, or
+  the player has to work it out from the fence.
+
+!!! warning "Children are ready before their parent"
+    `Gameplay UI` is a child of the mowing scene, so its `_ready()` runs BEFORE
+    the scene has generated a property. The first version of the binding asked
+    for the property at that moment, got null, and hid the map permanently — no
+    error anywhere, a green test suite, and an empty corner in the screenshot.
+    The map now binds on the first frame the property is actually there.
+
+## The scenic main menu — `UI/Scenic Background for Menus/property_menu/`
+
+The menu background is a **real generated property**: the same terrain, lawn,
+grass shader, wood, fence, pond and Sky3D integration the player is about to
+drive around in. It is built from one seed, mown before the first frame with the
+rider's real deck (so the stripes are the stripes), and the canonical Rider is
+parked on it.
+
+The backdrop it replaces was hand-built — its own trees, its own grass, its own
+ground plane, its own painted mountains — and had been left behind by the mowing
+world: different tree species, different turf, a dirt path the game does not
+have, a palette the game does not use. A player arriving at the menu and then at
+a contract was looking at two different games.
+
+Nothing about it is a special case. If the grass changes, the menu changes.
+
+It stays subordinate to the controls: the camera drifts slowly on three
+incommensurate rates and never cuts, `menu_safe_overlay` sits between the world
+and the buttons, and there is no audio of any kind.
 
 ## Gameplay stack — `Game/App/Gameplay UI.tscn`
 

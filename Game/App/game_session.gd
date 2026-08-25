@@ -5,11 +5,12 @@ extends Node
 ## Owns three things and nothing else:
 ##   1. Which screen the application is on, and every scene transition.
 ##   2. The durable session state that is not owned by another system
-##      (money, whether a session is active, elapsed time on the active job).
+##      (money, the economy DIFFICULTY, whether a session is active, elapsed
+##      time on the active job).
 ##   3. THE ONE authoritative job-completion pathway.
 ##
 ## It deliberately does NOT own: job state (ACAJobManager does), world time or
-## weather (ACAWorldClock does), the mowing grid (Custom_Gridmap does), or any
+## weather (ACAWorldClock does), the mowing state (ACALawn does), or any
 ## presentation (the UI components do).
 ##
 ##     Main Menu --new_game--> Town --accept--> JobManager
@@ -17,7 +18,7 @@ extends Node
 ##                              |          begin_job_requested
 ##                       return_to_town               |
 ##                              |                     v
-##                          Job Complete <-- Mowing (Custom_Gridmap)
+##                          Job Complete <-- Mowing (ACAProperty / ACALawn)
 ##
 ## The Job System's boundary is preserved exactly: ACAJobManager emits
 ## begin_job_requested and stops; THIS class performs the scene transition.
@@ -29,6 +30,8 @@ signal screen_changed(screen: int)
 signal session_started()
 signal session_ended()
 signal money_changed(amount: int)
+## The session's economy difficulty changed. Emitted on a new game and on a load.
+signal difficulty_changed(id: StringName)
 
 ## THE completion result, emitted after the job has really been completed in
 ## ACAJobManager. Carries everything a results screen needs so the UI never has
@@ -47,12 +50,19 @@ const MAIN_MENU_SCENE := "res://Game/App/Main Menu Screen.tscn"
 const TOWN_SCENE := "res://Game/App/Town Screen.tscn"
 const MOWING_SCENE := "res://Game/M.V.P/Minimum Viable Game.tscn"
 
+## The float a new business opens with when no difficulty says otherwise. It is
+## also exactly `ACADifficulty`'s Medium and legacy value, so this constant and
+## the profile table can never quietly disagree; Economy Test asserts it.
 const STARTING_MONEY := 250
 
 # --------------------------------------------------------------------- state
 var _screen: int = Screen.NONE
 var _session_active: bool = false
 var _money: int = 0
+## THE economy difficulty for this session. `ACADifficulty` owns the numbers;
+## this owns WHICH profile is in force, because that is session state and
+## session state is this class's job. Nothing else writes it.
+var _difficulty: StringName = ACADifficulty.DEFAULT_ID
 ## Real seconds spent inside the current mowing job. Accumulated by the mowing
 ## scene through add_job_elapsed(); reset when a job begins.
 var _job_elapsed_seconds: float = 0.0
@@ -74,11 +84,37 @@ func _ready() -> void:
 	# THE GAMEPLAY HANDOFF. The Job System never changes scenes; we do.
 	JobManager.begin_job_requested.connect(_on_begin_job_requested)
 
+	# WHAT KIND OF PLACE A CONTRACT IS, on its work order. The Job System knows a
+	# property type; the mowing side knows what that type turns into on the
+	# ground. This layer is where the two meet, exactly as it is for the clock
+	# and for the market, and it is the SAME derivation the generator uses - so a
+	# card that says "House and garden" is a card whose property has a house on
+	# it.
+	JobManager.site_note_provider = func(job: ACAJob) -> String:
+		return ACAPropertyArchetype.short_description_of(
+			ACAPropertyArchetype.for_property_type(job.property_type, job.seed))
+
 	# The Job System does not know the economy exists. The APPLICATION layer
 	# connects them, the same way it hands over the clock — so a new offer is
 	# priced by the market, and an ACCEPTED contract never is again.
+	#
+	# The DIFFICULTY's pay scale rides along here rather than in the generator,
+	# for exactly the same reason the market does: it is applied ONCE, when an
+	# offer is created, and an accepted contract's payout is never recomputed.
 	JobManager.pay_multiplier_provider = func() -> float:
-		return Economy.job_index()
+		return Economy.job_index() * ACADifficulty.value("job_pay_scale", 1.0)
+
+	# THE RECESSION MARKET BRIDGE. `Economy` owns the condition; `ACAJobManager`
+	# owns the market. Neither knows about the other, and neither should: this
+	# layer connects them, through the Job System's own public `set_economy()`
+	# and the recession modifier `ACAJobMarket` has always had.
+	#
+	# Under the current Spring / Normal world that turns offer capacity from 4
+	# into 4 - 2 = 2 for as long as the downturn lasts. Fewer contracts on the
+	# board is what makes a recession something the player has to plan around
+	# rather than a number in a tooltip.
+	Economy.condition_changed.connect(_on_economy_condition_changed)
+	_apply_economy_to_market(Economy.condition())
 
 	# Player-facing notifications for real domain events. Deliberately few:
 	# accepting work, new work arriving, and getting paid.
@@ -105,12 +141,17 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Fresh game. Milestone 1 scope: whatever initialisation a coherent new session
 ## needs. Profile/save handling belongs to the save system, not here.
-func start_new_game() -> void:
+func start_new_game(difficulty: StringName = ACADifficulty.DEFAULT_ID) -> void:
+	# BEFORE anything reads a price. The starting float, the first offers' pay
+	# and the market's first fuel price all come from the profile, so it has to
+	# be in force before the world, the economy or the job board exist.
+	_set_difficulty(difficulty if ACADifficulty.is_valid(difficulty)
+		else ACADifficulty.DEFAULT_ID)
 	JobManager.debug_clear_all()
 	WorldClock.start_new_world()
 	Economy.start_new_economy(0, WorldClock.day_index())
 	MowerUpgrades.reset_all()
-	_set_money(STARTING_MONEY)
+	_set_money(int(ACADifficulty.value("starting_money", STARTING_MONEY)))
 	_job_elapsed_seconds = 0.0
 	_session_active = true
 
@@ -132,6 +173,44 @@ func end_session() -> void:
 
 func is_session_active() -> bool:
 	return _session_active
+
+
+# ================================================================== difficulty
+
+## The economy difficulty in force. Always a valid `ACADifficulty` id.
+func difficulty() -> StringName:
+	return _difficulty
+
+
+func difficulty_name() -> String:
+	return ACADifficulty.display_name(_difficulty)
+
+
+## Private on purpose: a difficulty is chosen when a game STARTS and restored
+## when one loads, and is not a setting the player toggles mid-business.
+func _set_difficulty(id: StringName) -> void:
+	_difficulty = id
+	ACADifficulty.set_active(id)
+	difficulty_changed.emit(id)
+
+
+# ========================================================= the recession bridge
+
+func _on_economy_condition_changed(condition: int) -> void:
+	_apply_economy_to_market(condition)
+
+
+## Map the market CONDITION on to the Job System's own economy input. The Job
+## System's enum is older and coarser than `Economy.Condition`, which is why
+## this is a mapping rather than a cast: only Recession has a meaningful
+## counterpart, and everything else is ordinary trading as far as the number of
+## contracts on the board is concerned.
+func _apply_economy_to_market(condition: int) -> void:
+	var value := ACAJobEnums.Economy.RECESSION \
+		if condition == ACAEconomyManager.Condition.RECESSION \
+		else ACAJobEnums.Economy.NORMAL
+	if int(JobManager.economy) != int(value):
+		JobManager.set_economy(value)
 
 
 ## Used by the save system when a load restores an in-progress session.
@@ -365,6 +444,10 @@ func to_save_dict() -> Dictionary:
 		"screen": _screen,
 		"session_active": _session_active,
 		"job_elapsed_seconds": _job_elapsed_seconds,
+		# ONE ADDITIVE FIELD, and no save version bump. A build that does not
+		# know about it ignores it; a save that does not carry it is handled
+		# below. See project-docs/systems/save-and-load.md.
+		"difficulty": String(_difficulty),
 	}
 
 
@@ -372,4 +455,11 @@ func from_save_dict(data: Dictionary) -> void:
 	_set_money(int(data.get("money", STARTING_MONEY)))
 	_session_active = bool(data.get("session_active", true))
 	_job_elapsed_seconds = float(data.get("job_elapsed_seconds", 0.0))
+	# A SAVE WITH NO DIFFICULTY IN IT WAS PLAYED WITHOUT ONE, and the honest
+	# thing to do with it is to keep playing it without one. `legacy` is exactly
+	# the constants that save was created under, so a business a player has run
+	# for a hundred in-game days does not have its fuel price and its contract
+	# rates moved underneath it by a patch. It is never offered to a new game.
+	var saved := StringName(String(data.get("difficulty", "")))
+	_set_difficulty(saved if ACADifficulty.is_valid(saved) else ACADifficulty.LEGACY_ID)
 	# `screen` is applied by the loader, which decides which scene to enter.

@@ -88,7 +88,8 @@ night is blue for free.
     measured from the origin, every surface in that scene is five hundred units
     "below" it, the height term saturates, and the whole frame renders flat
     white. `ACASky3DEnvironment.ground_reference` fixes the measurement;
-    `MVP._track_weather_to_camera()` sets it from the grid's own `Mowing Area`.
+    `MVP._track_weather_to_camera()` sets it from the terrain's own height at
+    the middle of the lawn, so it stays correct on ground that is not flat.
 
 ### Precipitation
 

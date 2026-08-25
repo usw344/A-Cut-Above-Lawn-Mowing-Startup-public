@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cdhewnxqs1p8x"]
+
+[ext_resource type="Script" uid="uid://bckdubh50r5ub" path="res://Dev tools/Validation/large_lawn_stress_test.gd" id="1_stress"]
+
+[node name="Large Lawn Stress Test" type="Node3D" unique_id=2107355945]
+script = ExtResource("1_stress")
+lawn_size_meters = 1024

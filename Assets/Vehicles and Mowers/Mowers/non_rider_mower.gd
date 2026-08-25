@@ -49,6 +49,18 @@ const POWERED := true
 ## scene file cannot invalidate it.
 const MOWER_ID := &"powered"
 
+## ------------------------------------------------------------- CUTTING DECK
+##
+## The footprint this machine cuts, in WORLD units, resolved by `ACAMowerDeck`
+## and swept across the lawn by `ACAMowerCutter`. A gameplay value, not a
+## visual one: re-scaling the model must never change contract length or fuel
+## balance. Narrower than the rider, wider than the push mower.
+const DECK_WIDTH := 5.2
+const DECK_LENGTH := 2.0
+## Along the machine's local +Z, which is forward. A walk-behind cuts in front
+## of the operator.
+const DECK_FORWARD := 0.6
+
 ## Uniform across the canonical mowers so nothing has to check a scene name.
 func is_powered() -> bool:
 	return POWERED
