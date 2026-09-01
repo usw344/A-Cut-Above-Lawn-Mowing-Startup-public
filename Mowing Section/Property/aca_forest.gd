@@ -65,71 +65,113 @@ extends Node3D
 ## PERSISTENCE OWNERSHIP: None.
 
 # ---------------------------------------------------------------- the assets
+## ---------------------------------------------------------------------------
+## THREE TREE FAMILIES, ONE PACK
+## ---------------------------------------------------------------------------
+## The KayKit Forest Nature Pack spans nearly nine to one in mesh size - its
+## smallest tree is 8 KB of buffer and its largest is 71 KB - and EVERY ONE OF
+## THEM SHARES THE SAME PALETTE TEXTURE. That is what makes quality tiers
+## possible here without a second art direction: Low and High are the same
+## artist, the same atlas, the same faceted look, drawn at different densities
+## of geometry. High is not a different game with more polygons in it.
 ##
-## `weight` is how often a species is drawn relative to the others. The big
-## smooth pine reads well as an occasional landmark and as a wall when it is
-## half the wood, so it is deliberately outnumbered by the faceted trees that
-## match the rest of the game's look.
-const TREE_SOURCES := [
-	{
-		"path": "res://Assets/Foilage/trees/SM_Pine_A2.glb",
-		"height": 27.0, "kind": "conifer", "weight": 2,
-	},
-	{
-		"path": "res://Assets/Foilage/trees/SM_Pine_A3.glb",
-		"height": 24.0, "kind": "conifer", "weight": 2,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_A_Color1.gltf",
-		"height": 23.0, "kind": "broadleaf", "weight": 3,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_B_Color1.gltf",
-		"height": 21.0, "kind": "broadleaf", "weight": 3,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_C_Color1.gltf",
-		"height": 25.0, "kind": "broadleaf", "weight": 3,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_A_Color1.gltf",
-		"height": 19.0, "kind": "broadleaf", "weight": 3,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_B_Color1.gltf",
-		"height": 18.0, "kind": "broadleaf", "weight": 2,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_C_Color1.gltf",
-		"height": 17.0, "kind": "broadleaf", "weight": 3, "understory": true,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_D_Color1.gltf",
-		"height": 20.0, "kind": "broadleaf", "weight": 2,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_A_Color1.gltf",
-		"height": 25.0, "kind": "conifer", "weight": 3,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_B_Color1.gltf",
-		"height": 28.0, "kind": "conifer", "weight": 2,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_A_Color1.gltf",
-		"height": 15.0, "kind": "broadleaf", "weight": 2, "understory": true,
-	},
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_C_Color1.gltf",
-		"height": 16.0, "kind": "broadleaf", "weight": 2, "understory": true,
-	},
+##   LOW      the cheap end of the pack. Six species, mean buffer about 14 KB,
+##            chosen for SILHOUETTE rather than for canopy structure, because at
+##            the distance most of a wood is seen the silhouette is all there is.
+##   MEDIUM   the balanced middle, and what the game shipped before this pass
+##            (less the two trees below).
+##   HIGH     the rich end - fuller canopies, better trunks, the pack's biggest
+##            conifer - plus the understory species Medium already used, because
+##            small trees under a canopy are what stops a wood being a wall.
+##
+## THE TWO SMOOTH PINES WERE RETIRED, for two reasons at once and either would
+## have been enough. They are from a DIFFERENT PACK, with their own bark and
+## needle textures and smooth shading, and beside twelve faceted KayKit trees
+## sharing one atlas they read as a different game - which is exactly the
+## mismatch this pass was asked to look for. And `Credits/` has no record of
+## where they came from: the Foilage credits cover KayKit and Quaternius, and
+## `SM_Pine_A2`/`SM_Pine_A3`/`SM_Bush_A1` are neither. An asset whose provenance
+## cannot be established does not go in the build.
+##
+## `Tree_3_C` - the pack's largest conifer, and the one asset here chosen for
+## exactly this job - takes over the "occasional landmark" role at High.
+##
+## `weight` is how often a species is drawn relative to the others.
+
+const TREE_SOURCES_LOW := [
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_A_Color1.gltf",
+		"height": 19.0, "kind": "broadleaf", "weight": 4},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_B_Color1.gltf",
+		"height": 18.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_A_Color1.gltf",
+		"height": 23.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_C_Color1.gltf",
+		"height": 17.0, "kind": "broadleaf", "weight": 3, "understory": true},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_A_Color1.gltf",
+		"height": 15.0, "kind": "broadleaf", "weight": 3, "understory": true},
+	# ONE CONIFER, kept at a low weight rather than dropped. The pack has no
+	# cheap conifer at all, and a wood with no conical crown in it loses the
+	# thing that reads at distance - which is the one thing Low cannot afford
+	# to lose.
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_B_Color1.gltf",
+		"height": 28.0, "kind": "conifer", "weight": 2},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_Bare_1_B_Color1.gltf",
+		"height": 18.0, "kind": "broadleaf", "weight": 1},
+]
+
+const TREE_SOURCES_MEDIUM := [
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_A_Color1.gltf",
+		"height": 23.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_B_Color1.gltf",
+		"height": 21.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_A_Color1.gltf",
+		"height": 19.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_B_Color1.gltf",
+		"height": 18.0, "kind": "broadleaf", "weight": 2},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_C_Color1.gltf",
+		"height": 17.0, "kind": "broadleaf", "weight": 3, "understory": true},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_D_Color1.gltf",
+		"height": 20.0, "kind": "broadleaf", "weight": 2},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_A_Color1.gltf",
+		"height": 25.0, "kind": "conifer", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_B_Color1.gltf",
+		"height": 28.0, "kind": "conifer", "weight": 2},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_A_Color1.gltf",
+		"height": 15.0, "kind": "broadleaf", "weight": 2, "understory": true},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_C_Color1.gltf",
+		"height": 16.0, "kind": "broadleaf", "weight": 2, "understory": true},
 	# One standing dead tree in about thirty. A wood with nothing but healthy
 	# canopies reads as a texture; a single bare crown against the sky is what
 	# makes the same treeline read as a place.
-	{
-		"path": "res://Assets/Foilage/Low Poly/Trees/Tree_Bare_2_A_Color1.gltf",
-		"height": 22.0, "kind": "broadleaf", "weight": 1,
-	},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_Bare_2_A_Color1.gltf",
+		"height": 22.0, "kind": "broadleaf", "weight": 1},
+]
+
+const TREE_SOURCES_HIGH := [
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_B_Color1.gltf",
+		"height": 21.0, "kind": "broadleaf", "weight": 2},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_1_C_Color1.gltf",
+		"height": 25.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_D_Color1.gltf",
+		"height": 20.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_E_Color1.gltf",
+		"height": 22.0, "kind": "broadleaf", "weight": 3},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_A_Color1.gltf",
+		"height": 25.0, "kind": "conifer", "weight": 2},
+	# THE LANDMARK. The pack's largest conifer, and what replaced the smooth
+	# pine that used to play this part from another pack entirely.
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_3_C_Color1.gltf",
+		"height": 30.0, "kind": "conifer", "weight": 2},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_C_Color1.gltf",
+		"height": 16.0, "kind": "broadleaf", "weight": 2, "understory": true},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_4_B_Color1.gltf",
+		"height": 16.0, "kind": "broadleaf", "weight": 2, "understory": true},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_2_C_Color1.gltf",
+		"height": 17.0, "kind": "broadleaf", "weight": 2, "understory": true},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_Bare_1_C_Color1.gltf",
+		"height": 24.0, "kind": "broadleaf", "weight": 1},
+	{"path": "res://Assets/Foilage/Low Poly/Trees/Tree_Bare_2_C_Color1.gltf",
+		"height": 21.0, "kind": "broadleaf", "weight": 1},
 ]
 
 ## Canopies are all one green if nothing varies them, and one green over a
@@ -139,13 +181,36 @@ const TREE_SOURCES := [
 const CANOPY_COOL := Color(0.82, 0.97, 0.94)
 const CANOPY_WARM := Color(1.12, 1.02, 0.74)
 
-const SHRUB_SOURCES := [
-	{"path": "res://Assets/Foilage/Shurbs/SM_Bush_A1.glb", "height": 3.4},
+## SHRUBS, on the same principle and with a far wider spread: the pack's
+## smallest bush is a KILOBYTE of buffer and its largest is twenty-eight. Low
+## uses the one-kilobyte end, which is why shrub density can stay high there
+## without costing anything.
+##
+## `SM_Bush_A1` was retired with the two pines, for the same two reasons.
+const SHRUB_SOURCES_LOW := [
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_2_A_Color1.gltf", "height": 1.4},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_4_A_Color1.gltf", "height": 2.0},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_4_B_Color1.gltf", "height": 1.6},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_1_A_Color1.gltf", "height": 3.0},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_2_C_Color1.gltf", "height": 2.2},
+]
+
+const SHRUB_SOURCES_MEDIUM := [
 	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_1_A_Color1.gltf", "height": 3.0},
 	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_1_C_Color1.gltf", "height": 2.6},
 	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_2_C_Color1.gltf", "height": 2.2},
 	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_3_A_Color1.gltf", "height": 1.7},
 	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_4_A_Color1.gltf", "height": 2.0},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_4_D_Color1.gltf", "height": 1.5},
+]
+
+const SHRUB_SOURCES_HIGH := [
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_1_C_Color1.gltf", "height": 2.6},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_1_E_Color1.gltf", "height": 3.2},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_1_F_Color1.gltf", "height": 3.0},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_2_E_Color1.gltf", "height": 2.8},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_3_A_Color1.gltf", "height": 1.7},
+	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_3_C_Color1.gltf", "height": 2.4},
 	{"path": "res://Assets/Foilage/Low Poly/Bushes/Bush_4_D_Color1.gltf", "height": 1.5},
 ]
 
@@ -163,7 +228,21 @@ const REED_SOURCES := [
 ## that reads at the mower's scale is a few units tall. The pack's stone is a
 ## cool grey; at this size against saturated grass it picks up the sky and
 ## reads blue, so it is warmed through ROCK_TINT below.
-const ROCK_SOURCES := [
+## SCENERY ROCKS ONLY. The rocks the machine can HIT are placed by
+## `ACALawnObstacles`, they have collision, and they are deliberately NOT tiered
+## - see the note on collision in `_sources_for_quality()`.
+##
+## Heights are WORLD units in a world about four times life size, so a boulder
+## that reads at the mower's scale is a few units tall.
+const ROCK_SOURCES_LOW := [
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_2_A_Color1.gltf", "height": 1.4},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_2_B_Color1.gltf", "height": 2.2},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_C_Color1.gltf", "height": 2.4},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_2_D_Color1.gltf", "height": 2.1},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_3_C_Color1.gltf", "height": 2.6},
+]
+
+const ROCK_SOURCES_MEDIUM := [
 	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_C_Color1.gltf", "height": 2.4},
 	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_F_Color1.gltf", "height": 1.5},
 	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_J_Color1.gltf", "height": 1.8},
@@ -171,6 +250,15 @@ const ROCK_SOURCES := [
 	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_2_D_Color1.gltf", "height": 2.1},
 	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_3_C_Color1.gltf", "height": 2.6},
 	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_3_G_Color1.gltf", "height": 2.9},
+]
+
+const ROCK_SOURCES_HIGH := [
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_F_Color1.gltf", "height": 1.5},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_J_Color1.gltf", "height": 1.8},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_1_K_Color1.gltf", "height": 2.8},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_2_G_Color1.gltf", "height": 2.5},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_3_G_Color1.gltf", "height": 2.9},
+	{"path": "res://Assets/Foilage/Low Poly/Rocks/Rock_3_Q_Color1.gltf", "height": 3.1},
 ]
 
 ## Multiplies the pack's own albedo, so the texture is kept and only its cast
@@ -249,6 +337,109 @@ var _stats := {}
 var _instances := 0
 var _nodes := 0
 
+## ---------------------------------------------------------------------------
+## GRAPHICS QUALITY
+## ---------------------------------------------------------------------------
+## `GameSettings` is the authority and this is a READER of it, exactly as
+## `preset_manager.gd` is. There is no second quality setting, no second menu
+## and nothing here is saved: the level is resolved once per property build and
+## a property rebuilds whenever a contract starts.
+##
+## COLLISION IS NOT TIERED, AND CANNOT BE. Nothing this class places has a
+## physics body at all - the whole wood costs zero colliders, which is stated
+## as an invariant at the top of this file. The rocks the machine can hit are
+## `ACALawnObstacles`, which is a different class, is inside the fence, and
+## does not read this. So a player cannot hit something on High that is not
+## there on Low, because the two settings do not reach the same objects.
+##
+## What quality DOES change here: which family of meshes is used, and how dense
+## the decorative planting is. Both are presentation.
+##
+## `ultra` maps to High. This project's Settings screen offers four labels and
+## has three environment profiles behind them; matching that is better than
+## inventing a fourth vegetation family nobody asked for.
+var _quality: StringName = &"medium"
+
+## Decorative density per level, as a multiplier on the candidate lattice.
+## TREES ARE NOT IN HERE. Thinning the wood is how a lower setting stops
+## looking like the same place, and the wood is the place - so Low pays for
+## itself with cheaper MESHES and a shorter shadow radius, and keeps its trees.
+const DENSITY_FOR_QUALITY := {
+	&"low": 0.62, &"medium": 1.0, &"high": 1.0,
+}
+
+## How much of the MID AND FAR wood a level plants. The near band - the trees
+## beside the lawn, the ones the player is actually looking at - is never
+## thinned, at any level. The bands behind it are read as silhouette and colour
+## rather than as individual trees, and they hold nine tenths of the instances,
+## so this is where a lower setting can take real weight out without the place
+## looking different.
+const DISTANT_TREES_FOR_QUALITY := {
+	&"low": 0.70, &"medium": 1.0, &"high": 1.0,
+}
+
+## Shadow radius per level. The shadow map is the expensive part of a near-field
+## tree, and halving the radius that has to be covered is the cheapest real
+## saving available to a lower setting.
+const SHADOW_RADIUS_FOR_QUALITY := {
+	&"low": 0.45, &"medium": 1.0, &"high": 1.0,
+}
+
+
+## Resolved once per build. Falls back to `medium` when GameSettings is absent,
+## which is how the tests and the property tooling build a wood.
+func _resolve_quality() -> void:
+	_quality = &"medium"
+	var settings := get_node_or_null(^"/root/GameSettings")
+	if settings == null:
+		return
+	var level := String(settings.call(&"graphics_quality")).to_lower()
+	match level:
+		"low":
+			_quality = &"low"
+		"high", "ultra":
+			_quality = &"high"
+		_:
+			_quality = &"medium"
+
+
+func _tree_sources() -> Array:
+	match _quality:
+		&"low":
+			return TREE_SOURCES_LOW
+		&"high":
+			return TREE_SOURCES_HIGH
+	return TREE_SOURCES_MEDIUM
+
+
+func _shrub_sources() -> Array:
+	match _quality:
+		&"low":
+			return SHRUB_SOURCES_LOW
+		&"high":
+			return SHRUB_SOURCES_HIGH
+	return SHRUB_SOURCES_MEDIUM
+
+
+func _rock_sources() -> Array:
+	match _quality:
+		&"low":
+			return ROCK_SOURCES_LOW
+		&"high":
+			return ROCK_SOURCES_HIGH
+	return ROCK_SOURCES_MEDIUM
+
+
+## Candidate spacing widened at Low, so the same placement rules produce fewer
+## props without any of them moving somewhere different.
+func _spacing(base: float) -> float:
+	var density: float = float(DENSITY_FOR_QUALITY.get(_quality, 1.0))
+	return base / maxf(density, 0.05)
+
+
+func graphics_quality() -> StringName:
+	return _quality
+
 
 # ======================================================================= build
 
@@ -262,6 +453,7 @@ func build(params: ACAPropertyParams, terrain: ACATerrain, lawn: ACALawn,
 	_boundary = boundary
 	var t0 := Time.get_ticks_usec()
 	_clear()
+	_resolve_quality()
 
 	_cluster_noise = _noise(params.seed + 41, 1.0 / 95.0, 2)
 	_opening_noise = _noise(params.seed + 73, 1.0 / 58.0, 2)
@@ -284,6 +476,7 @@ func build(params: ACAPropertyParams, terrain: ACATerrain, lawn: ACALawn,
 		"rocks": rocks,
 		"instances": _instances,
 		"nodes": _nodes,
+		"quality": String(_quality),
 	}
 
 
@@ -314,7 +507,7 @@ func _build_trees() -> int:
 	# from this list. Cheaper than a running total and just as controllable.
 	_tree_picks = PackedInt32Array()
 	_understory_picks = PackedInt32Array()
-	for entry in TREE_SOURCES:
+	for entry in _tree_sources():
 		var mesh := _load_mesh(String(entry["path"]))
 		if mesh == null:
 			continue
@@ -340,13 +533,15 @@ func _build_trees() -> int:
 
 	var placed := 0
 	placed += _scatter_trees(sources, 0.0, NEAR_RADIUS, NEAR_SPACING, 0, near_tiles, 1.0)
-	placed += _scatter_trees(sources, NEAR_RADIUS, MID_RADIUS, MID_SPACING, 1, mid_batches, 1.45)
+	placed += _scatter_trees(sources, NEAR_RADIUS, MID_RADIUS, MID_SPACING, 1,
+		mid_batches, 1.45 * DISTANT_TREES_FOR_QUALITY.get(_quality, 1.0))
 	# The far band is READ AS TEXTURE, not as individual trees. It needs to be
 	# dense enough to close the hillsides, or a wooded landscape ends in a
 	# scattering of specks along the ridge. Raised again once the band stopped
 	# floating: trees that now sit correctly on a hillside also disappear behind
 	# it, and a mass has to be thick enough to survive that.
-	placed += _scatter_trees(sources, MID_RADIUS, FAR_RADIUS, FAR_SPACING, 2, far_batches, 2.3)
+	placed += _scatter_trees(sources, MID_RADIUS, FAR_RADIUS, FAR_SPACING, 2,
+		far_batches, 2.3 * DISTANT_TREES_FOR_QUALITY.get(_quality, 1.0))
 
 	for key in near_tiles:
 		var batch: Dictionary = near_tiles[key]
@@ -599,21 +794,22 @@ func _canopy_tint(x: float, z: float) -> Color:
 ## Shrubs live where the wood meets the lawn and along the pond bank: the places
 ## a bare transition would otherwise show.
 func _build_shrubs() -> int:
-	var sources := _prepare(SHRUB_SOURCES)
+	var sources := _prepare(_shrub_sources())
 	if sources.is_empty():
 		return 0
 	var batches: Dictionary = {}
 	var placed := 0
 	var lawn_centre := _lawn.lawn_centre()
-	var steps: int = int(ceil(DETAIL_RADIUS * 2.0 / SHRUB_SPACING))
+	var spacing := _spacing(SHRUB_SPACING)
+	var steps: int = int(ceil(DETAIL_RADIUS * 2.0 / spacing))
 	var origin := -DETAIL_RADIUS
 
 	for gz in steps:
 		for gx in steps:
 			var x: float = origin + (float(gx) + 0.2
-				+ _hash2(float(gx) * 5.3, float(gz) * 1.9) * 0.6) * SHRUB_SPACING
+				+ _hash2(float(gx) * 5.3, float(gz) * 1.9) * 0.6) * spacing
 			var z: float = origin + (float(gz) + 0.2
-				+ _hash2(float(gz) * 4.1, float(gx) * 2.7) * 0.6) * SHRUB_SPACING
+				+ _hash2(float(gz) * 4.1, float(gx) * 2.7) * 0.6) * spacing
 			if not _terrain.contains(x, z):
 				continue
 			var out_distance := _rect_distance(x, z, lawn_centre)
@@ -669,15 +865,16 @@ func _build_reeds() -> int:
 	var batches: Dictionary = {}
 	var placed := 0
 	var lawn_centre := _lawn.lawn_centre()
-	var steps: int = int(ceil(REED_RADIUS * 2.0 / REED_SPACING))
+	var spacing := _spacing(REED_SPACING)
+	var steps: int = int(ceil(REED_RADIUS * 2.0 / spacing))
 	var origin := -REED_RADIUS
 
 	for gz in steps:
 		for gx in steps:
 			var x: float = origin + (float(gx) + 0.05
-				+ _hash2(float(gx) * 3.7 + 8.0, float(gz) * 9.1) * 0.9) * REED_SPACING
+				+ _hash2(float(gx) * 3.7 + 8.0, float(gz) * 9.1) * 0.9) * spacing
 			var z: float = origin + (float(gz) + 0.05
-				+ _hash2(float(gz) * 6.3 + 4.0, float(gx) * 5.5) * 0.9) * REED_SPACING
+				+ _hash2(float(gz) * 6.3 + 4.0, float(gx) * 5.5) * 0.9) * spacing
 			if not _terrain.contains(x, z):
 				continue
 			var out_distance := _rect_distance(x, z, lawn_centre)
@@ -718,21 +915,22 @@ func _build_reeds() -> int:
 ## clusters, and they stay off the lawn, where they would only make the mowing
 ## harder to read.
 func _build_rocks() -> int:
-	var sources := _prepare(ROCK_SOURCES)
+	var sources := _prepare(_rock_sources())
 	if sources.is_empty():
 		return 0
 	var batches: Dictionary = {}
 	var placed := 0
 	var lawn_centre := _lawn.lawn_centre()
-	var steps: int = int(ceil(DETAIL_RADIUS * 2.0 / ROCK_SPACING))
+	var spacing := _spacing(ROCK_SPACING)
+	var steps: int = int(ceil(DETAIL_RADIUS * 2.0 / spacing))
 	var origin := -DETAIL_RADIUS
 
 	for gz in steps:
 		for gx in steps:
 			var x: float = origin + (float(gx) + 0.2
-				+ _hash2(float(gx) * 2.9, float(gz) * 6.1) * 0.6) * ROCK_SPACING
+				+ _hash2(float(gx) * 2.9, float(gz) * 6.1) * 0.6) * spacing
 			var z: float = origin + (float(gz) + 0.2
-				+ _hash2(float(gz) * 3.3, float(gx) * 7.7) * 0.6) * ROCK_SPACING
+				+ _hash2(float(gz) * 3.3, float(gx) * 7.7) * 0.6) * spacing
 			if not _terrain.contains(x, z):
 				continue
 			var ground := _terrain.height_at(x, z)
@@ -979,7 +1177,9 @@ func _commit_batch(prefix: String, mesh: Mesh, transforms: PackedFloat32Array,
 	# SAPLINGS ARE NOT AMONG THEM. There are hundreds of them, they are the
 	# smallest thing in the wood, and putting them in the shadow map cost about
 	# a third of the frame for contact nobody was going to go looking for.
-	if prefix != "Tree" or _batch_distance(transforms) > TREE_SHADOW_RADIUS:
+	var shadow_radius: float = TREE_SHADOW_RADIUS * float(
+		SHADOW_RADIUS_FOR_QUALITY.get(_quality, 1.0))
+	if prefix != "Tree" or _batch_distance(transforms) > shadow_radius:
 		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	instance.extra_cull_margin = 6.0
 	add_child(instance)

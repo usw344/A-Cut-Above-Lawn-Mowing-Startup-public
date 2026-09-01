@@ -1,6 +1,6 @@
 # Important Script Reference
 
-Status: **Current** — source-verified 2026-08-20 (session 7). Paths are `res://`-relative.
+Status: **Current** — source-verified 2026-08-30 (game-feel and debugger pass). Paths are `res://`-relative.
 
 ## Application layer (autoloads)
 
@@ -16,6 +16,12 @@ Status: **Current** — source-verified 2026-08-20 (session 7). Paths are `res:/
 | `Game/App/save_service.gd` | `ACASaveService` | `SaveService` | File I/O and slot handling. Owns **no** domain state |
 | `Game/Economy/economy_manager.gd` | `ACAEconomyManager` | `Economy` | Market condition, events, fuel/job/equipment prices. **Never holds money** |
 | `Game/Economy/mower_upgrades.gd` | `ACAMowerUpgrades` | `MowerUpgrades` | Per-mower upgrade levels, costs, and the multipliers controllers read |
+| `Game/Economy/equipment.gd` | `ACAEquipment` | `Equipment` | Owned mower types, attachments, autonomous equipment and assignments |
+| `Game/Economy/clippings.gd` | `ACAClippings` | `Clippings` | Bag, yard inventory, compost and clipping sales |
+| `Game/Economy/business.gd` | `ACABusiness` | `Business` | Reputation, customers, competitors, schedule and yard state |
+| `Game/Business/service_territory.gd` | `ACAServiceTerritory` | `Territory` | Owned regions, presence and job filtering |
+| `Game/Business/service_agreements.gd` | `ACAServiceAgreements` | `Agreements` | Recurring service agreements |
+| `Game/Business/portfolio.gd` | `ACAPortfolio` | `Portfolio` | Portfolio metadata and captured image references |
 
 `Game/World/world_clock_time_provider.gd` (`ACAWorldClockTimeProvider`) is the
 bridge between the two. It is constructed in `GameSession._ready()`.
@@ -44,6 +50,7 @@ bridge between the two. It is constructed in `GameSession._ready()`.
 | `Mowing Section/Property/aca_lawn.gd` | `ACALawn` | THE mowing state: one byte per cell, the cut mask texture, `mow_deck()`, progress, the compact save and the legacy migration |
 | `Mowing Section/Property/aca_mower_deck.gd` | `ACAMowerDeck` | Resolves a machine's cutting footprint, in world units |
 | `Mowing Section/Property/aca_mower_cutter.gd` | `ACAMowerCutter` | The join: listens to `collided`, sweeps the deck across the lawn |
+| `Assets/Vehicles and Mowers/Mowers/aca_mower_handling.gd` | `ACAMowerHandling` | Per-machine acceleration, braking, reverse, steering and lean profiles |
 | `Mowing Section/Property/aca_lawn_grass.gd` | `ACALawnGrass` | Grass placement and rendering. Does nothing while the player mows |
 | `Mowing Section/Property/aca_grass_mesh.gd` | `ACAGrassMesh` | Generates the tuft meshes at runtime |
 | `Mowing Section/Property/aca_forest.gd` | `ACAForest` | Trees, shrubs and rocks; `forestiness` |
@@ -51,6 +58,9 @@ bridge between the two. It is constructed in `GameSession._ready()`.
 | `Mowing Section/Property/aca_property_feature.gd` | `ACAPropertyFeature` | The generic feature and exclusion interface |
 | `Mowing Section/Property/aca_feature_set.gd` | `ACAFeatureSet` | The collection, and the one place "is this position available?" is answered |
 | `Mowing Section/Property/aca_pond_feature.gd` | `ACAPondFeature` | The pond as a feature, built on `ACAPondCarver` |
+| `Mowing Section/Property/aca_lawn_obstacles.gd` | `ACALawnObstacles` | Six deterministic obstacle layouts and solid lawn exclusions |
+| `Mowing Section/Property/aca_ground_wetness.gd` | `ACAGroundWetness` | Applies current ground-condition deltas to existing lawn materials |
+| `Game/World/regional_context.gd` | `ACARegionalContext` | Region-derived property reshaping and environment air-layer values |
 | `Assets/Vehicles and Mowers/Mowers/mower_rider.gd` | — | Rider mower. `POWERED = true`. Emits `collided`, or `fuel_empty` when the tank is dry. |
 | `Assets/Vehicles and Mowers/Mowers/non_rider_mower.gd` | — | Powered walk-behind. `POWERED = true`. |
 | `Assets/Vehicles and Mowers/Mowers/push_mower.gd` | — | Push mower. **`POWERED = false`** — a manual reel mower. No fuel, no `fuel_empty`. |
@@ -105,7 +115,7 @@ for video.**
 | `business_town.gd` | `ACABusinessTown` | Click-picking on layer 9 **from `_physics_process`** (required with threaded 3D physics). Emits `business_action_requested`. |
 | `Camera/business_camera.gd` | `ACABusinessCamera` | Orthographic focus rig |
 | `Buildings/interactive_building.gd` | `ACAInteractiveBuilding` | `@tool`; hover/select via transforms only, never material edits |
-| `UI/business_hud.gd` | `ACABusinessHUD` | Title bar, building panel, placeholder screen, embedded Job Board. `set_calendar(day, clock, weather)` |
+| `UI/business_hud.gd` | `ACABusinessHUD` | Title bar, building panel, service routes, embedded Job Board. `set_calendar(day, clock, weather)` |
 | `UI/building_panel.gd` | `ACABuildingPanel` | Location card |
 | `UI/placeholder_screen.gd` | `ACAPlaceholderScreen` | Stand-in destination |
 
@@ -125,9 +135,14 @@ None of them reference a game scene, a job, or a manager.
 |---|---|
 | `Dev tools/Validation/validate_all.gd` | Loads every script and scene |
 | `Dev tools/Validation/flow_test.gd` | The 54-assertion loop test |
-| `Dev tools/Validation/ui_smoke_test.gd` | The 54-assertion UI test |
+| `Dev tools/Validation/ui_smoke_test.gd` | The 60-assertion UI test |
 | `Dev tools/Validation/screenshot_tour.gd` | Per-screen PNG capture (needs a renderer) |
 | `Dev tools/Validation/runner_boot.gd` | Parents a runner to `/root` so it survives scene changes |
+| `Dev tools/Developer Debugger/developer_debugger.gd` | `ACADeveloperDebugger` — H overlay for authoritative weather and money controls |
+| `Dev tools/Validation/Debugger Probe.tscn` | Real H-input debugger coverage in Town and mowing, 39 assertions |
+| `Dev tools/Validation/Handling Probe.tscn` | Drives all three canonical machines and precision view, 21 assertions |
+| `Dev tools/Validation/Layout Probe.tscn` | Layout selection, determinism and placement safety, 15 assertions |
+| `Dev tools/Validation/Workmanship Probe.tscn` | Coverage/contact measurements and callouts, 4 assertions |
 | `Dev tools/Performance Monitor.gd` | `Performance_Monitor` |
 | `Dev tools/Mesurement.gd` | `Mesurment` (note the spelling) |
 | `Dev tools/Print_Handler.gd` | `Print_Handler` |
@@ -162,10 +177,13 @@ The A Cut Above side is `Weather/Visual/weather_visual_adapter.gd`
 (`ACAWeatherVisualAdapter`) — anchors, binding, quality mapping, ground
 reference, and the public API `preset_manager`, the trailer and the probes call.
 
-## Pond prototype (experimental)
+## Pond implementation and prototype
 
-**Not part of job generation.** See
-[Pond Prototype](../systems/pond-prototype.md).
+`ACAPondFeature` is production property content and is built for generated job
+sites. It uses the pure carver below so the terrain offset, water line,
+shoreline collision, grass exclusion and mowing exclusion agree. The standalone
+`ACAPond` node and `Pond Demo.tscn` remain an experimental/demo path; they are
+not the production integration boundary. See [Pond Prototype](../systems/pond-prototype.md).
 
 | Script | class_name | Owns |
 |---|---|---|

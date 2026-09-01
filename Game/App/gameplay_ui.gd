@@ -75,6 +75,7 @@ func _process(_delta: float) -> void:
 	_hud.set_fuel(gameplay_host.call(&"mower_fuel_fraction"))
 	_refresh_environment()
 	_refresh_site_readout()
+	_refresh_business_readout()
 	if not _minimap_bound:
 		_bind_minimap()
 	_track_mower_on_minimap(progress)
@@ -95,6 +96,38 @@ func _populate_from_job() -> void:
 	_hud.set_property_type(job.property_type_name())
 	_hud.set_reward(job.base_pay)
 	_hud.set_status("Mow the entire lawn")
+	# WHAT THIS CUSTOMER ASKED FOR, on the same checklist as everything else.
+	# Derived from the contract's own seed, so it is the same list the work
+	# order showed before the player accepted it.
+	_hud.set_contract_terms(ACAContractTerms.describe(job))
+
+
+## ---------------------------------------------------------------------------
+## WHAT THE MOWING SCENE TELLS THE HUD
+## ---------------------------------------------------------------------------
+## Three readings, all of them decided elsewhere: the ground condition comes
+## from `ACAGroundConditions`, the configuration from `ACAEquipment`, and the
+## requested finish from the contract's own seed. This layer only forwards them.
+func set_ground_condition(state: int) -> void:
+	if _hud != null and _hud.has_method(&"set_ground_condition"):
+		_hud.call(&"set_ground_condition", state)
+
+
+func set_mowing_mode(mode: int) -> void:
+	if _hud != null and _hud.has_method(&"set_mowing_mode"):
+		_hud.call(&"set_mowing_mode", mode)
+
+
+func set_requested_pattern(pattern: int) -> void:
+	if _hud != null and _hud.has_method(&"set_requested_pattern"):
+		_hud.call(&"set_requested_pattern", pattern)
+
+
+## The mowing scene hands the zones straight to the minimap through
+## `_bind_minimap()`; this exists so the scene has one place to talk to.
+func set_conservation_zones(zones: Array) -> void:
+	if _minimap != null and _minimap.has_method(&"set_protected_zones"):
+		_minimap.call(&"set_protected_zones", zones)
 
 
 func _refresh_environment() -> void:
@@ -126,6 +159,45 @@ func _refresh_site_readout() -> void:
 		elif feature is ACALawnObstacles:
 			obstacles = (feature as ACALawnObstacles).count()
 	_hud.set_site_notes(pond, obstacles)
+
+
+## ---------------------------------------------------------------------------
+## THE BUSINESS READOUTS
+## ---------------------------------------------------------------------------
+## The catcher, the contract's terms and the machine working beside the player.
+## All three are read from their own authority every frame rather than pushed at
+## the HUD when something happens: a gauge that is only correct when a signal
+## fired is a gauge that is wrong after a load.
+func _refresh_business_readout() -> void:
+	_hud.set_bag(Clippings.bag_kilograms(), Clippings.bag_capacity())
+
+	var job := GameSession.current_job()
+	if job != null:
+		_hud.set_term_states(_terms_met_so_far(job))
+
+	if gameplay_host != null and gameplay_host.has_method(&"autonomous_status_text"):
+		_hud.set_autonomous_status(String(
+			gameplay_host.call(&"autonomous_status_text")))
+
+
+## WHICH TERMS ARE ALREADY SATISFIED, scored against the SAME measurements the
+## completion pathway will use - so a line that says "done" on the card is a
+## line that will still say done on the results sheet.
+##
+## The two that can only be known at the end (the service window, which has not
+## run out yet, and the dry tank, which has not happened yet) are shown as met
+## while they still are, which is what a checklist is for.
+func _terms_met_so_far(job: ACAJob) -> int:
+	var elapsed := GameSession.job_elapsed_seconds() \
+		* maxf(WorldClock.game_minutes_per_real_second, 0.001)
+	var scored := ACAContractTerms.score(job, {
+		"completion": _hud.progress(),
+		"collected_kg": Clippings.delivered_this_job(),
+		"elapsed_minutes": elapsed,
+		"ran_dry": gameplay_host != null \
+			and gameplay_host.get(&"_ran_dry") == true,
+	})
+	return int(scored["met"])
 
 
 # ==================================================================== minimap
@@ -182,6 +254,12 @@ func _bind_minimap() -> void:
 					(feature as ACAPondFeature).shoreline_points(property.terrain()))
 			elif feature is ACALawnObstacles:
 				_minimap.set_obstacles((feature as ACALawnObstacles).obstacles())
+			elif feature is ACAConservationZone:
+				# THE GROUND THE CONTRACT SAYS NOT TO CUT. Asked for through the
+				# same feature interface as the pond and the rocks - the minimap
+				# does not know what a conservation zone is either.
+				_minimap.set_protected_zones(
+					(feature as ACAConservationZone).zones())
 
 	var job := GameSession.current_job()
 	_minimap.set_caption(job.job_site if job != null else "Property")
@@ -217,8 +295,14 @@ func _play_intro() -> void:
 	var job := GameSession.current_job()
 	if job == null:
 		return
-	_intro.set_contract_type("%s Contract" % job.property_type_name())
+	_intro.set_contract_type(_contract_type_line(job))
 	_intro.set_site_notes(_site_sentence())
+	# WHAT THE CUSTOMER ASKED FOR, and WHAT IS ON THE TRAILER. Both were decided
+	# in town, and this is the last screen before the machine is unloaded - so
+	# this is the place a player finds out that the contract they took collects
+	# and the machine they brought does not.
+	_intro.set_requirements(ACAContractTerms.describe(job))
+	_intro.set_equipment_line(_equipment_line(job))
 	_intro.show_job(
 		job.job_site,
 		job.lawn_size_name(),
@@ -226,6 +310,55 @@ func _play_intro() -> void:
 		int(round(JobManager.estimated_time_minutes(job))))
 	_intro.set_status("Preparing equipment...")
 	_dismiss_intro_after(intro_seconds)
+
+
+## The line above the site name. A property the business has cut before says so:
+## that is the whole point of a recurring customer, and the player should know
+## it before they arrive rather than recognising the garden and wondering.
+func _contract_type_line(job: ACAJob) -> String:
+	# WHAT KIND OF WORK IT IS. A rescue contract says so first: it is a
+	# different job from a cut, it pays a premium for being one, and the player
+	# should meet the lawn already knowing why it looks like that.
+	var label := ACAPropertyCondition.contract_label(
+		Business.condition_stage_for(job))
+	var kind := label if not label.is_empty() \
+		else "%s Contract" % job.property_type_name()
+	# ...and WHICH MARKET it is in, once the business works more than one.
+	var region := ACAServiceTerritory.region_for_job(job)
+	if Territory.has_expanded():
+		kind = "%s - %s" % [kind, ACAServiceTerritory.region_name(region)]
+
+	var visits := Business.services_for(job)
+	if visits <= 0:
+		return kind
+	if visits == 1:
+		return "%s - repeat customer" % kind
+	return "%s - %d previous visits" % [kind, visits]
+
+
+## What the business brought, and whether it suits. Never a refusal - the player
+## may take any machine they own anywhere - but a collection contract worked
+## with a mulching machine is worth one sentence before the ramp comes down.
+func _equipment_line(job: ACAJob) -> String:
+	var mower_id := String(Equipment.selected_mower())
+	var machine := ACAMowerUpgrades.mower_name(mower_id)
+	var escort := ""
+	if Equipment.escort_unit_uid() != 0:
+		escort = ", with the %s" % Equipment.unit_label(Equipment.escort_unit_uid())
+	# WHAT IS BOLTED ON, and how the machine is set up. Both were decided at the
+	# service lot and both change what happens on this lawn, so this is the last
+	# place to notice a mismatch before the ramp comes down.
+	var mode := ACAMowingMode.mode_name(Equipment.mowing_mode()).to_lower()
+	var fitted := PackedStringArray()
+	for id in Equipment.fitted_attachments():
+		fitted.append(ACAAttachments.display_name(id).to_lower())
+	var kit := "" if fitted.is_empty() else ", %s" % ", ".join(fitted)
+
+	var advice := ACAMowingMode.advice_for(Equipment.mowing_mode(), job)
+	if not advice.is_empty():
+		return "On the trailer: %s%s%s, set to %s. %s" % [
+			machine, escort, kit, mode, advice]
+	return "On the trailer: %s%s%s, set to %s." % [machine, escort, kit, mode]
 
 
 ## One plain sentence about what is on the ground, read off the GENERATED
@@ -241,11 +374,14 @@ func _site_sentence() -> String:
 		return ""
 	var pond := false
 	var obstacles := 0
+	var conservation: ACAConservationZone = null
 	for feature in features.features():
 		if feature is ACAPondFeature:
 			pond = true
 		elif feature is ACALawnObstacles:
 			obstacles = (feature as ACALawnObstacles).count()
+		elif feature is ACAConservationZone:
+			conservation = feature as ACAConservationZone
 	var parts := PackedStringArray()
 	if pond:
 		parts.append("a pond")
@@ -253,17 +389,68 @@ func _site_sentence() -> String:
 		parts.append("one obstacle to mow around")
 	elif obstacles > 1:
 		parts.append("%d obstacles to mow around" % obstacles)
-	if parts.is_empty():
-		return "Open ground, nothing in the way."
-	return "On site: %s." % " and ".join(parts)
+
+	var sentence := "Open ground, nothing in the way." if parts.is_empty() \
+		else "On site: %s." % " and ".join(parts)
+
+	# PROTECTED PLANTING GETS ITS OWN SENTENCE, and it goes last so it is the
+	# thing the player is still reading when the card comes down. It is the one
+	# site note that is an instruction rather than a description.
+	if conservation != null and conservation.count() > 0:
+		sentence += "  %s" % conservation.description()
+
+	# ...and what the ground is doing, which decides how heavy the work is.
+	var ground := ACAGroundConditions.current(property.params().dryness)
+	sentence += "  %s" % ACAGroundConditions.summary_line(ground)
+	return sentence
+
+
+## How long before the card says it can be skipped. Not how long before it CAN
+## be: that is immediately. The mowing scene builds its property inside its own
+## `_ready()`, so by the first frame the player sees there is a lawn to drive
+## on - the pause is a briefing, not a loading screen.
+const INTRO_READY_DELAY := 0.5
 
 
 func _dismiss_intro_after(seconds: float) -> void:
-	await get_tree().create_timer(seconds, false).timeout
+	await get_tree().create_timer(INTRO_READY_DELAY, false).timeout
+	if is_instance_valid(self) and _intro.is_open():
+		_intro.set_status("Ready - press any key")
+	await get_tree().create_timer(maxf(seconds - INTRO_READY_DELAY, 0.0),
+		false).timeout
 	if not is_instance_valid(self) or not _intro.is_open():
 		return
 	_intro.set_status("Ready")
 	_intro.hide_intro()
+
+
+## THE CONTRACT CARD IS A BRIEFING, NOT A CUTSCENE.
+##
+## It comes down on its own after `intro_seconds`, and it comes down the moment
+## the player does anything that says they have read it - which on a screen
+## whose entire purpose is driving is usually the throttle. Nothing is skipped
+## by skipping it: every term on the card is on the HUD and on the results
+## sheet, and the property is already standing.
+##
+## ESCAPE and H are deliberately let through. The pause stack and the developer
+## debugger have to behave identically whether or not the card is up, and a
+## player reaching for pause is not asking to start mowing.
+func _unhandled_input(event: InputEvent) -> void:
+	if _intro == null or not _intro.is_open():
+		return
+	var key := event as InputEventKey
+	if key != null:
+		if not key.pressed or key.echo:
+			return
+		if key.keycode == KEY_ESCAPE or key.keycode == KEY_H:
+			return
+	else:
+		var click := event as InputEventMouseButton
+		if click == null or not click.pressed:
+			return
+	_intro.set_status("Ready")
+	_intro.hide_intro()
+	get_viewport().set_input_as_handled()
 
 
 # ======================================================================== HUD
@@ -312,6 +499,18 @@ func _restart_job() -> void:
 
 func _wire_results() -> void:
 	_results.return_to_town_requested.connect(_on_return_to_town)
+	_results.next_stop_requested.connect(_on_next_stop)
+
+
+## STRAIGHT ON TO THE NEXT CONTRACT, without returning to the yard. Everything
+## that persists between stops - the tank, the catcher, the trailer's load, the
+## loadout - carries over, because none of it is reset by anything except a
+## visit to a service lot.
+func _on_next_stop() -> void:
+	AppUI.release_mouse(AppUI.MOUSE_HOLD_RESULTS)
+	_results.hide_results()
+	if not GameSession.go_to_next_stop():
+		GameSession.go_to_town()
 
 
 ## GameSession has already completed the job and paid out; this is presentation.
@@ -338,6 +537,15 @@ func _on_job_settled(summary: Dictionary) -> void:
 		float(summary.get("elapsed_seconds", 0.0)),
 		int(summary.get("base_pay", 0)),
 		int(summary.get("bonus", 0)))
+	# Everything the contract MEASURED, on the same sheet. Additive: the five
+	# figures above are the card the results screen has always shown.
+	_results.show_details(summary)
+
+	# THE DAY'S NEXT STOP, when there is one. `GameSession` decides whether
+	# there is; this only prints the offer.
+	var next := StringName(String(summary.get("next_stop", "")))
+	var next_job := JobManager.get_job(next) if not String(next).is_empty() else null
+	_results.show_next_stop(next_job.job_site if next_job != null else "")
 
 
 func _on_return_to_town() -> void:

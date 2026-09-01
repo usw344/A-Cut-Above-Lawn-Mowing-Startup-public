@@ -1,6 +1,6 @@
 # Mowers and Player Controls
 
-Status: Current playable runtime  
+Status: Current playable runtime — reconciled 2026-08-30  
 Canonical location: `Assets/Vehicles and Mowers/Mowers/`
 
 ## Canonical mower variants
@@ -11,7 +11,10 @@ Canonical location: `Assets/Vehicles and Mowers/Mowers/`
 | `powered`   | `Non Rider Mower.tscn` | `non_rider_mower.gd` | `Non Rider Mower Mesh.tscn`                | Powered mower SFX |
 | `push`      | `Push Mower.tscn`      | `push_mower.gd`      | `Push Mower Mesh.tscn`                     | Push mower SFX    |
 
-The rider mower is authored into `Minimum Viable Game.tscn` and is the initial active mower. The **development** HUD (F3) can replace it with either alternative.
+The rider mower is authored into `Minimum Viable Game.tscn` as the editor
+fallback. At runtime `Equipment` selects the business's chosen mower type before
+the contract starts; the legacy **development** HUD can still replace it for
+diagnostic runs.
 
 ## Common scene contract
 
@@ -34,22 +37,37 @@ const POWERED := true  # false on push_mower.gd
 func is_powered() -> bool
 ```
 
-`MVP.gd` depends on the `collided` signal when connecting a newly selected mower to the custom mowing grid. **`collided` is also the blade contract**: a powered mower with an empty tank emits `fuel_empty` instead, so nothing is cut.
+`MVP.gd` connects the `collided` signal from whichever canonical machine is
+active to `ACAMowerCutter`. **`collided` is also the blade contract**: a powered
+mower with an empty tank emits `fuel_empty` instead, so the cutter receives no
+blade tick and nothing is cut.
 
-## Movement
+## Movement and machine personalities
 
-Canonical movement follows the same broad sequence:
+The controllers use `ACAMowerHandling` (`Assets/Vehicles and Mowers/Mowers/
+aca_mower_handling.gd`) for acceleration, braking, reverse speed, steering
+rate, steering lead and presentation lean. Each controller still applies
+gravity and calls `move_and_slide()` as a `CharacterBody3D`, but propulsion is
+now a signed scalar along the machine's own forward axis rather than a shared
+instantaneous velocity. Braking is stronger than acceleration and opposite
+input reverses through the profile's slower reverse cap.
 
-1. Read project gravity.
-2. Apply gravity to vertical velocity.
-3. Record the mower position in `model`.
-4. Read `move_forward` and `move_back`.
-5. Multiply direction by `model.get_speed() * 3`.
-6. Call `move_and_slide()`.
+| Machine | top-speed scale | accel | brake | turn rate | reverse scale |
+|---|---:|---:|---:|---:|---:|
+| rider | 1.20 | 10 | 17 | 1.5 | 0.45 |
+| powered walk-behind | 0.95 | 30 | 44 | 2.9 | 0.70 |
+| push | 0.68 | 65 | 88 | 4.6 | 0.85 |
 
-W and S are the default actions. A/D and jump exist in the project input map but are not used by these controllers.
+The base speed still comes from `model.get_speed()` and the upgrade multiplier;
+the profile multiplies the result once. Upgrades therefore preserve the
+machine personality. W and S are the default actions. A/D and jump exist in the
+project input map but are not consumed by these controllers. Turning remains
+mouse-driven.
 
-Turning is mouse-driven rather than action-driven.
+Lean is presentation-only: the mesh and camera spring toward roll/pitch values
+derived from speed and yaw rate, while the `CharacterBody3D` collider remains
+upright. It adds no raycasts, wheel physics, allocations per frame, or save
+fields.
 
 ## Camera and mouse control
 
@@ -77,6 +95,8 @@ positive downwards and camera pitch is positive upwards, so the controllers
 it defaults to OFF and is never hard-coded.
 
 Rider only: **P** toggles a mode that freezes pitch while keeping steering.
+**C** toggles the precision view on all three canonical machines: a closer deck
+camera and FOV blend, while mouse steering and lean remain unchanged.
 Applied yaw is forwarded to the multipart mower visual so its steering wheel
 reacts (`send_rotation_data`).
 
@@ -114,7 +134,9 @@ After `move_and_slide()`, each controller:
 2. Collects each `KinematicCollision3D`.
 3. Emits the collection through `collided`.
 
-The custom grid checks collider names and treats grass collider names as encoded chunk coordinates.
+The cutter no longer decodes collider names. It ignores the collision payload
+and sweeps the machine's deck geometry through `ACALawn`; solid terrain,
+boundary, pond shoreline and lawn obstacles remain ordinary physics barriers.
 
 This signal is emitted every mower physics frame, even when the collision array is empty.
 
@@ -150,21 +172,19 @@ powered
 rider
 ```
 
-The HUD popup IDs 0, 1, and 2 map to those keys. Selection preserves the current transform and mouse mode, then instantiates a fresh mower and reconnects mowing collisions.
+The production service lot sets `Equipment.selected_mower()`, and the mowing
+scene replaces its editor fallback when needed. The development HUD's popup IDs
+0, 1, and 2 also map to those keys; that diagnostic switch preserves the current
+transform and mouse context, then reconnects the cutter and work truck.
 
-## Canonical future direction
+## Ownership and selection
 
-Future mower selection, ownership, upgrades, and persistence should extend this canonical scene set.
-
-Expected model responsibilities include:
-
-- Stable selected-mower identifier.
-- Owned mower list.
-- Persistent per-mower statistics or upgrades.
-- Fuel and storage state ownership rules.
-- Separation of base mower data from transient runtime node state.
-
-Those schemas are not yet implemented.
+`Equipment` owns which mower types the business has purchased and which one is
+selected for the next contract. `MowerUpgrades` owns per-type upgrade levels;
+the runtime controllers read the stable IDs `rider`, `powered`, and `push`.
+`model` retains legacy shared speed/fuel storage for compatibility but does not
+own the business inventory. Serial-numbered duplicate machines are outside the
+current schema.
 
 ## Legacy mower architecture
 
@@ -293,7 +313,7 @@ whatever supplies fuel will make.
 - **ON** — a tank that reaches empty is refilled **once**, immediately. It is
   not a fuel lock: the gauge still drains between top-ups, which is the point.
 
-Exposed on the **F3 development HUD** (`AUTO REFUEL: ON/OFF`, `Refuel (F7)`,
+Exposed on the legacy **development HUD** (`AUTO REFUEL: ON/OFF`, `Refuel (F7)`,
 `Empty tank`, and a live `%` readout) and on **F8**. The production Gameplay HUD
 never offers it. The Trailer Capture director turns it on for a run.
 

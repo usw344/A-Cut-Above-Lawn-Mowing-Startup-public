@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="ACAEnvWeatherProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/weather_profile.gd" id="1_clg"]
+
+[resource]
+script = ExtResource("1_clg")
+id = &"Clearing"
+display_name = "Clearing"
+camera_exposure_mul = 1.02
+tonemap_exposure_mul = 1.01
+skydome_energy_mul = 1.02
+ambient_energy_mul = 1.06
+sun_disk_intensity_mul = 1.05
+aerial_density_mul = 1.3
+aerial_end_mul = 0.86
+cloud_day_bias = Color(1, 0.98, 0.95, 1)
+cloud_day_bias_weight = 0.16
+cloud_horizon_bias = Color(1, 0.86, 0.72, 1)
+cloud_horizon_bias_weight = 0.22
+fog_tint_bias = Color(0.82, 0.82, 0.84, 1)
+fog_tint_bias_weight = 0.18
+sun_energy = 1.12
+sun_shadow_opacity = 0.88
+atm_turbidity = 0.0016
+atm_thickness = 0.78
+clouds_coverage = 0.66
+clouds_absorption = 2.6
+clouds_sky_tint_fade = 0.38
+clouds_intensity = 11.0
+clouds_speed = 0.12
+cumulus_coverage = 0.6
+cumulus_absorption = 3.4
+cumulus_thickness = 0.042
+cumulus_noise_freq = 2.9
+cumulus_intensity = 0.82
+cumulus_mie_intensity = 1.35
+cumulus_speed = 0.1
+cumulus_size = 1.9
+fog_enabled = true
+fog_density = 0.4
+fog_depth_begin = 80.0
+fog_depth_end = 700.0
+fog_depth_curve = 1.45
+fog_sky_affect = 0.02
+fog_aerial_perspective = 0.34
+fog_sun_scatter = 0.2
+fog_height = 5.0
+fog_height_density = 0.02
+volumetric_density = 0.014
+volumetric_anisotropy = 0.4
+volumetric_albedo = Color(0.96, 0.95, 0.94, 1)
+volumetric_ambient_inject = 0.16
+saturation = 1.04
+contrast = 1.03
+wind = Vector2(1.6, 0.8)
+wetness = 0.5

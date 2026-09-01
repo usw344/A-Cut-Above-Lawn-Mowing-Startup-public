@@ -16,12 +16,15 @@ const DEFAULT_OUTPUT_DIR := "user://weather_matrix"
 
 ## Hours, chosen to sit inside each named profile rather than on a blend edge.
 const TIMES := [
-	["morning", 7.0],
+	["morning", 8.2],
 	["day", 12.0],
 	["evening", 16.3],
 	["night", 22.0],
 ]
-const WEATHERS := ["Clear", "Foggy", "Rain"]
+## Every sky the schedule can produce. `--matrix-weathers=a,b` narrows it when
+## only one look is under review, which is most of the time.
+const WEATHERS := ["Clear", "Partly Cloudy", "Overcast", "Mist", "Foggy",
+	"Light Rain", "Rain", "Clearing"]
 
 ## Frames to let the adapter settle and the rain fade in before capturing.
 const SETTLE_FRAMES := 150
@@ -122,7 +125,7 @@ func _run() -> void:
 ## representative subset rather than the full matrix - the town is a lighting
 ## pass only, it has no rain particles or sky dome of its own.
 const TOWN_SHOTS := [
-	["clear", "morning", 7.0],
+	["clear", "morning", 8.2],
 	["clear", "day", 12.0],
 	["clear", "evening", 16.3],
 	["clear", "night", 22.0],

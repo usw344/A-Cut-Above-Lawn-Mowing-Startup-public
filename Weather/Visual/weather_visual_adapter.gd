@@ -44,17 +44,26 @@ extends Node
 ## Anchors outside that window put "Evening" after dark — the first attempt
 ## used 18.4 and rendered a black screen with stars.
 ##
+## MORNING WAS AT 7.0 AND IS AT 8.2. Seven o'clock is twenty-five minutes after
+## sunrise: the sun is barely off the horizon, Sky3D is painting the whole dome
+## with its horizon tint, and the render came out as a pink scene in which the
+## grass could not be read. Eight-twelve is an hour and a half up, which is
+## what "morning" means, and it is also when the player's working day starts.
+## The 5.2 -> 8.2 span is dawn, and it is a blend rather than a look.
+##
 ## If the Skydome's latitude, date or celestial mode ever change, re-run the
 ## probe and move these. `ACATownLightAdapter` reads this same constant, so the
 ## two screens can never disagree about when it is morning.
 const TIME_ANCHORS := [
-	[0.0, "Night"], [4.8, "Night"], [7.0, "Morning"], [9.8, "Day"],
+	[0.0, "Night"], [5.2, "Night"], [8.2, "Morning"], [10.4, "Day"],
 	[14.2, "Day"], [16.3, "Evening"], [18.2, "Night"], [24.0, "Night"],
 ]
 
-## Weather names this project uses. Must match `WorldClock.WEATHER_PRESETS` and
-## the profile ids shipped in the package.
-const WEATHER_NAMES: PackedStringArray = ["Clear", "Foggy", "Rain"]
+## Weather names this project uses. THE AUTHORITY IS `ACAWorldClock`: this used
+## to be a second copy of the list, and the two could disagree. Now a preset the
+## clock can schedule is a preset this adapter will present, and there is one
+## place to add the ninth.
+const WEATHER_NAMES: PackedStringArray = ACAWorldClock.WEATHER_PRESETS
 
 ## `GameSettings` graphics quality -> environment quality profile id.
 const QUALITY_FOR_SETTING := {
@@ -177,6 +186,28 @@ func current_hour() -> float:
 ## The blended time profile name for `hour`, for tests and tooling.
 func time_profile_at(hour: float) -> String:
 	return _ensure_env().time_profile_at(hour)
+
+
+# ---------------------------------------------------------- THE PLACE
+#
+# WHERE IN THE WORLD THIS SCENE IS, as a standing layer on the composed look.
+# It is set when a level loads and left alone: a region says how much air is
+# between the player and the horizon, and nothing else. It is NOT a second
+# weather system - the sky `ACAWorldClock` scheduled is the sky in every region
+# at the same moment - and it lives in its own slot rather than in the
+# presentation override, so a trailer capture cannot clear it by accident.
+
+## Hand the adapter a region. -1, or a region with no air of its own, clears it.
+func set_region(region: int) -> void:
+	_ensure_env().set_place_layer(ACARegionalContext.air_layer(region))
+
+
+func clear_region() -> void:
+	_ensure_env().clear_place_layer()
+
+
+func place_layer() -> Dictionary:
+	return _ensure_env().place_layer()
 
 
 # ---------------------------------------------- PRESENTATION OVERRIDE

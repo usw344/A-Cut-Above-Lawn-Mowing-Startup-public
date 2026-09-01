@@ -46,7 +46,7 @@ func _run_all() -> void:
 	_test_offer_expiry()
 	_test_accepted_jobs_do_not_expire()
 	_test_accept_flow()
-	_test_single_current_job_limit()
+	_test_current_job_capacity()
 	_test_begin_new_job()
 	_test_progress_and_completion()
 	_test_falling_demand_keeps_offers()
@@ -316,23 +316,57 @@ func _test_accept_flow() -> void:
 	_drop(manager)
 
 
-func _test_single_current_job_limit() -> void:
-	_say("- V1 allows one current job")
+## TWO SEPARATE LIMITS, and this is the test that they are separate.
+##
+## The manager's own capacity is the BUSINESS's - how many contracts a company
+## may have open at once. It was 1 while the player was the only thing that
+## could mow; it is 5 now that a host can put owned machines on contracts.
+##
+## How many the PLAYER may personally hold is a different question, it is 1, and
+## it belongs to the host - so it is asked for through `player_capacity_provider`
+## and NOT hard-coded here. This package must keep working for a host that has no
+## such limit at all, which is what the first half asserts.
+func _test_current_job_capacity() -> void:
+	_say("- business capacity, and the host's player limit")
 	var pair := _make_manager()
 	var manager: ACAJobManager = pair[0]
+	_check_eq(manager.max_current_jobs(), 5,
+		"max_current_jobs is the BUSINESS capacity")
+
+	# --- with no host gate, the business may hold several ---
 	var a := manager.debug_add_offer_with_seed(2001)
 	var b := manager.debug_add_offer_with_seed(2002)
 	_check(manager.accept_job(a.id), "first accept succeeds")
+	_check(manager.accept_job(b.id),
+		"a second accept succeeds when no host limits the player")
+	_check_eq(manager.current_jobs().size(), 2, "the business holds two")
+	_drop(manager)
+
+	# --- with a host gate of one, the second is refused, with a reason ---
+	var gated := _make_manager()
+	var limited: ACAJobManager = gated[0]
+	limited.player_capacity_provider = func() -> Dictionary:
+		if limited.current_jobs().size() < 1:
+			return {"allowed": true, "reason": ""}
+		return {"allowed": false, "reason": "Finish the contract you are on."}
+	var c := limited.debug_add_offer_with_seed(2003)
+	var d := limited.debug_add_offer_with_seed(2004)
+	_check(limited.accept_job(c.id), "first accept succeeds under the gate")
 	var reasons: Array[String] = []
-	manager.job_accept_failed.connect(func(_id: StringName, reason: String) -> void:
+	limited.job_accept_failed.connect(func(_id: StringName, reason: String) -> void:
 		reasons.append(reason))
-	_check(not manager.accept_job(b.id), "second accept is refused")
-	_check_eq(manager.current_jobs().size(), 1, "still one current job")
-	_check_eq(manager.available_jobs().size(), 1, "the refused offer stays available")
+	_check(not limited.accept_job(d.id), "second accept is refused by the host gate")
+	_check_eq(limited.current_jobs().size(), 1, "still one current job")
+	_check_eq(limited.available_jobs().size(), 1, "the refused offer stays available")
 	_check(reasons.size() == 1 and not reasons[0].is_empty(),
 		"a player-facing reason is supplied: \"%s\"" % (reasons[0] if reasons.size() > 0 else ""))
-	_check_eq(manager.max_current_jobs(), 1, "max_current_jobs is 1 in V1")
-	_drop(manager)
+
+	# --- and a MACHINE is not the player, so the gate does not apply to it ---
+	_check(limited.accept_job(d.id, true),
+		"the same offer is accepted when it is taken for a machine")
+	_check_eq(limited.current_jobs().size(), 2,
+		"the business now holds the driven contract and the machine's")
+	_drop(limited)
 
 
 func _test_begin_new_job() -> void:
@@ -511,11 +545,18 @@ func _test_ui_board() -> void:
 	_check(current_card.action_button.text == "RETURN TO JOB",
 		"a partially completed job reads RETURN TO JOB")
 
+	# The board greys ACCEPT against the PLAYER's limit, which the host supplies.
+	# Without a host there is no such limit, so one is supplied here - that is
+	# exactly how the real application does it.
+	manager.player_capacity_provider = func() -> Dictionary:
+		if manager.current_jobs().is_empty():
+			return {"allowed": true, "reason": ""}
+		return {"allowed": false, "reason": "Finish the contract you are on."}
 	board.show_tab(ACAJobBoard.Tab.AVAILABLE)
 	await get_tree().process_frame
 	var blocked_card := board.list_container.get_child(0) as ACAJobCard
 	_check(blocked_card.action_button.disabled,
-		"Accept is blocked while a current job is held")
+		"Accept is blocked while the player holds a contract")
 
 	manager.complete_job(a.id)
 	board.show_tab(ACAJobBoard.Tab.PAST)

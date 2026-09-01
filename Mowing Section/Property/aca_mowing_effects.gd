@@ -55,6 +55,18 @@ var _clippings: GPUParticles3D = null
 var _dust: GPUParticles3D = null
 var _linger := 0.0
 var _enabled := true
+## ---------------------------------------------------------------------------
+## WHAT THE GROUND AND THE CONFIGURATION DO TO THE SPRAY
+## ---------------------------------------------------------------------------
+## Two multipliers, both set from outside, both purely cosmetic. Nothing here
+## decides how much grass was cut - `ACAClippings` does that from the cell count
+## and has never heard of a particle.
+##
+## `_dust_scale` is the ground condition: dry lawns raise dust and wet ones do
+## not. `_mode` is what the machine is configured to do with what it cuts, and
+## it changes WHERE the spray leaves from and HOW MUCH of it there is.
+var _dust_scale := 1.0
+var _mode: int = ACAMowingMode.Mode.BAG
 
 
 func _ready() -> void:
@@ -88,12 +100,61 @@ func bind(mower: Node3D, cutter: ACAMowerCutter,
 	_clippings = _make_emitter("Clippings", CLIPPING_COUNT, behind,
 		_clipping_material(params), _clipping_mesh(params))
 	_dust = null
-	if params != null and params.dryness >= DUST_DRYNESS:
+	if params != null and params.dryness >= DUST_DRYNESS and _dust_scale > 0.0:
 		# Dust is kicked up UNDER the deck rather than thrown from its edge, so
 		# it sits at the deck's own centre line.
 		_dust = _make_emitter("Dust", DUST_COUNT,
 			Vector3(0.0, 0.06, deck.forward_offset - deck.half_length * 0.6),
 			_dust_material(params), _dust_mesh(params))
+		_dust.amount_ratio = clampf(_dust_scale, 0.0, 1.0)
+	# The spray follows the configuration the machine went out in.
+	set_mowing_mode(_mode)
+
+
+## HOW MUCH DUST THIS PROPERTY IS THROWING TODAY. Zero switches it off, which
+## is what a wet lawn does. Set by the mowing runtime from
+## `ACAGroundConditions`; this class never asks the weather anything.
+func set_dust_scale(value: float) -> void:
+	_dust_scale = maxf(value, 0.0)
+	if _dust != null:
+		_dust.amount_ratio = clampf(_dust_scale, 0.0, 1.0)
+		if _dust_scale <= 0.0:
+			_dust.emitting = false
+
+
+## WHICH CONFIGURATION THE MACHINE IS IN, for the look of the discharge.
+##
+##   BAGGING         the clippings are drawn in behind the deck: a short, thin
+##                   spray close to the machine.
+##   MULCHING        almost nothing leaves the deck, which is the point of it.
+##   SIDE DISCHARGE  a wide throw well clear of the right-hand side.
+##
+## It only moves and scales the emitter that already existed. There is no second
+## particle system and no per-mode effect to maintain.
+func set_mowing_mode(mode: int) -> void:
+	_mode = mode
+	if _clippings == null or _cutter == null:
+		return
+	var deck := _cutter.deck()
+	if deck == null:
+		return
+	var deck_rear: float = deck.forward_offset - deck.half_length
+	match mode:
+		ACAMowingMode.Mode.MULCH:
+			_clippings.amount_ratio = 0.22
+			_clippings.position = Vector3(0.0, 0.08, deck_rear - 0.1)
+		ACAMowingMode.Mode.SIDE_DISCHARGE:
+			_clippings.amount_ratio = 1.0
+			_clippings.position = Vector3(deck.half_width * 1.15, 0.16,
+				deck.forward_offset - deck.half_length * 0.35)
+		_:
+			_clippings.amount_ratio = 0.72
+			_clippings.position = Vector3(deck.half_width * 0.55, 0.12,
+				deck_rear - 0.2)
+
+
+func mowing_mode() -> int:
+	return _mode
 
 
 func set_enabled(value: bool) -> void:

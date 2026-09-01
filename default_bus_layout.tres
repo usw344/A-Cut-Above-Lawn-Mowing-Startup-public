@@ -4,7 +4,7 @@
 ;   |- Mower       every mower's AudioStreamPlayer3D
 ;   |- Ambience    the mowing scene's ambience bed
 ;   |- Weather     rain and any future precipitation audio
-;   +- UI          reserved; nothing plays on it yet
+;   +- UI          the interface: presses, hovers, toasts (ACAUISound)
 ;
 ; Every bus ships at 0 dB. The authored BALANCE between them is
 ; ACAAudioMix.TRIM_DB (Game/App/audio_mix.gd), applied together with the

@@ -15,7 +15,7 @@ class_name ACAAudioMix
 ##       |- Mower       every mower's AudioStreamPlayer3D
 ##       |- Ambience    the mowing scene's ambience bed
 ##       |- Weather     rain, and any future precipitation audio
-##       +- UI          reserved; nothing plays on it yet
+##       +- UI          the interface: presses, hovers, toasts (ACAUISound)
 ##
 ## Routing is set on the AudioStreamPlayer nodes in their own scenes, not in
 ## code. Adding a sound means picking its bus in the scene, never adding a
@@ -64,10 +64,21 @@ const BUSES: Array[StringName] = [MASTER, MOWER, AMBIENCE, WEATHER, UI]
 ##     clear ambience  about -19 dBFS   <- a bed, never a competitor
 const TRIM_DB := {
 	MASTER: 0.0,
-	MOWER: 14.0,
+	# LOWERED FROM +14 IN THE SOUND OVERHAUL. That trim existed because the two
+	# recordings the fleet shared peaked at -23 dBFS: it was lifting very quiet
+	# sources into useful headroom. The three engines that replaced them peak at
+	# -12.9, -17.1 and -37.0, and with the old trim still on top the Mower bus
+	# measured **+10.6 dBFS while mowing** - clipping, and twenty-five decibels
+	# over heavy rain. The trim now brings the family DOWN to sit with the rest.
+	MOWER: -7.0,
 	AMBIENCE: 5.0,
 	WEATHER: 10.0,
-	UI: 0.0,
+	# THE UI BUS IS NO LONGER RESERVED. The interface sound set is normalised
+	# close to full scale, unlike every recording in this game, so its trim is
+	# NEGATIVE where the others are positive - it is being brought DOWN to sit
+	# with them rather than lifted into headroom. Measured with the Audio Mix
+	# Probe against the same targets as the rest of the mix.
+	UI: -9.0,
 }
 
 

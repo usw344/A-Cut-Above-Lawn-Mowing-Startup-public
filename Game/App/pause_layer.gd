@@ -40,9 +40,15 @@ signal restart_job_requested()
 ## not pause.
 var _owns_tree_pause: bool = false
 
+## DEVELOPMENT. The H overlay. Mounted here rather than on each screen because
+## this class is already the one thing the Town and the mowing Gameplay UI have
+## in common - so there is one debugger implementation, not two.
+var _debugger: ACADeveloperDebugger = null
+
 
 func _ready() -> void:
 	_wire_pause_stack()
+	_mount_developer_debugger()
 
 
 # ================================================================== wiring
@@ -81,6 +87,39 @@ func _wire_pause_stack() -> void:
 ## Override in a subclass to list the bindings that make sense on that screen.
 func control_bindings() -> PackedStringArray:
 	return ACAControlBindings.TOWN
+
+
+# ========================================================== super debugger (H)
+##
+## DEVELOPMENT ONLY. Hidden on launch; H opens and closes it. The overlay owns
+## its own cursor hold and no game state - see the class docs.
+##
+## `_unhandled_key_input` deliberately, not `_input`: it runs AFTER the GUI, so
+## typing an "h" into the debugger's money field cannot close the debugger.
+## The pause stack takes precedence, so H is inert while anything in it is up.
+
+func _mount_developer_debugger() -> void:
+	_debugger = ACADeveloperDebugger.new()
+	_debugger.name = "Super Debugger"
+	add_child(_debugger)
+
+
+func developer_debugger() -> ACADeveloperDebugger:
+	return _debugger
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if _debugger == null:
+		return
+	var key := event as InputEventKey
+	if key == null or not key.pressed or key.echo:
+		return
+	if key.keycode != KEY_H:
+		return
+	if pause_stack_open():
+		return
+	_debugger.toggle()
+	get_viewport().set_input_as_handled()
 
 
 # ============================================================ open / close
@@ -155,6 +194,10 @@ func close_pause_stack() -> void:
 
 
 func _on_pause_opened() -> void:
+	# The debugger draws above the pause stack, so it gets out of the way
+	# rather than sitting on top of the menu. Its cursor hold goes with it.
+	if _debugger != null:
+		_debugger.close()
 	AppUI.hold_mouse(AppUI.MOUSE_HOLD_PAUSE)
 	if not get_tree().paused:
 		get_tree().paused = true

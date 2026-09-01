@@ -255,7 +255,14 @@ func _build_tile(tile_origin: Vector2, terrain: ACATerrain, lawn: ACALawn,
 
 			var meadow: float = 0.0 if inside_lawn else 1.0
 			var variation: float = colour_noise.get_noise_2d(x, z) * 0.5 + 0.5
-			var height_scale: float = LAWN_HEIGHT
+			# THE PROPERTY'S CONDITION. 1.0 on every ordinary contract, which is
+			# almost all of them; well above it on a neglected one, and that
+			# extra height is the whole of what a rescue job looks like from the
+			# seat. It rides on the STANDING height only - `cut_height` in the
+			# shader is what a deck leaves behind, and a deck leaves the same
+			# thing behind whatever it went through.
+			var condition: float = maxf(_params.grass_height_scale, 0.1)
+			var height_scale: float = LAWN_HEIGHT * condition
 			if not inside_lawn:
 				# The meadow starts barely taller than the kept lawn and grows
 				# into itself over the next dozen units. Whether a blade is
@@ -270,7 +277,7 @@ func _build_tile(tile_origin: Vector2, terrain: ACATerrain, lawn: ACALawn,
 				# the first several units past the contract stay at lawn height,
 				# the way the verge of a kept property does, and the wild grass
 				# starts further out where the trees are.
-				height_scale = lerpf(LAWN_HEIGHT * 1.02, MEADOW_HEIGHT,
+				height_scale = lerpf(LAWN_HEIGHT * condition * 1.02, MEADOW_HEIGHT,
 					clampf((out - MEADOW_VERGE) / MEADOW_RISE, 0.0, 1.0))
 			# RESTRAINED. The old spread was 0.80 - 1.24 of the authored height,
 			# which was invisible at eleven centimetres and became a ragged,

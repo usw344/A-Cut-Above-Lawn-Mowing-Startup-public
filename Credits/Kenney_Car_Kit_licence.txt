@@ -1,0 +1,40 @@
+	
+
+	Car Kit (3.1)
+
+	Created/distributed by Kenney (www.kenney.nl)
+	Creation date: 02-04-2026 14:03
+	
+			------------------------------
+
+	License: (Creative Commons Zero, CC0)
+	http://creativecommons.org/publicdomain/zero/1.0/
+
+	You can use this content for personal, educational, and commercial purposes.
+
+	Support by crediting 'Kenney' or 'www.kenney.nl' (this is not a requirement)
+
+			------------------------------
+
+	• Website : www.kenney.nl
+	• Donate  : www.kenney.nl/donate
+
+	• Patreon : patreon.com/kenney
+	
+	Follow on social media for updates:
+
+	• Twitter:	 twitter.com/KenneyNL
+	• BlueSky:	 kenney.bsky.social
+	• Instagram: instagram.com/kenney_nl
+			------------------------------
+
+	USED IN A CUT ABOVE: MOW & GROW
+
+	A small runtime subset only. Copied out of the read-only asset dump into
+	res://Assets/Vehicles and Mowers/Work Vehicles/ :
+
+	    truck.glb        the work truck at every contract's arrival point
+	    truck-flat.glb    the equipment trailer behind it
+	    van.glb          the business yard's second vehicle
+
+	The rest of the pack stays in the asset dump and is not shipped.

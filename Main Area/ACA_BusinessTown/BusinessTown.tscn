@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/Assets/Roads/road_tsplit.gltf" id="7_tsplit"]
 [ext_resource type="PackedScene" path="res://Main Area/ACA_BusinessTown/Assets/Roads/road_corner.gltf" id="7_corner"]
 [ext_resource type="Script" path="res://Main Area/ACA_BusinessTown/aca_town_traffic.gd" id="7_traffic"]
+[ext_resource type="Script" path="res://Main Area/ACA_BusinessTown/aca_business_yard.gd" id="7_yard"]
 [ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete.tres" id="8_r2no5"]
 [ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/concrete_dark.tres" id="9_08iam"]
 [ext_resource type="Material" path="res://Main Area/ACA_BusinessTown/Materials/asphalt.tres" id="10_ovm5h"]
@@ -262,8 +263,8 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -8, 
 [node name="Main_-6" parent="Roads" unique_id=1001632370 instance=ExtResource("6_y5fsw")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -6, 0, 0)
 
-[node name="Main_-4" parent="Roads" unique_id=215443748 instance=ExtResource("7_fb1y4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 0)
+[node name="Main_-4" parent="Roads" unique_id=215443748 instance=ExtResource("7_tsplit")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4, 0, 0)
 
 [node name="Main_-2" parent="Roads" unique_id=982226662 instance=ExtResource("5_q2jtx")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2, 0, 0)
@@ -1154,6 +1155,10 @@ transform = Transform3D(0.99939084, 0, 0.034899496, 0, 1, 0, -0.034899496, 0, 0.
 
 [node name="Traffic" type="Node3D" parent="." unique_id=810100]
 script = ExtResource("7_traffic")
+
+[node name="BusinessYard" type="Node3D" parent="." unique_id=810200]
+transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, -1, 0, -3)
+script = ExtResource("7_yard")
 
 [node name="CameraRig" type="Node3D" parent="." unique_id=1687696104 node_paths=PackedStringArray("camera")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.9, -2.6)

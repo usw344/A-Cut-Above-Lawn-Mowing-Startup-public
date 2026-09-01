@@ -1,163 +1,102 @@
 # Global Model and Runtime State
 
-Status: **Current, but no longer the only global.** As of 2026-08-19 `model` is
-one of six autoloads and its scope has narrowed to mower/cuttings state.
+Status: **Current, but deliberately narrow** — reconciled 2026-08-30.
 
-> **Do not add new global state here.** World time and weather belong to
-> `WorldClock`, jobs to `JobManager`, application/session state to `GameSession`,
-> presentation settings to `GameSettings`. See
-> [application layer](../application-layer.md).
+`model` is one compatibility autoload, not the application's general state
+container. New state belongs to its owning authority: `WorldClock` owns time
+and weather, `JobManager` owns jobs, `GameSession` owns routing and money,
+`MowerFuel` owns fuel rules, and the business autoloads own equipment, resources
+and progression. See [application layer](../application-layer.md).
 
 ## Definition
 
-`Data Structures/Model.gd` is configured in `project.godot` as:
+`Data Structures/Model.gd` is configured as:
 
 ```text
 model="*res://Data Structures/Model.gd"
 ```
 
-The script extends `Node`, declares `class_name Model`, and is accessed by runtime scripts through the lowercase autoload name `model`.
+It extends `Node`, declares `class_name Model`, and is accessed through the
+lowercase autoload name `model`.
 
 ## Responsibilities
 
-The model currently holds:
+The model retains compatibility state used by the canonical mower controllers:
 
-- Canonical mower runtime state (speed, fuel, blade length).
-- Mowing/cuttings state.
-- Mower-selection metadata (`current_mower`, `mower_scene_references`).
-- Empty placeholder getters (`get_game_time`, `get_game_weather`, `get_game_money`)
-  left over from the old Information Bar — **superseded**; use `WorldClock` and
-  `GameSession` instead.
-- `save_game_data` / `load_game_data` / `get_game_profile_object` stubs.
+- authored/shared speed and blade-length values;
+- the current fuel level and legacy fuel counters;
+- mower position;
+- legacy mower-selection metadata and cuttings fields.
 
-**Removed 2026-08-19:** the `job_offers` dictionary and its `Job_Offer`-typed
-`add_job_offer()` / `remove_job_offer()` / `get_all_job_offers()`. Nothing called
-them, and they were the only tie to the old job prototype now in
-`Soft Delete/`. Restoring that prototype requires restoring this block.
+`MowerFuel` owns the rules for consuming/refilling fuel even though the level is
+stored on `model`, because the existing save block persists those fields.
+`Equipment` owns current mower-type ownership and selection; the model's
+`mower_scene_references` points to the older `Mower_Normal` architecture and
+must not define the current schema.
 
-Note `mower_scene_references` loads `Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn`
-through `load()` — a dependency no scene graph shows.
+The placeholder `get_game_time()`, `get_game_weather()` and `get_game_money()`
+methods are superseded. Call `WorldClock` and `GameSession` instead. The model's
+`save_game_data()` / `load_game_data()` / `get_game_profile_object()` methods
+are incomplete stubs; `SaveService` is the functioning save owner.
 
 ## Current state fields
 
-### Mower behavior
+| Field | Current role |
+|---|---|
+| `speed` | Authored base read by canonical controllers; development speed control can set it |
+| `blade_length` | Legacy blade-width compatibility field |
+| `mower_fuel` | Float fuel level, read/written through `MowerFuel` rules |
+| `mower_fuel_idle_counter` / `idle_fuel_use` | Retained legacy save fields; current fuel consumption is delta-time based |
+| `mower_position` | Updated by canonical mower controllers |
+| `mower_grid_position` | Reserved; no current writer |
+| `stored_cuttings` / `cuttings_in_mower` | Compatibility getters/setters; `Clippings` owns current bag and yard state |
+| `current_mower` / `mower_scene_references` | Legacy selection metadata; current selection is `Equipment` plus stable IDs |
 
-| Field | Default | Current role |
-|---|---:|---|
-| `speed` | 10 | Read by all canonical mower controllers; set by MVP HUD |
-| `blade_length` | 1 | Used by the legacy mower blade-width function |
-| `mower_fuel` | 100 | Shared fuel value across mower instances |
-| `mower_fuel_idle_counter` | 0 | Accumulates idle and movement fuel use |
-| `idle_fuel_use` | 26 | Counter threshold before one fuel unit is removed |
-| `mower_position` | `Vector3()` | Updated each canonical mower physics frame |
-| `mower_grid_position` | Uninitialized `Vector2` | Reserved; no active writer found |
-
-### Grass cuttings
-
-| Field | Default | Current role |
-|---|---:|---|
-| `stored_cuttings` | 0 | Has getter and setter; no active MVP consumer |
-| `cuttings_in_mower` | 0 | Has getter and setter; no active MVP consumer |
-
-The older mowing UI calls `model.get_cuttings()`, but that method does not exist. It is therefore not a valid consumer of the current API.
-
-### Mower selection metadata
-
-```gdscript
-var current_mower:String = "Small Gas Mower"
-```
-
-The adjacent `mower_scene_references` dictionary only resolves `"Small Gas Mower"` to the older `Mower_Normal.tscn`. Other entries are null.
-
-This lookup belongs to the legacy mower architecture. The current MVP keeps its own canonical lookup:
-
-```text
-push -> Push Mower.tscn
-powered -> Non Rider Mower.tscn
-rider -> Mower Rider.tscn
-```
-
-Future development is expected to move the selected canonical mower and persistent mower data into the model. The current `Assets/Vehicles and Mowers/Mowers` scenes are the foundation for that work; the older lookup should not define the new schema.
-
-### Job offers
-
-```gdscript
-var job_offers:Dictionary = {}
-```
-
-The model exposes:
-
-- `add_job_offer()`
-- `remove_job_offer()`
-- `get_all_job_offers()`
-
-The partially integrated job manager, generator, offer, and display scripts use this dictionary as their shared offer registry.
+The legacy `job_offers` dictionary and its `Job_Offer` methods were removed with
+the old job prototype. `ACAJobManager` is the current job registry.
 
 ## Public API groups
 
-### Canonical runtime API
+### Compatibility API used by current runtime
 
 - `get_speed()` / `set_speed()`
 - `get_mower_fuel()` / `set_mower_fuel()`
 - `get_mower_fuel_idle_counter()` / `set_mower_fuel_idle_counter()`
-- `is_mower_fuel_idle_counter()`
-- `increment_mower_fuel_idle_counter()`
+- `is_mower_fuel_idle_counter()` / `increment_mower_fuel_idle_counter()`
 - `set_mower_position()` / `get_mower_position()`
 
-### Present but not integrated into the MVP
+### Present but not authoritative
 
-- Blade-length getters/setters.
-- Cuttings getters/setters.
-- Job-offer registry methods.
-- `get_game_time()`
-- `get_game_weather()`
-- `get_game_money()`
-
-The three information getters currently return empty strings.
-
-### Incomplete persistence API
-
-- `save_game_data(file_name)` constructs a local dictionary but neither returns nor writes it.
-- `load_game_data(file_name)` is empty.
-- `get_game_profile_object()` is empty.
-
-These methods must not be documented as a functioning save service.
+Blade-length and cuttings accessors remain for compatibility. The placeholder
+information getters remain, but return empty values and must not be used for
+application state.
 
 ## Active consumers
 
 | Consumer | State used |
 |---|---|
-| `mower_rider.gd` | Speed, fuel, fuel counter, mower position |
-| `non_rider_mower.gd` | Speed, fuel, fuel counter, mower position |
-| `push_mower.gd` | Speed, fuel, fuel counter, mower position |
-| `MVP.gd` | Speed |
-| `mvp_hud.gd` | Initial speed |
+| `mower_rider.gd` | speed, fuel, fuel counters, mower position |
+| `non_rider_mower.gd` | speed, fuel, fuel counters, mower position |
+| `push_mower.gd` | speed, position; the push mower does not consume fuel |
+| `MVP.gd` and the legacy development HUD | compatibility speed and development readouts |
+| `MowerFuel` | fuel level storage, with rules owned by that autoload |
+| `SaveService` | reads the durable model fields into the `mower` save block |
 
-## Partially integrated consumers
+## Input and cursor behavior
 
-- Job manager, generator, offer, and display.
-- Main-area information bar.
-- Mowing information UI.
-- New-game/profile prototype.
-- Legacy `Mower.gd`.
-
-## Input behavior
-
-The model’s `_input()` toggles captured/visible mouse mode when `ui_accept` is pressed. This operates globally whenever the autoload receives input and is separate from the MVP HUD’s `/` key handling.
+The model's `ui_accept` bridge asks `AppUI.toggle_mouse_capture()`. It does not
+assign `Input.mouse_mode` directly. `AppUI` is the only cursor writer; modal
+holds make the cursor visible while a screen's context remains captured or
+visible underneath.
 
 ## Persistence and compatibility
 
-The autoload persists only for the current process. It does not currently persist across application launches.
+`model` persists only for the current process. Cross-launch persistence belongs
+to `SaveService`, which reads the model's compatibility fields alongside the
+authoritative `WorldClock`, `JobManager`, `GameSession`, economy and business
+sections. Stable canonical mower identifiers are `rider`, `powered`, and
+`push`; scene paths and legacy selection names are not a new save schema.
 
-Once a real save format uses model fields:
-
-- Field renames and type changes may require migrations.
-- Canonical mower identifiers should be stable.
-- Scene paths should not be the sole persistent identity for owned equipment.
-- Runtime-only node references and transient counters should be separated from durable profile data.
-
-There is no authoritative released save schema in the current repository.
-
-## Change impact
-
-Changes to Model methods can affect the playable mowers immediately and the partially integrated job/UI/save systems later. Before removing a method, check both current-main reachability and direct source references.
+Changes to model methods can affect the playable mowers immediately. Before
+removing a method, check both current controller consumers and direct save/test
+references.

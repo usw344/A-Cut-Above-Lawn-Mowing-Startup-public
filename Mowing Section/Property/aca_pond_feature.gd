@@ -218,6 +218,11 @@ func is_solid() -> bool:
 	return true
 
 
+## THE WATER IS A FLAT PLANE. See `ACAPropertyFeature.levels_ground()`.
+func levels_ground() -> bool:
+	return true
+
+
 ## The ring's radius on the ray through a point, interpolated between the
 ## samples `prepare()` measured. Zero before `prepare()` has run, which reads as
 ## "excludes nothing" - the honest answer for a pond that does not know where

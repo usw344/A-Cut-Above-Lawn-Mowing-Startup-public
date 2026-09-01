@@ -1,12 +1,16 @@
 # Startup and Runtime Flow
 
-Status: **Current** — verified 2026-08-19 by `Dev tools/Validation/Flow Test.tscn`.
+Status: **Current** — verified 2026-08-30 by the Flow, Debugger, Handling,
+Layout and Workmanship probes.
 
 ## Launch
 
 1. Godot loads `project.godot`.
 2. Autoloads are created **in declaration order**:
-   `model` → `WorldClock` → `JobManager` → `GameSettings` → `AppUI` → `GameSession`.
+   `model` → `MowerFuel` → `WorldClock` → `JobManager` → `GameSettings` →
+   `AppUI` → `GameSession` → `SaveService` → `Economy` → `MowerUpgrades` →
+   `Equipment` → `Clippings` → `Business` → `Territory` → `Agreements` →
+   `Portfolio`.
    - `JobManager._ready()` starts its 0.25 s market poll timer on a *stopped*
      default clock.
    - `GameSettings._ready()` applies its defaults.
@@ -92,7 +96,9 @@ The host feeds the HUD real money and `set_calendar(day, clock, weather)` at 2 H
    - restores the saved cut state, if there is one
 
 `Gameplay UI.tscn` (a child of the scene) then shows the Job Intro with real
-contract data and brings up the production HUD.
+contract data and brings up the production HUD. The intro lasts one 2.4-second
+timer unless a key or click skips it; results and the return to Town do not add
+an artificial delay.
 
 ### Property construction
 
@@ -120,7 +126,9 @@ Cutting: mower `collided` → `ACAMowerCutter.on_blades_active()` →
 fires every physics frame while the engine runs and stops when the tank is empty
 — but the payload is ignored and the cut is decided by GEOMETRY: the machine's
 deck rectangle, swept along the ground it actually covered. `mow_deck()` returns
-how many cells really changed, so the O(1) counter cannot drift.
+how many cells really changed, so the O(1) counter cannot drift. The handling
+profile supplies machine-specific acceleration, braking, reverse speed and
+turning; lean is presentation-only and never moves the collider.
 
 ## Completion
 
@@ -138,7 +146,9 @@ GameSession.complete_current_job(completion, elapsed)
 ```
 
 `gameplay_ui._on_job_settled()` closes the whole pause stack, hides the HUD, and
-shows the Job Complete screen. Its RETURN TO TOWN button calls
+shows the Job Complete screen. The results read the settlement summary plus the
+workmanship measurements; coverage/contact callouts are recognition-only and
+do not alter the payment. Its RETURN TO TOWN button calls
 `GameSession.go_to_town()`.
 
 If the mowing scene is opened standalone with no Gameplay UI, `MVP._on_job_settled()`

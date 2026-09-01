@@ -12,7 +12,19 @@ extends Node
 ##
 ## PUBLIC API: None.
 
-const DRIVE_FRAMES := 90
+## HOW LONG each drive test holds the throttle, in SECONDS of simulated time.
+##
+## It used to be a count of ninety RENDER frames, which is two assumptions that
+## are both wrong: that a render frame is a fixed slice of time, and that a
+## machine reaches its speed instantly. The second stopped being true when the
+## machines were given acceleration - a rider now takes 1.6 s to reach 90% of
+## its speed, so ninety frames of it was a machine still getting going, and the
+## assertion measured the acceleration curve rather than whether the throttle
+## worked.
+##
+## Counted off the PHYSICS step, which is a fixed 576 Hz, so this is the same
+## test on any machine at any frame rate.
+const DRIVE_SECONDS := 1.5
 
 var _passes := 0
 var _failures := 0
@@ -60,7 +72,7 @@ func _test_driving_cuts() -> void:
 
 	var before := lawn.mowed_item_count()
 	var start := mower.global_position
-	var travelled := await _drive(DRIVE_FRAMES)
+	var travelled := await _drive(DRIVE_SECONDS)
 	var after := lawn.mowed_item_count()
 
 	_check("driving: the machine actually moved (%.1f units)" % travelled,
@@ -137,7 +149,7 @@ func _test_each_mower_cuts_its_own_width() -> void:
 		await _step(6)
 
 		var before := lawn.mowed_item_count()
-		var travelled := await _drive(DRIVE_FRAMES)
+		var travelled := await _drive(DRIVE_SECONDS)
 		var cells := lawn.mowed_item_count() - before
 		var width: float = float(cells) / maxf(travelled, 0.001)
 		widths[id] = width
@@ -201,14 +213,18 @@ func _place(mower: Node3D, where: Vector3, yaw: float) -> void:
 		(scene.get(&"cutter") as ACAMowerCutter).resync()
 
 
-func _drive(frames: int) -> float:
+func _drive(seconds: float) -> float:
 	var scene := get_tree().current_scene
 	var mower: Node3D = scene.get(&"current_mower") if scene != null else null
 	if mower == null:
 		return 0.0
 	var from := mower.global_position
 	Input.action_press(&"move_forward")
-	await _step(frames)
+	var elapsed := 0.0
+	var step := 1.0 / float(Engine.physics_ticks_per_second)
+	while elapsed < seconds:
+		await get_tree().physics_frame
+		elapsed += step
 	Input.action_release(&"move_forward")
 	await _step(2)
 	var to := mower.global_position

@@ -25,6 +25,19 @@ extends Node
 ## put the town back to its authored lighting with no other change.
 
 const SUN_YAW_KEY := "sun_yaw_degrees"
+## ---------------------------------------------------------------------------
+## THE SUN GETS LOW NOW, AS WELL AS TURNING
+## ---------------------------------------------------------------------------
+## This adapter used to rotate the authored sun about world Y ONLY, which kept
+## the town's authored shading angle at every hour. It also meant the sun was
+## forty degrees above the horizon at half past four in the afternoon, so a hub
+## at "evening" was a midday scene with warm light on it - the one thing about
+## the regional screens that a render could not be argued out of.
+##
+## The pitch is now offset per time of day, applied about the light's OWN right
+## axis so it lifts and drops the sun without disturbing the direction it comes
+## from. Day is zero, which is the town exactly as authored.
+const SUN_PITCH_KEY := "sun_pitch_offset_degrees"
 
 ## Degrees the sun must actually turn before its basis is rewritten.
 ##
@@ -40,6 +53,26 @@ const SUN_YAW_KEY := "sun_yaw_degrees"
 ## quarter-degree deadband steps roughly twice a second and is invisible in the
 ## shading while removing the churn entirely.
 const SUN_YAW_DEADBAND_DEGREES := 0.25
+## The same deadband, for the same reason, on the pitch.
+const SUN_PITCH_DEADBAND_DEGREES := 0.25
+
+## Fog density at `haze = 1.0`. Small: the point is to separate a horizon from
+## a foreground, not to put weather in the air that the clock did not schedule.
+const AIR_HAZE_DENSITY := 0.0016
+
+## ---------------------------------------------------------------------------
+## HOW MUCH OF THE FOG LANDS ON THE SKY
+## ---------------------------------------------------------------------------
+## Godot's `Environment.fog_sky_affect` DEFAULTS TO 1.0, which means fog thick
+## enough to soften a horizon also paints the entire sky the fog's own colour.
+## The first render of the regional hubs with region haze on them came out with
+## a flat cream void behind the island where the sky should have been, and the
+## Big Town skyline vanished into it in the rain.
+##
+## Every weather now states its own value, and the region's standing haze - which
+## is about DISTANCE, not about weather - states zero. A fog that has swallowed
+## the sky is not a fog, it is a background colour.
+const AIR_HAZE_SKY_AFFECT := 0.0
 
 ## Time profiles. Small on purpose - a stylised town needs colour and intensity,
 ## not a simulation.
@@ -48,6 +81,7 @@ const TIME_PROFILES := {
 		"sun_color": Color(0.62, 0.72, 0.98),
 		"sun_energy": 0.30,
 		"sun_yaw_degrees": 80.0,
+		"sun_pitch_offset_degrees": 14.0,
 		"fill_color": Color(0.45, 0.55, 0.82),
 		"fill_energy": 0.30,
 		"sky_top_color": Color(0.055, 0.075, 0.165),
@@ -62,6 +96,7 @@ const TIME_PROFILES := {
 		"sun_color": Color(1.00, 0.90, 0.78),
 		"sun_energy": 1.20,
 		"sun_yaw_degrees": -42.0,
+		"sun_pitch_offset_degrees": 21.0,
 		"fill_color": Color(0.72, 0.80, 0.95),
 		"fill_energy": 0.36,
 		"sky_top_color": Color(0.360, 0.540, 0.800),
@@ -78,6 +113,7 @@ const TIME_PROFILES := {
 		"sun_color": Color(1.000, 0.945, 0.851),
 		"sun_energy": 1.50,
 		"sun_yaw_degrees": 0.0,
+		"sun_pitch_offset_degrees": 0.0,
 		"fill_color": Color(0.706, 0.788, 0.902),
 		"fill_energy": 0.30,
 		"sky_top_color": Color(0.290, 0.478, 0.729),
@@ -92,6 +128,7 @@ const TIME_PROFILES := {
 		"sun_color": Color(1.00, 0.80, 0.60),
 		"sun_energy": 1.30,
 		"sun_yaw_degrees": 46.0,
+		"sun_pitch_offset_degrees": 24.0,
 		"fill_color": Color(0.62, 0.70, 0.90),
 		"fill_energy": 0.34,
 		"sky_top_color": Color(0.300, 0.360, 0.640),
@@ -109,10 +146,56 @@ const TIME_PROFILES := {
 const TIME_ANCHORS := ACAWeatherVisualAdapter.TIME_ANCHORS
 
 ## Weather layers. `scale` multiplies, `set` replaces - same rule as the sky.
+##
+## EIGHT SKIES, THE SAME EIGHT `ACAWorldClock` SCHEDULES. The town is lit by a
+## `ProceduralSkyMaterial` rather than by Sky3D, so these are not the same
+## numbers as the mowing scene's weather profiles - but they are the same
+## STATES, and the two screens agree about what the weather is because they read
+## the same clock.
+##
+## The town camera sits about sixty units back from its subject, so a fog
+## density that reads as atmospheric at mower height is a solid wall here. Every
+## density below was measured from a render rather than copied from the sky
+## adapter.
 const WEATHER_LAYERS := {
 	"Clear": {
 		"scale": {},
-		"set": {"fog_enabled": false, "fog_density": 0.0},
+		"set": {"fog_enabled": false, "fog_density": 0.0, "fog_sky_affect": 0.0},
+	},
+	"Partly Cloudy": {
+		"scale": {
+			"sun_energy": 0.94,
+			"fill_energy": 1.06,
+			"ambient_energy": 1.03,
+		},
+		"set": {"fog_enabled": true, "fog_density": 0.0009,
+			"fog_sky_affect": 0.02},
+	},
+	# OVERCAST IS NOT A DIMMER. The sun goes soft and nearly shadowless, the
+	# SKY does most of the lighting instead, and the whole scene loses contrast
+	# rather than brightness - which is what an overcast day actually looks
+	# like and why it is the one weather that reads as structurally different.
+	"Overcast": {
+		"scale": {
+			"sun_energy": 0.46,
+			"fill_energy": 1.75,
+			"ambient_energy": 1.34,
+			"tonemap_exposure": 1.05,
+			"sun_color": 0.94,
+			"sky_top_color": 0.80,
+		},
+		"set": {"fog_enabled": true, "fog_density": 0.0026,
+			"fog_sky_affect": 0.16},
+	},
+	"Mist": {
+		"scale": {
+			"sun_energy": 0.78,
+			"fill_energy": 1.22,
+			"ambient_energy": 1.08,
+			"tonemap_exposure": 1.02,
+		},
+		"set": {"fog_enabled": true, "fog_density": 0.0026,
+			"fog_sky_affect": 0.26},
 	},
 	"Foggy": {
 		"scale": {
@@ -121,10 +204,20 @@ const WEATHER_LAYERS := {
 			"ambient_energy": 1.12,
 			"tonemap_exposure": 1.02,
 		},
-		# The town camera sits ~60 units back, so a density that reads as
-		# "atmospheric" at mower height is a solid white wall here. Measured
-		# from the screenshot pass, not copied from the sky adapter.
-		"set": {"fog_enabled": true, "fog_density": 0.0045},
+		"set": {"fog_enabled": true, "fog_density": 0.0045,
+			"fog_sky_affect": 0.4},
+	},
+	"Light Rain": {
+		"scale": {
+			"sun_energy": 0.54,
+			"fill_energy": 1.44,
+			"ambient_energy": 1.18,
+			"sun_color": 0.92,
+			"sky_top_color": 0.80,
+			"sky_horizon_color": 0.86,
+		},
+		"set": {"fog_enabled": true, "fog_density": 0.0018,
+			"fog_sky_affect": 0.14},
 	},
 	"Rain": {
 		"scale": {
@@ -135,7 +228,21 @@ const WEATHER_LAYERS := {
 			"sky_top_color": 0.72,
 			"sky_horizon_color": 0.80,
 		},
-		"set": {"fog_enabled": true, "fog_density": 0.0022},
+		"set": {"fog_enabled": true, "fog_density": 0.0022,
+			"fog_sky_affect": 0.2},
+	},
+	# THE SKY BREAKING UP. Brighter than clear at the horizon, still damp in the
+	# distance, and the one weather in the game that is allowed to look pleased
+	# with itself.
+	"Clearing": {
+		"scale": {
+			"sun_energy": 1.06,
+			"fill_energy": 0.94,
+			"ambient_energy": 0.99,
+			"sky_horizon_color": 1.05,
+		},
+		"set": {"fog_enabled": true, "fog_density": 0.0013,
+			"fog_sky_affect": 0.05},
 	},
 }
 
@@ -154,10 +261,26 @@ var _weather: String = "Clear"
 var _hour: float = 12.0
 ## Last yaw actually written, in degrees. NAN means "never written".
 var _written_yaw: float = NAN
+## Last pitch offset actually written, in degrees.
+var _written_pitch: float = 0.0
 var _current: Dictionary = {}
 var _target: Dictionary = {}
 var _accumulator: float = 0.0
 var _enabled: bool = false
+## ---------------------------------------------------------------------------
+## THE REGION'S OWN AIR
+## ---------------------------------------------------------------------------
+## A LAST, SMALL MODIFIER, applied after the weather. It is NOT a second weather
+## system and it never changes with the sky: it is the standing difference
+## between one place and another - a trade park with more haze in it than a
+## country park, a rural horizon that is clearer than a city one.
+##
+## It moves two things and nothing else: the sky's lower hemisphere, which is
+## most of what a fixed isometric camera pointed at the ground actually sees,
+## and the amount of distance fog on a clear day, which is what makes a far
+## shelf read as far away rather than as a slab behind the island.
+var _air_tint: Color = Color.WHITE
+var _air_haze: float = 0.0
 
 
 ## Duplicates the environment and sky material so the authored sub-resources in
@@ -180,6 +303,14 @@ func bind(world_environment: WorldEnvironment, sun: DirectionalLight3D,
 
 func is_bound() -> bool:
 	return _enabled
+
+
+## Give this screen its region's air. Safe to call before or after `bind()`.
+func set_region_air(tint: Color, haze: float) -> void:
+	_air_tint = tint
+	_air_haze = clampf(haze, 0.0, 1.0)
+	if not _target.is_empty():
+		_target = compose(_weather, _hour)
 
 
 func set_state(weather: String, hour: float) -> void:
@@ -226,6 +357,29 @@ func compose(weather: String, hour: float) -> Dictionary:
 			values[key] = _scaled(values[key], float(layer["scale"][key]))
 	for key: String in layer["set"]:
 		values[key] = layer["set"][key]
+	return _with_region_air(values)
+
+
+## The region modifier, applied last so nothing else has to know about it.
+func _with_region_air(values: Dictionary) -> Dictionary:
+	if _air_haze <= 0.0 and _air_tint.is_equal_approx(Color.WHITE):
+		return values
+	for key in ["ground_horizon_color", "ground_bottom_color", "fog_light_color"]:
+		if not values.has(key):
+			continue
+		var c: Color = values[key]
+		values[key] = Color(c.r * _air_tint.r, c.g * _air_tint.g,
+			c.b * _air_tint.b, c.a)
+	# A BASE HAZE EVEN IN CLEAR WEATHER. The far shelf a regional hub stands
+	# in front of is thirty units behind the island; without this it is exactly
+	# as sharp as the office in the foreground.
+	var haze := AIR_HAZE_DENSITY * _air_haze
+	if haze > 0.0 and haze > float(values.get("fog_density", 0.0)):
+		values["fog_enabled"] = true
+		values["fog_density"] = haze
+		# The region's own haze is about how far you can SEE, so it never
+		# touches the sky. A weather that wants the sky fogged says so itself.
+		values["fog_sky_affect"] = AIR_HAZE_SKY_AFFECT
 	return values
 
 
@@ -282,9 +436,15 @@ func _write(v: Dictionary) -> void:
 		# the AUTHORED basis about world Y, so the sun sweeps across the sky
 		# without losing the pitch the scene was lit with.
 		var yaw_degrees := float(v.get(SUN_YAW_KEY, 0.0))
-		if is_nan(_written_yaw) 				or absf(yaw_degrees - _written_yaw) >= SUN_YAW_DEADBAND_DEGREES:
+		var pitch_degrees := float(v.get(SUN_PITCH_KEY, 0.0))
+		if is_nan(_written_yaw) 				or absf(yaw_degrees - _written_yaw) >= SUN_YAW_DEADBAND_DEGREES 				or absf(pitch_degrees - _written_pitch) >= SUN_PITCH_DEADBAND_DEGREES:
 			_written_yaw = yaw_degrees
-			_sun.transform.basis = Basis(Vector3.UP, deg_to_rad(yaw_degrees)) * _sun_basis
+			_written_pitch = pitch_degrees
+			# YAW IN WORLD SPACE, PITCH IN THE LIGHT'S OWN. Post-multiplying by
+			# a rotation about local X lifts the sun towards the horizon along
+			# the axis it is already pointing down, so the direction the light
+			# comes FROM is unchanged and only its height moves.
+			_sun.transform.basis = Basis(Vector3.UP, deg_to_rad(yaw_degrees)) 				* _sun_basis * Basis(Vector3.RIGHT, deg_to_rad(pitch_degrees))
 	if _fill != null:
 		_fill.light_color = v.get("fill_color", _fill.light_color)
 		_fill.light_energy = float(v.get("fill_energy", _fill.light_energy))
@@ -303,4 +463,6 @@ func _write(v: Dictionary) -> void:
 			v.get("tonemap_exposure", _environment.tonemap_exposure))
 		_environment.fog_enabled = bool(v.get("fog_enabled", false))
 		_environment.fog_density = float(v.get("fog_density", 0.0))
+		_environment.fog_sky_affect = clampf(float(v.get("fog_sky_affect", 0.0)),
+			0.0, 1.0)
 		_environment.fog_light_color = v.get("fog_light_color", _environment.fog_light_color)

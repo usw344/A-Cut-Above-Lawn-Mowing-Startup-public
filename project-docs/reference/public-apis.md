@@ -1,6 +1,6 @@
 # Public API Reference
 
-Status: **Current** — 2026-08-21.
+Status: **Current** — 2026-08-30.
 
 The boundaries other code is allowed to call. Anything not listed here is
 internal to its owner, whatever its visibility.
@@ -37,6 +37,165 @@ Owners and boundaries are described in
 | `Economy` / `MowerUpgrades` | prices and per-machine upgrade levels | hold a balance |
 | `MowerFuel` | fuel RULES; `model` stores the level | |
 | `model` | LEGACY shared state | grow |
+| `Equipment` | which mowers and autonomous machines the business owns, what it takes to the next contract, off-screen assignments | hold money, own job state, offer credit |
+| `Clippings` | the bag, the yard's inventory, the compost heap, the price of a kilogram | count particles |
+| `Business` | reputation, reviews, customers, competitors, market share, the schedule, the yard, a property's CONDITION stage | name, employ or pay a person |
+| `Territory` | which service regions the business has bought, local presence in each, and which hub it is working from | unlock anything except by a lot being bought |
+| `Agreements` | multi-visit service contracts: their sites, their schedule and their term | complete a contract, pay for one, or move reputation itself |
+| `Portfolio` | the before/after record of finished work — metadata here, JPEGs under `user://` | put image data in a save file |
+
+Full description: [The Business Simulation](../systems/business-simulation.md)
+and [Territories, Equipment and Operations](../systems/territories-and-operations.md).
+
+```gdscript
+# ACAEquipment
+owns(mower_id) / owned_mowers() / owned_mower_count()
+purchase_cost(mower_id) / try_purchase_mower(mower_id)
+selected_mower() / select_mower(mower_id) / recommended_for(job)
+bag_capacity(mower_id) / selected_bag_capacity()
+autonomous_units() / fleet_summary() / unit(uid) / unit_label(uid)
+autonomous_cost(tier) / try_purchase_autonomous(tier)
+escort_unit_uid() / set_escort_unit(uid) / clear_escort_unit() / can_escort(uid, job)
+assign_to_contract(uid, job_id) -> float      # finish minute, or -1
+resolve_finished_work(now_minutes) -> int     # driven by GameSession
+static estimated_minutes(tier, job) / estimated_minutes_now(tier, job)
+static tier_spec(tier)
+owns_attachment(id) / owned_attachments() / attachment_cost(id)
+try_purchase_attachment(id) / fitted_attachments() / is_fitted(id)
+can_fit(id) -> Dictionary / fit_attachment(id) / remove_attachment(id)
+mowing_mode() / available_modes() / can_use_mode(mode) / set_mowing_mode(mode)
+trailer_tier() / trailer_cost(tier) / try_purchase_trailer(tier)
+machine_slots_used() / machine_slot_capacity() / can_load_unit(uid)
+trailer_clipping_capacity() / trailer_fuel_reserve() / loadout_summary()
+bag_capacity(mower_id) / rated_bag_capacity(mower_id)
+to_save_dict() / from_save_dict(data, upgrades)
+
+# ACAClippings
+signal bag_changed(kilograms, capacity) / bag_filled() / inventory_changed()
+signal unloaded(kilograms)
+start_new_job(capacity) / begin_contract(capacity)
+collect_from_cells(cells) -> float            # THE one entry point for grass
+set_yield_multiplier(value) / yield_multiplier()
+trailer_kilograms() / trailer_capacity() / trailer_is_full()
+deposit_trailer_at_yard() -> float           # arriving at a service lot
+remaining_capacity() -> float
+unload_to_truck() -> float / deliver_direct(kilograms) -> float
+bag_kilograms() / bag_capacity() / bag_fraction() / bag_is_full()
+delivered_this_job() / spilled_this_job()
+fresh_kilograms() / compost_kilograms() / stored_total() / store_capacity()
+sell_fresh() / sell_compost() / start_composting(today) / advance_to_day(today)
+upgrade_summary() / try_purchase_upgrade(id) / bag_capacity_multiplier()
+static format_kg(kilograms) / const KG_PER_CELL
+
+# ACABusiness
+signal reputation_changed(value) / review_posted(review) / customers_changed()
+signal offer_lost(job_site, competitor_name) / schedule_changed()
+signal yard_tier_changed(tier)
+settle_completed_job(job, outcome, paid) -> Dictionary   # THE books
+record_abandoned_job(job)
+reputation() / reputation_band() / has_reserved_access()
+static rate(job, outcome) -> int / static review_text(job, stars, missed)
+is_returning_customer(job) / services_for(job) / loyalty_for(job)
+active_customers() / lapsed_customers() / advance_to_day(today) -> int
+consider_competition(now_minutes) -> int / market_share() / market_table()
+schedule() / add_to_schedule(id) / reorder_schedule(id, dir) / prune_schedule()
+yard_tier() / yard_name() / next_yard_requirement()
+to_save_dict() / from_save_dict(data)
+
+# ACAContractTerms - pure, static, DERIVED FROM THE JOB SEED, never stored
+static terms_for(job) -> Dictionary
+static describe(job) -> Array / static summary_line(job) -> String
+static score(job, outcome) -> Dictionary       # met / missed / mandatory_missed / bonus
+static requires_collection(job) / collection_is_mandatory(job)
+static requests_pattern(job) / has_protected_ground(job)
+static expected_yield_kg(job) / window_minutes(job) / flag_name(flag)
+const CONSERVATION_TOLERANCE
+
+# ACAServiceTerritory
+signal regions_changed() / region_purchased(region) / active_region_changed(region)
+signal presence_changed(region)
+enum Region { HOME_TOWN, RURAL_HIGHWAY, COMMERCIAL_DISTRICT, CIVIC_PARK,
+              HOSPITALITY_STRIP }
+static region_for_job(job) -> int              # THE derivation, pure
+static region_spec(region) / region_name / region_short_name / region_id
+static region_colour(region) / region_blurb(region) / native_work_line(region)
+owns(region) / owned_regions() / available_regions() / has_expanded()
+purchase_cost(region) / requirements(region) / can_purchase(region)
+try_purchase_lot(region) -> bool
+active_region() / set_active_region(region)
+presence(region) / presence_band_name(region) / presence_line(region)
+contracts_completed_in(region) / award_presence(region, delta)
+note_completed_contract(job, stars) / note_lost_contract(job)
+accepts_offer(job) -> bool                     # the Job System's filter
+to_save_dict() / from_save_dict(data)
+
+# ACAServiceAgreements
+signal offers_changed() / agreement_started(a) / agreement_finished(a, honoured)
+signal visit_due(agreement, job) / agreement_lost(agreement, competitor_name)
+offers() / active() / completed() / active_count()
+can_accept(offer_id) -> Dictionary / accept(offer_id) / decline(offer_id)
+agreement_for_job(job) / is_agreement_job(job)
+note_completed_contract(job, stars) / advance_to_day(today)
+static summary_lines(agreement) / static status_line(agreement)
+to_save_dict() / from_save_dict(data)
+
+# ACAPortfolio
+signal entry_added(entry) / entries_changed()
+capture_before(job, viewport) / capture_after(job, viewport, summary)
+entries() / entry_count() / featured() / entries_for_seed(seed)
+latest_pair_for_seed(seed) / load_image(file_name) -> Texture2D
+storage_directory() / used_bytes()
+to_save_dict() / from_save_dict(data)
+
+# ACAAttachments - pure, static, a table and the questions it answers
+CATALOG / ORDER / STARTING_ATTACHMENTS
+static spec(id) / display_name(id) / describe(id) / effect_line(id)
+static fits(id, mower_id) / for_mower(mower_id) / grants_mode(id)
+static bag_multiplier(fitted) / pattern_bonus(fitted) / slots_used(fitted)
+static modes_available(fitted) / visual_id(id)
+
+# ACAMowingMode - pure, static
+enum Mode { BAG, MULCH, SIDE_DISCHARGE }
+static collects(mode) -> bool                  # THE one rule about clippings
+static mode_name / short_name / blurb / requires_attachment(mode)
+static finish_quality(mode, job) / lawn_health_bonus(mode) / advice_for(mode, job)
+
+# ACAHaulage - pure, static
+TIERS / ORDER / STARTING_TIER
+static slots(tier) / attachment_slots(tier) / clipping_capacity(tier)
+static fuel_reserve(tier) / next_tier(tier) / summary_lines(tier)
+
+# ACAGroundConditions - pure, static
+enum State { DRY, DAMP, WET }
+static current(property_dryness) -> int        # reads WorldClock, asks only
+static state_for(weather, minutes_since_rain, hour, dryness) -> int
+static clipping_multiplier / dust_multiplier / traction_multiplier
+static autonomous_time_multiplier / mulch_penalty / summary_line
+static forecast_advice(minutes_until_rain)
+```
+
+**Invariant:** `ACAServiceTerritory.region_for_job()` is pure and static. A
+contract's region is never stored, exactly as its terms never are.
+
+**Invariant:** `ACAMowingMode.collects()` is the ONE place that decides whether
+a configuration produces clippings. `ACAClippings` is given a capacity of zero
+for the two that do not and never asks why.
+
+**Invariant:** `ACAPortfolio` never puts image data in a save. Metadata in the
+save block, JPEGs under `user://portfolio/`, and a failed capture is never a
+failed contract.
+
+**Invariant:** `Clippings.collect_from_cells()` takes the count of cells that
+went from UNCUT to CUT, and nothing else. Never an area, never a duration, never
+a particle count.
+
+**Invariant:** `ACAContractTerms` writes nothing and stores nothing. Every term
+is a pure function of `(job.seed, job.property_type, job.lawn_size)`.
+
+**Invariant:** `GameSession.current_job()` is the first current contract **no
+owned machine is out on**. The Job System's `MAX_CURRENT_JOBS` is the BUSINESS's
+capacity (5); the player's own limit (1) lives in the host and reaches the Job
+System through `player_capacity_provider`.
 
 ---
 
@@ -199,6 +358,9 @@ deck() -> ACAMowerDeck
 on_blades_active(collisions := [])                 # the signal target
 resync()                                           # forget the previous pose
 cells_cut() -> int
+coverage() -> float                                # fresh cells / swept lawn area
+contacts() -> int                                  # debounced non-ground contacts
+reset_counters() -> void
 ```
 
 **Invariant:** deck sizes are WORLD units declared on each mower controller
@@ -208,6 +370,15 @@ cannot change contract length or fuel balance.
 **Invariant:** a jump larger than `REPOSITION_DISTANCE` is a placement, not
 driving. A save restore or a staged shot cannot mow a stripe across the
 property. Call `resync()` after moving a machine deliberately.
+
+### ACAMowerHandling
+
+`Assets/Vehicles and Mowers/Mowers/aca_mower_handling.gd` is a pure profile and
+motion helper, not a full vehicle simulation. The canonical controllers use it
+for signed speed, acceleration/braking, reverse limits, steering caps and lean
+targets. Profiles are keyed by `rider`, `powered`, and `push`; upgrades multiply
+the authored base values. Lean changes only the visual mesh/camera and never the
+`CharacterBody3D` collider. No handling state is serialized.
 
 ### The feature boundary
 
@@ -316,6 +487,39 @@ is_prepared() -> bool
 **Invariant:** every geometric answer comes from `ACAPondCarver`, so the carved
 height field, its collision, the shoreline, the grass exclusion and the mowing
 exclusion are all the same curve.
+
+### ACALawnObstacles
+
+```gdscript
+layout() -> int
+layout_name() -> String
+obstacles() -> Array[Dictionary]
+count() -> int
+```
+
+The feature is generated once from the property seed. In generation version 6,
+the layout is one of `SCATTER`, `ISLAND`, `GAUNTLET`, `AVENUE`, `CORNERS`, or
+`PERIMETER`; generation versions through 5 retain `SCATTER` for compatibility.
+It owns placement and solid exclusion, while `ACALawn` still owns mowability.
+
+### ACARegionalContext and ACAGroundWetness
+
+```gdscript
+# ACARegionalContext — deterministic parameter/environment adapter
+static apply(params: ACAPropertyParams, region: int) -> void
+static air_layer(region: int) -> Dictionary
+static blurb(region: int) -> String
+
+# ACAGroundWetness — presentation adapter; does not own weather
+static apply(property: ACAProperty, state: int) -> void
+static apply_current(property: ACAProperty) -> void
+static values_for(state: int) -> Dictionary
+```
+
+`ACARegionalContext` reshapes already-drawn property values and supplies place
+air-layer values; it does not draw scenery or create a second weather state.
+`ACAGroundWetness` reads `ACAGroundConditions` and adjusts existing material
+properties, preserving authored roughness. Neither adds save fields.
 
 ### Rendering
 

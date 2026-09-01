@@ -1,6 +1,6 @@
 # Project Overview
 
-Status: **Current repository overview** — 2026-08-19
+Status: **Current repository overview** — 2026-08-30
 Godot project feature version: 4.6 (verified against Godot 4.6.1 stable)
 Project name: A Cut Above: Mow & Grow
 
@@ -19,16 +19,19 @@ Working today:
   every scene change.
 - A seeded job market: offers arrive on game time, expire on game time, and are
   accepted, begun, progressed and completed through one authoritative manager.
-- The mowing grid is sized from the accepted contract (96/144/192).
-- Drive one of three mower variants and cut a generated grid of grass.
+- The procedural property is sized from the accepted contract (96/144/192),
+  with logical one-unit lawn cells, terrain, features, grass and foliage.
+- Drive one of three mower variants with distinct handling profiles and cut the
+  generated lawn through deck geometry. The production pond is a property
+  feature; its standalone demo remains experimental.
 - Production HUD, job intro, fullscreen transitions, results screen, pause menu,
   settings, controls help, confirmation dialogs, notification toasts.
-- Money: a starting balance and contract payouts.
+- Money, fuel purchases, mower ownership, upgrades, clippings, business history,
+  territories, recurring agreements and portfolio metadata are integrated and
+  persisted through additive save sections.
+- Developer Debugger (H), precision view (C), workmanship callouts, six
+  deterministic obstacle layouts, and legacy generation compatibility.
 - A development fast-completion helper (F10) that uses the real completion path.
-
-Not yet implemented: save/load, spending, upgrades, reputation, completion
-deadlines, and any economy simulation driving market strength. The town's
-Supply Store, Mower Dealer and Business HQ are placeholder destinations.
 
 ## Entry point
 
@@ -40,13 +43,6 @@ run/main_scene="res://Game/App/Main Menu Screen.tscn"
 
 **Changed 2026-08-19** — the entry point was previously the MVP mowing bench.
 That scene is still the mowing runtime, now reached through the job flow.
-
-The entry scene is:
-
-```text
-res://Game/M.V.P/Minimum Viable Game.tscn
-```
-
 `Main.tscn` is not the current entry point.
 
 ## Architectural style
@@ -56,7 +52,8 @@ The project is primarily:
 - Scene-oriented.
 - Organized by gameplay domain.
 - Signal-driven at scene boundaries.
-- Dependent on a single global state autoload.
+- Dependent on small authoritative autoloads with explicit ownership: session,
+  clock, jobs, economy, equipment, business and save services.
 - Focused on `MultiMesh` for grass and environmental foliage.
 - Built around runtime scene composition rather than a central dependency container.
 
@@ -66,16 +63,16 @@ The current MVP root owns orchestration. Specialized child scenes own mower beha
 
 | Path | Purpose | Current status |
 |---|---|---|
-| `Game/M.V.P/` | Authoritative playable world and MVP HUD | Current playable runtime |
+| `Game/M.V.P/` | Mowing runtime, property host and development HUD | Current playable runtime |
 | `Assets/Vehicles and Mowers/` | Canonical mower wrappers, controllers, meshes, and audio | Current playable runtime |
-| `Mower Scenes/` | Multipart rider mower visual implementation | Current playable runtime |
-| `Mowing Section/` | Grass grid, chunk state, cutting, older mower, and mowing UI | Mixed current and legacy |
+| `Mower Scenes/` | Multipart rider mower visual implementation | Current rider visual dependency |
+| `Mowing Section/` | Procedural property, logical lawn, features and standalone pond demo | Mixed current and experimental |
 | `Weather/` | Canonical weather presets, rain behavior, particles, and removed-addon remnants | Mixed current and deprecated |
-| `Terrain/` | Canonical terrain mesh plus deprecated Terrain3D footage data | Mixed current and deprecated |
-| `Data Structures/` | Global model and proposed profile/job data structures | Mixed current and partial |
+| `Terrain/` | Remaining support assets; runtime terrain is procedural | Mixed current and deprecated |
+| `Data Structures/` | Legacy model and job data structures | Mixed current and legacy |
 | `Managers/` | Job prototypes and simulation-manager scaffolding | Partially integrated |
-| `UI/` | Main-menu and new-game prototypes | Partially integrated |
-| `Main Area/` | Proposed business-area abstraction and information bar | Partially integrated |
+| `UI/` | Player-facing screens and HUD components | Current playable runtime |
+| `Main Area/` | Job system and business town | Current playable runtime |
 | `Game/Demo/Footage/` | Trailer and screenshot capture worlds | Tooling/demo |
 | `Dev tools/` | Timing, monitoring, and proposed print helpers | Tooling/partial |
 | `addons/` | Sky3D, deprecated Terrain3D, and Terrain Splitter | Mixed |
@@ -85,8 +82,8 @@ The current MVP root owns orchestration. Specialized child scenes own mower beha
 
 | Concern | Canonical choice |
 |---|---|
-| Runtime world | `Minimum Viable Game.tscn` |
-| Shared runtime state | `model` autoload |
+| Runtime world | Main Menu → Town → `Minimum Viable Game.tscn` |
+| Shared runtime state | `GameSession`, `WorldClock`, `JobManager` and domain autoloads |
 | Mower implementation | `Assets/Vehicles and Mowers/Mowers/` |
 | Mowing | `ACALawn` compact cell state plus `ACAMowerCutter` |
 | Terrain/foliage | `ACATerrain`, `ACALawnGrass`, `ACAForest`, all procedural |
@@ -94,19 +91,13 @@ The current MVP root owns orchestration. Specialized child scenes own mower beha
 | Weather | Preset Manager plus Rain Handler |
 | Physics | Jolt Physics |
 
-## Partially integrated game systems
+## Known scope boundaries
 
-The following are real repository systems, not merely ideas:
-
-- Main menu and new-game interfaces.
-- Job offer generation and display.
-- Job and mowing data containers.
-- Save-object dictionary methods.
-- Profile scaffolding and `user://saves` directory setup.
-- Money, cuttings, fuel, and information-bar UI concepts.
-- Upgrade and persistent mower-state direction in the global model.
-
-Their remaining work is chiefly integration, completion, state ownership, validation, and polish.
+Current limitations include no snow implementation, no water volume/float
+simulation, no serial-numbered duplicate mower fleet, no neighbourhood route
+contract type, and deterministic rather than simulated off-screen work. Supply
+Store, Mower Workshop, and Business HQ are real service routes where wired; any
+remaining placeholder destination is documented as such in the town reference.
 
 ## Build and platform configuration
 
@@ -116,7 +107,7 @@ Export presets exist for:
 - Web/itch.io.
 - Windows Desktop.
 
-The project uses a 1920×1080 viewport, fullscreen mode, a 144 FPS cap, disabled VSync, Jolt physics, occlusion culling, and mobile texture compression.
+The project uses a 1920×1080 viewport, fullscreen mode, a 240 FPS cap, disabled VSync, Jolt physics, occlusion culling, and mobile texture compression.
 
 See [Project settings and input](project-settings-and-input.md) for the exact settings relevant to architecture and performance.
 

@@ -11,6 +11,7 @@ extends Control
 ##   set_cut_mask(texture, centre, size)  the lawn's own cut texture
 ##   set_pond(points: PackedVector2Array)  world-space shoreline
 ##   set_obstacles(list)                [{position: Vector2, radius: float}]
+##   set_protected_zones(list)          [{position, radius, squash, yaw}]
 ##   set_mower(position: Vector2, heading: float)   world XZ, radians
 ##   set_progress(value: float)         0 - 1, drawn as a caption
 ##   set_caption(text: String)
@@ -79,11 +80,19 @@ const EDGE_COLOUR := Color(0.310, 0.271, 0.196)
 const POND_COLOUR := Color(0.412, 0.616, 0.639)
 const POND_EDGE_COLOUR := Color(0.243, 0.416, 0.451)
 const OBSTACLE_COLOUR := Color(0.541, 0.514, 0.451)
+## PROTECTED PLANTING. A warm flowering tone against the map's greens, with a
+## dashed edge, because the one thing this has to communicate is that the line
+## means something different from a fence or a pond - it is ground the machine
+## CAN cross and must not.
+const PROTECTED_COLOUR := Color(0.847, 0.741, 0.365, 0.55)
+const PROTECTED_EDGE_COLOUR := Color(0.647, 0.494, 0.196)
 
 var _property := Rect2()
 var _lawn := Rect2()
 var _pond := PackedVector2Array()
 var _obstacles: Array[Dictionary] = []
+## `{ position: Vector2, radius: float, squash: float, yaw: float }`, world XZ.
+var _protected: Array[Dictionary] = []
 var _mower_world := Vector2.ZERO
 var _mower_heading := 0.0
 var _drawn_world := Vector2.ZERO
@@ -234,6 +243,26 @@ func set_obstacles(list: Array) -> void:
 	_redraw()
 
 
+## PROTECTED PLANTING, from `ACAConservationZone.zones()`. Empty on the great
+## majority of contracts, which is why nothing has to check for it: an empty
+## list draws nothing.
+##
+## It has to be OBVIOUS. A conservation objective the player fails because they
+## could not see the boundary is not a challenge, it is a trap - so the zones
+## are drawn filled, edged, and over the cut layer rather than under it.
+func set_protected_zones(list: Array) -> void:
+	_build()
+	_protected.clear()
+	for entry in list:
+		if entry is Dictionary and (entry as Dictionary).has("position"):
+			_protected.append(entry as Dictionary)
+	_redraw()
+
+
+func has_protected_zones() -> bool:
+	return not _protected.is_empty()
+
+
 func set_mower(position: Vector2, heading: float) -> void:
 	_build()
 	if not _has_mower:
@@ -365,6 +394,25 @@ func _draw_overlay() -> void:
 		_overlay.draw_colored_polygon(points, POND_COLOUR)
 		points.append(points[0])
 		_overlay.draw_polyline(points, POND_EDGE_COLOUR, 1.5, true)
+
+	# PROTECTED PLANTING, under the obstacles and over the cut. Drawn as the oval
+	# it really is - position, radius, squash and yaw are the zone's own - so the
+	# shape on the plan is the shape on the ground.
+	for zone: Dictionary in _protected:
+		var centre: Vector2 = _to_map(zone["position"] as Vector2, view, scale, origin)
+		var radius: float = maxf(float(zone.get("radius", 8.0)) * scale, 3.0)
+		var squash: float = maxf(float(zone.get("squash", 1.0)), 0.05)
+		var yaw: float = float(zone.get("yaw", 0.0))
+		var points := PackedVector2Array()
+		for step in 24:
+			var angle := TAU * float(step) / 24.0
+			# The map's Y is world Z, so the oval is built in world space and
+			# then scaled, exactly as the zone's own exclusion test does it.
+			var local := Vector2(cos(angle) * radius, sin(angle) * radius * squash)
+			points.append(centre + local.rotated(yaw))
+		_overlay.draw_colored_polygon(points, PROTECTED_COLOUR)
+		points.append(points[0])
+		_overlay.draw_polyline(points, PROTECTED_EDGE_COLOUR, 1.6, true)
 
 	# Solid obstacles. Drawn a little larger than they are, because the thing
 	# the player needs from this is "do not go there", not a survey.

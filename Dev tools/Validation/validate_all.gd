@@ -21,13 +21,33 @@ func _initialize() -> void:
 
 	print("[VALIDATE] %d scripts, %d scenes" % [scripts.size(), scenes.size()])
 
+	# ---------------------------------------------------------------------
+	# LOADING A SCRIPT IS NOT COMPILING IT
+	# ---------------------------------------------------------------------
+	# `ResourceLoader.load()` hands back a GDScript object for a file with a
+	# PARSE ERROR in it. It is a real resource; it simply has no class behind
+	# it. So the old check - `res == null` - reported `fail=0` on a build with
+	# three broken controllers in it, and the game ran with those nodes
+	# scriptless: authored values, no `_ready()`, no `_physics_process()`, and
+	# nothing anywhere saying so.
+	#
+	# `can_instantiate()` is the question that was meant, and it is false on a
+	# script that did not compile whether or not the resource came from the
+	# cache - so the cheap CACHE_MODE_REUSE is kept. CACHE_MODE_IGNORE was tried
+	# and reparses every dependency of every script: it ran for over ten minutes
+	# against this project and answered nothing extra.
 	for p in scripts:
 		var res := ResourceLoader.load(p, "Script", ResourceLoader.CACHE_MODE_REUSE)
 		if res == null:
-			print("[SCRIPT FAIL] ", p)
+			print("[SCRIPT FAIL] ", p, " (did not load)")
 			_script_fail += 1
-		else:
-			_script_ok += 1
+			continue
+		var gd := res as GDScript
+		if gd != null and not gd.can_instantiate():
+			print("[SCRIPT FAIL] ", p, " (loaded but does not compile)")
+			_script_fail += 1
+			continue
+		_script_ok += 1
 
 	for p in scenes:
 		var res := ResourceLoader.load(p, "PackedScene", ResourceLoader.CACHE_MODE_REUSE)

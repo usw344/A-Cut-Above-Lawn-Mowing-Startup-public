@@ -33,6 +33,8 @@ func _ready() -> void:
 	_notifications = NOTIFICATIONS_SCENE.instantiate()
 	toast_layer.add_child(_notifications)
 
+	_build_ui_sound()
+
 	_transition = TRANSITION_SCENE.instantiate()
 	add_child(_transition)
 	_transition.screen_covered.connect(func() -> void: screen_covered.emit())
@@ -91,32 +93,139 @@ func notifications_suppressed() -> bool:
 	return _notifications_suppressed
 
 
+## THE FOUR TOASTS EACH HAVE THEIR OWN CUE, so a payment, a warning and an
+## ordinary note are told apart without reading them. The sound is played HERE
+## rather than by the caller, which is what keeps the pairing consistent: there
+## is no way to raise a toast and forget its sound, or to play the wrong one.
 func notify_info(title: String, message: String = "") -> void:
 	if _notifications_suppressed:
 		return
 	_notifications.info(title, message)
+	play_sound(ACAUISound.NOTIFY)
 
 
 func notify_success(title: String, message: String = "") -> void:
 	if _notifications_suppressed:
 		return
 	_notifications.success(title, message)
+	play_sound(ACAUISound.CONFIRM)
 
 
 func notify_warning(title: String, message: String = "") -> void:
 	if _notifications_suppressed:
 		return
 	_notifications.warning(title, message)
+	play_sound(ACAUISound.ERROR)
 
 
 func notify_money(title: String, message: String = "") -> void:
 	if _notifications_suppressed:
 		return
 	_notifications.money(title, message)
+	play_sound(ACAUISound.MONEY)
 
 
 func clear_notifications() -> void:
 	_notifications.clear_all()
+
+
+# ================================================================== ui sound
+## ---------------------------------------------------------------------------
+## THE INTERFACE'S OWN VOICE
+## ---------------------------------------------------------------------------
+## `AppUI` owns this for the same reason it owns the toasts and the cursor: it
+## is the one node that is always alive, always above every screen, and already
+## the place a screen asks for something that is not its own business. There is
+## no new autoload, and no screen starts a sound of its own.
+##
+## WHAT THE CUES ARE is `ACAUISound`. What is here is only the POOL and the two
+## rules that keep it honest:
+##
+##   A FIXED SET OF PLAYERS, created once. Nothing is instantiated per press, so
+##   a screen that fires a hundred cues costs a hundred `play()` calls and no
+##   allocation at all.
+##   A VOICE LIMIT. Past `ACAUISound.VOICES` overlapping sounds the oldest is
+##   taken, so a burst of notifications cannot pile up an unbounded chorus.
+##
+## Sounds are PROCESS_MODE_ALWAYS, so the pause menu and the Super Debugger both
+## click.
+
+var _sound_players: Array[AudioStreamPlayer] = []
+var _sound_next := 0
+var _sound_last := {}
+var _sound_previous_clip := {}
+var _sound_rng := RandomNumberGenerator.new()
+
+
+func _build_ui_sound() -> void:
+	_sound_rng.randomize()
+	for i in ACAUISound.VOICES:
+		var player := AudioStreamPlayer.new()
+		player.name = "UI Sound %d" % i
+		player.bus = ACAAudioMix.UI
+		player.process_mode = Node.PROCESS_MODE_ALWAYS
+		add_child(player)
+		_sound_players.append(player)
+
+
+## Play a named cue. Unknown cues, a missing clip and a headless run are all
+## silently nothing: UI sound is never allowed to be the reason a screen fails.
+func play_sound(cue: StringName) -> void:
+	if _sound_players.is_empty() or not ACAUISound.has_cue(cue):
+		return
+	var now := Time.get_ticks_msec() / 1000.0
+	# THE REPEAT GUARD. Without it, a cursor dragged along a row of buttons
+	# fires the hover cue every frame.
+	var last: float = float(_sound_last.get(cue, -999.0))
+	if now - last < ACAUISound.guard_seconds(cue):
+		return
+	_sound_last[cue] = now
+
+	var index := _pick_clip(cue)
+	if index < 0:
+		return
+	var stream := load(ACAUISound.clip_path(cue, index)) as AudioStream
+	if stream == null:
+		return
+	var player: AudioStreamPlayer = _sound_players[_sound_next]
+	_sound_next = (_sound_next + 1) % _sound_players.size()
+	player.stream = stream
+	player.volume_db = ACAUISound.level_db(cue)
+	player.pitch_scale = ACAUISound.pitch_for(cue, _sound_rng)
+	player.play()
+
+
+## Never the same clip twice running, where a cue has more than one. Repeating
+## is what makes a set of variations sound like a single sample.
+func _pick_clip(cue: StringName) -> int:
+	var paths: Array = ACAUISound.clips(cue)
+	if paths.is_empty():
+		return -1
+	var index := 0
+	if paths.size() > 1:
+		var previous: int = int(_sound_previous_clip.get(cue, -1))
+		index = _sound_rng.randi() % paths.size()
+		if index == previous:
+			index = (index + 1) % paths.size()
+		_sound_previous_clip[cue] = index
+	return index
+
+
+## Attach the standard press and hover cues to a button. Called by
+## `UITheme.style_button()` and friends, so every button in the project gets
+## them without any screen asking - and a screen that wants a different cue
+## simply calls this again with one.
+func attach_button_sound(button: Button, press_cue: StringName) -> void:
+	if button == null:
+		return
+	# A BOUND CALLABLE IS NOT THE SAME CALLABLE, so `is_connected(play_sound)`
+	# would answer false every time and a button styled twice would click twice.
+	# A mark on the node is the honest test of "has this already been done".
+	if button.has_meta(&"aca_ui_sound"):
+		return
+	button.set_meta(&"aca_ui_sound", true)
+	button.pressed.connect(play_sound.bind(press_cue))
+	button.mouse_entered.connect(play_sound.bind(ACAUISound.HOVER))
 
 
 # ============================================================= mouse ownership

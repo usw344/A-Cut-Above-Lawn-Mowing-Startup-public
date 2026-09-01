@@ -1,7 +1,7 @@
 # Validation and Development Tools
 
-Status: **Current**. All of this is development-only and must never gate release
-gameplay.
+Status: **Current** — reconciled 2026-08-30. All of this is development-only
+and must never gate release gameplay.
 
 ## Automated validation
 
@@ -16,23 +16,35 @@ Godot executable used for all of these: **4.6.1 stable**.
 | `Dev tools/Validation/Save Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Save Test.tscn" -- "--save-root=<dir>"` | Save/load resume tests A, B, C plus robustness, 59 assertions. **Always pass `--save-root`** so it never writes outside the working folder. |
 | `Dev tools/Validation/Pause Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Pause Test.tscn" -- "--save-root=<dir>"` | The pause stack in **both** screens, cursor ownership, and the mower look convention. 49 headless / 54 with a renderer. **Pass `--save-root`.** |
 | `Dev tools/Validation/Credits Test.tscn` | `godot --path . "res://Dev tools/Validation/Credits Test.tscn"` | The credits loader against a throwaway `user://` fixture, the real `res://Credits/` folder, and the Credits screen opened from the Main Menu. 40 assertions. |
-| `Dev tools/Validation/Weather Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Weather Test.tscn" -- "--save-root=<dir>"` | The weather/time VISUAL layer: the composition RULE (including R-020 at four hours), fog is not a white wall, readability limits, clock ownership, convergence, persistence, the precipitation rig, and that the quality levels genuinely differ. **75 assertions.** |
+| `Dev tools/Validation/Weather Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Weather Test.tscn" -- "--save-root=<dir>"` | The weather/time VISUAL layer: the composition RULE (including R-020 at four hours), fog is not a white wall, readability limits, clock ownership, convergence, persistence, the precipitation rig, and that the quality levels genuinely differ. **106 assertions.** |
 | `Dev tools/Validation/Weather Matrix.tscn` | `godot --path . "res://Dev tools/Validation/Weather Matrix.tscn" -- "--matrix-output=<dir>"` | Renders 4 times x 3 weathers in the real mowing scene + 6 town shots, and logs fps per combination. **Needs a real renderer.** Look at the images. |
 | `Dev tools/Validation/Sky Probe.tscn` | `godot --path . "res://Dev tools/Validation/Sky Probe.tscn" -- "--sky-output=<dir>"` | Renders **just the sky** for each shipped weather look, plus a sweep of `clouds_cumulus_size`. **Needs a real renderer.** Use it to judge a cloud parameter in one run instead of one 33-second trailer per guess. |
 | `Dev tools/Validation/Sun Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Sun Probe.tscn"` | Prints Sky3D's sun/moon altitude per half hour. Used to place the time-of-day anchors; re-run it if the Skydome's latitude/date/mode change. |
-| `Dev tools/Validation/Fuel Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Fuel Test.tscn" -- "--save-root=<dir>"` | The real fuel system: burn rates, time-vs-tick, empty stops the wheels AND the blades, refuel recovers, Auto Refuel both ways, the HUD gauge, save/load of a partial and an empty tank, and the Push Mower being manual. 56 assertions. **Pass `--save-root`.** |
+| `Dev tools/Validation/Fuel Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Fuel Test.tscn" -- "--save-root=<dir>"` | The real fuel system: burn rates, time-vs-tick, empty stops the wheels AND the blades, refuel recovers, Auto Refuel both ways, the HUD gauge, save/load of a partial and an empty tank, and the Push Mower being manual. **59 assertions.** **Pass `--save-root`.** |
 | `Dev tools/Validation/Audio Mix Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Audio Mix Probe.tscn" -- "--save-root=<dir>"` | **Measures** the mix: plays the real scene in Clear / Foggy / Rain at idle and mowing and reports the peak level each bus reaches, then asserts the relationships. 15 assertions. Re-run it after changing a source level or a bus trim. |
-| `Dev tools/Validation/Trailer Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Trailer Test.tscn"` | The Trailer Capture scene's STRUCTURAL contract: it loads, the presentation adapters exist, the storyboard is in order and inside 35-48s with varied shot lengths, the adapters put back everything they borrow, gameplay tuning is untouched, the mowing shots are slower than gameplay, and it is not the main scene. 101 assertions. |
+| `Dev tools/Validation/Trailer Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Trailer Test.tscn"` | The Trailer Capture scene's STRUCTURAL contract: it loads, the presentation adapters exist, the storyboard is in order and inside 35-48s with varied shot lengths, the adapters put back everything they borrow, gameplay tuning is untouched, the mowing shots are slower than gameplay, and it is not the main scene. **102 assertions.** |
 | `Dev tools/Validation/Town Probe.tscn` | `godot --path . "res://Dev tools/Validation/Town Probe.tscn" -- "--town-output=<dir>"` | Grazing-angle close-ups of the real Business Town, each rendered TWICE with the camera's far plane nudged so depth ties can be counted. Fourteen shots, four of them added with the back street: `backstreet-graze`, `backstreet-high`, `connector-junction` and `sidestreet-junction`. **Needs a real renderer.** |
 | `Dev tools/Validation/coplanar_probe.gd` | `godot --headless --path . --script "res://Dev tools/Validation/coplanar_probe.gd" -- "--coplanar-scene=<scene>"` | Finds Z-fighting BEFORE it is rendered: reports every pair of meshes that share a face plane while overlapping on the other two axes. |
 | `Main Area/ACA_JobSystem/tests/JobSystemTests.tscn` | `godot --headless --path . "res://Main Area/ACA_JobSystem/tests/JobSystemTests.tscn"` | The Job System's own suite, 110 assertions. |
 | `Dev tools/Validation/environment_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/environment_test.gd"` | Guards the REUSABLE environment package: that it contains no A Cut Above paths or class names, bundles no binary assets, composes with nothing bound, measures fog height from the declared ground, survives interrupted transitions, and that its quality levels remove real work. **28 assertions.** |
-| `Dev tools/Validation/Economy Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Economy Test.tscn" -- "--save-root=<dir>"` | The market, the shops, the upgrades, the **three difficulty profiles** and the **recession market bridge** — plus a **90-day simulation** and a **6-seed x 365-day sweep** that print what the market actually did. `--economy-days=` and `--economy-seeds=` widen the sweep. **120 assertions.** **Pass `--save-root`.** |
+| `Dev tools/Validation/Economy Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Economy Test.tscn" -- "--save-root=<dir>"` | The market, the shops, the upgrades, the **three difficulty profiles** and the **recession market bridge** — plus a **90-day simulation** and a **6-seed x 365-day sweep** that print what the market actually did. `--economy-days=` and `--economy-seeds=` widen the sweep. **122 assertions.** **Pass `--save-root`.** |
 | `Dev tools/Validation/Upgrade Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Upgrade Probe.tscn" -- "--save-root=<dir>"` | **Drives the real mowers** with real `Input` actions and measures displacement per second and fuel burned per second, stock against upgraded, for all three machines. **15 assertions.** |
 | `Dev tools/Validation/Town Services Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Town Services Probe.tscn" -- "--save-root=<dir>"` | Drives the Supply Store, Mower Workshop and Business Office through their **real `Button` nodes** — checks what they say, presses them, and checks what changed. **29 assertions.** |
-| `Dev tools/Validation/property_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/property_test.gd"` | The procedural property, with no renderer: mesh winding, terrain determinism, `height_at()` against the committed mesh arrays, lawn slope limits, the pond carve and its exclusions, lawn layout, the swept deck (including a sixty unit leap leaving no gap), **all three machines reaching exactly 100%**, a pond property reaching exactly 100% with nothing cut under the water, the compact save round trip, and the legacy per-blade migration. **52 assertions**, plus printed cost tables. |
+| `Dev tools/Validation/property_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/property_test.gd"` | The procedural property, with no renderer: mesh winding, terrain determinism, `height_at()` against the committed mesh arrays, lawn slope limits, the pond carve and its exclusions, lawn layout, the swept deck (including a sixty unit leap leaving no gap), **all three machines reaching exactly 100%**, a pond property reaching exactly 100% with nothing cut under the water, the compact save round trip, and the legacy per-blade migration. **82 assertions**, plus printed cost tables. |
 | `Dev tools/Validation/Mowing Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Mowing Test.tscn" -- "--save-root=<dir>"` | Drives the REAL mowers in the REAL mowing scene with real `Input` actions: driving cuts grass, the cut lands where it drove and not beside it, progress reaches the Job System, an empty tank stops the blades, each machine cuts its own declared width, and finishing the lawn completes the contract. **19 assertions.** |
+| `Dev tools/Validation/Debugger Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Debugger Probe.tscn"` | Sends real H key events in Town and mowing; checks open/close, cursor holds, weather presets through `WorldClock`, money bounds and pause interaction. **39 assertions.** |
+| `Dev tools/Validation/Handling Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Handling Probe.tscn"` | Drives all three real machines in the real mowing scene and checks distinct handling, lean and C precision view. **21 assertions.** |
+| `Dev tools/Validation/Layout Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Layout Probe.tscn"` | Checks version-6 layout selection, seed determinism, legacy scatter behavior and obstacle safety. **15 assertions.** |
+| `Dev tools/Validation/Workmanship Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Workmanship Probe.tscn"` | Measures fresh-cell coverage and debounced non-ground contacts and checks recognition-only results callouts. **4 assertions.** |
 | `Dev tools/Validation/pond_test.gd` | `godot --headless --path . --script "res://Dev tools/Validation/pond_test.gd"` | The EXPERIMENTAL pond carver: non-destructiveness, the density refusal, geometry, normals, shape controls, the exclusion API, collision, and the edge cases an integrator will hit (a pond bigger than the mesh, one straddling its boundary, one centred off it entirely, zero irregularity, a bathtub bank, a null mesh). **37 assertions.** No renderer needed. |
+| `Dev tools/Validation/Business Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Business Test.tscn" -- "--save-root=<dir>"` | **The BUSINESS LAYER, behaviourally.** Ownership and purchase, that the bag fills only from FRESH cuts and a full one stops collecting rather than mowing, that unloading moves it to the trailer and a service lot moves it into the yard, that selling pays exactly once, composting and its yield, that contract terms are DERIVED (the same seed asks for the same things, a different object with that seed agrees), that terms score against real measurements, reputation moving with reviews, a recurring customer keeping its seed, market share measured by VALUE, the schedule, that the yard only ever goes up, a full save round trip, and a save with none of the new sections in it. **128 assertions.** Deliberately does NOT pin balance numbers. |
+| `Dev tools/Validation/Expansion Test.tscn` | `godot --headless --path . "res://Dev tools/Validation/Expansion Test.tscn" -- "--save-root=<dir>"` | The GAMEPLAY EXPANSION's contracts: a new business starts local; a contract's region is derived from the contract; a lot's money is taken exactly once and nothing changes on a refusal; a locked region never reaches the board; presence follows the work; bagging collects and the other two configurations do not; an attachment fits only what it fits and only when the trailer has room; the machine empties into the trailer and the trailer into the yard; protected cells are out of the contract and a property with two meadows still finishes at exactly 100%; driving through one records damage that survives a save; a project property is the same property at every stage; a consistent finish scores and a scribbled one does not; the forecast IS the schedule; wet and dry change the work and ordinary going restores it; a machine cannot take two contracts; an agreement wants a fleet; and every new save section round-trips and has a defined meaning when absent. **122 assertions.** No renderer needed. |
+| `Dev tools/Validation/Region Probe.tscn` | `godot --path . "res://Dev tools/Validation/Region Probe.tscn" -- "--region-output=<dir>" "--region-conditions=clear,evening,overcast,rain,mist"` | RENDERS every region's hub from its own overview camera under each named condition, and prints a SETTLED FRAME RATE beside every shot. The question it exists to answer is the one this pass is measured on: can the region be identified from the screenshot with the UI covered up? Needs a real renderer; asserts nothing, and the five images are meant to be looked at as a set. |
+| `Dev tools/Validation/Expansion Probe.tscn` | `godot --path . "res://Dev tools/Validation/Expansion Probe.tscn" -- "--expansion-output=<dir>"` | RENDERS everything the expansion added that has a picture: each regional service lot from the player's own camera and from a grazing angle, at two levels of company growth; the same property neglected, recovering and maintained from the SAME viewpoint; a conservation property from the seat and from above; every attachment on the machine that carries it; and the five new counters. **37 shots.** Needs a real renderer; asserts nothing, and is judged by looking at it. |
+| `Dev tools/Validation/Card Layout Probe.tscn` | `godot --path . "res://Dev tools/Validation/Card Layout Probe.tscn" -- "--card-output=<dir>"` | **The contract cards, asserted on RECTANGLES.** Every existing suite asserts on VALUES, and a label whose text is right and whose rectangle hangs forty pixels outside its parent passes all of them - which is how the Job Intro shipped with its heading clipped. Renders the intro and results sheets at four content extremes (short name, typical, a long name, an unbreakable fifty-character word) x two resolutions, and checks every label against the sheet less its declared padding, that the card holder has not outgrown the window, and that the sheet is still centred. **40 assertions.** Needs a real renderer. |
+| `Dev tools/Validation/Town Road Probe.tscn` | `godot --headless --path . "res://Dev tools/Validation/Town Road Probe.tscn"` (add `-- "--road-output=<dir>"` for a top-down render) | **The road network and the traffic on it, as geometry.** Collects the real footprint from every tile's mesh AABB, walks every traffic route against it **with the car's own half-width added** - a body overhanging the kerb fails, not just a centre line leaving it - and finds junction arms that point at open grass. Prints an ASCII plan of the network. **12 assertions.** This is what found the twenty-six samples where a car overhung the tarmac at the old 0.55 lane offset, and the four-way junction whose fourth arm faced a park. |
+| `Dev tools/Validation/Site Probe.tscn` | `godot --path . "res://Dev tools/Validation/Site Probe.tscn" -- "--site-output=<dir>" "--save-root=<dir>"` | **What the BUSINESS put on a contract**, in the real mowing scene: the work truck, the trailer and a deployed autonomous escort. `Property Probe` cannot see any of it, because none of it belongs to a property. Asserts the truck is off the mowable lawn, that the marker the player drives to and the area that notices them arriving are the same place, that the truck is a pickup-sized object beside a ride-on, and that the escort actually cuts cells over twelve seconds. Renders five shots. **10 assertions.** Needs a real renderer. |
+| `Dev tools/Validation/Pop Probe.tscn` | `godot --path . "res://Dev tools/Validation/Pop Probe.tscn" -- "--pop-output=<dir>"` | **Finds and ATTRIBUTES representation popping.** Walks the camera at FRAME-SCALE steps (0.13 units, not the 1.26 the first version used) and looks for a per-frame difference that SPIKES against its own neighbourhood - parallax is steady, a swap is not. Runs every archetype, driving and looking around, then repeats with one subsystem removed at a time. **The sensitive pass runs with the grass off**, because the wind is 29x the noise floor and masks everything: 0.0087 with it, 0.0003 without. Needs a real renderer. |
 | `Dev tools/Validation/docs_audit.gd` | `godot --headless --path . --script "res://Dev tools/Validation/docs_audit.gd"` | Checks the DOCUMENTATION against the repository: every `res://` path exists, relative links resolve, the mkdocs nav and the page set agree, and no page mentions a class or path this build removed. **5 checks.** |
 | `Dev tools/Validation/Flicker Probe.tscn` | `godot --path . "res://Dev tools/Validation/Flicker Probe.tscn" -- "--flicker-output=<dir>"` | **Measures temporal instability** in the Town: holds the camera still and reports the mean absolute difference between consecutive frames, under three conditions it forces itself. **Needs a real renderer.** |
 | `addons/aca_sky3d_environment/demo/Environment Demo.tscn` | `godot --path . "res://addons/aca_sky3d_environment/demo/Environment Demo.tscn" -- "--demo-shots=<dir>"` | The environment package's STANDALONE demo — loads none of the game. Renders the whole quality x weather x time matrix (36 shots) and quits. **Needs a real renderer.** |
@@ -48,6 +60,14 @@ Godot executable used for all of these: **4.6.1 stable**.
 | ...`--stress-mode=` | `static` / `drive` / `camera` | What MOVES while the frames are counted. |
 | ...`--stress-seconds=` / `--stress-label=` / `--stress-weather=` / `--stress-hour=` | | The measurement window, a build tag written into the CSV, and the production profiles' weather and time of day. |
 | `Mowing Section/Experimental/Pond/Pond Demo.tscn` | `godot --path . "res://Mowing Section/Experimental/Pond/Pond Demo.tscn" -- "--pond-shots=<dir>"` | The pond prototype's standalone scene. Renders a review set, then prints the density-refusal and exclusion-API results. **Needs a real renderer.** |
+
+### Current reconciliation baseline
+
+The final packet baseline is `validate_all`: **205 scripts / 0 script failures;
+108 of 109 scenes load**. The single scene failure is the unused third-party
+`addons/sky_3d/assets/resources/MoonRender.tscn`, which references a missing
+Sky3D shader. The new game-feel probes are separate from the older property and
+business suites so their claims remain easy to locate.
 
 ### Why these are scenes, not `--script`
 
@@ -253,6 +273,33 @@ town reloaded → completed job retained.
 It calls the same public methods the UI calls. It never writes private state to
 force a PASS.
 
+## Developer Debugger (H)
+
+`Dev tools/Developer Debugger/developer_debugger.gd` (`ACADeveloperDebugger`) is
+the **normal developer interface**, and replaced the legacy MVP HUD in that
+role. It is a small slate overlay, **hidden whenever the game launches**, opened
+and closed with **H** in the Business Town *and* in mowing gameplay.
+
+It is mounted by `ACAPauseLayer`, which is the one class the Town Screen
+(`Pause Layer.tscn`) and the mowing Gameplay UI (`ACAGameplayUI`) already have
+in common — so there is one debugger implementation, not one per screen.
+`ACAPauseLayer._unhandled_key_input()` owns the H binding; it is
+`_unhandled_key_input` rather than `_input` so that typing an `h` into the
+debugger's money field cannot close the debugger, and it is inert while any part
+of the pause stack is open. Opening pause closes the debugger, so the two never
+stack.
+
+**It owns no state.** Every control goes through the existing authority:
+
+| Control | Authority | How |
+|---|---|---|
+| Weather buttons | `WorldClock` | One button per entry in `WorldClock.WEATHER_PRESETS`, so a preset added there appears here with no change to the debugger. Pressing one calls `WorldClock.set_weather()`, which is the same call the development keys make — scene and environment adapters react through `weather_changed` as usual. Sky3D is never touched directly. |
+| Balance readout, `SET BALANCE`, `+$100` / `+$1,000` / `-$100` | `GameSession` | An exact balance is reached by reading `GameSession.money()` and asking for the **difference** through `add_money()` / `try_spend()`. Nothing writes `_money`, and the target is clamped at zero, so the balance can never go negative. |
+| Cursor | `AppUI` | `hold_mouse(&"developer_debugger")` while open, released on close (and on `_exit_tree()`, defensively). `Input.mouse_mode` is never assigned. |
+
+Nothing debugger-specific is saved. The values it changes are the real ones, so
+a save afterwards stores them through the ordinary save path.
+
 ## Development-only gameplay helpers
 
 In the mowing scene (`Game/M.V.P/MVP.gd`), clearly marked
@@ -262,10 +309,10 @@ In the mowing scene (`Game/M.V.P/MVP.gd`), clearly marked
 |---|---|---|
 | `dev_complete_current_job()` | **F10** | Completes the active contract **through the real pathway** — the same `_finish_job()` that natural 100% mowing calls, which calls `GameSession.complete_current_job()`. Only the driving is skipped; nothing is faked. |
 | `dev_set_reported_progress(fraction)` | — | Reports arbitrary progress into `ACAJobManager` without cutting grass. For save/resume testing. |
-| `dev_toggle_debug_hud()` | **F3** | Shows/hides the legacy MVP HUD. |
+| `dev_toggle_debug_hud()` | — | Shows/hides the legacy MVP HUD. **No keyboard toggle since the Developer Debugger took over H**; kept because the Screenshot Tour and other tooling call it. |
 | `dev_refuel_now()` | **F7** | Fills the tank through the real `MowerFuel.refuel_full()`. |
-| `dev_toggle_auto_refuel()` | **F8** | Auto Refuel ON/OFF. Also a checkbox on the F3 HUD. |
-| `dev_drain_fuel()` | — | Empties the tank, so zero-fuel behaviour can be seen without waiting eight minutes. F3 HUD button. |
+| `dev_toggle_auto_refuel()` | **F8** | Auto Refuel ON/OFF. Also a checkbox on the legacy HUD. |
+| `dev_drain_fuel()` | — | Empties the tank, so zero-fuel behaviour can be seen without waiting eight minutes. Legacy HUD button. |
 
 Quick save / quick load are **not** development-only — they are real player
 controls bound to **F5** / **F9** in `GameSession._unhandled_input()`.
@@ -276,8 +323,13 @@ Other in-scene development keys: `1/2/3/4` time-of-day presets, `7/8/9` weather
 
 ## Legacy MVP HUD
 
-`Game/M.V.P/MVP_HUD.tscn` is retained as a **development diagnostics layer**. It
-is hidden on load and toggled with F3. Its mower-swap, grid-reset, speed slider,
+`Game/M.V.P/MVP_HUD.tscn` is retained as a **development diagnostics layer**,
+but it is no longer the interface opened while playing — the Developer Debugger
+above is. It is hidden on load and has **no keyboard toggle of its own**: F3 was
+removed from `MVP._input()` and the old H binding was removed from
+`mvp_hud.gd._input()` so it cannot come up alongside the new debugger.
+`MVP.dev_toggle_debug_hud()` is preserved for the Screenshot Tour and any other
+tooling that drives it. Its mower-swap, grid-reset, speed slider,
 time and weather controls all still work, and it is the **only** place Auto
 Refuel is exposed — that row must never appear on the production HUD. The player-facing UI is the Gameplay
 UI stack.

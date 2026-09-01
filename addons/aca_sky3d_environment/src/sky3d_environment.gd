@@ -291,6 +291,27 @@ func set_transition_speed(per_second: float) -> void:
 
 ## Media tooling. One extra `{"scale": {}, "set": {}}` layer composed after the
 ## weather, so a capture can have a look the shipped profiles do not ship.
+## The PLACE layer - where in the world this scene is. See the note on
+## `ACAEnvComposer._place`; it survives a presentation capture, which is the
+## whole reason it is not the same slot.
+func set_place_layer(layer: Dictionary) -> void:
+	load_profiles()
+	composer.set_place_layer(layer)
+	_retarget()
+
+
+func clear_place_layer() -> void:
+	set_place_layer({})
+
+
+func place_layer() -> Dictionary:
+	return composer.place_layer()
+
+
+func has_place_layer() -> bool:
+	return composer.has_place_layer()
+
+
 func set_presentation_override(layer: Dictionary) -> void:
 	composer.set_override(layer)
 	_retarget()
@@ -483,6 +504,20 @@ func _write_fx(values: Dictionary) -> void:
 	_rig.set_wind(Vector2(
 		float(values.get("fx:wind_x", 0.0)),
 		float(values.get("fx:wind_z", 0.0))))
+	# RAIN IS TINTED BY THE AIR IT IS IN. `fog_light_color` is the composed
+	# colour of distance at this hour in this weather, which is exactly what
+	# water suspended in that air should be - so an evening shower is warm and
+	# a night one is blue without either being authored anywhere.
+	var tint: Variant = values.get("env:fog_light_color", null)
+	if tint is Color:
+		_rig.set_tint(_rain_tint(tint))
+
+
+## The fog colour, lifted off whatever it is so a dark night does not put out
+## the rain entirely. Half way between the air and white is enough to keep a
+## streak legible at every hour without it becoming a white line again.
+func _rain_tint(fog: Color) -> Color:
+	return fog.lerp(Color(1.08, 1.08, 1.10), 0.42)
 
 
 ## Step keys go through Sky3D setters that start their own Tween, so they are

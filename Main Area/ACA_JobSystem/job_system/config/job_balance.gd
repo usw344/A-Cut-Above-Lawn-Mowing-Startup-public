@@ -61,10 +61,35 @@ const ARRIVAL_INTERVAL_MINUTES := {
 const MARKET_STRENGTH_MIN := 0
 const MARKET_STRENGTH_MAX := 5
 
+## How many seeds the manager will try before giving up on one arrival, when the
+## host has set `ACAJobManager.offer_filter_provider`.
+##
+## Sized against the worst case the host actually has: a business working only
+## its starting corner of the market accepts roughly three offers in ten, so
+## sixty-four attempts refuse a due arrival about once in every ten million.
+## An arrival that IS refused is not an error - it is a quiet market - so this
+## only has to be large enough that "quiet" never means "silent".
+const OFFER_FILTER_ATTEMPTS := 64
+
 # ------------------------------------------------------------- current jobs
 ## V1 allows exactly one accepted contract. current_jobs stays a collection so
 ## raising this number is the only change required later.
-const MAX_CURRENT_JOBS := 1
+## HOW MANY CONTRACTS THE BUSINESS MAY HOLD AT ONCE.
+##
+## This was 1, and while the player was the only thing that could mow, 1 was the
+## right number: a contractor cannot be in two gardens at the same time.
+##
+## The business now owns machines that work without being driven, and a company
+## with a machine on a contract and a driver on another is holding two - so this
+## is the business's capacity, not the player's. The PLAYER is still limited to
+## one contract they personally drive to, and that limit lives in the host
+## (`GameSession.max_player_contracts()`), because it is a fact about the player
+## rather than about the job market.
+##
+## Five is one driven contract plus the four autonomous machines a business may
+## own, so a fully equipped company can have every machine out at once and not
+## one more.
+const MAX_CURRENT_JOBS := 5
 
 # ------------------------------------------------- estimated time PLACEHOLDER
 ## PLACEHOLDER. Real estimated time will come from lawn size + current mower

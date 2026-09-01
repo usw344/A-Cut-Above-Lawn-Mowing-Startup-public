@@ -31,6 +31,9 @@ signal past_jobs_changed()
 ## Individual lifecycle events, for sound, notifications and analytics.
 signal job_generated(job: ACAJob)
 signal job_expired(job: ACAJob)
+## An offer left the board because somebody other than the player took it. The
+## Job System does not know who; the host project does.
+signal job_taken(job: ACAJob)
 signal job_accepted(job: ACAJob)
 signal job_completed(job: ACAJob)
 
@@ -43,6 +46,10 @@ signal market_strength_changed(strength: int)
 ## listens and does the actual mowing-scene transition; the Job System never
 ## changes scenes itself.
 signal begin_job_requested(job: ACAJob)
+
+## The host's SECOND action on an offer was pressed. See `offer_action_provider`.
+## The Job System does nothing in response; the host does.
+signal offer_action_requested(job: ACAJob)
 
 # ------------------------------------------------------------------- exports
 ## Evaluate the market automatically using an internal poll timer. Turn this
@@ -79,6 +86,97 @@ var estimated_time_provider: Callable = Callable()
 ## it that way. `ACAJobEnums.PropertyType` is the whole of its vocabulary for
 ## what a property is; the host owns the rest and hands over a string.
 var site_note_provider: Callable = Callable()
+
+## INTEGRATION POINT - a SECOND action on an offer.
+##
+## Optional Callable taking (job: ACAJob) and returning
+##     `{ "text": String, "enabled": bool, "note": String }`
+## Empty text means the offer has no second action, which is the default and is
+## what happens when no host has set this.
+##
+## THE JOB SYSTEM DOES NOT KNOW WHAT THE ACTION IS. In A Cut Above it is "send a
+## machine", because the business owns autonomous mowers - but this package has
+## never heard of a mower and still has not. It renders a button, emits a signal,
+## and lets the host decide what that meant. Same shape as the site note and the
+## pay multiplier above.
+var offer_action_provider: Callable = Callable()
+
+
+## INTEGRATION POINT - WHICH OFFERS THIS WORLD IS WILLING TO PUT ON THE BOARD.
+##
+## Optional Callable taking (job: ACAJob) and returning a bool. When it answers
+## false the manager DISCARDS that roll and tries another seed, up to
+## `ACAJobBalance.OFFER_FILTER_ATTEMPTS`; it never publishes a rejected offer and
+## it never publishes nothing where an offer was due, unless every attempt was
+## rejected.
+##
+##     manager.offer_filter_provider = func(job): return world.can_service(job)
+##
+## THE JOB SYSTEM DOES NOT KNOW WHY AN OFFER IS UNSUITABLE. In A Cut Above it is
+## because the business has not bought a service lot in that part of the map -
+## but this package has never heard of a map and still has not. Same shape as
+## the site note, the pay multiplier and the second action.
+var offer_filter_provider: Callable = Callable()
+
+## INTEGRATION POINT - HOW THE BOARD GROUPS ITS OFFERS.
+##
+## Optional Callable taking (job: ACAJob) and returning
+##     `{ "id": StringName, "label": String, "colour": Color }`
+## An empty answer means the job belongs to no group, which is the default and
+## is what happens when no host has set this. The board draws a filter row only
+## when the offers on it fall into more than one group, so a host that never
+## sets this - or a world with one group in play - gets the board it always had.
+var job_group_provider: Callable = Callable()
+
+
+## What the host offers as a second action on this offer, if anything.
+func offer_action(job: ACAJob) -> Dictionary:
+	if job == null or not offer_action_provider.is_valid():
+		return {}
+	var answer: Variant = offer_action_provider.call(job)
+	return answer if answer is Dictionary else {}
+
+
+## Which group the host puts this job in. Empty when it has not been asked to.
+func job_group(job: ACAJob) -> Dictionary:
+	if job == null or not job_group_provider.is_valid():
+		return {}
+	var answer: Variant = job_group_provider.call(job)
+	return answer if answer is Dictionary else {}
+
+
+## The groups a set of jobs falls into, in the order they were first seen.
+## `[{ id, label, colour, count }]`. Empty when there is no group provider.
+func groups_in(jobs: Array) -> Array:
+	if not job_group_provider.is_valid():
+		return []
+	var order: Array = []
+	var seen := {}
+	for entry in jobs:
+		var group := job_group(entry as ACAJob)
+		if group.is_empty():
+			continue
+		var id := StringName(String(group.get("id", "")))
+		if id.is_empty():
+			continue
+		if seen.has(id):
+			seen[id]["count"] = int(seen[id]["count"]) + 1
+			continue
+		var record := group.duplicate()
+		record["id"] = id
+		record["count"] = 1
+		seen[id] = record
+		order.append(record)
+	return order
+
+
+## Whether this world would publish such an offer. True when no filter is set.
+func offer_is_acceptable(job: ACAJob) -> bool:
+	if job == null:
+		return false
+	if not offer_filter_provider.is_valid():
+		return true
+	return bool(offer_filter_provider.call(job))
 
 # --------------------------------------------------------------------- state
 var _time: ACAJobTimeProvider = ACAJobTimeProvider.new()
@@ -120,6 +218,21 @@ func _ready() -> void:
 ## stored on the job and paid from there, so a recession after the handshake
 ## cannot reprice work the player has already agreed to do.
 var pay_multiplier_provider: Callable = Callable()
+
+## OPTIONAL. How many contracts the PLAYER may personally hold, and why not more.
+## Supplied by the host; unset means the business capacity is the only limit.
+## Returns `{ "allowed": bool, "reason": String }`.
+var player_capacity_provider: Callable = Callable()
+
+
+## Whether the player may take another contract themselves right now.
+func player_may_accept() -> Dictionary:
+	if not player_capacity_provider.is_valid():
+		return {"allowed": has_current_capacity(), "reason": _capacity_message()}
+	var answer: Dictionary = player_capacity_provider.call()
+	if not bool(answer.get("allowed", true)):
+		return answer
+	return {"allowed": has_current_capacity(), "reason": _capacity_message()}
 
 
 func _pay_multiplier() -> float:
@@ -278,16 +391,68 @@ func minutes_until_next_arrival() -> float:
 	return maxf(_next_arrival_time - _time.game_minutes(), 0.0)
 
 
-func _spawn_offer(t: float) -> void:
-	var job := ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t,
-		ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
-	while get_job(job.id) != null:
-		job = ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t,
+## Roll ONE offer the world is willing to publish.
+##
+## The reroll loop is bounded and it is the only thing the filter costs. A world
+## that refuses most of what the generator produces - a business working one
+## small corner of a large market - simply takes more attempts, and generation
+## is a handful of random draws with no allocation beyond the job itself.
+##
+## Returning null means every attempt was refused. The caller treats that as
+## "no arrival this time" rather than as an error: the next interval will try
+## again, and a market the player has no access to SHOULD be quiet.
+func _roll_publishable_offer(t: float) -> ACAJob:
+	for _attempt in ACAJobBalance.OFFER_FILTER_ATTEMPTS:
+		var job := ACAJobGenerator.generate(_rng.randi() & 0x7FFFFFFF, t,
 			ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
+		if get_job(job.id) != null:
+			continue
+		if not offer_is_acceptable(job):
+			continue
+		return job
+	return null
+
+
+func _spawn_offer(t: float) -> bool:
+	var job := _roll_publishable_offer(t)
+	if job == null:
+		return false
 	job.status = ACAJobEnums.Status.AVAILABLE
 	_available.append(job)
 	job_generated.emit(job)
 	available_jobs_changed.emit()
+	return true
+
+
+## COMMISSION AN OFFER FROM A KNOWN SEED, outside the market's own arrival
+## schedule and outside its capacity.
+##
+## The market decides what work turns up on its own. This is for work the HOST
+## already knows about - in A Cut Above, a scheduled visit under a service
+## agreement the business has signed - and the difference matters: such an offer
+## is not a random arrival competing for a slot on the board, it is a
+## commitment that already exists being written down.
+##
+## It bypasses `offer_filter_provider` deliberately. The host asked for THIS
+## contract; asking it again whether it wants it would be the Job System second
+## guessing its own caller.
+##
+## `duration_minutes` above zero overrides the seed's own offer lifetime.
+## Returns the published job, or null if the seed is already on the board.
+func commission_offer(job_seed: int, duration_minutes: float = 0.0) -> ACAJob:
+	var t := _time.game_minutes()
+	var job := ACAJobGenerator.generate(job_seed, t,
+		ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
+	if get_job(job.id) != null:
+		return null
+	if duration_minutes > 0.0:
+		job.offer_duration_minutes = duration_minutes
+		job.expiry_game_time = t + duration_minutes
+	job.status = ACAJobEnums.Status.AVAILABLE
+	_available.append(job)
+	job_generated.emit(job)
+	available_jobs_changed.emit()
+	return job
 
 
 ## Put offers on the board immediately, ignoring the arrival interval, up to
@@ -307,7 +472,16 @@ func seed_initial_offers(count: int = 2) -> void:
 
 ## Move an offer from Available to Current. Accepting one offer must never
 ## disturb the others.
-func accept_job(job_id: StringName) -> bool:
+##
+##
+## `for_machine` is the difference between the PLAYER taking a contract and the
+## BUSINESS putting a machine on one. The Job System does not care which - a
+## contract is a contract - but the host limits how many the player may
+## personally hold, and that gate must not apply to a machine.
+##
+## The gate itself lives in the host, through `player_capacity_provider`. This
+## package still has no idea what a mower is.
+func accept_job(job_id: StringName, for_machine: bool = false) -> bool:
 	var job := _find(_available, job_id)
 	if job == null:
 		job_accept_failed.emit(job_id, "That job offer is no longer available.")
@@ -319,6 +493,14 @@ func accept_job(job_id: StringName) -> bool:
 	if not has_current_capacity():
 		job_accept_failed.emit(job_id, _capacity_message())
 		return false
+	# THE PLAYER'S OWN LIMIT, and only the player's. A machine being put on a
+	# contract is the business taking work, not the contractor taking a second
+	# garden to stand in.
+	if not for_machine:
+		var gate := player_may_accept()
+		if not bool(gate.get("allowed", true)):
+			job_accept_failed.emit(job_id, String(gate.get("reason", "")))
+			return false
 
 	_available.erase(job)
 	job.status = ACAJobEnums.Status.ACCEPTED  # offer expiry stops applying here
@@ -381,6 +563,31 @@ func discard_current_job(job_id: StringName) -> bool:
 	_current.erase(job)
 	job.status = ACAJobEnums.Status.EXPIRED
 	current_jobs_changed.emit()
+	return true
+
+
+## AN OFFER WAS TAKEN BY SOMEBODY ELSE.
+##
+## The board has always behaved as though every offer belonged to the player
+## until it expired. It does not: other firms bid for the same work. This is the
+## one way an AVAILABLE offer can leave the board without the player accepting
+## it or its clock running out.
+##
+## It is deliberately NOT `discard_current_job` with a different name - that one
+## drops an ACCEPTED contract, which is a different event with a different cost.
+## A taken offer never becomes business history, exactly like an expired one:
+## nobody did the work, so there is nothing to record.
+##
+## The Job System does not know who took it, and does not want to. The host
+## project owns the competition; this owns the board.
+func competitor_take_offer(job_id: StringName) -> bool:
+	var job := _find(_available, job_id)
+	if job == null:
+		return false
+	_available.erase(job)
+	job.status = ACAJobEnums.Status.EXPIRED
+	job_taken.emit(job)
+	available_jobs_changed.emit()
 	return true
 
 
@@ -514,19 +721,14 @@ func debug_force_offer(respect_capacity: bool = false) -> ACAJob:
 	var t := _time.game_minutes()
 	if respect_capacity and _available.size() >= max_available_jobs():
 		return null
-	_spawn_offer(t)
+	if not _spawn_offer(t):
+		return null
 	return _available.back()
 
 
 ## Inject a job built from an explicit seed - used to verify determinism.
 func debug_add_offer_with_seed(job_seed: int) -> ACAJob:
-	var job := ACAJobGenerator.generate(job_seed, _time.game_minutes(),
-		ACAJobBalance.GENERATOR_VERSION, _pay_multiplier())
-	job.status = ACAJobEnums.Status.AVAILABLE
-	_available.append(job)
-	job_generated.emit(job)
-	available_jobs_changed.emit()
-	return job
+	return commission_offer(job_seed)
 
 
 func debug_clear_all() -> void:

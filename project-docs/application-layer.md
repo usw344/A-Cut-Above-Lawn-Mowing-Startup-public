@@ -1,6 +1,6 @@
 # Application Layer
 
-Status: **Current** — added 2026-08-19. This is the layer that turns the
+Status: **Current** — reconciled 2026-08-30. This is the layer that turns the
 individual systems into one running game. Read this page first.
 
 ## Why it exists
@@ -17,7 +17,7 @@ Declared in `project.godot` in this order; later ones depend on earlier ones.
 
 | # | Name | Script | Role |
 |---|---|---|---|
-| 1 | `model` | `Data Structures/Model.gd` | Legacy global state: mower speed, blade length, cuttings, selected mower, and the fuel **level**. |
+| 1 | `model` | `Data Structures/Model.gd` | Compatibility state: mower speed/blade, legacy cuttings/selection metadata, and the fuel **level**. |
 | 2 | `MowerFuel` | `Game/App/mower_fuel.gd` | **Authoritative** fuel RULES. Reads and writes `model.mower_fuel`. |
 | 3 | `WorldClock` | `Game/World/world_clock.gd` | **Authoritative** world time, season, weather preset. |
 | 4 | `JobManager` | `Main Area/ACA_JobSystem/job_system/manager/job_manager.gd` | **Authoritative** owner of every job. |
@@ -27,6 +27,12 @@ Declared in `project.godot` in this order; later ones depend on earlier ones.
 | 8 | `SaveService` | `Game/App/save_service.gd` | Save/load. See [save and load](systems/save-and-load.md). |
 | 9 | `Economy` | `Game/Economy/economy_manager.gd` | Market conditions, temporary events, and prices. **Holds no money.** |
 | 10 | `MowerUpgrades` | `Game/Economy/mower_upgrades.gd` | Per-mower upgrade levels and the multipliers the controllers read. |
+| 11 | `Equipment` | `Game/Economy/equipment.gd` | Owned mower types, attachments, autonomous equipment and assignments. |
+| 12 | `Clippings` | `Game/Economy/clippings.gd` | Bag, yard inventory, compost and clipping sales. |
+| 13 | `Business` | `Game/Economy/business.gd` | Reputation, reviews, customers, competitors, schedule and yard state. |
+| 14 | `Territory` | `Game/Business/service_territory.gd` | Owned service regions and the job filter. |
+| 15 | `Agreements` | `Game/Business/service_agreements.gd` | Recurring service agreements. |
+| 16 | `Portfolio` | `Game/Business/portfolio.gd` | Portfolio metadata and captured image references. |
 
 `GameSession._ready()` is what hands `ACAWorldClockTimeProvider` to
 `JobManager.set_time_provider()`. Without that call the job market is dead.
@@ -184,7 +190,9 @@ Two inputs decide the cursor:
 
 Tokens in use: `MOUSE_HOLD_PAUSE` (the pause stack), `MOUSE_HOLD_RESULTS` (the
 Job Complete screen — the mowing context is CAPTURED, so its button would be
-unclickable otherwise), `debug_hud` (F3).
+unclickable otherwise), `developer_debugger` (the H overlay — see
+Validation and Dev Tools) and `debug_hud` (the legacy MVP HUD, now opened
+only by tooling).
 
 `GameSession._swap_scene()` calls `clear_mouse_holds()`: a hold belongs to the
 screen that took it, and that screen is about to be freed.
@@ -305,8 +313,8 @@ Main Menu Screen ──NEW GAME──▶ GameSession.start_new_game()
                                                                  ▼
                               GameSession._on_begin_job_requested → go_to_mowing()
                                                                  ▼
-       Minimum Viable Game.tscn: grid sized from job.grid_size.x, world time + weather
-       applied through preset_manager, Gameplay UI shows Job Intro then the HUD
+       Minimum Viable Game.tscn: property sized from job.grid_size.x, world time + weather
+       applied through preset_manager, Gameplay UI shows a skippable Job Intro then the HUD
                                                                  ▼
        100% mowed  ─or─  dev_complete_current_job() (F10)  →  MVP._finish_job()
                                                                  ▼
@@ -318,6 +326,12 @@ Main Menu Screen ──NEW GAME──▶ GameSession.start_new_game()
                                  ▼
                               Job Complete screen → RETURN TO TOWN → GameSession.go_to_town()
 ```
+
+The Job Intro is one `intro_seconds` timer (2.4 seconds) and accepts any key or
+click after its initial guard. Completion, the results screen, and the return to
+Town do not add an artificial delay. The workmanship readout is calculated from
+the real cutter's coverage and debounced non-ground contacts; its callouts are
+recognition-only and do not change settlement or payout.
 
 ## KNOWN ISSUES
 

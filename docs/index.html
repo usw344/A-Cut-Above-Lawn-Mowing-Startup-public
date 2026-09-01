@@ -3,210 +3,74 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A Cut Above: Mow & Grow is a 3D lawn-mowing and small-business simulation built in Godot.">
-  <meta name="theme-color" content="#12382b">
-  <meta property="og:title" content="A Cut Above: Mow & Grow">
-  <meta property="og:description" content="Build a lawn-care business, one contract and one clean cut at a time.">
+  <meta name="description" content="A Cut Above: Mow & Grow is an independent Godot simulation project with generated properties, large-scale grass rendering, persistent systems, and a complete business gameplay loop.">
+  <meta name="theme-color" content="#102d23">
+  <meta property="og:title" content="A Cut Above: Mow & Grow — Godot Engineering Portfolio">
+  <meta property="og:description" content="An independent Godot 4.6.1 simulation project built in GDScript.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="assets/screenshots/gameplay-mower-close.webp">
-  <title>A Cut Above: Mow & Grow</title>
-  <link rel="stylesheet" href="assets/site.css">
-  <script src="assets/site.js" defer></script>
+  <meta property="og:image" content="assets/screenshots/procedural-property.webp">
+  <title>A Cut Above: Mow & Grow — Godot Engineering Portfolio</title>
+  <link rel="stylesheet" href="assets/site.css?v=20260830">
+  <script src="assets/site.js?v=20260830" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-
   <header class="site-header" data-header>
-    <a class="brand" href="#top" aria-label="A Cut Above home">
-      <span class="brand-mark" aria-hidden="true">A</span>
-      <span><strong>A Cut Above</strong><small>Mow &amp; Grow</small></span>
-    </a>
-    <nav class="site-nav" aria-label="Primary navigation">
-      <a href="#about">About</a>
-      <a href="#gameplay">Gameplay</a>
-      <a href="#features">Features</a>
-      <a href="#gallery">Gallery</a>
-      <a href="#development">Development</a>
-    </nav>
-    <a class="button button-small button-accent" data-link="steam" href="https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/">Wishlist on Steam</a>
+    <a class="brand" href="#top" aria-label="A Cut Above home"><span class="brand-mark" aria-hidden="true">A</span><span><strong>A Cut Above</strong><small>Mow &amp; Grow</small></span></a>
+    <nav class="site-nav" aria-label="Primary navigation"><a href="#overview">Overview</a><a href="#engineering">Engineering</a><a href="#systems">Systems</a><a href="#gallery">Gallery</a><a href="#status">Status</a></nav>
+    <a class="button button-small button-accent" data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">View repository</a>
   </header>
-
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <img class="hero-image" src="assets/screenshots/gameplay-mower-close.webp" alt="A riding mower cutting a wide green lawn under a bright sky">
+      <img class="hero-image" src="assets/screenshots/procedural-property.webp" alt="A generated wooded property with a pond, obstacles, and clearly visible cut and uncut lawn">
       <div class="hero-shade"></div>
       <div class="hero-content wrap">
-        <p class="eyebrow"><span class="status-dot"></span> In active development</p>
-        <h1 id="hero-title">Run the business.<br><em>Make the cut.</em></h1>
-        <p class="hero-lede">Build a lawn-care business, one contract and one clean cut at a time.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">View on GitHub</a>
-          <a class="button button-ghost" data-link="trailer" aria-disabled="true">Trailer coming soon</a>
-          <a class="text-link" data-link="itch" href="https://sologamedev873.itch.io/a-cut-above-mow-and-grow">Play the current build <span aria-hidden="true">↗</span></a>
-        </div>
-      </div>
-      <a class="scroll-cue" href="#about" aria-label="Scroll to about the game"><span></span> Discover the game</a>
-    </section>
-
-    <section class="section section-trailer" id="trailer" data-trailer-section hidden>
-      <div class="wrap">
-        <div class="section-heading trailer-heading">
-          <div><p class="section-kicker">Official trailer</p><h2>See the workday in motion.</h2></div>
-          <div class="trailer-intro">
-            <p>From choosing a contract to making the final pass, watch the current game loop come together.</p>
-            <a class="text-link" data-trailer-external>Watch on YouTube <span aria-hidden="true">↗</span></a>
-          </div>
-        </div>
-        <div class="trailer-frame" data-trailer-embed></div>
+        <p class="eyebrow"><span class="status-dot"></span> Independent Godot project · Active development</p>
+        <h1 id="hero-title">A Cut Above:<br><em>Mow &amp; Grow</em></h1>
+        <p class="hero-lede">A lawn-care business simulator built around physically mowing generated properties, with the business systems that turn each job into a full workday.</p>
+        <div class="hero-actions"><a class="button button-primary" data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">Explore the repository</a><a class="button button-ghost" data-link="trailer" aria-disabled="true">Watch the showcase</a><a class="text-link" data-link="itch" href="https://sologamedev873.itch.io/a-cut-above-mow-and-grow">Play the current build <span aria-hidden="true">↗</span></a></div>
+        <ul class="hero-facts" aria-label="Project summary"><li><strong>Godot 4.6.1</strong><span>GDScript · Jolt Physics</span></li><li><strong>Complete application loop</strong><span>Menu · town · jobs · mowing · settlement</span></li><li><strong>Procedural + persistent</strong><span>Generated properties and saved simulation state</span></li></ul>
       </div>
     </section>
-
-    <section class="section section-intro" id="about">
-      <div class="wrap intro-grid">
-        <div>
-          <p class="section-kicker">About the game</p>
-          <h2>Start with a mower.<br>Grow a local operation.</h2>
-        </div>
-        <div class="prose">
-          <p>A Cut Above: Mow &amp; Grow is an independent 3D simulation about the satisfying work of caring for lawns and the decisions behind a small service business.</p>
-          <p>Pick contracts in town, travel to each property, finish the cut, and turn the payment into fuel and better equipment. Different mowers, weather, market conditions, and property layouts keep the work changing.</p>
-          <p>The current build connects the complete loop from the main menu through contract settlement and back to town, with persistent progress between sessions.</p>
+    <section class="section section-overview" id="overview">
+      <div class="wrap overview-grid"><div><p class="section-kicker">Project overview</p><h2>A playable simulation, not an isolated prototype.</h2></div><div class="prose"><p>The current build takes a player from the main menu to the business town, a generated contract, a physical mowing job, payment, and back again—while carrying meaningful state between sessions.</p><p>A Cut Above is an independent project built around gameplay systems, application flow, generated content, simulation state, persistence, UI integration, optimization work, and validation tooling. Credited art, audio, and third-party components remain behind documented boundaries.</p></div></div>
+      <div class="wrap loop-line" aria-label="Current playable loop"><span>01 Main menu</span><span>02 Business town</span><span>03 Generated contract</span><span>04 Physical mowing</span><span>05 Settlement</span><span>06 Persistent progress</span></div>
+    </section>
+    <section class="section section-engineering" id="engineering">
+      <div class="wrap"><div class="section-heading"><div><p class="section-kicker">Engineering highlights</p><h2>The systems behind the lawn.</h2></div><p>Property data, rendering, simulation, and presentation work together so a large lawn can be generated, mowed, saved, and checked without losing the thread between systems.</p></div>
+        <div class="engineering-grid">
+          <article><span>01</span><h3>Procedural property system</h3><p>A contract seed sets up lawn size, terrain, boundaries, obstacles, ponds, planting zones, forest density, and the surrounding area. The same property data also feeds mowing completion and the minimap.</p></article>
+          <article><span>02</span><h3>Lawn 2.0 mowing state</h3><p>Compact byte arrays track one-unit lawn cells. The mower deck sweeps across that data directly, so progress updates without a physics body for every blade of grass.</p></article>
+          <article><span>03</span><h3>Rendering and performance</h3><p>Cullable near- and mid-field grass tiles use MultiMesh instances. A small mask texture keeps shaders in step with the cut state, while probes and stress scenes track build and runtime costs.</p></article>
+          <article><span>04</span><h3>Application architecture</h3><p>Routing, jobs, time, economy, equipment, business state, and file I/O each have a focused home. UI shows state and sends actions back to those systems.</p></article>
+          <article><span>05</span><h3>Weather and environment</h3><p>A persistent WorldClock drives scheduled weather. Project adapters pass that into Sky3D, precipitation, lighting, and the ground-condition presentation.</p></article>
+          <article><span>06</span><h3>Persistence and validation</h3><p>Save sections cover the world, jobs, economy, equipment, business progress, and active lawn work. Automated suites and visual probes check both the rules and the presentation.</p></article>
         </div>
       </div>
     </section>
-
-    <section class="section section-loop" id="gameplay">
-      <div class="wrap">
-        <div class="section-heading">
-          <div><p class="section-kicker">The workday</p><h2>A clear, satisfying loop</h2></div>
-          <p>Each job feeds the next decision. Take the work, finish it well, then decide how to put the earnings back into the business.</p>
-        </div>
-        <ol class="loop-grid">
-          <li><span>01</span><div><strong>Choose</strong><p>Compare available contracts at the town job board.</p></div></li>
-          <li><span>02</span><div><strong>Travel</strong><p>Head to the property with the mower you want to run.</p></div></li>
-          <li><span>03</span><div><strong>Mow</strong><p>Read the terrain, plan clean passes, and track progress.</p></div></li>
-          <li><span>04</span><div><strong>Complete</strong><p>Finish the required cut and settle the contract.</p></div></li>
-          <li><span>05</span><div><strong>Improve</strong><p>Refuel or tune equipment for speed, handling, and efficiency.</p></div></li>
-          <li><span>06</span><div><strong>Repeat</strong><p>Return to town and line up the next day of work.</p></div></li>
-        </ol>
+    <section class="section section-property"><div class="wrap property-grid">
+      <button class="property-media" type="button" data-lightbox="assets/screenshots/pond-feature.webp" data-caption="A generated pond integrated with lawn exclusions, terrain, grass, and foliage"><img src="assets/screenshots/pond-feature.webp" alt="A generated pond surrounded by dense grass and a wooded property" loading="lazy"><span>Generated pond feature</span></button>
+      <div><p class="section-kicker">One shared property model</p><h2>Generation, mowing, rendering, and navigation stay in sync.</h2><p>A pond is more than scenery: it shapes terrain, removes lawn cells, affects obstacle placement, appears on the minimap, and stays out of the completion calculation. The same approach supports boundaries, rocks, planting beds, conservation areas, and other property features.</p><ul class="check-list"><li>Properties can be recreated from contract parameters</li><li>Lawn data drives the mowing result</li><li>Visual grass reads a compact cut-mask texture</li><li>Save data restores active work without rebuilding history</li></ul></div>
+    </div></section>
+    <section class="section section-systems" id="systems"><div class="wrap systems-grid">
+      <div><p class="section-kicker">Gameplay and business systems</p><h2>Engineering tied to a complete player experience.</h2><p>Three mower types, generated jobs, fuel, equipment, upgrades, economy, territories, agreements, reputation, weather, and business history all feed the same playable workday.</p><div class="system-tags" aria-label="Current systems"><span>Physical mowing</span><span>Three mower types</span><span>Job market</span><span>Business town</span><span>Economy</span><span>Equipment</span><span>Upgrades</span><span>Weather</span><span>Minimap</span><span>Save/load</span></div></div>
+      <button class="systems-media" type="button" data-lightbox="assets/screenshots/mower-workshop.webp" data-caption="The current mower workshop and equipment progression interface"><img src="assets/screenshots/mower-workshop.webp" alt="Mower workshop showing machines, autonomous equipment, attachments, and upgrade controls" loading="lazy"><span>Mower workshop</span></button>
+    </div></section>
+    <section class="section section-gallery" id="gallery"><div class="wrap">
+      <div class="section-heading"><div><p class="section-kicker">Current build</p><h2>Fresh captures from the project.</h2></div><p>Selected to show the production loop and the systems behind it—not every available screen.</p></div>
+      <div class="gallery-grid">
+        <button class="gallery-shot gallery-wide" type="button" data-lightbox="assets/screenshots/mowing-state.webp" data-caption="A generated property with clearly visible cut and uncut lawn state"><img src="assets/screenshots/mowing-state.webp" alt="Cut and uncut grass across a generated property with rocks and wooded surrounds" loading="lazy"><span>Authoritative mowing state</span></button>
+        <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/riding-mower.webp" data-caption="The riding mower in the live production menu background"><img src="assets/screenshots/riding-mower.webp" alt="A riding mower moving through dense grass in the live menu scene" loading="lazy"><span>Riding mower</span></button>
+        <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/business-town.webp" data-caption="Street-level view through the current business town"><img src="assets/screenshots/business-town.webp" alt="A stylized business town with roads, vehicles, service buildings, and shops" loading="lazy"><span>Business town</span></button>
+        <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/job-board.webp" data-caption="Generated contracts in the town job board"><img src="assets/screenshots/job-board.webp" alt="The job board listing generated lawn-care contracts" loading="lazy"><span>Contract flow</span></button>
+        <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/job-complete.webp" data-caption="The current contract settlement and result screen"><img src="assets/screenshots/job-complete.webp" alt="Job-complete screen showing cut percentage, pay, bonus, customer requirements, reputation, and return to town" loading="lazy"><span>Contract settlement</span></button>
       </div>
-    </section>
-
-    <section class="section section-features" id="features">
-      <div class="wrap">
-        <div class="section-heading compact">
-          <div><p class="section-kicker">Current features</p><h2>Built around the whole business</h2></div>
-          <p>Grounded systems connect the physical work on each lawn to the choices made back in town.</p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-card"><span class="feature-icon">01</span><h3>Generated contracts</h3><p>Varied properties and job conditions provide a new route through the workday.</p></article>
-          <article class="feature-card"><span class="feature-icon">02</span><h3>Three mowers</h3><p>Run a riding mower, powered walk-behind, or fuel-free manual push mower.</p></article>
-          <article class="feature-card"><span class="feature-icon">03</span><h3>Mowable lawns</h3><p>Large grass areas react to every pass and report live contract completion.</p></article>
-          <article class="feature-card"><span class="feature-icon">04</span><h3>Business town</h3><p>Visit the job office, supply store, business office, and mower workshop.</p></article>
-          <article class="feature-card"><span class="feature-icon">05</span><h3>Fuel management</h3><p>Powered equipment consumes fuel, while manual work trades speed for lower cost.</p></article>
-          <article class="feature-card"><span class="feature-icon">06</span><h3>Mower improvements</h3><p>Invest per mower in speed, efficiency, and handling where each machine allows.</p></article>
-          <article class="feature-card"><span class="feature-icon">07</span><h3>Time and weather</h3><p>Persistent days move through clear, foggy, and rainy working conditions.</p></article>
-          <article class="feature-card"><span class="feature-icon">08</span><h3>Persistent progress</h3><p>Money, contracts, equipment, world state, and active lawn work can be saved.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-gallery" id="gallery">
-      <div class="wrap">
-        <div class="section-heading">
-          <div><p class="section-kicker">Current build</p><h2>Out in the field</h2></div>
-          <p>Captured from the playable project, from planning a contract in town to finishing the last strip of grass.</p>
-        </div>
-        <div class="gallery-grid">
-          <button class="gallery-shot gallery-wide" type="button" data-lightbox="assets/screenshots/mowing-progress.webp" data-caption="Working through a large lawn contract">
-            <img src="assets/screenshots/mowing-progress.webp" alt="A riding mower making a clean pass through a large contract lawn" loading="lazy"><span>On the job</span>
-          </button>
-          <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/job-board.webp" data-caption="Choosing the next contract">
-            <img src="assets/screenshots/job-board.webp" alt="The contract selection board showing available lawn-care jobs" loading="lazy"><span>Choose a contract</span>
-          </button>
-          <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/business-town.webp" data-caption="The business town">
-            <img src="assets/screenshots/business-town.webp" alt="The business town with several service buildings around a central road" loading="lazy"><span>Business town</span>
-          </button>
-          <button class="gallery-shot" type="button" data-lightbox="assets/screenshots/rainy-contract.webp" data-caption="A rainy workday">
-            <img src="assets/screenshots/rainy-contract.webp" alt="A mower crossing a lawn during steady rain" loading="lazy"><span>Changing conditions</span>
-          </button>
-          <button class="gallery-shot gallery-wide" type="button" data-lightbox="assets/screenshots/job-complete.webp" data-caption="Contract complete">
-            <img src="assets/screenshots/job-complete.webp" alt="A completed lawn-care contract with the mowed property visible behind the result" loading="lazy"><span>Contract complete</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-progression">
-      <div class="wrap progression-grid">
-        <div class="progression-media">
-          <img src="assets/screenshots/mower-workshop.webp" alt="A mower workshop screen with available equipment improvements" loading="lazy">
-          <span>Workshop</span>
-        </div>
-        <div class="progression-copy">
-          <p class="section-kicker">Business progression</p>
-          <h2>Turn good work into better equipment.</h2>
-          <p>Every payment gives you another choice. Cover operating costs, tune a favorite mower, or save for the work ahead.</p>
-          <ul class="progression-list">
-            <li><span>Earn</span> Complete contracts and collect payment.</li>
-            <li><span>Operate</span> Watch fuel use and changing prices.</li>
-            <li><span>Improve</span> Build up each mower independently.</li>
-            <li><span>Adapt</span> Match equipment and approach to the next property.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-development" id="development">
-      <div class="wrap">
-        <div class="section-heading">
-          <div><p class="section-kicker">Behind the scenes</p><h2>A practical simulation foundation</h2></div>
-          <p>The public repository documents how the current playable loop is structured and validated.</p>
-        </div>
-        <div class="development-grid">
-          <article><span>Godot 4.6</span><h3>Focused game structure</h3><p>GDScript systems coordinate the menu, town, mowing jobs, settlement, and return flow.</p></article>
-          <article><span>Responsive grass</span><h3>Chunked MultiMesh lawns</h3><p>Custom grass rendering supports large mowable properties and visible cutting progress.</p></article>
-          <article><span>Living workday</span><h3>Deterministic systems</h3><p>Contracts and market changes respond to the persistent day without losing reproducibility.</p></article>
-          <article><span>Reliable iteration</span><h3>Project validation tools</h3><p>Automated checks and capture utilities help verify the full loop and record current builds.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-status">
-      <div class="wrap status-panel">
-        <div>
-          <p class="section-kicker">Development status</p>
-          <h2>The core loop is playable. The business is growing.</h2>
-        </div>
-        <div>
-          <p>Current work focuses on presentation, balance, content variety, and performance. Follow development on GitHub, play the current build, or wishlist the game on Steam.</p>
-          <div class="status-actions">
-            <a class="button button-primary" data-link="steam" href="https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/">Wishlist on Steam</a>
-            <a class="button button-dark" data-link="itch" href="https://sologamedev873.itch.io/a-cut-above-mow-and-grow">Play on itch.io</a>
-            <a class="text-link dark-link" data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">Explore the repository <span aria-hidden="true">↗</span></a>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div></section>
+    <section class="section section-stack"><div class="wrap stack-grid"><div><p class="section-kicker">Technology</p><h2>A focused Godot stack.</h2></div><div class="stack-list"><span>Godot 4.6.1</span><span>GDScript</span><span>Jolt Physics</span><span>MultiMesh</span><span>Shaders</span><span>Procedural generation</span><span>JSON persistence</span><span>Git / GitHub</span><span>Automated probes</span><span>Performance instrumentation</span></div></div></section>
+    <section class="section section-trailer" id="trailer" data-trailer-section hidden><div class="wrap trailer-grid"><div><p class="section-kicker">Gameplay showcase</p><h2>See the core loop in motion.</h2><p>The existing v0.3 showcase demonstrates the menu, town, contracts, mowing, upgrades, fuel, and persistence. The current screenshots and repository represent the newer build.</p><a class="text-link" data-trailer-external>Watch on YouTube <span aria-hidden="true">↗</span></a></div><div class="trailer-frame" data-trailer-embed></div></div></section>
+    <section class="section section-status" id="status"><div class="wrap status-panel"><div><p class="section-kicker">Development status</p><h2>Actively developed and continuously validated.</h2></div><div><p>The connected gameplay and business loop is working. Current development continues across presentation, balance, content breadth, validation, and performance.</p><div class="status-actions"><a class="button button-dark" data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">Explore the code</a><a class="button button-light" data-link="itch" href="https://sologamedev873.itch.io/a-cut-above-mow-and-grow">Play on itch.io</a><a class="text-link dark-link" data-link="steam" href="https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/">Steam page <span aria-hidden="true">↗</span></a></div></div></div></section>
   </main>
-
-  <footer class="site-footer">
-    <div class="wrap footer-grid">
-      <div class="brand footer-brand"><span class="brand-mark" aria-hidden="true">A</span><span><strong>A Cut Above</strong><small>Mow &amp; Grow</small></span></div>
-      <p>An independent lawn-mowing and small-business simulation built with Godot.</p>
-      <nav aria-label="Project links">
-        <a data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">GitHub</a>
-        <a data-link="steam" href="https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/">Steam</a>
-        <a data-link="itch" href="https://sologamedev873.itch.io/a-cut-above-mow-and-grow">itch.io</a>
-      </nav>
-    </div>
-    <div class="wrap footer-base"><span>© <span data-year></span> A Cut Above: Mow &amp; Grow</span><span>Built for clean cuts and careful growth.</span></div>
-  </footer>
-
-  <dialog class="lightbox" data-lightbox-dialog aria-label="Screenshot viewer">
-    <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close screenshot">×</button>
-    <img src="" alt="Selected gameplay screenshot">
-    <p></p>
-  </dialog>
+  <footer class="site-footer"><div class="wrap footer-grid"><div class="brand footer-brand"><span class="brand-mark" aria-hidden="true">A</span><span><strong>A Cut Above</strong><small>Mow &amp; Grow</small></span></div><p>An independent Godot simulation project exploring procedural systems, physical mowing, persistence, optimization, and a complete playable business loop.</p><nav aria-label="Project links"><a data-link="github" href="https://github.com/usw344/A-Cut-Above-Lawn-Mowing-Startup-public">GitHub</a><a data-link="itch" href="https://sologamedev873.itch.io/a-cut-above-mow-and-grow">itch.io</a><a data-link="steam" href="https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/">Steam</a></nav></div><div class="wrap footer-base"><span>© <span data-year></span> A Cut Above: Mow &amp; Grow</span><span>Godot 4.6.1 · GDScript</span></div></footer>
+  <dialog class="lightbox" data-lightbox-dialog aria-label="Screenshot viewer"><button type="button" class="lightbox-close" data-lightbox-close aria-label="Close screenshot">×</button><img src="" alt="Selected project screenshot"><p></p></dialog>
 </body>
 </html>

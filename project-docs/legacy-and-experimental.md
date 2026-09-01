@@ -1,7 +1,7 @@
 # Legacy, Deprecated, Demo, and Experimental Areas
 
-Status: **Current** — cleanup pass 2026-08-19, lawn and terrain retirement
-2026-08-20.
+Status: **Current** — reconciled 2026-08-30; cleanup pass 2026-08-19 and lawn/
+terrain retirement 2026-08-20.
 
 ## Where legacy lives now
 
@@ -25,7 +25,7 @@ grass meshes and the 91 MB `Terrain/Meshes/` folder all left the project when
 grepping every `.gd`, `.tscn`, `.tres`, `.gdshader` and `.cfg` under `res://` for
 its paths and class names first.
 
-Post-move regression, all headless: `validate_all` 150 scripts / 89 of 90 scenes
+The **historical post-move regression on 2026-08-20** was: `validate_all` 150 scripts / 89 of 90 scenes
 (the known `MoonRender.tscn`), Flow 54/54, Save 59/59, Fuel 56/56, Pause 49/49,
 Weather 75/75, Trailer 102/102, Mowing 19/19, Property 52/52, Pond 37/37, UI
 Smoke 60/60, Job System 110/110, Economy 93/93.
@@ -67,6 +67,7 @@ remove them.
 |---|---|
 | `Dev tools/Mesurement`, `Performance Monitor`, `Print_Handler` | Development instruments |
 | `Dev tools/Validation/` | The validation harness — see [validation and dev tools](validation-and-dev-tools.md) |
+| `Dev tools/Developer Debugger/` | Development-only H debugger, mounted by `ACAPauseLayer` |
 | `Main Area/ACA_JobSystem/demo/` | Standalone Job System demo (uses `ACAJobDebugTimeProvider`, **not** the game clock) |
 | `Main Area/ACA_JobSystem/tests/` | Job System suite, 110 assertions, green |
 | `Main Area/ACA_JobSystem/tools/BuildJobUI` | Regenerates the Job Board scenes from `job_ui_style.gd` |
@@ -141,6 +142,7 @@ on a film print.
 
 ### Pond prototype — `Mowing Section/Experimental/Pond/`
 
-Complete, tested (28 assertions) and **deliberately unused**. See
-[Pond Prototype](systems/pond-prototype.md). It is staged for the future
-grid/terrain overhaul; wiring it into the current grid would have to be undone.
+The standalone `ACAPond` node and `Pond Demo.tscn` remain complete, tested
+experimental/demo content. The shared `ACAPondCarver` is also used by the
+production `ACAPondFeature` built into generated job properties. See [Pond
+Prototype](systems/pond-prototype.md) for the boundary between those paths.

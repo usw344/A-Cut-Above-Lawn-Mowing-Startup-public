@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="ACAEnvWeatherProfile" format=3]
+
+[ext_resource type="Script" path="res://addons/aca_sky3d_environment/src/weather_profile.gd" id="1_ovc"]
+
+[resource]
+script = ExtResource("1_ovc")
+id = &"Overcast"
+display_name = "Overcast"
+camera_exposure_mul = 1.08
+tonemap_exposure_mul = 1.02
+skydome_energy_mul = 0.94
+ambient_energy_mul = 1.38
+moon_energy_mul = 1.15
+night_ambient_min_mul = 0.9
+atm_darkness_mul = 1.06
+sun_disk_intensity_mul = 0.06
+aerial_density_mul = 1.45
+aerial_end_mul = 0.78
+sun_light_bias = Color(0.84, 0.87, 0.93, 1)
+sun_light_bias_weight = 0.4
+sun_horizon_bias = Color(0.8, 0.83, 0.9, 1)
+sun_horizon_bias_weight = 0.4
+atm_day_bias = Color(0.66, 0.71, 0.79, 1)
+atm_day_bias_weight = 0.4
+atm_horizon_bias = Color(0.7, 0.74, 0.8, 1)
+atm_horizon_bias_weight = 0.38
+cloud_day_bias = Color(0.72, 0.75, 0.8, 1)
+cloud_day_bias_weight = 0.4
+cloud_horizon_bias = Color(0.68, 0.71, 0.77, 1)
+cloud_horizon_bias_weight = 0.38
+fog_tint_bias = Color(0.7, 0.74, 0.79, 1)
+fog_tint_bias_weight = 0.3
+sun_energy = 0.56
+sun_shadow_opacity = 0.2
+atm_turbidity = 0.0024
+atm_thickness = 0.88
+clouds_coverage = 0.94
+clouds_absorption = 2.4
+clouds_sky_tint_fade = 0.6
+clouds_intensity = 6.5
+clouds_speed = 0.07
+cumulus_coverage = 0.86
+cumulus_absorption = 3.0
+cumulus_thickness = 0.04
+cumulus_noise_freq = 2.4
+cumulus_intensity = 0.56
+cumulus_mie_intensity = 0.7
+cumulus_speed = 0.05
+cumulus_size = 3.4
+fog_enabled = true
+fog_density = 0.36
+fog_depth_begin = 70.0
+fog_depth_end = 620.0
+fog_depth_curve = 1.35
+fog_sky_affect = 0.05
+fog_aerial_perspective = 0.3
+fog_sun_scatter = 0.02
+saturation = 0.93
+contrast = 0.96
+wind = Vector2(1.4, 0.7)
+wetness = 0.08

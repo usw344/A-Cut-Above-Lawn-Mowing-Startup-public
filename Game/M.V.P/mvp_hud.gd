@@ -110,8 +110,10 @@ func _input(event):
 		if event.keycode == KEY_SLASH:
 			# The cursor is owned by AppUI; see Game/App/app_ui.gd.
 			AppUI.toggle_mouse_capture()
-		if event.keycode == KEY_H:
-			visible = !visible
+		# H used to toggle this HUD from here. H is the Developer Debugger now
+		# (Dev tools/Developer Debugger/), which replaced this HUD as the normal
+		# developer interface, so the old binding is gone rather than fighting
+		# it. Visibility is still driven by MVP.dev_toggle_debug_hud().
 
 
 # need this function to map slider value for TOD

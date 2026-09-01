@@ -86,17 +86,39 @@ signal became_dry()
 @export var fall_speed_max: float = 31.0
 
 @export_group("Look")
-@export var rain_color: Color = Color(0.80, 0.86, 0.95)
+## The base colour of a drop, before the environment tints it.
+##
+## RAIN IS NOT WHITE. Every streak is drawn UNSHADED, which means it ignores the
+## scene's own light entirely - so a bright base colour is the brightest thing
+## on screen in exactly the weather that is meant to be the darkest, and the
+## result is the white-lines-glued-to-the-camera look that a first render of
+## this rig had. The base is a dim blue-grey and the host tints it further.
+@export var rain_color: Color = Color(0.66, 0.72, 0.82)
 
 # ---------------------------------------------------------------- layer specs
 #
 # `[name, half_extent, height, amount, width, length, alpha, speed_scale]`
 # Alpha falls with distance and length rises; see the header.
+#
+# THREE DEPTHS, AND THEY ARE MEANT TO BE READ AS THREE:
+#
+#   NEAR  short, thin, and the only layer with any real opacity. These are the
+#         drops passing the lens.
+#   MID   longer and half as visible - the rain between the player and what
+#         they are looking at.
+#   FAR   a VEIL. Long, wide, and almost transparent, spread over a volume
+#         seventy-eight units across. Individually invisible; collectively the
+#         reason the far side of a field looks like it is being rained on.
 const LAYERS := [
-	["Near", 9.0, 7.0, 420, 0.014, 0.36, 0.46, 1.00],
-	["Mid", 26.0, 10.0, 860, 0.012, 0.30, 0.26, 0.94],
-	["Far", 70.0, 15.0, 880, 0.026, 0.95, 0.10, 0.88],
+	["Near", 8.0, 6.5, 520, 0.011, 0.30, 0.30, 1.00],
+	["Mid", 24.0, 10.0, 980, 0.014, 0.52, 0.16, 0.94],
+	["Far", 78.0, 17.0, 1000, 0.050, 2.10, 0.055, 0.86],
 ]
+
+## Per-drop alpha variation, as a fraction of the layer's own alpha. Every
+## streak at exactly the same opacity is the second thing that makes rain read
+## as a texture rather than as weather.
+const ALPHA_JITTER := 0.5
 
 var _layers: Array[GPUParticles3D] = []
 var _splash: GPUParticles3D = null
@@ -109,6 +131,13 @@ var _quality: ACAEnvQualityProfile = null
 var _audio: AudioStreamPlayer = null
 var _audio_base_db: float = 0.0
 var _was_dry: bool = true
+## The layer materials and their authored alphas, so `set_tint()` can recolour
+## them without rebuilding anything.
+var _layer_materials: Array[StandardMaterial3D] = []
+var _layer_alphas: PackedFloat32Array = PackedFloat32Array()
+var _splash_material: StandardMaterial3D = null
+var _splash_alpha: float = 0.0
+var _tint: Color = Color.WHITE
 
 ## Decibels the supplied player drops to when fully dry.
 @export var audio_silent_db: float = -40.0
@@ -152,8 +181,19 @@ func _make_layer(spec: Array) -> GPUParticles3D:
 	proc.initial_velocity_max = fall_speed_max * speed_scale
 	# Length and speed both vary a little, so the fall reads as many drops
 	# rather than as one repeating pattern.
-	proc.scale_min = 0.75
-	proc.scale_max = 1.35
+	proc.scale_min = 0.62
+	proc.scale_max = 1.48
+
+	# EVERY DROP A SLIGHTLY DIFFERENT OPACITY. `color_initial_ramp` is sampled
+	# once per particle at a random position and multiplies the material's
+	# albedo, so one gradient buys per-drop variation with no per-frame cost.
+	var jitter := Gradient.new()
+	jitter.set_color(0, Color(1, 1, 1, ALPHA_JITTER))
+	jitter.set_color(1, Color(1, 1, 1, 1.0))
+	var jitter_texture := GradientTexture1D.new()
+	jitter_texture.gradient = jitter
+	jitter_texture.width = 32
+	proc.color_initial_ramp = jitter_texture
 
 	var mat := StandardMaterial3D.new()
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -161,9 +201,12 @@ func _make_layer(spec: Array) -> GPUParticles3D:
 	mat.blend_mode = BaseMaterial3D.BLEND_MODE_MIX
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.albedo_color = Color(rain_color.r, rain_color.g, rain_color.b, alpha)
-	mat.vertex_color_use_as_albedo = false
+	mat.vertex_color_use_as_albedo = true
 	mat.disable_receive_shadows = true
 	mat.disable_ambient_light = true
+
+	_layer_materials.append(mat)
+	_layer_alphas.append(alpha)
 
 	var quad := QuadMesh.new()
 	quad.size = Vector2(width, length)
@@ -221,12 +264,14 @@ func _make_splash() -> GPUParticles3D:
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
-	mat.albedo_color = Color(rain_color.r, rain_color.g, rain_color.b, 0.14)
+	mat.albedo_color = Color(rain_color.r, rain_color.g, rain_color.b, 0.085)
 	mat.disable_receive_shadows = true
 	mat.disable_ambient_light = true
+	_splash_material = mat
+	_splash_alpha = 0.085
 
 	var quad := QuadMesh.new()
-	quad.size = Vector2(0.10, 0.10)
+	quad.size = Vector2(0.075, 0.075)
 	quad.orientation = PlaneMesh.FACE_Y
 	quad.material = mat
 
@@ -248,6 +293,29 @@ func _make_splash() -> GPUParticles3D:
 
 
 # ====================================================================== public
+
+## TINT THE RAIN WITH THE AIR IT IS FALLING THROUGH.
+##
+## Every streak is drawn unshaded, so nothing else in this rig can make rain
+## look different at dusk from how it looks at noon. A host that hands the
+## distance-fog colour in here gets that for free and gets it COHERENTLY: fog
+## colour is what the air looks like at range, and rain is water suspended in
+## that air.
+##
+## `Color.WHITE` is the neutral value and leaves the authored colour alone.
+func set_tint(colour: Color) -> void:
+	if _tint.is_equal_approx(colour):
+		return
+	_tint = colour
+	var base := Color(rain_color.r * colour.r, rain_color.g * colour.g,
+		rain_color.b * colour.b)
+	for i in _layer_materials.size():
+		_layer_materials[i].albedo_color = Color(base.r, base.g, base.b,
+			_layer_alphas[i])
+	if _splash_material != null:
+		_splash_material.albedo_color = Color(base.r, base.g, base.b,
+			_splash_alpha)
+
 
 func set_intensity(value: float) -> void:
 	intensity = clampf(value, 0.0, 1.0)

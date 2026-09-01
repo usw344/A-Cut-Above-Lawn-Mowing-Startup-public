@@ -1,6 +1,6 @@
 # Architecture and System Relationships
 
-Status: **Current** — source-verified 2026-08-20 (session 7).
+Status: **Current** — source-verified 2026-08-30 (game-feel and debugger pass).
 Entry point: `res://Game/App/Main Menu Screen.tscn`
 
 ## Layering
@@ -9,7 +9,8 @@ The application is three layers. Keep them separate.
 
 ```
 APPLICATION   GameSession  WorldClock  SaveService  AppUI  GameSettings
-              Economy  MowerUpgrades  MowerFuel                (autoloads)
+              Economy  MowerUpgrades  MowerFuel  Equipment  Clippings  Business
+              Territory  Agreements  Portfolio                 (autoloads)
               owns: routing, session state, time and weather STATE, the market,
                     file I/O, and THE completion pathway
 
@@ -41,6 +42,12 @@ Registered in `project.godot`, in load order.
 | `SaveService` | `Game/App/save_service.gd` | File I/O. Owns no domain state |
 | `Economy` | `Game/Economy/economy_manager.gd` | Market conditions, events, prices |
 | `MowerUpgrades` | `Game/Economy/mower_upgrades.gd` | Per-mower upgrade levels and their effects |
+| `Equipment` | `Game/Economy/equipment.gd` | Owned mower types, attachments, autonomous equipment |
+| `Clippings` | `Game/Economy/clippings.gd` | Bag, yard, compost and clipping sales |
+| `Business` | `Game/Economy/business.gd` | Reputation, customers, competitors, schedule and yard state |
+| `Territory` | `Game/Business/service_territory.gd` | Owned regions and regional job filtering |
+| `Agreements` | `Game/Business/service_agreements.gd` | Recurring service agreements |
+| `Portfolio` | `Game/Business/portfolio.gd` | Portfolio metadata and captured images |
 
 ## Runtime composition
 
@@ -76,16 +83,17 @@ flowchart TD
     Session -->|"go_to_mowing"| MVPScene["Game/M.V.P/Minimum Viable Game.tscn"]
     MVPScene --> MVP["MVP.gd"]
     MVPScene --> Mower["Current mower scene"]
-    MVPScene --> Grid["Property (ACAProperty)"]
+    MVPScene --> Property["Property (ACAProperty)"]
     MVPScene --> Presets["Preset Manager"]
     MVPScene --> GPUI["Gameplay UI.tscn"]
 
-    Mower -->|"collided(collision_array)"| Grid
+    Mower -->|"collided(collision_array)"| Cutter["ACAMowerCutter"]
+    Cutter -->|"swept deck geometry"| Property
     Mower --> Upg
     Mower --> Fuel
-    Grid --> Chunks["ACATerrain / ACALawn / ACALawnGrass / ACAForest"]
+    Property --> Chunks["ACATerrain / ACALawn / features / grass / foliage"]
 
-    Grid -->|"mowing_progress_changed"| MVP
+    Property -->|"mowing_progress_changed"| MVP
     MVP -->|"complete_current_job"| Session
     Session -->|"job_settled(summary)"| GPUI
     GPUI -->|"go_to_town"| Session
@@ -116,8 +124,8 @@ flowchart TD
 
 ### Mowing scene root (`MVP.gd`)
 
-Cross-system orchestration: grid creation, mower placement and switching, grid
-reset, ambient audio startup, time and weather requests, and telling the weather
+Cross-system orchestration: property creation, mower placement and switching,
+lawn reset, ambient audio startup, time and weather requests, and telling the weather
 system where the camera and the ground are. It does not own grass behaviour,
 mower movement or the sky.
 
@@ -135,12 +143,15 @@ its motion, look, gravity, audio and collision emission, declares `POWERED` and
 a stable `MOWER_ID`, and multiplies its authored values by
 `MowerUpgrades.*_multiplier(MOWER_ID)`. The authored base is never overwritten.
 
-### Custom grid
+### Property and logical lawn
 
-The mowable area: dimensions, chunk partitioning, per-chunk grass state,
-collision-name decoding, and the conversion from unmowed to mowed grass.
-`mow_swath()` / `mow_disc()` exist for media tooling and are not called by
-gameplay.
+`ACAProperty` owns the synchronous build order: property parameters, procedural
+terrain, logical lawn, feature exclusions/nodes, grass, foliage and boundary.
+`ACATerrain` supplies the baked height field and the property's solid terrain
+body. `ACALawn` stores one-unit cell flags and the cut-mask texture; it has no
+per-grass nodes or physics bodies. `ACAMowerCutter` converts each machine's
+movement into a swept `ACAMowerDeck` geometry query. `mow_swath()` and
+`mow_disc()` remain media/tooling helpers and are not called by normal driving.
 
 ### Economy and upgrades
 
@@ -157,14 +168,14 @@ reusable addon.
 
 | Domain | Canonical | Superseded / legacy |
 |---|---|---|
-| Runtime world | `Minimum Viable Game.tscn` | `Main.tscn` |
+| Runtime world | Application screens: Main Menu → Town → `Minimum Viable Game.tscn` | `Main.tscn` |
 | Mowers | `Assets/Vehicles and Mowers/Mowers/` | `Mower Scenes/`, `Mowing Section/Mower/` |
 | Terrain | `ACATerrain`, procedural | authored Terrain Manager (retired), Terrain3D (removed) |
 | Weather look | `addons/aca_sky3d_environment/` | in-adapter tables (session 7) |
 | Rain particles | `ACAPrecipitationRig` (code-built) | authored `rain_particles.tscn` (removed) |
 | Precipitation resources | — | `Weather/precipitation/*.tres`, **dead** |
 | Sky | Sky3D | historical GodotSky plugin |
-| Ponds | `Mowing Section/Experimental/Pond/` — **EXPERIMENTAL** | — |
+| Ponds | `ACAPondFeature` in generated properties, using `ACAPondCarver` | standalone `ACAPond` / `Pond Demo.tscn` |
 
 `Weather/precipitation/*.tres` reference `res://addons/GodotWeatherSystem/`,
 which is not installed. Nothing loads them. See
@@ -174,10 +185,9 @@ which is not installed. Nothing loads them. See
 
 Stated plainly so it is not mistaken for an omission:
 
-- **Mower ownership / a dealership.** All three mowers are available; upgrades
-  are per machine. There is no purchase-a-mower flow.
+- **Multiple serialised copies of one mower type.** `Equipment` owns mower
+  types, while `MowerUpgrades` stores per-type upgrades; serial-numbered fleets
+  are not modelled.
 - **A fuel inventory.** Fuel is bought into the tank, not into cans.
-- **Rocks, props, or pond integration.** The pond tool exists and is tested; the
-  grid does not use it.
 - **Water volumes.** Pond collision is static bed geometry. Nothing floats.
 - **Snow.** `Weather/precipitation/snow*.tres` are dead files, not a feature.

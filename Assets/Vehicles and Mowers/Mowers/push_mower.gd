@@ -88,12 +88,12 @@ var show_dev_hud:bool = true
 # audio effects 
 @onready var mower_audio: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
-var stopped_volume_db: float = -60.0
-var moving_volume_db: float = 18.0
-var volume_lerp_speed: float = 8.0
+## Levels, pitches and response rates are `ACAMowerAudio.PROFILES` now -
+## one table for all three machines instead of three copies of the same
+## six numbers. Nothing about the mix lives in a controller.
 
-var stopped_pitch: float = 0.95
-var moving_pitch: float = 1.03
+var last_speed: float = 0.0
+
 
 
 func _ready():
@@ -102,9 +102,19 @@ func _ready():
 	AppUI.set_mouse_context(Input.MOUSE_MODE_CAPTURED)
 	target_body_yaw = rotation.y
 	target_camera_pitch = $Camera3D.rotation.x
+	# The rest pose the lean is composed onto, and the pitch it offsets.
+	_mesh_rest = _visual.transform
+	_camera_pitch = _camera.rotation.x
+	# ...and the framing the precision view dollies in from.
+	_camera_rest_position = _camera.position
+	_camera_rest_fov = _camera.fov
+	# THE MACHINE'S OWN ENGINE. Falls back to whatever the scene authored if the
+	# recording cannot be loaded, which is the old sound rather than silence.
+	var engine := ACAMowerAudio.engine_stream(MOWER_ID)
+	if engine != null:
+		mower_audio.stream = engine
 	mower_audio.play()
-	mower_audio.volume_db = stopped_volume_db
-	mower_audio.pitch_scale = stopped_pitch
+	mower_audio.volume_db = ACAMowerAudio.ENGINE_OFF_DB
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -122,9 +132,39 @@ func _physics_process(delta):
 	# Authored speed x purchased upgrades. The base value stays exactly what
 	# the scene and the dev slider say; the upgrade is a multiplier on top, so
 	# selling the upgrade back would restore the stock machine precisely.
-	var drive_speed: float = model.get_speed() * 3.0 		* MowerUpgrades.speed_multiplier(MOWER_ID)
-	velocity.x = user_input.x * drive_speed
-	velocity.z = user_input.z * drive_speed
+	# PERSONALITY. `model.get_speed()` is still the ONE shared base speed and the
+	# development slider still moves it; this machine's profile and the purchased
+	# upgrade are multipliers on top of it. See `ACAMowerHandling`.
+	var prof := ACAMowerHandling.profile(MOWER_ID)
+
+	# What the player is ASKING for, as a signed speed along the machine's own
+	# forward axis. A mower is geared for forward work, so reverse is a fraction
+	# of top speed on every machine and a small fraction of it on the rider.
+	var forward_request: float = user_input.dot(global_transform.basis.z)
+	var wanted_speed: float = 0.0
+	if forward_request > 0.01:
+		wanted_speed = _top_speed()
+	elif forward_request < -0.01:
+		wanted_speed = -_top_speed() * float(prof["reverse"])
+
+	# MOMENTUM. The speed is APPROACHED, never assigned. Before this pass all
+	# three machines reached full speed and stopped dead in about three
+	# milliseconds, which is most of the reason they felt like the same machine.
+	_ground_speed = ACAMowerHandling.approach_speed(
+		_ground_speed, wanted_speed, prof, delta)
+
+	# Kept ALONG THE HEADING rather than integrated in world space: wheels do
+	# not slide sideways, so the machine's velocity turns exactly with its body
+	# and its turn radius is exactly speed divided by yaw rate.
+	#
+	# NORMALISED. `basis.z` is not a unit vector - the mowing scene scales the
+	# machines - and the original drive multiplied by it raw, which is why the
+	# authored speed and the speed that reached the ground were never the same
+	# number. That factor is now applied once, and deliberately, in
+	# `_top_speed()`; here the heading is only a direction.
+	var forward := global_transform.basis.z / _body_scale()
+	velocity.x = forward.x * _ground_speed
+	velocity.z = forward.z * _ground_speed
 
 	if velocity.x != 0 and velocity.z != 0:
 		moving = true
@@ -133,22 +173,66 @@ func _physics_process(delta):
 
 
 	# --- AUDIO CONTROL SECTION ---
+	#
+	# THE MACHINE'S OWN ENGINE, AND HOW HARD IT IS WORKING.
+	#
+	# The numbers live in `ACAMowerAudio`, one table for all three machines, so
+	# a change to how the fleet sounds is a change to one file rather than to
+	# three near-identical blocks. Two continuous inputs and no state machine:
+	# SPEED raises the note, LOAD lowers it and thickens it. See that file.
+	#
+	# `_cut_load` is written by `ACAMowerCutAudio` from the cutter's own signal,
+	# so the engine bogs exactly when the blades are in standing grass. With no
+	# such node bound it stays zero and this is the old speed-only behaviour.
 
 	var horizontal_speed: float = Vector2(velocity.x, velocity.z).length()
-	var max_speed: float = model.get_speed() * 3.0 \
-		* MowerUpgrades.speed_multiplier(MOWER_ID)
-	var speed_ratio: float = clamp(horizontal_speed / max_speed, 0.0, 1.0)
+	var accel: float = horizontal_speed - last_speed
+	last_speed = horizontal_speed
 
-	var target_volume: float = lerp(stopped_volume_db, moving_volume_db, speed_ratio)
-	var target_pitch: float = lerp(stopped_pitch, moving_pitch, speed_ratio)
+	# AGAINST THE MACHINE'S REAL TOP SPEED, which is what `_top_speed()` is.
+	# This used to divide by `model.get_speed() * 3.0` - the SHARED base,
+	# before the body scale the mowing scene applies and before the machine's
+	# own `top_speed` multiplier. On the push mower that made a flat-out run
+	# read as 0.34 of full throttle, so it never reached its own level or its
+	# own pitch: measured at -32.8 dB against an authored -1.
+	var speed_ratio: float = clampf(
+		horizontal_speed / maxf(_top_speed(), 0.001), 0.0, 1.0)
 
-	mower_audio.volume_db = lerp(mower_audio.volume_db, target_volume, volume_lerp_speed * delta)
-	mower_audio.pitch_scale = lerp(mower_audio.pitch_scale, target_pitch, volume_lerp_speed * delta)
+	var audio_profile := ACAMowerAudio.profile(MOWER_ID)
+	# THE PUSH MOWER HAS NO ENGINE TO RUN OUT. It burns no fuel and has no
+	# `fuel_empty`: what makes the noise is the reel turning, so it is silent
+	# standing still and loud being pushed. That is carried in its profile as
+	# an `idle_db` of -60 rather than as a special case here.
+	var engine_running := true
+
+	# A refuel restarts the loop; running dry fades it out and stops it.
+	if engine_running and not mower_audio.playing:
+		mower_audio.volume_db = ACAMowerAudio.ENGINE_OFF_DB
+		mower_audio.play()
+
+	var target_volume: float = ACAMowerAudio.target_volume_db(
+		audio_profile, speed_ratio, _cut_load, engine_running)
+	var target_pitch: float = ACAMowerAudio.target_pitch(
+		audio_profile, speed_ratio, _cut_load, accel > 0.1)
+	if not engine_running:
+		# Dropping the pitch as it fades reads as the engine dying rather than
+		# as somebody turning the volume down.
+		target_pitch = float(audio_profile["idle_pitch"]) * 0.8
+
+	var response: float = float(audio_profile["response"]) * delta
+	mower_audio.volume_db = lerpf(mower_audio.volume_db, target_volume, response)
+	mower_audio.pitch_scale = lerpf(mower_audio.pitch_scale, target_pitch, response)
+
+	if not engine_running and mower_audio.playing and \
+			mower_audio.volume_db <= ACAMowerAudio.ENGINE_OFF_DB + 1.0:
+		mower_audio.stop()
 
 	# --- END AUDIO SECTION ---
 
 
 
+	_apply_body_lean(delta)
+	_apply_precision_view(delta)
 	move_and_slide()
 
 	## No fuel check: a reel mower cuts whenever it is pushed. See the MOWER
@@ -162,17 +246,38 @@ func _physics_process(delta):
 func handle_smoothed_mouse_movement(delta: float) -> void:
 	# Steering upgrades raise the approach RATE, which is what "tighter" means
 	# for an exponential smooth - not a different curve, just a faster one.
-	var yaw_rate: float = mouse_yaw_smoothing 		* MowerUpgrades.handling_multiplier(MOWER_ID)
-	rotation.y = lerp_angle(
+	# STEERING. Two things shape the turn now, and they do different jobs.
+	#
+	# `mouse_yaw_smoothing` is still the SHAPE - an exponential approach, so the
+	# machine settles onto a heading rather than snapping to it.
+	#
+	# The machine's own `turn_rate` is a HARD CAP on how fast the body may come
+	# round, and that is what actually gives it a turning circle: radius is speed
+	# divided by yaw rate. Measured before this pass, every machine could pivot
+	# inside about one world unit at full speed while being five units wide.
+	var prof := ACAMowerHandling.profile(MOWER_ID)
+	target_body_yaw = ACAMowerHandling.clamp_lead(
+		target_body_yaw, rotation.y, float(prof["lead"]))
+
+	var speed_ratio: float = clampf(
+		absf(_ground_speed) / maxf(_top_speed(), 0.001), 0.0, 1.0)
+	var cap: float = ACAMowerHandling.turn_rate(prof, speed_ratio,
+		MowerUpgrades.handling_multiplier(MOWER_ID)) * delta
+
+	var wanted: float = lerp_angle(
 		rotation.y,
 		target_body_yaw,
-		1.0 - exp(-yaw_rate * delta)
+		1.0 - exp(-mouse_yaw_smoothing * delta)
 	)
-	$Camera3D.rotation.x = lerp_angle(
-		$Camera3D.rotation.x,
+	_yaw_rate = clampf(wrapf(wanted - rotation.y, -PI, PI), -cap, cap) \
+		/ maxf(delta, 0.0001)
+	rotation.y += _yaw_rate * delta
+	_camera_pitch = lerp_angle(
+		_camera_pitch,
 		target_camera_pitch,
 		1.0 - exp(-mouse_pitch_smoothing * delta)
 	)
+	_camera.rotation.x = _camera_pitch
 
 
 func handle_collision(signal_name):
@@ -194,6 +299,10 @@ func handle_collision(signal_name):
 
 
 func _input(event):
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.is_action_pressed(&"precision_view"):
+			toggle_precision_view()
+
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		# Left/right turns the mower; smoothing is applied in _physics_process.
 		target_body_yaw -= event.relative.x * look_sensitivity()
@@ -249,3 +358,211 @@ func dev_hud():
 "
 	string_to_print += "Vertices" + str(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)
 	$CanvasLayer/Label.text = string_to_print
+
+
+# ------------------------------------------------------------- BODY FEEL STATE
+#
+# PRESENTATION ONLY. Every one of these moves a MESH or the CAMERA. None of them
+# touches the collider - see `_apply_body_lean()` for why that line matters.
+
+## How much of the chassis attitude the camera takes.
+##
+## THE CAMERA DOES NOT ROLL. It used to take 35% of the chassis roll, and a
+## horizon that tips every time the machine is steered is the single thing most
+## responsible for how unpleasant this was to drive. The horizon is now level:
+## the MOWER moves with the ground, the view does not tip with it.
+##
+## Pitch keeps a small share, because a machine cresting a rise while the view
+## stays perfectly rigid reads as a camera detached from the machine. 0.15 of a
+## signal that is itself far smaller than it was.
+const CAMERA_ROLL_SHARE := 0.0
+const CAMERA_PITCH_SHARE := 0.15
+
+@onready var _visual: Node3D = $LawnMover01
+@onready var _camera: Camera3D = $Camera3D
+
+## The mesh transform the SCENE authored. The lean is composed onto this rather
+## than replacing it, so the machine keeps whatever offset and orientation it
+## was built with.
+var _mesh_rest := Transform3D.IDENTITY
+
+## The smoothed camera pitch, held here rather than read back off the node,
+## because the lean adds an offset to the camera and reading that back would
+## feed it into the next frame's smoothing.
+var _camera_pitch: float = 0.0
+
+## `[value, velocity]` for the two lean springs. Reused in place every frame and
+## never reallocated - this runs at 576 Hz.
+var _roll_state: Array = [0.0, 0.0]
+var _pitch_state: Array = [0.0, 0.0]
+
+## The eased ground angle, `(pitch, roll)` in radians. Held so the reading is
+## smoothed BEFORE the spring sees it - see `_apply_body_lean()`.
+var _ground_tilt := Vector2.ZERO
+
+## Yaw actually applied last frame, rad/s. The roll is driven from this rather
+## than from the input, so the body leans by what the machine DID.
+var _yaw_rate: float = 0.0
+var _last_forward_speed: float = 0.0
+
+## Signed speed along the machine's forward axis, in WORLD u/s. THE state the
+## momentum model integrates; `velocity` is derived from it every frame.
+var _ground_speed: float = 0.0
+
+
+## How much the mowing scene has scaled this machine. The drive has always
+## multiplied its speed by the unnormalised `basis.z`, so this factor has always
+## been in the game's real top speed; it is applied here on purpose instead of
+## by accident, which is what lets everything else work in world units.
+func _body_scale() -> float:
+	return maxf(global_transform.basis.z.length(), 0.001)
+
+
+## Top speed for this machine right now, in WORLD u/s: the one shared base, the
+## body scale, this machine's own profile and the purchased Engine & Drive
+## upgrade. `_ground_speed` is in these units, and so is everything in
+## `ACAMowerHandling` that is compared against it.
+func _top_speed() -> float:
+	return model.get_speed() * 3.0 * _body_scale() \
+		* MowerUpgrades.speed_multiplier(MOWER_ID) \
+		* float(ACAMowerHandling.profile(MOWER_ID)["top_speed"])
+
+
+## PRESENTATION ONLY, and never the collider: these machines are CharacterBody3D
+## and tilting the body that `move_and_slide()` resolves against is how a mower
+## ends up climbing its own fence.
+##
+## TWO SOURCES, AND WHICH OF THEM IS THE MAIN ONE MATTERS.
+##
+## THE GROUND. `get_floor_normal()` is the surface `move_and_slide()` actually
+## resolved against this frame, so a machine crossing a broad rise sits on the
+## rise. That is REAL movement: it is the world being uneven, not a number
+## derived from what the player did with the mouse, and it is where the vertical
+## movement in this game is meant to come from.
+##
+## STEERING, much reduced. Yaw rate scaled by speed still shifts the body, at
+## about a sixth of what it used to - a weight transfer visible at the edge of
+## the mesh rather than a machine banking into a corner. Acceleration still
+## squats and braking still noses down, also much reduced.
+##
+## Both go through ONE OVERDAMPED spring, so the body settles onto an attitude
+## and STOPS there. The old spring overshot every input; on ground that keeps
+## changing, that is a machine which never stops rocking.
+func _apply_body_lean(delta: float) -> void:
+	if _visual == null:
+		return
+	var prof := ACAMowerHandling.profile(MOWER_ID)
+	var forward_speed: float = _ground_speed
+	var speed_ratio: float = clampf(absf(forward_speed) / maxf(_top_speed(), 0.001),
+		0.0, 1.0)
+
+	var lean: float = clampf(
+		_yaw_rate / maxf(float(prof["turn_rate"]), 0.001), -1.0, 1.0) * speed_ratio
+	var roll_target: float = deg_to_rad(float(prof["roll"])) * lean
+
+	var accel: float = (forward_speed - _last_forward_speed) / maxf(delta, 0.0001)
+	_last_forward_speed = forward_speed
+	var pitch_target: float = deg_to_rad(float(prof["pitch"])) \
+		* -clampf(accel / float(prof["brake"]), -1.0, 1.0)
+
+	# THE GROUND, added on top. Eased towards rather than taken raw: the floor
+	# normal steps as the body resolves against a different triangle, and that
+	# step is a twitch the spring alone would happily pass straight through.
+	var ground := ACAMowerHandling.ground_tilt(
+		get_floor_normal() if is_on_floor() else Vector3.ZERO,
+		global_transform.basis)
+	var settle: float = clampf(ACAMowerHandling.GROUND_SETTLE_RATE * delta, 0.0, 1.0)
+	_ground_tilt = _ground_tilt.lerp(ground, settle)
+	pitch_target += _ground_tilt.x
+	roll_target += _ground_tilt.y
+
+	var roll: float = ACAMowerHandling.settle(_roll_state, roll_target, delta)
+	var pitch: float = ACAMowerHandling.settle(_pitch_state, pitch_target, delta)
+
+	_visual.transform = Transform3D(
+		Basis.from_euler(Vector3(pitch, 0.0, roll)) * _mesh_rest.basis,
+		_mesh_rest.origin)
+
+	if _camera != null:
+		_camera.rotation.x = _camera_pitch + pitch * CAMERA_PITCH_SHARE
+		# DELIBERATELY NOT `roll`. The horizon stays level - see
+		# CAMERA_ROLL_SHARE above. `roll` moves the MESH and nothing else.
+		_camera.rotation.z = 0.0
+
+
+# ============================================================= PRECISION VIEW
+#
+# A CLOSER WORKING VIEW, on C. The default camera is the one to drive a lawn
+# from; this is the one to finish an edge from. It dollies in towards the
+# machine and narrows the field of view, which together bring the cutting edge
+# of the deck into clear sight against a fence, a pond bank or a rock.
+#
+# It moves the camera and NOTHING else. Steering, pitch, sensitivity, invert Y,
+# P mode, the pause stack and AppUI's cursor authority all behave exactly as
+# they do in the normal view - which is the whole reason this is a few numbers
+# on the existing camera rather than a second camera rig.
+
+## The rest camera offset, scaled per axis. One rule for all three machines,
+## because it is a move along the line the scene already framed each of them
+## from - every machine keeps its own authored composition and simply gets
+## closer to its own deck.
+##
+## CHOSEN FROM RENDERS, not from arithmetic (`Dev tools/Validation/Precision
+## Sweep.tscn`, eight candidates on two machines). The Z is what does the work:
+## it brings the camera from behind the seat to just above the nose, so the
+## ground the deck is about to reach fills the frame. Y is barely touched on
+## purpose - the first attempt scaled all three axes together, dropped the
+## camera behind the seat back and filled the screen with upholstery. Pulling
+## the camera far enough forward to lose the machine entirely was tried too, and
+## it is worse: with no part of the machine in frame there is nothing to judge
+## the deck's position against.
+const PRECISION_DOLLY := Vector3(0.85, 0.96, 0.35)
+## Narrower than the 59.9 the machines are framed at. Enough to pick an edge out
+## against the grass, not so much that it reads as a scope.
+const PRECISION_FOV := 47.0
+## e-foldings per second on the blend. Short and smooth; this is a working view,
+## not a cinematic move.
+const PRECISION_BLEND_RATE := 14.0
+
+## 0.0 normal, 1.0 fully in the precision view. Blended, not switched.
+var _precision: float = 0.0
+var _precision_wanted: float = 0.0
+var _camera_rest_position := Vector3.ZERO
+var _camera_rest_fov: float = 59.9
+
+
+func precision_view_active() -> bool:
+	return _precision_wanted > 0.5
+
+
+func toggle_precision_view() -> void:
+	_precision_wanted = 0.0 if _precision_wanted > 0.5 else 1.0
+
+
+## Position and field of view only. The camera's ROTATION is owned by the mouse
+## smoothing and the body lean, and is deliberately not touched here.
+func _apply_precision_view(delta: float) -> void:
+	if _camera == null:
+		return
+	_precision = lerpf(_precision, _precision_wanted,
+		1.0 - exp(-PRECISION_BLEND_RATE * delta))
+	_camera.position = _camera_rest_position.lerp(
+		_camera_rest_position * PRECISION_DOLLY, _precision)
+	_camera.fov = lerpf(_camera_rest_fov, PRECISION_FOV, _precision)
+
+
+# ================================================================== cut load
+##
+## HOW HARD THE BLADES ARE WORKING, 0 to 1. Written by `ACAMowerCutAudio`, which
+## reads it off `ACAMowerCutter.cut` - the same authoritative signal the
+## clippings particles run from. Nothing here guesses at cut state, and with no
+## such node bound this stays zero and the engine behaves exactly as it used to.
+var _cut_load: float = 0.0
+
+
+func set_cut_load(value: float) -> void:
+	_cut_load = clampf(value, 0.0, 1.0)
+
+
+func cut_load() -> float:
+	return _cut_load

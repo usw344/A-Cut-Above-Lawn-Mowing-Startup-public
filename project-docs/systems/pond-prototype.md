@@ -1,21 +1,23 @@
 # Pond Prototype
 
-Status: **EXPERIMENTAL — NOT PART OF JOB GENERATION.**
+Status: **EXPERIMENTAL DEMO COMPONENT — shared carver is used by production.**
 Added 2026-08-20 (session 7, Milestone E).
-Canonical owner: none yet — this is a tool, not a system.
+Canonical owner: `ACAPondFeature` for generated job properties; `ACAPond` and
+`Pond Demo.tscn` remain standalone demo content.
 Important paths: `Mowing Section/Experimental/Pond/`
 
 ## Purpose
 
-A non-destructive pond carver and a procedural water shader, built so that when
-the mowing grid is overhauled there is a **working, tested tool to integrate**
-rather than a blank page.
+A non-destructive pond carver and procedural water shader. The pure
+`ACAPondCarver` is shared with the production `ACAPondFeature`; the node-based
+`ACAPond` and its demo remain a separate experimental path.
 
-!!! danger "Nothing in gameplay builds a pond"
-    Superseded on 2026-08-20. The carver IS in gameplay now, through
-    `ACAPondFeature`. This page describes the prototype and its demo scene; for
-    how a pond is generated on a real contract see
-    [Property, terrain and lawn](property-and-lawn.md).
+!!! note "Production boundary"
+    Generated contracts build `ACAPondFeature`, not the standalone `ACAPond`
+    node. The feature applies the shared carver's displacement while the
+    procedural terrain is baked, traces one shoreline collision ring, and gives
+    the lawn/grass/minimap the same geometric answers. See [Property, terrain
+    and lawn](property-and-lawn.md) for the production flow.
 
 ## Files
 
@@ -129,16 +131,16 @@ shape controls, the exclusion API, and collision.
 The LOOK is judged from `Pond Demo.tscn`'s captures
 (`-- "--pond-shots=<dir>"`), not from assertions.
 
-## Future integration boundary
+## Production integration boundary
 
-When the grid is overhauled, the integration points are:
+`ACAPondFeature` integrates the carver with the current property pipeline:
 
-1. the grid's ground mesh must be dense enough — `analyse()` says so;
-2. grass, rock and prop placement queries `get_exclusion_bounds()` then
-   `contains_world_point()`;
-3. `mow_item` / progress accounting must exclude submerged cells, or a lawn with
-   a pond can never reach 100%;
-4. pond parameters would come from the job seed, so a contract's pond is the
-   same every time it is loaded.
+1. `ACAPropertyParams.for_seed()` supplies deterministic pond parameters while
+   preserving the historical random-draw positions;
+2. terrain, lawn, grass and the shoreline use the feature's shared geometric
+   answers;
+3. submerged cells are not mowable, so pond properties can reach 100%;
+4. property parameters and cut state, rather than geometry, are persisted.
 
-None of that is built.
+The standalone demo's mesh-copy path remains useful for carver regression and
+visual review. It still has no water volume, buoyancy, or wetness simulation.

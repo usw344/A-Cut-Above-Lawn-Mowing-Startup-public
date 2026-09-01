@@ -1,66 +1,87 @@
 # A Cut Above: Mow & Grow
 
-![A riding mower cutting through a stylized lawn](docs/assets/screenshots/gameplay-mower-close.webp)
+![A generated wooded property showing cut and uncut lawn, a pond, obstacles, and surrounding terrain](docs/assets/screenshots/procedural-property.webp)
 
-An independent 3D lawn-mowing and small-business simulation built in Godot. Choose a contract, travel to the property, make a clean cut, get paid, and invest in the next job.
+A 3D lawn-care business simulator built with Godot 4.6.1 and GDScript. It brings together physical mowing, generated properties, persistent lawn state, large-scale grass rendering, business progression, weather, and a full playable loop.
 
-[Project website](https://usw344.github.io/A-Cut-Above-Lawn-Mowing-Startup-public/) · [Wishlist on Steam](https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/) · [Play on itch.io](https://sologamedev873.itch.io/a-cut-above-mow-and-grow) · [Trailer status](#trailer)
+[Portfolio site](https://usw344.github.io/A-Cut-Above-Lawn-Mowing-Startup-public/) · [Gameplay showcase](https://youtu.be/c00JftQTui8) · [Play on itch.io](https://sologamedev873.itch.io/a-cut-above-mow-and-grow) · [Steam](https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/)
 
-## About
+## Project overview
 
-The current build connects the full playable loop from the main menu to town, contract selection, mowing, payment, and return. Jobs vary by property and conditions, while time, weather, fuel, market prices, mower upgrades, and business progress persist between sessions.
+A Cut Above is an independent project. Its gameplay systems, application flow, generated content, simulation state, persistence, UI integration, optimization work, and validation tooling were developed together over time. Credited art, audio, and third-party components are documented in [`Credits`](Credits).
 
-## Gameplay loop
+The current build connects the full playable loop:
 
-1. Choose a lawn-care contract in town.
-2. Travel to the property with the right mower.
-3. Cut the lawn and track job progress.
-4. Complete the contract and collect payment.
-5. Refuel, improve equipment, and plan the next job.
+**Main menu → new game → business town → generated contract → job intro → mowing → settlement → return to town**
 
-## Current features
+World time, weather, contracts, money, equipment, upgrades, business progress, and active lawn work persist between sessions.
 
-- A complete menu, town, contract, mowing, payment, and return loop
-- Three usable mowers: riding, powered walk-behind, and manual push
-- Generated contracts with varied properties and job conditions
-- A business town with job, supply, business, and workshop locations
-- Fuel use for powered equipment, paid refueling, and a fuel-free manual mower
-- Per-mower speed, efficiency, and handling improvements where applicable
-- Clear, foggy, and rainy weather alongside a persistent world clock
-- A changing economy that affects contract, fuel, and equipment prices
-- Save and load support for the world, contracts, money, fuel, upgrades, and active mowing work
+## Engineering highlights
 
-## Screenshots
+### Procedural properties
 
-| Mowing a contract | Business town |
+Each accepted contract produces a property from a seed and a shared set of parameters: lawn dimensions, terrain, boundaries, obstacles, planting beds, ponds, forest density, and surrounding scenery. Those property features also inform mowing completion and the minimap, so the game is not maintaining separate versions of the same space.
+
+### Compact mowing state
+
+The current Lawn 2.0 architecture stores logical one-unit cells in compact byte arrays. A mower deck sweeps geometry across those cells, updating cut state and heading without one physics body per blade of grass. Progress is maintained incrementally, and in-progress work is serialized as a compact bitset plus heading data.
+
+### Grass rendering at property scale
+
+Grass is rendered in cullable near- and mid-field `MultiMeshInstance3D` tiles. A small cut-mask texture keeps the visual grass in sync with the lawn data. The repository also includes property probes, stress tests, performance instrumentation, and focused validation scenes for checking build cost and runtime behavior.
+
+### Application architecture
+
+The project separates routing, time and weather, jobs, economy, equipment, business state, and file I/O into focused systems. UI scenes show the current state and send player actions back to those systems. That supports a complete menu-to-town-to-job-to-settlement flow instead of a single mowing scene.
+
+### Weather and environment
+
+`WorldClock` keeps persistent time and scheduled weather. Project adapters pass that state into the Sky3D environment, precipitation, lighting, and ground-condition presentation, keeping the third-party integration contained.
+
+### Persistence and validation
+
+Save data includes world state, jobs, economy, equipment, upgrades, business history, territories, agreements, portfolio data, and active mowing work. Automated tests and visual probes cover system rules, UI routes, scene composition, persistence, rendering, and performance-sensitive behavior.
+
+## Current systems
+
+- Three controllable mower types with distinct handling and operating tradeoffs
+- Generated contracts, expiry, acceptance, active work, settlement, and history
+- Business town services for jobs, supplies, equipment, upgrades, and business progression
+- Economy, fuel, equipment ownership, attachments, territories, agreements, and reputation
+- Persistent world clock, scheduled weather, wet-ground presentation, and environment audio
+- Procedural terrain, foliage, boundaries, ponds, obstacles, planting zones, and minimap data
+- Production HUD, transitions, notifications, settings, controls help, pause, and completion UI
+- Save/load support for meaningful simulation and in-progress lawn state
+
+## Current build
+
+| Generated property and mowing state | Business town |
 | --- | --- |
-| ![A riding mower cutting a large contract lawn](docs/assets/screenshots/mowing-progress.webp) | ![The business town where players prepare for work](docs/assets/screenshots/business-town.webp) |
-| Job board | Rainy contract |
-| ![Contract choices displayed at the town job board](docs/assets/screenshots/job-board.webp) | ![A mower working through a contract during rainy weather](docs/assets/screenshots/rainy-contract.webp) |
+| ![Cut and uncut grass across a generated wooded property](docs/assets/screenshots/mowing-state.webp) | ![Street-level view through the business town](docs/assets/screenshots/business-town.webp) |
+| Contract system | Business progression |
+| ![Generated contracts on the town job board](docs/assets/screenshots/job-board.webp) | ![Mower workshop with machines, autonomous equipment, attachments, and upgrades](docs/assets/screenshots/mower-workshop.webp) |
 
-## Technical highlights
+## Technology
 
-- Godot 4.6 and GDScript
-- Procedurally generated mowing properties: terrain, lawn, forest, hills and ponds from one seed
-- Mowing as a mathematical query against compact cell state, with no per-blade physics
-- Contract-sized lawns with live completion tracking
-- Deterministic contract generation and day-based market changes
-- Central application flow across menu, town, jobs, settlement, and return
-- Save support for an in-progress lawn
-- Automated validation, screenshot capture, and trailer-capture tools
-
-## Development status
-
-Development is active. The core mowing and business loop is integrated; current work focuses on presentation, balance, content variety, and performance.
+- Godot 4.6.1 and GDScript
+- Jolt Physics
+- Procedural generation and seeded random streams
+- Tiled MultiMesh rendering and shaders
+- JSON-based persistence with additive save sections
+- Git and GitHub Pages
+- Automated test scenes, probes, profiling, and screenshot tooling
 
 ## Running the project
 
-Open [`project.godot`](project.godot) with Godot 4.6.x. Public builds are available on [itch.io](https://sologamedev873.itch.io/a-cut-above-mow-and-grow), and the game can be wishlisted on [Steam](https://store.steampowered.com/app/3807260/A_Cut_Above_Mow__Grow/).
+1. Open [`project.godot`](project.godot) in Godot 4.6.1 or a compatible Godot 4.6.x build.
+2. Run the configured main scene: `res://Game/App/Main Menu Screen.tscn`.
 
-## Trailer
+The repository also contains focused validation scenes under [`Dev tools/Validation`](Dev%20tools/Validation) and deeper architecture documentation in [`project-docs`](project-docs).
 
-The new gameplay trailer is being edited. The project website is ready for its final YouTube link when the upload is published.
+## Development status
 
-## Credits and licensing
+Development is active. The connected gameplay and business loop is working, with current work focused on presentation, balance, content breadth, validation, and performance. The linked video is the older v0.3 gameplay showcase; the screenshots and repository reflect the newer build.
 
-Project credits are maintained in the [`Credits`](Credits) directory. Project source is all rights reserved. Third-party components remain subject to their respective licenses.
+## Licensing
+
+Project source is all rights reserved. Third-party assets and components remain subject to their respective licenses; see [`Credits`](Credits).

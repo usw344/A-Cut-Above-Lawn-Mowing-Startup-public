@@ -1,6 +1,6 @@
 # Save and Load
 
-Status: **Implemented** — save format version **1**, added 2026-08-19.
+Status: **Implemented** — save format version **1**, reconciled 2026-08-30.
 
 ## Owner
 
@@ -23,6 +23,60 @@ SaveService
   │           current save format. See systems/mowers-and-controls.md.
   └─ ACAProperty.params() + ACALawn.cut_state()   (the mowing block)
 ```
+
+
+
+## What the gameplay-expansion pass added
+
+Four more **optional** sections, and again no save-format version bump. Every
+one holds state that genuinely cannot be reconstructed, and every one has a
+defined meaning when it is absent.
+
+```
+"territory":  { owned, presence, completed, active }
+"agreements": { offers, active, history, next_id, last_day }
+"portfolio":  { entries, next_index }        # file NAMES, never image data
+```
+
+...plus additive fields inside three sections that already existed:
+
+| Field | In | Absent means |
+|---|---|---|
+| `attachments`, `fitted`, `mowing_mode`, `trailer` | `equipment` | the catcher every machine always had, fitted, set to bag, on the starting trailer |
+| `trailer_kg` | `clippings` | nothing on the trailer, which is exactly what a save written when the machine emptied straight into the yard had |
+| `weather_seed`, `weather_scheduled`, `last_rain_minutes` | `world` | a world whose weather never moved. It is given a schedule derived from its own clock, so reloading the same save twice forecasts the same afternoon |
+| `region` | `session` | the player was working from the Home Town |
+
+### A save written before territories existed
+
+It was played on a business that could take any contract anywhere, and the
+honest reading of that is a business that had never bought a lot — so it loads
+owning the Home Town and nothing else.
+
+That is not a punishment and it loses the player nothing they paid for: nobody
+paid for a service lot in a build that had none. What it does mean is that an
+old save's board narrows to local work on its next arrival, and the expansion
+screen is waiting for them with the money they already have. **Its accepted
+contracts are untouched, wherever they are.**
+
+### THE PORTFOLIO'S IMAGES ARE NOT IN THE SAVE
+
+They never will be. `ACAPortfolio` writes bounded JPEGs to `user://portfolio/`
+and the save carries their file names. A thumbnail that fails to write, or one
+deleted from disk afterwards, degrades to a blank frame in the gallery and can
+never make a save unreadable.
+
+### Generation and cut-state compatibility
+
+`ACAPropertyParams.GENERATION_VERSION` is **6**, and
+`ACALawn.CUT_STATE_VERSION` is **3**.
+
+A property generated at version 5 or below retains the legacy scatter obstacle
+layout when it reloads; changing that would move a contract already in progress.
+A cut-state block at version 2 is still read; it is the same bitset with no
+damage record on it, which is exactly true of a save written before there was
+any damage to record.
+
 
 ## Storage
 

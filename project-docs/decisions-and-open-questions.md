@@ -1,7 +1,7 @@
 # Architecture Decisions and Open Questions
 
 Status: Confirmed decisions plus review queue
-Decisions recorded: 2026-08-02, updated **2026-08-19**
+Decisions recorded: 2026-08-02, updated **2026-08-30**
 
 ## Confirmed decisions
 
@@ -19,13 +19,13 @@ See [application layer](application-layer.md).
 
 `Main.tscn` was moved to `Soft Delete/`.
 
-### D-002 — Application systems integration — **RESOLVED 2026-08-19**
+### D-002 — Application systems integration — **RESOLVED 2026-08-30**
 
-Menus, jobs, economy (money only) and the full HUD are **integrated**, not
-partial. The loop runs end to end and is covered by
-`Dev tools/Validation/Flow Test.tscn` (54 assertions).
-
-Still genuinely absent: save/load, spending, upgrades, reputation.
+Menus, jobs, economy, business services, save/load and the full HUD are
+**integrated**, not partial. The loop runs end to end and is covered by the
+Flow Test (54 assertions), with the business, expansion and save suites covering
+the additive systems. The remaining gaps are documented as scope limitations,
+not missing ownership decisions.
 
 ### D-003 — Canonical terrain
 
@@ -58,8 +58,11 @@ The older `Mower_Normal` and `Model.mower_scene_references` approach is legacy.
 
 Consequences:
 
-- Future mower selection, upgrades, and persistence build on the canonical scenes.
-- The model should eventually store the selected mower and durable mower data using stable canonical identifiers.
+- `Equipment` owns mower-type ownership and selection; `MowerUpgrades` owns
+  per-type upgrade levels and the canonical controllers read stable IDs.
+- `model` retains legacy speed/fuel storage for compatibility rather than
+  becoming the business inventory owner. Serial-numbered duplicate machines are
+  outside the current schema.
 
 ### D-005 — Canonical weather and sky
 
@@ -117,9 +120,13 @@ Decide:
 - Per-mower fuel/storage state.
 - Save compatibility rules.
 
-### R-002 — First authoritative save schema
+### R-002 — First authoritative save schema — **RESOLVED 2026-08-20**
 
-Decide:
+The implemented schema is save format version 1 with atomic temp/backup writes,
+optional additive business sections, property parameters plus compressed lawn
+cut state, and legacy migrations covered by `Legacy Save Test`.
+
+The original questions were:
 
 - Profile file format and version.
 - Atomic writes/backups.
@@ -144,7 +151,7 @@ Decide:
 
 ### R-004 — Economy and upgrades — **RESOLVED 2026-08-20 (see session 7 below)**
 
-Decide:
+The implementation records these decisions:
 
 - Player balance ownership.
 - Store/equipment data.
@@ -157,7 +164,9 @@ Decide:
 - Production interface: the `res://UI/` package, composed by
   `Game/App/Gameplay UI.tscn` (`gameplay_ui.gd`), plus `ACAJobBoard` and
   `ACABusinessHUD` in the town.
-- **Development-only:** the MVP HUD, retained, hidden on load, toggled with F3.
+- **Development-only:** the Developer Debugger (`Dev tools/Developer Debugger/`),
+  hidden on launch, toggled with **H** in the town and in mowing; and the older
+  MVP HUD, retained and hidden on load but no longer bound to a key.
 - **Removed** to `Soft Delete/`: Mowing Information UI, Information Bar,
   Job Offer Display, the old menu prototypes.
 
@@ -175,9 +184,11 @@ Runtime generation, deterministic from a seed, owned by nothing that persists.
 - Bake and rebuild procedure.
 - Collision requirements for decorative foliage.
 
-### R-007 — Weather formalization
+### R-007 — Weather formalization — **RESOLVED 2026-08-20**
 
-Decide:
+The implementation uses composed time/weather profiles, `WorldClock` state,
+save/load persistence, quality profiles, and the existing audio bus structure.
+Snow remains explicitly out of scope for now. The original questions were:
 
 - Hard-coded presets versus custom resources.
 - Weather/time state ownership.
@@ -206,7 +217,9 @@ Confirm whether the Timer and stale `straighten_wheel` connection can be removed
 
 ### R-011 — Snow — **CLOSED 2026-08-20 (see session 7 below)**
 
-The removed addon resources are deprecated, but the local `snow_particles.tscn` remains technically independent. Decide whether snow remains in scope.
+Snow is not implemented or planned for the current build. The local
+`snow_particles.tscn` is retained only as an uncertain/dead resource; the
+removed addon resources are deprecated.
 
 ### R-012 — Main Area attachment — **CLOSED 2026-08-19**
 
@@ -699,16 +712,18 @@ overwritten and removing an upgrade would restore the stock machine exactly.
 
 Two consequences accepted rather than worked around:
 
-- **Cut width is not an upgrade.** The grid cuts whatever the mower's
-  `CharacterBody3D` physically touched, so widening the cut means widening the
-  collision shape — a physics change wearing an upgrade's clothes.
+- **Cut width is not an upgrade.** `ACAMowerCutter` cuts the active mower's
+  declared deck geometry through `ACALawn`; widening it would change the
+  machine's authored footprint, not an economy multiplier.
 - **The push mower has two categories, not three**, because it burns no fuel.
 
-### D-026 — The pond tool is EXPERIMENTAL and stays out of job generation — **DECIDED 2026-08-20**
+### D-026 — The pond carver is shared with production — **SUPERSEDED 2026-08-30**
 
-`Mowing Section/Experimental/Pond/` is complete and tested, and nothing in
-gameplay builds one. The mowing grid is due a larger overhaul; wiring ponds into
-the current grid would have to be undone.
+The original decision that the pond tool stayed out of job generation was
+superseded when the procedural property pass integrated `ACAPondFeature`.
+Generated jobs now build a production pond feature from deterministic property
+parameters. The standalone `ACAPond` node and `Pond Demo.tscn` remain
+experimental; they are not the production integration boundary.
 
 The carver is **non-destructive** by rule: an imported mesh is a shared resource,
 and deforming it in place would silently deform every other instance in the

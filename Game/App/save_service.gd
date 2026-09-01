@@ -185,6 +185,23 @@ func _collect() -> Dictionary:
 		"mower": _collect_mower(),
 		"economy": Economy.to_save_dict(),
 		"upgrades": MowerUpgrades.to_save_dict(),
+		# THREE MORE ADDITIVE SECTIONS, and no save-format version bump. Each one
+		# holds state that genuinely cannot be reconstructed - what the business
+		# owns, what is in the yard, and what the town thinks of it - and each
+		# one has a defined meaning when it is absent. See `_apply_business()`.
+		"equipment": Equipment.to_save_dict(),
+		"clippings": Clippings.to_save_dict(),
+		"business": Business.to_save_dict(),
+		# THREE MORE, on the same terms and again with no version bump: where the
+		# business is allowed to work, what long-term agreements it has signed,
+		# and the metadata of its portfolio. Every one of them has a defined
+		# meaning when it is absent - see `_apply_expansion()`.
+		#
+		# THE PORTFOLIO'S IMAGES ARE NOT IN HERE and never will be. This section
+		# carries file NAMES; the JPEGs live under `user://portfolio/`.
+		"territory": Territory.to_save_dict(),
+		"agreements": Agreements.to_save_dict(),
+		"portfolio": Portfolio.to_save_dict(),
 	}
 
 	if GameSession.current_screen() == ACAGameSession.Screen.MOWING:
@@ -278,6 +295,7 @@ func load_game(slot_name: String) -> bool:
 	GameSession.from_save_dict(data["session"])
 	_apply_mower(data.get("mower", {}))
 	_apply_economy(data)
+	_apply_business(data)
 
 	var screen := int(data.get("session", {}).get("screen", ACAGameSession.Screen.TOWN))
 	_pending_mowing = {}
@@ -310,6 +328,53 @@ func _apply_economy(data: Dictionary) -> void:
 	else:
 		Economy.initialise_for_legacy_save(WorldClock.day_index())
 	MowerUpgrades.from_save_dict(data.get("upgrades", {}))
+
+
+## EQUIPMENT, CLIPPINGS AND THE COMPANY. All three sections are OPTIONAL.
+##
+## A save written before any of them existed is not broken and is not migrated
+## with invented history:
+##
+##   EQUIPMENT  the business owns the Rider it has always driven, plus anything
+##              it had plainly bought - see `ACAEquipment.from_save_dict()`.
+##              THE UPGRADES MUST BE RESTORED FIRST, because that is the
+##              evidence ownership is inferred from.
+##   CLIPPINGS  an empty yard and an empty bag. There was nothing to lose,
+##              because nothing was collecting anything.
+##   BUSINESS   a company with no reviews and no customers on its books. Its
+##              completed contracts are deliberately NOT converted into
+##              reputation: they were played before there were terms to judge
+##              them against, and scoring them now would be inventing a history.
+func _apply_business(data: Dictionary) -> void:
+	Equipment.from_save_dict(data.get("equipment", {}), MowerUpgrades)
+	Clippings.from_save_dict(data.get("clippings", {}))
+	Business.from_save_dict(data.get("business", {}))
+	_apply_expansion(data)
+
+
+## TERRITORY, AGREEMENTS AND THE PORTFOLIO. All three sections are OPTIONAL, and
+## a save that predates them is not broken and is not migrated with invented
+## history:
+##
+##   TERRITORY   the business owns its Home Town and has bought no service lot,
+##               which is exactly true - there were none to buy. Its accepted
+##               contracts are untouched wherever they are; what changes is that
+##               its NEXT arrivals are local until it expands.
+##   AGREEMENTS  none. Nobody offered that business a service agreement.
+##   PORTFOLIO   no photographs, because nothing was taking any. An entry whose
+##               image file has since been deleted from `user://` degrades to a
+##               blank frame rather than to a failed load.
+##
+## The active REGION is read from the session block rather than from the
+## territory block, because which screen the player was on is session state.
+func _apply_expansion(data: Dictionary) -> void:
+	Territory.from_save_dict(data.get("territory", {}))
+	Agreements.from_save_dict(data.get("agreements", {}))
+	Portfolio.from_save_dict(data.get("portfolio", {}))
+	var region := ACAServiceTerritory.region_from_id(
+		StringName(String(data.get("session", {}).get("region", ""))))
+	if region >= 0:
+		Territory.set_active_region(region)
 
 
 func _apply_mower(data: Dictionary) -> void:

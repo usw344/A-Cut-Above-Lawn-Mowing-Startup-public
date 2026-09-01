@@ -15,6 +15,7 @@ extends RefCounted
 ##   exclusion_at(x, z, ground_y)  -> 0 clear .. 1 fully taken
 ##   blocks_mowing() / blocks_grass() / blocks_foliage()
 ##   is_solid()                    -> does the machine physically hit this?
+##   footprints()                  -> the circles it really occupies, if several
 ##   clearance()                   -> clear ground it owes the deck, world units
 ##   feature_id()                  -> a short stable name, for diagnostics
 ##
@@ -49,6 +50,20 @@ func feature_id() -> StringName:
 ## A feature that is only DRAWN - a garden bed, a path strip - is not solid, and
 ## owes nothing beyond its own edge.
 func is_solid() -> bool:
+	return false
+
+
+## DOES THIS FEATURE NEED THE GROUND UNDER IT LEVEL?
+##
+## A pond does: its surface is a flat plane, so ground with a grade running
+## across it either floods out of the bowl on one side or leaves the water line
+## short of the bank on the other. Almost nothing else does - a rock, a bed or a
+## path sits on whatever slope it is put on, the way it would in a garden.
+##
+## `ACATerrain` reads this once, at build, and holds the LAWN'S GRADE at this
+## feature's centre across it. The grade outside is untouched, so the ground
+## does not step: it simply stops falling where the water is.
+func levels_ground() -> bool:
 	return false
 
 
@@ -97,6 +112,21 @@ func blocks_mowing() -> bool:
 	return true
 
 
+## Is the ground this feature takes PROTECTED VEGETATION rather than simply
+## unavailable?
+##
+## Both kinds are outside the contract. The difference is what happens when the
+## machine goes over one: a pond cannot be cut and a wildflower meadow can, so
+## protected ground is swept by the deck exactly as the lawn is and what it
+## records is damage rather than progress. See `ACALawn.FLAG_PROTECTED`.
+##
+## A feature that answers TRUE must also answer `blocks_mowing()` TRUE: the
+## player is not supposed to cut it, so it can never be part of what they are
+## being asked to finish.
+func is_protected_vegetation() -> bool:
+	return false
+
+
 ## Whether excluded ground refuses lawn grass.
 func blocks_grass() -> bool:
 	return true
@@ -105,6 +135,24 @@ func blocks_grass() -> bool:
 ## Whether excluded ground refuses trees, shrubs and rocks.
 func blocks_foliage() -> bool:
 	return true
+
+
+## WHERE THIS FEATURE ACTUALLY IS, as circles on the XZ plane.
+##
+## `bounds()` is the rectangle around EVERYTHING a feature holds, which is the
+## right answer for rejecting a point quickly and the wrong one for asking
+## whether a candidate collides with anything. A dozen lawn rocks scattered
+## across a property have a combined bounding box that is nearly the whole
+## property; a placer that treats that box as occupied ground can place nothing.
+##
+## So a feature made of several small things says so here, and a placer that
+## needs to be exact tests against these instead. Returning an EMPTY array means
+## "I am one thing, use my bounds", which is the correct answer for a pond and
+## is the default.
+##
+## Each entry: `{ position: Vector2, radius: float }` in world space.
+func footprints() -> Array[Dictionary]:
+	return []
 
 
 ## Optional visual/collision nodes this feature contributes to the property.

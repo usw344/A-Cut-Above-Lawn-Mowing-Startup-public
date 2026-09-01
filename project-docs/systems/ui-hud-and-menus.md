@@ -92,7 +92,7 @@ font, set `default_font` on `Game UI.theme.tres`: one place, whole UI.
 | Component | Class | Used in | Driven by |
 |---|---|---|---|
 | `UI/Gameplay HUD/` | `GameplayHUD` | mowing scene | contract name/size/reward, live progress, fuel, clock, weather |
-| `UI/Job Intro/` | `JobIntroScreen` | mowing scene | real contract + `JobManager.estimated_time_minutes()`; auto-dismisses after `intro_seconds` (2.4) |
+| `UI/Job Intro/` | `JobIntroScreen` | mowing scene | real contract + `JobManager.estimated_time_minutes()`; one 2.4-second timer, skippable by key or click |
 | `UI/Job Complete/` | `JobCompleteScreen` | mowing scene | the `GameSession.job_settled` summary |
 | `UI/Pause Menu/` | `PauseMenu` | mowing scene **and town** | Escape; `ACAPauseLayer` pauses the tree |
 | `UI/Settings/` | `SettingsMenu` | mowing + town + main menu | `GameSettings` (incl. **Invert Look Y**) |
@@ -286,6 +286,21 @@ It stays subordinate to the controls: the camera drifts slowly on three
 incommensurate rates and never cuts, `menu_safe_overlay` sits between the world
 and the buttons, and there is no audio of any kind.
 
+## Job Intro, results and workmanship
+
+`JobIntroScreen` is presented once per mowing visit with the accepted contract's
+site, property type, size, reward and derived terms. Its `intro_seconds` value
+is 2.4; after the initial input guard, any key or click skips it. The property
+has already been built and the mower is standing at the arrival transform while
+the card is shown.
+
+`JobCompleteScreen` receives the `GameSession.job_settled` summary. The
+workmanship readout adds recognition-only callouts under “HOW IT WAS DRIVEN”:
+`LOW OVERLAP`, `CLEAN PASSES`, or `PRECISION FINISH` when the real cutter's
+coverage and debounced non-ground contacts meet their thresholds. Ordinary
+results say nothing, and these measurements do not change completion, payout,
+reputation, or save state.
+
 ## Gameplay stack — `Game/App/Gameplay UI.tscn`
 
 A CanvasLayer (layer 10) instanced into the mowing scene with
@@ -307,7 +322,7 @@ CRITICAL** below 8%, and raises `low_fuel_entered` once per crossing.
 `MowerFuel.emptied`. Both are suppressed while the active mower is manual (the
 Push Mower burns nothing) or while development Auto Refuel is on, and "Fuel low"
 is suppressed if the tank is already empty. **Auto Refuel is never exposed here
-— it lives on the F3 development HUD.**
+— it lives on the legacy development HUD and the F8 development shortcut.**
 
 The host must provide `mowing_progress()`, `mower_fuel_fraction()`,
 `restart_current_job()`, `dev_toggle_debug_hud()`. `MVP.gd` implements all four.
@@ -330,7 +345,8 @@ that decision lives in `AppUI`, not in any menu button.
 ## Legacy MVP HUD
 
 `Game/M.V.P/MVP_HUD.tscn` is **retained as a development diagnostics layer**:
-hidden on load, toggled with **F3**. Mower swap, grid reset, speed slider, time
+hidden on load, and with no keyboard toggle since the Developer Debugger (**H**)
+replaced it as the interface opened while playing. Mower swap, grid reset, speed slider, time
 and weather controls all still work. Its weather buttons now write to
 `WorldClock` rather than the scene.
 
@@ -426,4 +442,3 @@ be one.
 | `AppUI.set_notifications_suppressed(bool)` | DEVELOPMENT. While set, every `AppUI.notify_*` is dropped instead of queued, so a "Contract accepted" toast cannot land in the middle of a cinematic shot. It suppresses the trailer-irrelevant notifications by suppressing all of them for the length of the capture; no notification was deleted or weakened. Normal gameplay never sets it. |
 
 Both are asserted by `Trailer Test`.
-

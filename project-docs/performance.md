@@ -1,6 +1,7 @@
 # Performance Architecture
 
-Status: **Current** — measured 2026-08-21, after the property rewrite.
+Status: **Current** — measured/reconciled 2026-08-30, after the property and
+game-feel passes.
 
 ## Primary performance characteristic
 
@@ -65,7 +66,9 @@ The project currently uses:
 - Four solver iterations.
 - Two differently named body-limit settings.
 
-The physics rate is four times the 144 FPS cap. Mower physics, fuel counters, collision collection, rain following, and HUD performance updates all run through physics processing.
+The physics rate is higher than the 240 FPS cap. Mower physics, fuel counters,
+collision collection, rain following, and HUD performance updates all run
+through physics processing.
 
 ## Mower collision workload
 
@@ -150,7 +153,7 @@ Rain scenes currently author thousands of particles across the near and far emit
 
 ## UI instrumentation
 
-The development MVP HUD (F3) samples:
+The legacy development MVP HUD samples:
 
 - FPS.
 - Static memory.
@@ -179,7 +182,7 @@ Current project settings include:
 - ETC2/ASTC texture import support.
 - Mobile feature tag.
 - VSync disabled.
-- 144 FPS cap.
+- 240 FPS cap.
 
 The terrain’s decorative grass uses visibility ranges. Tree and shrub density is reduced by generation ring rather than runtime object pooling.
 
@@ -190,9 +193,22 @@ No reusable object-pool system was found.
 Current replacement/allocation behaviors include:
 
 - Fresh mower instantiation on selection.
-- Full grid instantiation on startup/reset.
+- Full property/lawn initialization on startup; reset clears logical state in place.
 - Job Offer objects generated dynamically in the partial job system.
 - Runtime Tween creation for weather/time/audio changes.
+
+## Game-feel pass measurements — 2026-08-30
+
+The new handling path adds one per-machine speed approach plus clamps; it does
+not add a physics body or a per-frame allocation. Body lean reuses two-element
+arrays and only changes presentation transforms. Workmanship performs one
+distance/index/contact pass over the mower's fresh-sweep measurements, and
+obstacle layouts are generated once per property. `Handling Probe` reports
+21/21, including the precision view, and `Workmanship Probe` reports 4/4.
+
+The validation harness now measures movement in elapsed physics seconds at the
+576 Hz tick rate rather than a fixed render-frame count. This keeps performance
+and gameplay assertions independent of render cadence.
 
 ## Save-state size
 

@@ -25,7 +25,9 @@ class_name Rain_Handler
 ##
 ## The AUDIO, which is deliberately not in the package: `Assets/Sounds/` has
 ## unresolved attribution (R-016) and must not be bundled into something
-## redistributable. The package accepts a player it is handed and fades it; the
+## redistributable. What IS and IS NOT established is now written down, per
+## file, in `Credits/Audio_credits.txt` - the near-rain layer this file plays is
+## in its "unresolved" section. The package accepts a player it is handed and fades it; the
 ## ambience duck below is ours.
 ##
 ## The public API is unchanged. `preset_manager`, `MVP`, the trailer's weather

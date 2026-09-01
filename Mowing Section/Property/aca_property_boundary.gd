@@ -152,6 +152,14 @@ func build(params: ACAPropertyParams, terrain: ACATerrain, lawn: ACALawn) -> voi
 ##   rural       whatever the seed says, exactly as before. A rural property is
 ##               the one that might genuinely be a treeline.
 static func _roll_treatment(params: ACAPropertyParams) -> int:
+	# A NEGLECTED PROPERTY'S FENCE HAS GONE. `boundary_condition` is 1.0 on every
+	# ordinary contract, so this branch is not taken on any of them; below a
+	# half it means the rails are down and only the posts are left, which is
+	# what a boundary nobody has maintained looks like.
+	if params.boundary_condition < 0.35:
+		return Treatment.MARKER_POSTS
+	if params.boundary_condition < 0.75:
+		return Treatment.LOW_RAIL
 	match params.archetype:
 		ACAPropertyArchetype.Kind.SUBURBAN:
 			return Treatment.RUSTIC_RAIL

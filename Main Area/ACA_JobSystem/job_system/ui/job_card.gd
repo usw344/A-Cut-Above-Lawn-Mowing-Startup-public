@@ -10,6 +10,8 @@ extends PanelContainer
 
 signal accept_pressed(job_id: StringName)
 signal action_pressed(job_id: StringName)
+## The host's second action on an offer. See `ACAJobManager.offer_action_provider`.
+signal secondary_pressed(job_id: StringName)
 
 enum Mode { AVAILABLE, CURRENT, PAST }
 
@@ -31,6 +33,11 @@ enum Mode { AVAILABLE, CURRENT, PAST }
 var _job: ACAJob
 var _mode: int = Mode.AVAILABLE
 var _manager: ACAJobManager
+## The host's optional second button, built beside the accept button on demand.
+## Not in the scene, because most hosts of this package will never set a provider
+## and an always-present hidden button is a node every card pays for.
+var _secondary: Button = null
+var _secondary_note: Label = null
 
 
 func _ready() -> void:
@@ -90,10 +97,59 @@ func _bind_available() -> void:
 		action_button.text = "ACCEPT"
 		action_button.disabled = false
 		ACAJobUIStyle.style_paper_button(action_button, true)
+	_bind_secondary()
 	refresh_countdown()
 
 
+## The host's second action, if it offers one for this contract.
+func _bind_secondary() -> void:
+	var offer := _manager.offer_action(_job) if _manager != null else {}
+	var text := String(offer.get("text", ""))
+	if text.is_empty():
+		if _secondary != null:
+			_secondary.visible = false
+		if _secondary_note != null:
+			_secondary_note.visible = false
+		return
+	if _secondary == null:
+		_build_secondary()
+	_secondary.visible = true
+	_secondary.text = text
+	_secondary.disabled = not bool(offer.get("enabled", true))
+	ACAJobUIStyle.style_paper_button(_secondary, false)
+	var note := String(offer.get("note", ""))
+	if _secondary_note != null:
+		_secondary_note.text = note
+		_secondary_note.visible = not note.is_empty()
+
+
+## Built next to the accept button, in whatever container the scene put it in,
+## so it inherits the card's own footer layout rather than inventing one.
+func _build_secondary() -> void:
+	_secondary = Button.new()
+	_secondary.name = "SecondaryAction"
+	_secondary.pressed.connect(func() -> void:
+		if _job != null:
+			secondary_pressed.emit(_job.id))
+	var parent := action_button.get_parent() if action_button != null else self
+	parent.add_child(_secondary)
+	if action_button != null:
+		parent.move_child(_secondary, action_button.get_index())
+
+	_secondary_note = Label.new()
+	_secondary_note.name = "SecondaryNote"
+	_secondary_note.add_theme_font_size_override("font_size", 12)
+	_secondary_note.add_theme_color_override("font_color",
+		ACAJobUIStyle.PAPER_INK_FAINT)
+	parent.add_child(_secondary_note)
+	parent.move_child(_secondary_note, _secondary.get_index())
+
+
 func _bind_current() -> void:
+	if _secondary != null:
+		_secondary.visible = false
+	if _secondary_note != null:
+		_secondary_note.visible = false
 	_set_row(row_a_key, row_a_value, "Pay", _job.pay_text(), ACAJobUIStyle.PAPER_MONEY)
 	_set_row(row_b_key, row_b_value, "Estimated Time", _manager.estimated_time_text(_job),
 		ACAJobUIStyle.PAPER_INK)
@@ -122,6 +178,10 @@ func _bind_current() -> void:
 
 
 func _bind_past() -> void:
+	if _secondary != null:
+		_secondary.visible = false
+	if _secondary_note != null:
+		_secondary_note.visible = false
 	_set_row(row_a_key, row_a_value, "Pay", _job.pay_text(), ACAJobUIStyle.PAPER_MONEY)
 	_set_row(row_b_key, row_b_value, "Completed", _completed_text(), ACAJobUIStyle.PAPER_INK_DIM)
 	_show(row_c, false)

@@ -92,6 +92,13 @@ func set_weather_tracking_target(node: Node3D) -> void:
 		visual.set_tracking_target(node)
 
 
+## WHICH REGION THIS SCENE IS IN. Presentation only: it scales how far the
+## player can see and nothing else. See `ACARegionalContext.air_layer()`.
+func set_weather_region(region: int) -> void:
+	if visual != null:
+		visual.set_region(region)
+
+
 ## Tell the environment where ground level is, for height fog. See the note on
 ## `ACASky3DEnvironment.ground_reference`.
 func set_weather_ground_reference(world_y: float) -> void:
@@ -168,7 +175,7 @@ func map_0_100_to_time(value: float) -> float:
 ## Hours chosen against the MEASURED sun curve for this Skydome (up from about
 ## 06:35 to 17:05) - see the anchor note in weather_visual_adapter.gd.
 const TIME_PRESET_HOURS := {
-	"Morning": 7.0,
+	"Morning": 8.2,
 	"Day": 12.0,
 	"Evening": 16.3,
 	"Night": 22.0,
@@ -187,20 +194,20 @@ func _____WEATHER_____():
 	pass
 
 
+## WHETHER THE RAIN RIG RUNS IS ONE QUESTION, asked of `ACAWorldClock`, so
+## adding a sky never means editing a `match` in here again. HOW HARD it rains
+## is composed by the environment adapter from the weather profile's
+## `rain_intensity`, which is where a look belongs.
 func apply_weather_preset(preset_name: String) -> void:
+	if not ACAWorldClock.WEATHER_PRESETS.has(preset_name):
+		push_warning("preset_manager: unknown weather preset %s" % preset_name)
+		preset_name = "Clear"
 	current_weather_preset = preset_name
 
-	match preset_name:
-		"Clear":
-			rain_handler.stop_rain()
-		"Foggy":
-			rain_handler.stop_rain()
-		"Rain":
-			rain_handler.start_rain()
-		_:
-			push_warning("preset_manager: unknown weather preset %s" % preset_name)
-			current_weather_preset = "Clear"
-			rain_handler.stop_rain()
+	if ACAWorldClock.is_rain(preset_name):
+		rain_handler.start_rain()
+	else:
+		rain_handler.stop_rain()
 
 	if visual != null:
 		visual.set_state(current_weather_preset, current_time_of_day)
@@ -214,7 +221,7 @@ func apply_world_state_immediate(weather_preset_name: String, hour: float) -> vo
 	if visual == null:
 		sky3d.current_time = current_time_of_day
 
-	if weather_preset_name == "Rain":
+	if ACAWorldClock.is_rain(weather_preset_name):
 		rain_handler.start_rain()
 	else:
 		rain_handler.stop_rain_instant()

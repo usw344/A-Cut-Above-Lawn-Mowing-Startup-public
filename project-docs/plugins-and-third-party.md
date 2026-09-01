@@ -112,7 +112,7 @@ Known license locations include:
 - Sky3D third-party Milky Way and moon texture licenses.
 - `res://Credits/*_licence.txt` — the player-facing copies (**start here**).
 - Terrain3D and Sky3D text formerly in the legacy MVP HUD credit panels (now a
-  development-only layer, toggled with F3).
+  development-only layer, no longer key-bound).
 - `addons/terrain_3d/LICENSE.txt` **no longer exists** — the addon is not installed.
   If any Terrain3D-derived asset is ever redistributed, attribution must be
   restored from upstream.

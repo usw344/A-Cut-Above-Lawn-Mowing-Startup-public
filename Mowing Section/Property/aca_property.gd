@@ -174,6 +174,13 @@ static func make_features(params: ACAPropertyParams,
 	var beds := ACALawnBeds.for_params(params, property_centre, set)
 	if beds.count() > 0:
 		set.add(beds)
+	# PROTECTED PLANTING, before the surrounds and after everything on the lawn.
+	# It yields to the pond, the rocks and the beds - a meadow is the softest
+	# claim of all, because it is ground the machine can drive straight through
+	# and is simply asked not to.
+	var conservation := ACAConservationZone.for_params(params, property_centre, set)
+	if conservation.count() > 0:
+		set.add(conservation)
 	# The world beyond the fence. A feature only so the forest knows not to
 	# plant a tree through a house; it takes nothing from the lawn.
 	var surrounds := ACAPropertySurrounds.for_params(params, property_centre)
@@ -225,6 +232,22 @@ func foliage() -> ACAForest:
 ## position - asks this rather than adding the margin itself.
 func boundary() -> ACAPropertyBoundary:
 	return _boundary
+
+
+## The protected planting on this property, or null when there is none - which
+## is the great majority of contracts. The minimap and the results sheet ask for
+## it; nothing in the mowing core does.
+func conservation() -> ACAConservationZone:
+	if _features == null:
+		return null
+	for f in _features.features():
+		if f is ACAConservationZone:
+			return f
+	return null
+
+
+func has_conservation() -> bool:
+	return conservation() != null
 
 
 func statistics() -> Dictionary:

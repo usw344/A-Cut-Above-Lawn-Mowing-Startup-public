@@ -14,7 +14,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 [application]
 
-config/name="A Cut Above: Mow and Grow"
+config/name="A Cut Above Claude"
 config/tags=PackedStringArray("game")
 run/main_scene="res://Game/App/Main Menu Screen.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
@@ -33,6 +33,12 @@ GameSession="*res://Game/App/game_session.gd"
 SaveService="*res://Game/App/save_service.gd"
 Economy="*res://Game/Economy/economy_manager.gd"
 MowerUpgrades="*res://Game/Economy/mower_upgrades.gd"
+Equipment="*res://Game/Economy/equipment.gd"
+Clippings="*res://Game/Economy/clippings.gd"
+Business="*res://Game/Economy/business.gd"
+Territory="*res://Game/Business/service_territory.gd"
+Agreements="*res://Game/Business/service_agreements.gd"
+Portfolio="*res://Game/Business/portfolio.gd"
 
 [debug]
 
@@ -86,6 +92,11 @@ Cloud_Decrease={
 Cloud_Increase={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194437,"key_label":0,"unicode":43,"location":0,"echo":false,"script":null)
+]
+}
+precision_view={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":67,"key_label":0,"unicode":99,"location":0,"echo":false,"script":null)
 ]
 }
 dev_hud={

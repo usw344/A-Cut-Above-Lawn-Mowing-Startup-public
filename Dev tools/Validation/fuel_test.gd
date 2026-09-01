@@ -26,7 +26,16 @@ const SLOT_PARTIAL := "fuel_partial"
 const SLOT_EMPTY := "fuel_empty"
 
 ## Long enough for a difference in position to be unambiguous.
-const DRIVE_FRAMES := 90
+## HOW LONG each drive test holds the throttle, in SECONDS of simulated time,
+## counted off the fixed 576 Hz physics step.
+##
+## It was a count of ninety RENDER frames, which assumed both that a render
+## frame is a fixed slice of time and that a machine reaches its speed
+## instantly. The second stopped being true when the machines were given
+## acceleration, and the drives became too short to reach standing grass - which
+## is what made "refuelling restores the blades" fail while "refuelling restores
+## propulsion" passed on the same drive.
+const DRIVE_SECONDS := 1.2
 ## World units. The rider does ~30 u/s, so "moved" and "did not move" are far
 ## apart; these only have to separate them.
 const MOVED_UNITS := 2.0
@@ -220,7 +229,7 @@ func _test_powered_mower() -> void:
 	# 1 - it consumes, and 2 - at the documented rate for the time that passed.
 	var before := MowerFuel.fuel()
 	var t0 := Time.get_ticks_msec()
-	var drove := await _drive(DRIVE_FRAMES)
+	var drove := await _drive(DRIVE_SECONDS)
 	var seconds := float(Time.get_ticks_msec() - t0) / 1000.0
 	var burned := before - MowerFuel.fuel()
 	var expected := MowerFuel.burn_rate_per_second(1.0) * seconds
@@ -251,7 +260,7 @@ func _test_powered_mower() -> void:
 	_check("Powered: the tank is empty", MowerFuel.is_empty())
 
 	var cut_before := grid.mowed_item_count()
-	var moved_empty := await _drive(DRIVE_FRAMES)
+	var moved_empty := await _drive(DRIVE_SECONDS)
 	var cut_empty := grid.mowed_item_count() - cut_before
 	print("[FUEL] empty: moved %.2f u, cut %d" % [moved_empty, cut_empty])
 	_check("Powered: an empty tank stops propulsion (moved %.2f u)" % moved_empty,
@@ -267,7 +276,7 @@ func _test_powered_mower() -> void:
 	MowerFuel.refuel_full()
 	await _step(6)
 	cut_before = grid.mowed_item_count()
-	var moved_after := await _drive(DRIVE_FRAMES)
+	var moved_after := await _drive(DRIVE_SECONDS)
 	var cut_after := grid.mowed_item_count() - cut_before
 	print("[FUEL] refuelled: moved %.2f u, cut %d" % [moved_after, cut_after])
 	_check("Powered: refuelling restores propulsion (%.1f u)" % moved_after,
@@ -286,7 +295,7 @@ func _test_powered_mower() -> void:
 	await _step(6)
 	_check("Powered: Auto Refuel ON recovered the empty mower (%.0f%%)"
 		% (MowerFuel.fraction() * 100.0), not MowerFuel.is_empty())
-	var after_auto := await _drive(DRIVE_FRAMES)
+	var after_auto := await _drive(DRIVE_SECONDS)
 	_check("Powered: Auto Refuel ON lets it drive again (%.1f u)" % after_auto,
 		after_auto > MOVED_UNITS)
 	_check("Powered: Auto Refuel is not pinning the gauge at full (%.2f)"
@@ -323,7 +332,7 @@ func _test_push_mower_is_manual() -> void:
 	await _step(6)
 	var fuel_before := MowerFuel.fuel()
 	var cut_before := grid.mowed_item_count()
-	var moved := await _drive(DRIVE_FRAMES)
+	var moved := await _drive(DRIVE_SECONDS)
 	var cut := grid.mowed_item_count() - cut_before
 	print("[FUEL] push on an empty tank: moved %.2f u, cut %d" % [moved, cut])
 	_check("Push: it moves with no fuel at all (%.1f u)" % moved, moved > MOVED_UNITS)
@@ -332,7 +341,7 @@ func _test_push_mower_is_manual() -> void:
 	# And it burns nothing when there IS fuel.
 	MowerFuel.refuel_full()
 	fuel_before = MowerFuel.fuel()
-	await _drive(DRIVE_FRAMES)
+	await _drive(DRIVE_SECONDS)
 	_check("Push: it consumes no fuel (%.4f -> %.4f)" % [fuel_before, MowerFuel.fuel()],
 		is_equal_approx(fuel_before, MowerFuel.fuel()))
 
@@ -391,16 +400,35 @@ func _test_persistence() -> void:
 		var grid: ACALawn = scene.call(&"lawn")
 		if grid != null:
 			var cut_before := grid.mowed_item_count()
-			var moved := await _drive(DRIVE_FRAMES)
+			var moved := await _drive(DRIVE_SECONDS)
 			_check("Load: a restored empty mower still will not drive (%.2f u)" % moved,
 				moved < STILL_UNITS)
 			_check("Load: a restored empty mower still will not cut",
 				grid.mowed_item_count() == cut_before)
 			MowerFuel.refuel_full()
 			await _step(6)
-			var recovered := await _drive(DRIVE_FRAMES)
-			_check("Load: a manual refuel recovers it (%.1f u)" % recovered,
-				recovered > MOVED_UNITS)
+			var recovered := await _drive(DRIVE_SECONDS)
+
+			# MEASURED AGAINST THE EMPTY RUN, NOT AGAINST A CONSTANT.
+			#
+			# This used to assert `recovered > MOVED_UNITS` - a fixed two units
+			# in ninety frames. Sampled five times it produced 10.6, 4.8, 1.3,
+			# 0.9 and 0.0, because the machine is driven BLINDLY FORWARD from
+			# wherever the property put it, and on some properties that is
+			# straight into the boundary fence. The assertion was measuring the
+			# generated geometry at least as much as the fuel system.
+			#
+			# What the fuel system actually promises is that a refuel puts the
+			# tank back and lets the machine move again. Both halves are checked
+			# here, and the distance is compared with the SAME machine on the
+			# SAME ground moments earlier with an empty tank - which is the only
+			# comparison the starting position cannot corrupt.
+			_check("Load: a manual refuel puts the tank back (%.1f u)"
+				% MowerFuel.fuel(),
+				not MowerFuel.is_empty())
+			_check("Load: ...and the machine moves again (%.2f u full against "
+				% recovered + "%.2f u empty)" % moved,
+				recovered > moved + STILL_UNITS)
 
 	SaveService.delete_save(SLOT_PARTIAL)
 	SaveService.delete_save(SLOT_EMPTY)
@@ -410,18 +438,42 @@ func _test_persistence() -> void:
 
 ## Hold the throttle for `frames` process frames and return how far the mower
 ## moved on the horizontal plane. The real input action, the real controller.
-func _drive(frames: int) -> float:
+func _drive(seconds: float) -> float:
 	var scene := get_tree().current_scene
 	var mower: Node3D = scene.get(&"current_mower") if scene != null else null
 	if mower == null:
 		return 0.0
 	var from := mower.global_position
 	Input.action_press(&"move_forward")
-	await _step(frames)
+	var elapsed := 0.0
+	var step := 1.0 / float(Engine.physics_ticks_per_second)
+	while elapsed < seconds:
+		await get_tree().physics_frame
+		elapsed += step
 	Input.action_release(&"move_forward")
-	await _step(2)
+	await _settle()
 	var to := mower.global_position
 	return Vector2(to.x - from.x, to.z - from.z).length()
+
+
+## Wait until the machine has actually come to rest.
+##
+## The machines have momentum now: releasing the throttle asks them to stop and
+## they take up to a second to do it. A test that drains the tank two frames
+## after a drive is draining it into a machine that is still rolling, and the
+## coast that follows is the previous drive's, not propulsion from an empty
+## tank. That is exactly what made "an empty tank stops propulsion" read 0.55
+## units against a half-unit limit.
+func _settle() -> void:
+	var scene := get_tree().current_scene
+	var mower: Node3D = scene.get(&"current_mower") if scene != null else null
+	var waited := 0.0
+	var step := 1.0 / float(Engine.physics_ticks_per_second)
+	while waited < 2.0:
+		await get_tree().physics_frame
+		waited += step
+		if mower == null or absf(float(mower.get("_ground_speed"))) < 0.01:
+			return
 
 
 func _enter_mowing() -> bool:

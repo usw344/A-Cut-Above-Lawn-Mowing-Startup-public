@@ -394,6 +394,20 @@ func equipment_index() -> float:
 	return _modifier("equipment")
 
 
+## Multiplier on what the town pays the business for a RESOURCE it brings in -
+## today that means clippings and compost.
+##
+## Derived from the condition table rather than given a fifth column of its own,
+## because there is no evidence to fill a fifth column with and a made-up number
+## per condition would be four made-up numbers. What a garden centre pays for
+## green waste moves with general demand, so it tracks the JOB index, damped by
+## half: a recession that takes 16% off a contract takes 8% off a load of
+## clippings, which is the right shape without pretending to more precision than
+## there is.
+func resource_index() -> float:
+	return 1.0 + (job_index() - 1.0) * 0.5
+
+
 ## The fuel multiplier including today's drift, clamped to something a player
 ## can believe.
 func fuel_index() -> float:

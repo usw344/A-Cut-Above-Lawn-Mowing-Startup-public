@@ -199,10 +199,24 @@ func _test_b_active_job_save() -> void:
 	_check("B: additional cuts registered", extra > 0)
 
 	var money_before := GameSession.money()
+	# WHAT THE CONTRACT ACTUALLY SETTLED FOR. A contract pays its base rate plus
+	# whatever its optional terms earned, and the terms are derived from the
+	# contract's own seed - so the payout is no longer a constant this test can
+	# predict without re-deriving it, and a test that re-derived it would be
+	# asserting the implementation against itself. The settlement reports both
+	# figures; this checks the balance moved by exactly what was reported.
+	var settled: Array[Dictionary] = []
+	GameSession.job_settled.connect(func(summary: Dictionary) -> void:
+		settled.append(summary), CONNECT_ONE_SHOT)
 	get_tree().current_scene.call("dev_complete_current_job")
 	await _step(4)
 	_check("B: completed after resuming", not GameSession.has_active_job())
-	_check("B: paid out after resuming", GameSession.money() == money_before + saved_pay)
+	_check("B: the settlement was reported", settled.size() == 1)
+	var base := int(settled[0].get("base_pay", -1)) if settled.size() > 0 else -1
+	var bonus := int(settled[0].get("bonus", 0)) if settled.size() > 0 else 0
+	_check("B: paid the contract's own rate", base == saved_pay)
+	_check("B: paid out after resuming, base plus bonus",
+		GameSession.money() == money_before + base + bonus)
 
 	if not await _await_screen(ACAGameSession.Screen.TOWN, "Town Screen"):
 		# The results screen owns the return; press its real button.

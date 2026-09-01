@@ -294,6 +294,10 @@ static func style_button(b: Button, primary: bool, height: float = 40.0,
 	b.add_theme_color_override("font_pressed_color", fg)
 	b.add_theme_color_override("font_focus_color", fg)
 	b.add_theme_color_override("font_disabled_color", INK_FAINT)
+	# EVERY BUTTON IN THE PROJECT COMES THROUGH HERE, which is why the press and
+	# hover cues are attached here rather than in forty-six screens. `AppUI`
+	# owns the players; this only asks for them. See `ACAUISound`.
+	_attach_sound(b, ACAUISound.CLICK)
 	return b
 
 
@@ -314,6 +318,10 @@ static func style_accent_button(b: Button, height: float = 40.0,
 			"font_focus_color"]:
 		b.add_theme_color_override(key, PAPER_INK)
 	b.add_theme_color_override("font_disabled_color", INK_FAINT)
+	# THE ONE ORANGE CONTROL GETS THE CONFIRM CUE, not the ordinary click. It is
+	# the thing the player came to the screen to press, and it should sound like
+	# a decision rather than like a tab.
+	_attach_sound(b, ACAUISound.CONFIRM)
 	return b
 
 
@@ -380,8 +388,23 @@ static func repaint_to_paper(root: Node) -> void:
 	if root == null:
 		return
 	if root is PanelContainer or root is Panel:
-		(root as Control).add_theme_stylebox_override("panel",
-			paper_panel(RADIUS_PANEL, 0.0, 0.0))
+		# A REPAINT CHANGES COLOUR, NOT LAYOUT. A PanelContainer's content
+		# margins live on its stylebox, so replacing the box outright throws
+		# away the padding the screen was composed with and presses the text
+		# flat against all four edges. Whatever margins the panel already had
+		# are carried across. (The Job Intro's work order shipped with none for
+		# exactly this reason.)
+		var panel := root as Control
+		var was := panel.get_theme_stylebox(&"panel")
+		var mh := 0.0
+		var mv := 0.0
+		if was != null:
+			mh = maxf(was.content_margin_left, was.content_margin_right)
+			mv = maxf(was.content_margin_top, was.content_margin_bottom)
+			mh = maxf(mh, 0.0)
+			mv = maxf(mv, 0.0)
+		panel.add_theme_stylebox_override("panel",
+			paper_panel(RADIUS_PANEL, mh, mv))
 	elif root is Label:
 		var label := root as Label
 		label.add_theme_color_override("font_color",
@@ -521,3 +544,16 @@ static func format_clock(seconds: float) -> String:
 ## Expects 0.0 - 1.0. Values outside that range are clamped.
 static func percent_text(value: float) -> String:
 	return "%d%%" % int(round(clampf(value, 0.0, 1.0) * 100.0))
+
+
+## Ask `AppUI` for this button's sounds. Silent - and harmless - when there is
+## no `AppUI`, which is how the headless suites and the standalone tooling build
+## controls.
+static func _attach_sound(b: Button, cue: StringName) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null or tree.root == null:
+		return
+	var ui := tree.root.get_node_or_null(^"AppUI")
+	if ui == null or not ui.has_method(&"attach_button_sound"):
+		return
+	ui.call(&"attach_button_sound", b, cue)

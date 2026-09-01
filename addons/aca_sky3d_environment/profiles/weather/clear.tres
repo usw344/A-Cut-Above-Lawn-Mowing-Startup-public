@@ -4,6 +4,25 @@
 
 [resource]
 script = ExtResource("1_ykmiq")
+id = &"Clear"
+display_name = "Clear"
+sun_energy = 1.06
+sun_shadow_opacity = 0.9
+atm_turbidity = 0.0011
+atm_thickness = 0.72
+clouds_coverage = 0.34
+clouds_absorption = 1.9
+clouds_sky_tint_fade = 0.38
+clouds_intensity = 10.0
+clouds_speed = 0.05
+cumulus_coverage = 0.34
+cumulus_absorption = 2.1
+cumulus_thickness = 0.026
+cumulus_noise_freq = 2.7
+cumulus_intensity = 0.72
+cumulus_mie_intensity = 1.1
+cumulus_speed = 0.04
+cumulus_size = 2.4
 fog_enabled = true
 fog_density = 0.3
 fog_depth_begin = 110.0

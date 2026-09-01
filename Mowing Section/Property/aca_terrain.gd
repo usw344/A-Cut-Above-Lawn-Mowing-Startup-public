@@ -49,6 +49,16 @@ const GROUND_SHADER := "res://Mowing Section/Property/shaders/aca_ground.gdshade
 ## is what keeps the collision, the queries and the mowing grid in step.
 const CELL := 1.0
 
+## Wavelength of the lawn's grade, in world units. Chosen against the lawns the
+## game actually generates - 96 to 192 units across - so a property sits on ONE
+## rise or ONE fall rather than on a series of them. A shorter wavelength is not
+## a gentler hill, it is a bumpier lawn.
+const LAWN_GRADE_SCALE := 118.0
+
+## How far past a level zone the grade is eased back in, in world units. Wide
+## enough that the easing is itself gentler than the grade it is easing.
+const LEVEL_ZONE_FALLOFF := 30.0
+
 ## How far past the lawn the ground is baked for collision and queries. The
 ## mower can drive this far off the property before it runs out of world.
 const COLLISION_MARGIN := 44.0
@@ -90,6 +100,11 @@ var _noise_broad: FastNoiseLite = null
 var _noise_fine: FastNoiseLite = null
 var _noise_micro: FastNoiseLite = null
 var _noise_distant: FastNoiseLite = null
+var _noise_grade: FastNoiseLite = null
+
+## Features that need level ground under them, as `[Vector3(x, z, radius)]`.
+## Almost always empty or one entry - see `_collect_level_zones()`.
+var _level_zones: Array[Vector3] = []
 
 var _core_mesh: MeshInstance3D = null
 var _ring_mesh: MeshInstance3D = null
@@ -118,6 +133,10 @@ func build(params: ACAPropertyParams, features: ACAFeatureSet = null) -> void:
 	# The near-field extent decides where the distant hills are allowed to start,
 	# so it is resolved before anything samples the height function.
 	_resolve_extent()
+	# BEFORE `prepare()`, because a pond measures its water line against ground
+	# this has already levelled. A zone is read from the feature's own bounds,
+	# which a pond can answer before it has traced anything.
+	_collect_level_zones()
 
 	# Features resolve their reference ground BEFORE the bake, because a pond
 	# measures its water line from the ground it is about to dig away.
@@ -162,6 +181,9 @@ func _make_noise() -> void:
 	_noise_fine = _noise(_params.seed + 1, 1.0 / 41.0, 2)
 	_noise_micro = _noise(_params.seed + 2, 1.0 / 9.5, 1)
 	_noise_distant = _noise(_params.seed + 3, 1.0 / maxf(_params.distant_hill_scale, 40.0), 3)
+	# ONE OCTAVE, deliberately. A second octave on a shape this broad is exactly
+	# the medium-frequency unevenness the lawn is levelled to remove.
+	_noise_grade = _noise(_params.seed + 4, 1.0 / LAWN_GRADE_SCALE, 1)
 
 
 func _noise(noise_seed: int, frequency: float, octaves: int) -> FastNoiseLite:
@@ -192,7 +214,72 @@ func base_height_at(x: float, z: float) -> float:
 
 	local *= lerpf(1.0, 1.0 - _params.playable_flatness, flat)
 
-	return local + micro + _distant_height(x, z)
+	# THE GRADE, AND THE ONE THING THE LEVELLING DOES NOT TOUCH.
+	#
+	# Everything above is flattened towards nothing inside the mowable
+	# rectangle, which is why a lawn used to be a plane with a little noise on
+	# it. This term is not, because it is the shape the property is MEANT to
+	# have: one broad rise or one shallow fall, forty centimetres or so across
+	# the whole lawn, at a wavelength longer than the lawn is wide.
+	#
+	# It is what gives the machines something real to sit on. Vertical movement
+	# in this game comes from ground that is genuinely not level - not from
+	# tilting the mower, which is what it used to come from and what made
+	# driving unpleasant. See `ACAMowerHandling.ground_tilt()`.
+	#
+	# Zero on every property generated before version 7.
+	var grade := _grade_at(x, z)
+
+	return local + micro + grade + _distant_height(x, z)
+
+
+## ---------------------------------------------------------------------------
+## THE GRADE, AND WHERE IT IS HELD LEVEL
+## ---------------------------------------------------------------------------
+## A pond's surface is a flat plane. A grade running across one either floods
+## out of the bowl on the low side or leaves the water line short of the bank on
+## the high side, and both are worse than a level pond - the second one also
+## pushes the traced shoreline outside the AABB the feature rejects points with,
+## which silently leaves mowable grass inside the collision ring.
+##
+## So the grade is HELD at its value at the feature's centre across the zone,
+## rather than removed. The ground does not step and the land outside keeps
+## falling exactly as it was; it simply stops falling where the water is, which
+## is what a pond in a real garden looks like.
+##
+## Cost: a loop over a list that is empty or has one entry in it.
+func _grade_at(x: float, z: float) -> float:
+	if is_zero_approx(_params.lawn_grade):
+		return 0.0
+	var raw := _noise_grade.get_noise_2d(x, z) * _params.lawn_grade
+	for zone in _level_zones:
+		var dx := x - zone.x
+		var dz := z - zone.y
+		var distance := sqrt(dx * dx + dz * dz)
+		if distance >= zone.z + LEVEL_ZONE_FALLOFF:
+			continue
+		var held: float = _noise_grade.get_noise_2d(zone.x, zone.y) 			* _params.lawn_grade
+		var blend: float = smoothstep(zone.z, zone.z + LEVEL_ZONE_FALLOFF,
+			distance)
+		raw = lerpf(held, raw, blend)
+	return raw
+
+
+## Read once, at build, from the features' own bounds. A pond can answer this
+## before it has traced its shoreline, which is exactly why the zone is taken
+## from `bounds()` rather than from the traced ring.
+func _collect_level_zones() -> void:
+	_level_zones.clear()
+	if _features == null:
+		return
+	for feature in _features.features():
+		if not feature.levels_ground():
+			continue
+		var box := feature.bounds()
+		var centre := box.position + box.size * 0.5
+		var radius: float = maxf(box.size.x, box.size.z) * 0.5
+		_level_zones.append(Vector3(centre.x - _origin.x, centre.z - _origin.z,
+			radius))
 
 
 ## Scenic hills. Zero across the whole playable area, then ramped in with

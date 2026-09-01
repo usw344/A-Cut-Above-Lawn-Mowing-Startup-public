@@ -26,6 +26,14 @@ var anchors: Array = []
 var _time: Dictionary = {}      ## id -> ACAEnvTimeProfile
 var _weather: Dictionary = {}   ## id -> ACAEnvWeatherProfile
 var _override: Dictionary = {}
+## A SECOND HOST LAYER, applied BEFORE the presentation override.
+##
+## Two layers rather than one because they have different owners and different
+## lifetimes. `_override` belongs to media tooling: it is set for one shot and
+## asserted empty afterwards. `_place` belongs to the RUNNING GAME - it is the
+## standing difference between one part of the map and another, it is set when a
+## level loads, and it must survive a capture that clears the other one.
+var _place: Dictionary = {}
 
 
 func add_time_profile(profile: ACAEnvTimeProfile) -> void:
@@ -77,6 +85,19 @@ func is_ready() -> bool:
 # profiles deliberately do not ship, without editing the profiles. It is empty
 # in normal use.
 
+## The place layer. Same `{ scale: {}, set: {} }` shape as the override.
+func set_place_layer(layer: Dictionary) -> void:
+	_place = layer.duplicate(true) if layer != null and not layer.is_empty() else {}
+
+
+func place_layer() -> Dictionary:
+	return _place
+
+
+func has_place_layer() -> bool:
+	return not _place.is_empty()
+
+
 func set_override(layer: Dictionary) -> void:
 	_override = layer.duplicate(true) if layer != null and not layer.is_empty() else {}
 
@@ -122,15 +143,14 @@ func compose(weather_id: String, hour: float) -> Dictionary:
 	for key: String in absolute:
 		values[key] = absolute[key]
 
-	# 4. The override, last, so tooling can bias a decision the profiles made.
-	if not _override.is_empty():
-		var over_scale: Dictionary = _override.get("scale", {})
-		for key: String in over_scale:
-			if values.has(key):
-				values[key] = _scaled(values[key], float(over_scale[key]))
-		var over_set: Dictionary = _override.get("set", {})
-		for key: String in over_set:
-			values[key] = over_set[key]
+	# 4. THE PLACE. Where in the world this is, as a standing modifier on what
+	#    the weather decided. Never a weather of its own: the sky is the same
+	#    sky everywhere at the same moment, and this only says how much air is
+	#    between the player and the horizon.
+	_apply_layer(values, _place)
+
+	# 5. The override, last, so tooling can bias a decision the profiles made.
+	_apply_layer(values, _override)
 
 	_derive(values)
 
@@ -138,6 +158,18 @@ func compose(weather_id: String, hour: float) -> Dictionary:
 		if values.has(key) and (values[key] is float or values[key] is int):
 			values[key] = clampf(float(values[key]), 0.0, 1.0)
 	return values
+
+
+func _apply_layer(values: Dictionary, layer: Dictionary) -> void:
+	if layer.is_empty():
+		return
+	var layer_scale: Dictionary = layer.get("scale", {})
+	for key: String in layer_scale:
+		if values.has(key):
+			values[key] = _scaled(values[key], float(layer_scale[key]))
+	var layer_set: Dictionary = layer.get("set", {})
+	for key: String in layer_set:
+		values[key] = layer_set[key]
 
 
 ## The time-of-day look with no weather on it.

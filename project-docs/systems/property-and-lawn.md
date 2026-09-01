@@ -2,7 +2,7 @@
 
 Status: **Current playable runtime.** Replaced the `Custom_Gridmap` /
 `Multi_Mesh_Chunk` lawn and the authored `Terrain Manager` terrain on
-2026-08-20.
+2026-08-20. Reconciled with generation version 6 on 2026-08-30.
 Primary path: `Mowing Section/Property/`
 Retired predecessors: `Soft Delete/2026-08-20 Legacy Lawn and Terrain/`
 
@@ -587,6 +587,44 @@ either unfair or dull:
 Asserted over 90 properties in `Property Test`, and measured over 360 in the
 composition audit.
 
+### Deterministic obstacle layouts (generation version 6)
+
+`ACALawnObstacles` selects a layout from a separate seed-derived stream after
+the property shape has been decided. It proposes obstacle positions and then
+applies the same safety acceptance rules used by the earlier scatter layout;
+it does not alter the lawn's exclusion or mowing rules.
+
+| Layout | Shape |
+|---|---|
+| `SCATTER` | distributed obstacles, the legacy/default pattern |
+| `ISLAND` | a compact central grouping |
+| `GAUNTLET` | a route-like sequence with controlled gaps |
+| `AVENUE` | a spaced linear arrangement |
+| `CORNERS` | groups biased toward the lawn corners |
+| `PERIMETER` | obstacles following the outer working area |
+
+Properties under 120 units use only `SCATTER` or `CORNERS`; larger properties
+use the seeded distribution across all six layouts. Generation versions `<= 5`
+continue to use `SCATTER`, preserving the layout of legacy saves. The current
+safety constants are an 11-unit minimum rim gap, 7-unit edge inset, 16-unit
+arrival clearance and a 9-unit arrival corridor.
+
+The final safety audit covered 180 properties: the tightest obstacle gap was
+11.00 units, the boundary approach was 7.00, the arrival clearance was 16.48,
+and there were no quota misses. Equal seeds produce equal layouts. `Layout
+Probe` reports 15/15.
+
+Final layout measurements from the probe are:
+
+| Layout | reach | excluded share | obstacle count |
+|---|---:|---:|---:|
+| Scatter | 0.76 | 0.21 | 1.61 |
+| Corners | 0.91 | 0.52 | 4.28 |
+| Island | 0.53 | 0.29 | 2.14 |
+| Gauntlet | 0.70 | 0.22 | 1.45 |
+| Perimeter | 0.72 | 0.21 | 1.72 |
+| Avenue | 0.64 | 0.23 | 2.80 |
+
 ## The pond
 
 `aca_pond_feature.gd`, built on the experimental prototype in
@@ -596,8 +634,9 @@ composition audit.
 property got a pond are still taken, in exactly their old positions, because the
 draw order IS the save format; they now decide how generous the pond is instead.
 A property that would have had one gets precisely the pond it had before, and a
-property that would not gets a smaller, more modest one. `GENERATION_VERSION` is
-**3**.
+property that would not gets a smaller, more modest one. The current property
+generation is **6**; the pond probability draws remain in their historical
+positions so the generator's draw order stays compatible.
 
 Size is bounded by the LAWN rather than by a constant:
 
@@ -711,8 +750,9 @@ narrow, steep rim, so from a mower's seat a pond was a dark depression with a
 patch of water at the bottom and the bank - the part worth looking at - hidden
 behind its own edge. Both draws are unchanged in position and order; only their
 RANGES moved, and every pond field round trips through the save, so a contract
-already in progress keeps the pond it was generated with. `GENERATION_VERSION`
-is 2.
+already in progress keeps the pond it was generated with. The current property
+generation is **6**; the older version numbers describe historical feature
+milestones, not the current pond version.
 
 **It is planted.** Reeds stand at the water's edge and ankle-deep in the
 shallows, shrubs are kept SHORT on the bank so they never hide the water or
@@ -779,7 +819,8 @@ put it. Two consequences, and both are the point:
 value for it and loads as `RURAL`, which is exactly the property it was played
 on - rural was the only kind the generator could make.
 
-`GENERATION_VERSION` is **4**.
+The current property generation is **6**. Older generation versions retain
+their documented compatibility behavior when loaded.
 
 ## Planted beds
 

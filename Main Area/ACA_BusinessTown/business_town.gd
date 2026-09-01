@@ -209,7 +209,7 @@ func selected_building_id() -> StringName:
 ## Exported rather than hard-coded so this package stays generic - it does not
 ## need to know that A Cut Above happens to have a fuel shop.
 @export var host_handled_buildings: Array[StringName] = [
-	&"supply_store", &"business_hq", &"mower_dealer",
+	&"supply_store", &"business_hq", &"mower_dealer", &"service_lot",
 ]
 
 

@@ -28,6 +28,36 @@ extends ACAPropertyFeature
 ## It does NOT dig the terrain. A rock sits on the ground; it does not deform it.
 ##
 ## ---------------------------------------------------------------------------
+## LAYOUTS: THE SAME OBSTACLES, ARRANGED INTO A ROUTE
+## ---------------------------------------------------------------------------
+## Uniform scatter is a fair way to place rocks and a poor way to make a lawn
+## worth thinking about. With the count clamped between three and twelve and
+## every pair held eleven units apart, scattered obstacles average out - one
+## property mows very much like the next, and the answer to all of them is the
+## same back-and-forth.
+##
+## A layout changes NOTHING about what an obstacle is, and none of the rules in
+## `_acceptable()`. It only changes where candidates are offered from, so the
+## same rocks land in an arrangement that asks for a particular route:
+##
+##   SCATTER    what the generator always did. Kept, and still common: a plain
+##              open lawn is a legitimate property and a rest between awkward
+##              ones.
+##   ISLAND     everything gathered into the middle. The perimeter is wide open
+##              and the centre wants circling.
+##   GAUNTLET   two offset ranks walked across the property, so a straight pass
+##              has to weave - the S-shaped route.
+##   AVENUE     a line on a drawn heading, splitting the lawn into two strips
+##              that are mown separately.
+##   CORNERS    pushed into one or two corners. Open middle, awkward ends.
+##   PERIMETER  held out near the edge, so the middle is quick and the last
+##              strip round the outside is the work.
+##
+## The layout is drawn from the SAME stream as the positions, so a seed still
+## reproduces its property exactly - and a property generated before layouts
+## existed keeps its scatter. See `_layout_for()`.
+##
+## ---------------------------------------------------------------------------
 ## PLACEMENT IS A ROUTE-PLANNING PROBLEM
 ## ---------------------------------------------------------------------------
 ## Obstacles exist to make a lawn worth thinking about, not to make it a maze.
@@ -46,6 +76,7 @@ extends ACAPropertyFeature
 ##   ACALawnObstacles.for_params(params, lawn_centre, existing_features)
 ##   obstacles()      -> [{ position: Vector2, radius: float, kind: int }]
 ##   count()
+##   layout() / layout_name()
 ##   plus the whole ACAPropertyFeature interface
 ##
 ## SIGNALS: None.
@@ -90,6 +121,21 @@ const ROCK_TINT := Color(1.38, 1.16, 0.88)
 const SHRUB_TINT := Color(0.74, 0.86, 0.62)
 
 enum Kind { ROCK, SHRUB }
+
+## The arrangement this property's obstacles were offered from. See the LAYOUTS
+## section above.
+enum Layout { SCATTER, ISLAND, GAUNTLET, AVENUE, CORNERS, PERIMETER }
+
+const LAYOUT_NAMES := ["Scatter", "Island", "Gauntlet", "Avenue", "Corners",
+	"Perimeter"]
+
+## Below this lawn size a property has neither the room nor the obstacle count
+## for an arrangement to read as one, and forcing a layout on it produces a
+## cramped lawn rather than an interesting one.
+const LAYOUT_MIN_LAWN := 120
+
+## The most obstacles an ISLAND is given. See the note in `_layout_shape()`.
+const ISLAND_OBSTACLES := 5
 
 ## One obstacle per this many square units of lawn, before the clamps.
 const CELLS_PER_OBSTACLE := 3600.0
@@ -146,6 +192,7 @@ const GRASS_MARGIN := TIDY_MARGIN + ACAMowerClearance.REQUIRED
 const MAX_ATTEMPTS := 400
 
 var _obstacles: Array[Dictionary] = []
+var _layout: int = Layout.SCATTER
 var _bounds := AABB()
 var _body: StaticBody3D = null
 var _nodes := 0
@@ -166,6 +213,15 @@ func feature_id() -> StringName:
 
 func count() -> int:
 	return _obstacles.size()
+
+
+## Which arrangement this property's obstacles were offered from.
+func layout() -> int:
+	return _layout
+
+
+func layout_name() -> String:
+	return LAYOUT_NAMES[_layout]
 
 
 func obstacles() -> Array[Dictionary]:
@@ -195,18 +251,39 @@ func _roll(params: ACAPropertyParams, lawn_centre: Vector2,
 	# so a property with a stony treeline has a stony lawn.
 	wanted = maxi(int(round(float(wanted) * lerpf(0.6, 1.25,
 		clampf(params.rock_density / 0.9, 0.0, 1.0)))), MIN_OBSTACLES)
+	# ...and how neglected it is decides how much has been left lying in it. Zero
+	# on every ordinary property, so this multiplies by exactly one on all of
+	# them; a rescue job has noticeably more to work round.
+	if params.clutter > 0.0:
+		wanted = mini(int(round(float(wanted) * (1.0 + params.clutter * 0.8))),
+			MAX_OBSTACLES)
 
 	# The arrival: `ACAProperty.mower_start_transform()` puts the machine off
 	# the -X edge at the lawn's centre line and drives it towards +X.
 	var arrival := Vector2(lawn_centre.x - half, lawn_centre.y)
 
+	# THE ARRANGEMENT, and whatever it needs decided, drawn before any position
+	# so the sequence is fixed for a seed.
+	_layout = _layout_for(params, rng)
+	var shape := _layout_shape(rng, lawn_centre, usable)
+	# An island is a THING TO DRIVE ROUND, not a quota spread over the middle of
+	# the lawn. Fewer of them is what lets them sit close enough together to
+	# read as one feature - see `island_radius`.
+	if _layout == Layout.ISLAND:
+		wanted = mini(wanted, ISLAND_OBSTACLES)
+
 	var attempts := 0
+	var index := 0
 	while _obstacles.size() < wanted and attempts < MAX_ATTEMPTS:
 		attempts += 1
 		var radius := rng.randf_range(MIN_RADIUS, MAX_RADIUS)
-		var at := Vector2(
-			lawn_centre.x + rng.randf_range(-1.0, 1.0) * (usable - radius),
-			lawn_centre.y + rng.randf_range(-1.0, 1.0) * (usable - radius))
+		var span := usable - radius
+		# Past halfway through the attempt budget the arrangement has had its
+		# chance. The rest is filled by ordinary scatter, because a property that
+		# is three rocks short of its quota is worse than one whose last two are
+		# not quite on the pattern.
+		var at := (_scatter(rng, lawn_centre, span) if attempts > MAX_ATTEMPTS / 2
+			else _propose(rng, shape, index, wanted, lawn_centre, span))
 		if not _acceptable(at, radius, arrival, lawn_centre, half, existing):
 			continue
 		var kind: int = Kind.SHRUB if rng.randf() < 0.22 else Kind.ROCK
@@ -217,7 +294,131 @@ func _roll(params: ACAPropertyParams, lawn_centre: Vector2,
 			"yaw": rng.randf_range(0.0, TAU),
 			"pick": rng.randi(),
 		})
+		index += 1
 	_recompute_bounds()
+
+
+## WHICH ARRANGEMENT THIS PROPERTY GETS.
+##
+## Scatter keeps a real share of the weight deliberately. Every property being
+## a composition is the same mistake as every property being a scatter: the
+## variety is in the CONTRAST, and a plain open lawn is what makes the next
+## gauntlet feel like something.
+static func _layout_for(params: ACAPropertyParams,
+		rng: RandomNumberGenerator) -> int:
+	# NOT ON A PROPERTY GENERATED BEFORE LAYOUTS EXISTED, for exactly the reason
+	# conservation zones are not given to one: a contract already in progress
+	# would have its obstacles, and so its completion denominator, moved
+	# underneath it. A save is a promise about the ground being stood on.
+	if params.generation_version < 6:
+		return Layout.SCATTER
+	if params.lawn_size < LAYOUT_MIN_LAWN:
+		return Layout.SCATTER if rng.randf() < 0.55 else Layout.CORNERS
+	var roll := rng.randf()
+	if roll < 0.22:
+		return Layout.SCATTER
+	if roll < 0.42:
+		return Layout.ISLAND
+	if roll < 0.60:
+		return Layout.GAUNTLET
+	if roll < 0.74:
+		return Layout.AVENUE
+	if roll < 0.87:
+		return Layout.CORNERS
+	return Layout.PERIMETER
+
+
+## Everything an arrangement needs that must be the same for every obstacle on
+## the property - where the island is, which way the avenue runs - drawn once,
+## in a fixed order, before any position.
+func _layout_shape(rng: RandomNumberGenerator, lawn_centre: Vector2,
+		usable: float) -> Dictionary:
+	return {
+		# Off the exact middle, so an island is not always the same loop.
+		"island": lawn_centre + Vector2(rng.randf_range(-1.0, 1.0),
+			rng.randf_range(-1.0, 1.0)) * usable * 0.22,
+		# THE CLEARANCE RULE SETS A FLOOR ON HOW TIGHT ANY GROUP CAN BE. Two
+		# obstacles are never left closer than eleven units rim to rim, so a
+		# group of seven is about twenty-six units across whatever this says.
+		#
+		# 0.40 was tried first and drew a group filling most of the lawn - only
+		# the numbers could tell it from a scatter. Simply tightening it to 0.30
+		# made it WORSE: the clearance rule rejected nearly every candidate
+		# inside the smaller disc, the placement fell back to scatter, and the
+		# arrangement measured closer to a scatter than it had before. The disc
+		# is tight AND the group is smaller, which is the combination that
+		# actually fits.
+		"island_radius": usable * 0.30,
+		"angle": rng.randf_range(0.0, PI),
+		"rank": usable * rng.randf_range(0.30, 0.50),
+		"corner_a": Vector2(1.0 if rng.randf() < 0.5 else -1.0,
+			1.0 if rng.randf() < 0.5 else -1.0),
+		"corner_b": Vector2(1.0 if rng.randf() < 0.5 else -1.0,
+			1.0 if rng.randf() < 0.5 else -1.0),
+	}
+
+
+## One candidate position for this arrangement. It is only an OFFER: every rule
+## in `_acceptable()` still applies to it, so no layout can put a rock in the
+## arrival corridor, in the pond, or close enough to another to close a gap the
+## machine has to fit through.
+func _propose(rng: RandomNumberGenerator, shape: Dictionary, index: int,
+		wanted: int, lawn_centre: Vector2, span: float) -> Vector2:
+	match _layout:
+		Layout.ISLAND:
+			# Square-rooted radius, so the group fills its disc evenly instead of
+			# bunching at the middle.
+			var island_at: Vector2 = shape["island"]
+			var reach: float = float(shape["island_radius"]) * sqrt(rng.randf())
+			var around: float = rng.randf_range(0.0, TAU)
+			return _inside(island_at + Vector2(cos(around), sin(around)) * reach,
+				lawn_centre, span)
+		Layout.GAUNTLET:
+			# Alternating ranks either side of a line, walked along it, so the
+			# gaps stagger into a weave rather than lining up into a corridor.
+			var run := Vector2(cos(float(shape["angle"])), sin(float(shape["angle"])))
+			var across := Vector2(-run.y, run.x)
+			var along: float = (float(index) / maxf(float(wanted - 1), 1.0)) * 2.0 - 1.0
+			var side: float = 1.0 if index % 2 == 0 else -1.0
+			return _inside(lawn_centre + run * along * span * 0.85
+				+ across * side * float(shape["rank"])
+				+ _jitter(rng, span * 0.10), lawn_centre, span)
+		Layout.AVENUE:
+			var line := Vector2(cos(float(shape["angle"])), sin(float(shape["angle"])))
+			return _inside(lawn_centre + line * rng.randf_range(-0.9, 0.9) * span
+				+ _jitter(rng, span * 0.08), lawn_centre, span)
+		Layout.CORNERS:
+			# Two in three go to the first corner, so one end is clearly the
+			# difficult one rather than both being equally cluttered.
+			var corner: Vector2 = shape["corner_b"] if index % 3 == 2 \
+				else shape["corner_a"]
+			return _inside(lawn_centre + corner * span * rng.randf_range(0.55, 0.95)
+				+ _jitter(rng, span * 0.18), lawn_centre, span)
+		Layout.PERIMETER:
+			var bearing: float = rng.randf_range(0.0, TAU)
+			var out: float = span * rng.randf_range(0.62, 0.98)
+			return _inside(lawn_centre + Vector2(cos(bearing), sin(bearing)) * out,
+				lawn_centre, span)
+	return _scatter(rng, lawn_centre, span)
+
+
+static func _scatter(rng: RandomNumberGenerator, lawn_centre: Vector2,
+		span: float) -> Vector2:
+	return Vector2(
+		lawn_centre.x + rng.randf_range(-1.0, 1.0) * span,
+		lawn_centre.y + rng.randf_range(-1.0, 1.0) * span)
+
+
+static func _jitter(rng: RandomNumberGenerator, amount: float) -> Vector2:
+	return Vector2(rng.randf_range(-1.0, 1.0), rng.randf_range(-1.0, 1.0)) * amount
+
+
+## Arrangements are described in their own terms and can reach past the lawn;
+## this is what keeps every offer inside the rectangle obstacles may occupy.
+static func _inside(at: Vector2, lawn_centre: Vector2, span: float) -> Vector2:
+	return Vector2(
+		clampf(at.x, lawn_centre.x - span, lawn_centre.x + span),
+		clampf(at.y, lawn_centre.y - span, lawn_centre.y + span))
 
 
 func _acceptable(at: Vector2, radius: float, arrival: Vector2,
@@ -274,6 +475,20 @@ func _recompute_bounds() -> void:
 
 func bounds() -> AABB:
 	return _bounds
+
+
+## THE ROCKS THEMSELVES, rather than the box around all of them. See
+## `ACAPropertyFeature.footprints()`: the combined box of a dozen scattered
+## obstacles is most of the lawn, and a placer that treated it as occupied
+## ground could never put anything anywhere.
+func footprints() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for o: Dictionary in _obstacles:
+		out.append({
+			"position": o["position"] as Vector2,
+			"radius": float(o["radius"]),
+		})
+	return out
 
 
 ## Obstacles sit ON the ground. They never move it.

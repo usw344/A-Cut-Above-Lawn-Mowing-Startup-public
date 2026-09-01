@@ -1,0 +1,91 @@
+A Cut Above: Mow & Grow - Audio
+Third-party audio used in res://Assets/Sounds/
+
+Written during the sound overhaul. Before it, this project had NO audio credits
+file at all, and res://Weather/Handlers/rain_handler.gd carried a standing note
+that "Assets/Sounds/ has unresolved attribution (R-016)". This file records what
+is established and, just as importantly, what is not.
+
+
+================================================================================
+ESTABLISHED - Kenney, CC0 1.0
+================================================================================
+
+Interface Sounds (1.0) - Kenney, www.kenney.nl - CC0 1.0 Universal
+    res://Assets/Sounds/UI/
+    Sixteen short interface samples: click_001, tick_002, toggle_001,
+    confirmation_001-002, close_001, drop_002, error_002-003, select_001,
+    select_003, glass_002, glass_004, bong_001, click_002-003.
+    They are the press, hover, confirm, cancel, error, notification, payment
+    and completion cues (see UI/Theme/aca_ui_sound.gd).
+    The pack's own licence is copied beside them as
+    res://Assets/Sounds/UI/License.txt.
+
+UI SFX Set - Kenney Vleugels, www.kenney.nl - CC0 1.0 Universal
+    res://Assets/Sounds/kenney_ui-audio (1)/
+    Already in the project before this pass. rollover1-3 are the hover cue.
+    Licence beside them in that folder.
+
+Both are CC0 1.0 Universal (public domain dedication). Attribution is
+appreciated but not required.
+
+
+================================================================================
+SUPPLIED FOR THIS PROJECT - source indicated by filename, licence NOT VERIFIED
+================================================================================
+
+Eight recordings were supplied for the sound overhaul. Their filenames carry
+uploader names in the convention a well-known royalty-free audio library uses,
+and the "freesound_community" prefix is that library's attribution name for
+material it imported from Freesound's CC0 pool. That is an INDICATION of origin,
+not a licence, and no licence file came with them.
+
+    derrickmckinnon-riding-lawn-mower-241627.mp3        the rider's engine
+    freesound_community-electric-lawn-mower-17199.mp3   the powered walk-behind
+    freesound_community-030460_lawn-mower-clean-sample-72105.mp3
+                                                        the push mower
+    freesound_community-rotary_lawnmower_short-91928.mp3
+                                                        the blade / cutting layer
+    chribonn-nature-216798.mp3                          the wildlife bed
+    freesound_community-a-gentle-breeze-wind-1-14813.mp3  the wind bed
+    freesound_community-soft-rain-on-a-tile-roof-14515.mp3  far rain
+    freesound_community-hand-mower-starts-rolling-47349.mp3  not currently used
+
+BEFORE THIS PROJECT IS DISTRIBUTED, each of these needs its source page found
+and its licence recorded here, or the file replaced. They are used because they
+were supplied for this work; that is not the same as being cleared for it.
+
+
+================================================================================
+UNRESOLVED - present before this pass, origin unknown
+================================================================================
+
+    Ambience Sound.wav                the mowing scene's base ambience bed
+    Powered Lawn Mower SFX.wav        no longer used by any machine; kept as the
+                                      fallback in ACAMowerAudio.FALLBACK
+    Push Lawn Mower SFX.wav           no longer used by any machine
+    rain-sound-188158.wav             the Rain Handler's near-rain layer
+
+These four have no recorded source and predate this pass. The number in
+`rain-sound-188158` is a library id and is the only lead any of them carries.
+Same condition as the section above: found or replaced before distribution.
+
+
+================================================================================
+NOT AUDIO, BUT ADJACENT
+================================================================================
+
+res://UI/Scenic Background for Menus/Assets/SM_Grass_A1-A4.glb are models, not
+sounds, and are listed here only because they are the last of the "SM_" family
+still in the build. The three that were in the mowing property - SM_Pine_A2,
+SM_Pine_A3 and SM_Bush_A1 - were removed during this pass for the same reason:
+no recorded provenance. The menu ones remain and have the same problem.
+
+
+================================================================================
+THERE IS NO MUSIC IN THIS GAME
+================================================================================
+
+Deliberately, and it is a design rule rather than an omission. Everything above
+is a recording of a machine, of weather, of wildlife or of an interface. No
+track, no loop, no tonal bed, and nothing that functions as background music.

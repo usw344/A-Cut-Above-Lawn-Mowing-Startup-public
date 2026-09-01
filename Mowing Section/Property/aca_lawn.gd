@@ -62,6 +62,9 @@ extends Node3D
 ##   SaveService writes it; the property parameters are owned by ACAProperty.
 
 signal mowing_progress_changed(fraction: float)
+## Protected vegetation was driven over by the deck. `cells` is how many
+## PROTECTED cells changed to DAMAGED on that sweep, never a running total.
+signal protected_damaged(cells: int)
 
 ## World units per logical cell. One, deliberately: it matches the terrain
 ## sample lattice and makes a lawn size the cell count.
@@ -69,9 +72,24 @@ const CELL := 1.0
 
 const FLAG_MOWABLE := 1
 const FLAG_CUT := 2
+## ---------------------------------------------------------------------------
+## PROTECTED GROUND IS NOT THE SAME AS EXCLUDED GROUND
+## ---------------------------------------------------------------------------
+## Both are outside the contract: neither counts towards completion, so a
+## property with a wildflower meadow on it still finishes at exactly 100%.
+##
+## The difference is that a pond cannot be mowed and a meadow can. A protected
+## cell is a cell the deck is ABLE to cut and is not supposed to, so the deck
+## sweeps it exactly as it sweeps the lawn - and what it leaves behind is a
+## record of damage rather than progress.
+const FLAG_PROTECTED := 4
+const FLAG_DAMAGED := 8
 
-## Bumped when the meaning of the persisted cut state changes.
-const CUT_STATE_VERSION := 2
+## Bumped when the meaning of the persisted cut state changes. Version 3 added
+## the DAMAGED bitset, so a contract resumed from a save keeps the conservation
+## record it was carrying; a version 2 block still loads, with no damage on it,
+## which is exactly true of a save written before there was any to record.
+const CUT_STATE_VERSION := 3
 
 ## How the persisted cut state is packed. Zstandard because the data is long
 ## runs of identical bytes and the decode has to be quick on a load screen.
@@ -89,6 +107,8 @@ var _flags := PackedByteArray()
 var _dirs := PackedByteArray()
 var _mowable_total: int = 0
 var _cut_total: int = 0
+var _protected_total: int = 0
+var _damaged_total: int = 0
 
 var _mask_image: Image = null
 var _mask_texture: ImageTexture = null
@@ -126,6 +146,8 @@ func build(params: ACAPropertyParams, terrain: ACATerrain,
 	_dirs.resize(count)
 	_mowable_total = 0
 	_cut_total = 0
+	_protected_total = 0
+	_damaged_total = 0
 
 	_mask_image = Image.create_empty(_cells, _cells, false, Image.FORMAT_RGBA8)
 	_mask_image.fill(Color(0.0, 0.0, 0.0, 0.0))
@@ -136,12 +158,28 @@ func build(params: ACAPropertyParams, terrain: ACATerrain,
 		for ix in _cells:
 			var x := _origin.x + (float(ix) + 0.5) * CELL
 			var mowable := true
+			var protected_here := false
 			if not set.is_empty():
-				mowable = set.is_mowable(x, z, terrain.height_at(x, z))
+				var ground := terrain.height_at(x, z)
+				mowable = set.is_mowable(x, z, ground)
+				# ONLY GROUND THAT IS ALREADY OUT OF THE CONTRACT can be
+				# protected. Asking the question in this order is what
+				# guarantees a conservation zone can never make a cell that
+				# counts towards completion unreachable.
+				if not mowable:
+					protected_here = set.is_protected(x, z, ground)
 			if mowable:
 				_flags[index] = FLAG_MOWABLE
 				_mowable_total += 1
 				_mask_image.set_pixel(ix, iz, Color(0.0, 0.0, 0.0, 1.0))
+			elif protected_here:
+				_flags[index] = FLAG_PROTECTED
+				_protected_total += 1
+				# BLUE MARKS PROTECTED, and the alpha stays zero because the
+				# cell is still outside the contract. The grass shader reads
+				# only R and G, so the zone's own planting reacts to being cut
+				# through exactly the channel the lawn already used.
+				_mask_image.set_pixel(ix, iz, Color(0.0, 0.0, 1.0, 0.0))
 			else:
 				_flags[index] = 0
 			_dirs[index] = 0
@@ -157,9 +195,10 @@ func build(params: ACAPropertyParams, terrain: ACATerrain,
 ## JOB, which must not change which property the player is standing on.
 func reset() -> void:
 	for i in _flags.size():
-		_flags[i] = _flags[i] & FLAG_MOWABLE
+		_flags[i] = _flags[i] & (FLAG_MOWABLE | FLAG_PROTECTED)
 		_dirs[i] = 0
 	_cut_total = 0
+	_damaged_total = 0
 	_rebuild_mask()
 	mowing_progress_changed.emit(0.0)
 
@@ -218,6 +257,40 @@ func is_cut(world_position: Vector3) -> bool:
 	if i < 0:
 		return false
 	return (_flags[i] & FLAG_CUT) != 0
+
+
+# ------------------------------------------------------------ protected areas
+
+## Is this world position inside protected vegetation?
+func is_protected(world_position: Vector3) -> bool:
+	var i := _index_at(world_position.x, world_position.z)
+	if i < 0:
+		return false
+	return (_flags[i] & FLAG_PROTECTED) != 0
+
+
+## How much protected ground this property has, in cells. Zero on the
+## overwhelming majority of contracts, which is what lets every reader treat
+## conservation as something to check for rather than something to handle.
+func protected_cell_count() -> int:
+	return _protected_total
+
+
+func has_protected_area() -> bool:
+	return _protected_total > 0
+
+
+## Protected cells the deck has been through.
+func damaged_cell_count() -> int:
+	return _damaged_total
+
+
+## 0-1 of the protected area that has been cut. Zero when there is none, so a
+## contract with no conservation zone always scores a perfect compliance.
+func protected_damage_fraction() -> float:
+	if _protected_total <= 0:
+		return 0.0
+	return clampf(float(_damaged_total) / float(_protected_total), 0.0, 1.0)
 
 
 ## The texture the grass and ground shaders read. R cut, G heading, A mowable.
@@ -284,6 +357,7 @@ func mow_swath(from: Vector3, to: Vector3, half_width: float) -> int:
 	var z1 := _cell_index_z(max_z)
 	var radius_squared := half_width * half_width
 	var cut := 0
+	var harmed := 0
 	for iz in range(z0, z1 + 1):
 		var z := _origin.y + (float(iz) + 0.5) * CELL
 		for ix in range(x0, x1 + 1):
@@ -292,7 +366,13 @@ func mow_swath(from: Vector3, to: Vector3, half_width: float) -> int:
 			if p.distance_squared_to(
 					Geometry2D.get_closest_point_to_segment(p, a, b)) > radius_squared:
 				continue
-			cut += _cut_cell(iz * _cells + ix, heading)
+			var index := iz * _cells + ix
+			if (_flags[index] & FLAG_PROTECTED) != 0:
+				harmed += _damage_cell(index, heading)
+			else:
+				cut += _cut_cell(index, heading)
+	if harmed > 0:
+		_after_damage(harmed)
 	if cut > 0:
 		_after_cut(cut)
 	return cut
@@ -323,19 +403,33 @@ func _stamp_deck(machine: Transform3D, deck: ACAMowerDeck, heading: int) -> int:
 	var z1 := _cell_index_z(centre.y + reach_z)
 
 	var cut := 0
+	var harmed := 0
 	for iz in range(z0, z1 + 1):
 		var z := _origin.y + (float(iz) + 0.5) * CELL
 		var row := iz * _cells
 		for ix in range(x0, x1 + 1):
 			var index := row + ix
-			if (_flags[index] & FLAG_MOWABLE) == 0 or (_flags[index] & FLAG_CUT) != 0:
+			var flags := _flags[index]
+			# THE DECK DOES NOT KNOW THE DIFFERENCE. A blade that passes over a
+			# wildflower strip cuts it, and the only thing that changes is which
+			# book it is written in. Both tests are done in the same sweep, from
+			# the same rectangle, so damage can never be measured against a
+			# slightly different footprint from the one that did the cutting.
+			var is_lawn := (flags & FLAG_MOWABLE) != 0 and (flags & FLAG_CUT) == 0
+			var is_meadow := (flags & FLAG_PROTECTED) != 0 and (flags & FLAG_DAMAGED) == 0
+			if not is_lawn and not is_meadow:
 				continue
 			var d := Vector2(_origin.x + (float(ix) + 0.5) * CELL, z) - centre
 			if absf(d.dot(r)) > deck.half_width:
 				continue
 			if absf(d.dot(f)) > deck.half_length:
 				continue
-			cut += _cut_cell(index, heading)
+			if is_lawn:
+				cut += _cut_cell(index, heading)
+			else:
+				harmed += _damage_cell(index, heading)
+	if harmed > 0:
+		_after_damage(harmed)
 	return cut
 
 
@@ -348,6 +442,29 @@ func _cut_cell(index: int, heading: int) -> int:
 	_mask_image.set_pixel(index % _cells, index / _cells,
 		Color(1.0, float(heading) / 255.0, 0.0, 1.0))
 	return 1
+
+
+## A PROTECTED CELL THAT HAS BEEN THROUGH THE DECK. It never becomes CUT, it is
+## never counted towards completion, and the counter it moves is its own.
+func _damage_cell(index: int, heading: int) -> int:
+	var flags := _flags[index]
+	if (flags & FLAG_PROTECTED) == 0 or (flags & FLAG_DAMAGED) != 0:
+		return 0
+	_flags[index] = flags | FLAG_DAMAGED
+	_dirs[index] = heading
+	# R RISES, ALPHA STAYS AT ZERO. The red channel is what the planting reads
+	# to draw itself as cut, and the alpha is what the minimap and the ground
+	# read to know this is not lawn - so damaged vegetation LOOKS mown and still
+	# counts for nothing.
+	_mask_image.set_pixel(index % _cells, index / _cells,
+		Color(1.0, float(heading) / 255.0, 1.0, 0.0))
+	return 1
+
+
+func _after_damage(count: int) -> void:
+	_damaged_total += count
+	_mask_dirty = true
+	protected_damaged.emit(count)
 
 
 func _after_cut(count: int) -> void:
@@ -372,7 +489,11 @@ func _rebuild_mask() -> void:
 		for ix in _cells:
 			var index := iz * _cells + ix
 			var flags := _flags[index]
-			if (flags & FLAG_MOWABLE) == 0:
+			if (flags & FLAG_PROTECTED) != 0:
+				_mask_image.set_pixel(ix, iz, Color(
+					1.0 if (flags & FLAG_DAMAGED) != 0 else 0.0,
+					float(_dirs[index]) / 255.0, 1.0, 0.0))
+			elif (flags & FLAG_MOWABLE) == 0:
 				_mask_image.set_pixel(ix, iz, Color(0.0, 0.0, 0.0, 0.0))
 			elif (flags & FLAG_CUT) != 0:
 				_mask_image.set_pixel(ix, iz,
@@ -415,6 +536,48 @@ static func _heading_byte(angle: float) -> int:
 static func _heading_of(machine: Transform3D) -> int:
 	var forward := machine.basis.z
 	return _heading_byte(Vector2(forward.x, forward.z).angle())
+
+
+# =============================================================== finish pattern
+
+## THE DIRECTIONS THE LAWN WAS CUT IN, as a histogram over a HALF turn.
+##
+## A mowing stripe has no front and no back: a pass driven north and the pass
+## beside it driven south lay the grass over on the same axis and read as one
+## stripe. So the heading byte, which is quantised over a full turn because the
+## grass shader needs to know which way a blade fell, is folded in half here -
+## and that fold is the difference between measuring a PATTERN and measuring a
+## driving log.
+##
+## `buckets` is how finely the half turn is divided. Returns counts per bucket,
+## and nothing else: what a pattern IS lives in `ACAFinishPattern`.
+func heading_histogram(buckets: int = 36) -> PackedInt32Array:
+	var out := PackedInt32Array()
+	out.resize(maxi(buckets, 1))
+	for i in out.size():
+		out[i] = 0
+	if _cut_total <= 0:
+		return out
+	for index in _flags.size():
+		if (_flags[index] & FLAG_CUT) == 0:
+			continue
+		# 0-255 over a full turn becomes 0-127 over half of one.
+		var folded := int(_dirs[index]) % 128
+		var bucket: int = clampi(int(float(folded) / 128.0 * float(out.size())),
+			0, out.size() - 1)
+		out[bucket] = out[bucket] + 1
+	return out
+
+
+## The same fold, per CELL, for a pattern that cares where a pass was as well as
+## which way it went - a checkerboard, or a perimeter finish. Returns a byte per
+## cell: 0-127 for a cut cell's folded heading, 255 for anything not cut.
+func folded_headings() -> PackedByteArray:
+	var out := PackedByteArray()
+	out.resize(_flags.size())
+	for index in _flags.size():
+		out[index] = int(_dirs[index]) % 128 if (_flags[index] & FLAG_CUT) != 0 else 255
+	return out
 
 
 # ============================================================== compatibility
@@ -466,7 +629,7 @@ func cut_state() -> Dictionary:
 	for index in _flags.size():
 		if (_flags[index] & FLAG_CUT) != 0:
 			bits[index / 8] = bits[index / 8] | (1 << (index % 8))
-	return {
+	var out := {
 		"version": CUT_STATE_VERSION,
 		"cells": _cells,
 		"cut_count": _cut_total,
@@ -475,13 +638,33 @@ func cut_state() -> Dictionary:
 		"cut_bits": Marshalls.raw_to_base64(bits.compress(COMPRESSION)),
 		"cut_dirs": Marshalls.raw_to_base64(_dirs.compress(COMPRESSION)),
 	}
+	# THE DAMAGE, and only when there is any. The overwhelming majority of
+	# contracts have no protected ground at all, and a block of zeroes in every
+	# one of their saves would be a cost paid by every property for a feature a
+	# few of them have.
+	if _protected_total > 0:
+		var harm := PackedByteArray()
+		harm.resize(bits.size())
+		for i in harm.size():
+			harm[i] = 0
+		for index in _flags.size():
+			if (_flags[index] & FLAG_DAMAGED) != 0:
+				harm[index / 8] = harm[index / 8] | (1 << (index % 8))
+		out["damaged_count"] = _damaged_total
+		out["damaged_size"] = harm.size()
+		out["damaged_bits"] = Marshalls.raw_to_base64(harm.compress(COMPRESSION))
+	return out
 
 
 ## Restore state written by `cut_state()`. Returns false and changes nothing if
 ## the state does not describe this lawn, so a save can never quietly leave the
 ## player on a property that does not match their progress.
 func restore_cut_state(data: Dictionary) -> bool:
-	if int(data.get("version", 0)) != CUT_STATE_VERSION:
+	# VERSION 2 IS STILL READ. It is the same bitset with no damage record on
+	# it, and a save written before conservation zones existed genuinely had
+	# none - so it loads exactly as it should rather than being refused.
+	var version := int(data.get("version", 0))
+	if version != CUT_STATE_VERSION and version != 2:
 		push_warning("[LAWN] cut state version %s is not %d; ignoring."
 			% [data.get("version", 0), CUT_STATE_VERSION])
 		return false
@@ -496,17 +679,32 @@ func restore_cut_state(data: Dictionary) -> bool:
 		return false
 	var dirs := _decode(data, "cut_dirs", "dirs_size")
 
+	# THE DAMAGE, when the block carries any. Missing is the same as none.
+	var harm := PackedByteArray()
+	if data.has("damaged_bits"):
+		harm = _decode(data, "damaged_bits", "damaged_size")
+
 	var restored := 0
+	var harmed := 0
 	for index in _flags.size():
-		var flags := _flags[index] & FLAG_MOWABLE
-		if flags != 0 and (bits[index / 8] & (1 << (index % 8))) != 0:
+		# MASKED AGAINST WHAT THIS PROPERTY ACTUALLY IS, never trusted. A cell
+		# the generator no longer makes mowable cannot come back as cut, and one
+		# it no longer protects cannot come back as damaged.
+		var flags := _flags[index] & (FLAG_MOWABLE | FLAG_PROTECTED)
+		var bit := (bits[index / 8] & (1 << (index % 8))) != 0
+		if (flags & FLAG_MOWABLE) != 0 and bit:
 			flags |= FLAG_CUT
 			restored += 1
+			_dirs[index] = dirs[index] if index < dirs.size() else 0
+		elif (flags & FLAG_PROTECTED) != 0 and index / 8 < harm.size() 				and (harm[index / 8] & (1 << (index % 8))) != 0:
+			flags |= FLAG_DAMAGED
+			harmed += 1
 			_dirs[index] = dirs[index] if index < dirs.size() else 0
 		else:
 			_dirs[index] = 0
 		_flags[index] = flags
 	_cut_total = restored
+	_damaged_total = harmed
 	_rebuild_mask()
 	mowing_progress_changed.emit(mowed_fraction())
 	return true

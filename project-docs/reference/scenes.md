@@ -1,6 +1,6 @@
 # Scene Reference
 
-Status: **Current** — 2026-08-19. Paths are `res://`-relative.
+Status: **Current** — 2026-08-30. Paths are `res://`-relative.
 
 ## Application screens
 
@@ -43,7 +43,7 @@ has nothing to dismiss.
 | Path | `Game/App/Pause Layer.tscn` |
 | Root | `Pause Layer : CanvasLayer` (layer 40, `PROCESS_MODE_ALWAYS`) |
 | Script | `Game/App/pause_layer.gd` (`ACAPauseLayer`) |
-| Children | `Pause Menu`, `Settings`, `Controls Help`, `Confirmation Dialog` |
+| Children | `Pause Menu`, `Settings`, `Controls Help`, `Confirmation Dialog`, runtime-mounted `Developer Debugger` |
 
 The same four component instances `Gameplay UI.tscn` holds. `ACAGameplayUI`
 **inherits** `ACAPauseLayer` rather than instancing this scene, which is why the
@@ -95,7 +95,7 @@ property and returns to town itself on completion.
 | Path | `Game/M.V.P/MVP_HUD.tscn` |
 | Root | `MVP_HUD : Control` |
 | Instanced by | Minimum Viable Game |
-| Visibility | **Hidden on load**; toggled with **F3** |
+| Visibility | **Hidden on load**; no key binding (the Developer Debugger took over **H**); opened by tooling via `MVP.dev_toggle_debug_hud()` |
 
 Retained as a diagnostics/development layer. Its weather buttons write to
 `WorldClock`, not to the scene.
@@ -119,9 +119,9 @@ See [Property, terrain and lawn](../systems/property-and-lawn.md).
 
 | Path | Notes |
 |---|---|
-| `Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn` | Authored into the mowing scene; the initial active mower |
-| `Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn` | Preloaded by `MVP.gd`, swapped in via the dev HUD |
-| `Assets/Vehicles and Mowers/Mowers/Push Mower.tscn` | Preloaded by `MVP.gd`, swapped in via the dev HUD |
+| `Assets/Vehicles and Mowers/Mowers/Mower Rider.tscn` | Authored editor fallback; the production default machine |
+| `Assets/Vehicles and Mowers/Mowers/Non Rider Mower.tscn` | Preloaded by `MVP.gd`, selected through `Equipment` or swapped by the dev HUD |
+| `Assets/Vehicles and Mowers/Mowers/Push Mower.tscn` | Preloaded by `MVP.gd`, selected through `Equipment` or swapped by the dev HUD |
 | `Mowing Section/Mower/Mower_Normal/Mower_Normal.tscn` | Referenced by `Model.gd`'s `mower_scene_references` through `load()` |
 
 ### Weather
@@ -167,12 +167,16 @@ That path is the one to re-point if the UI folder ever moves.
 | `Dev tools/Validation/Flow Test.tscn` | Full-loop test, 54 assertions |
 | `Dev tools/Validation/UI Smoke Test.tscn` | UI component test, 60 assertions |
 | `Dev tools/Validation/Save Test.tscn` | Save/load, 59 assertions |
-| `Dev tools/Validation/Pause Test.tscn` | Pause stack + cursor + look, 49 / 54 |
+| `Dev tools/Validation/Pause Test.tscn` | Pause stack + cursor + look, 49 headless / 54 renderer |
+| `Dev tools/Validation/Debugger Probe.tscn` | Real H input in Town and mowing, 39 / 39 |
+| `Dev tools/Validation/Handling Probe.tscn` | Three machine profiles and precision view, 21 / 21 |
+| `Dev tools/Validation/Layout Probe.tscn` | Six layout rules, determinism and safety, 15 / 15 |
+| `Dev tools/Validation/Workmanship Probe.tscn` | Coverage/contact callouts, 4 / 4 |
 | `Dev tools/Validation/Credits Test.tscn` | Credits loader and screen, 40 assertions |
-| `Dev tools/Validation/Weather Test.tscn` | Weather/time visuals **and the audio bus structure**, 56 assertions |
-| `Dev tools/Validation/Fuel Test.tscn` | The real fuel system, 56 assertions |
+| `Dev tools/Validation/Weather Test.tscn` | Weather/time visuals **and the audio bus structure**, 106 assertions |
+| `Dev tools/Validation/Fuel Test.tscn` | The real fuel system, 59 assertions |
 | `Dev tools/Validation/Audio Mix Probe.tscn` | **Measures** bus peak levels per weather state, 15 assertions |
-| `Dev tools/Validation/Trailer Test.tscn` | Trailer static contract, 98 assertions |
+| `Dev tools/Validation/Trailer Test.tscn` | Trailer static contract, 102 assertions |
 | `Dev tools/Validation/Town Probe.tscn` | Grazing-angle town shots plus a depth-tie diff. Needs a renderer. |
 | `Dev tools/Validation/Weather Matrix.tscn` | 4 times x 3 weathers + town; needs a renderer |
 | `Dev tools/Validation/Sun Probe.tscn` | Sky3D sun altitude per half hour |

@@ -162,6 +162,12 @@ var _time: Label = null
 var _weather: Label = null
 var _weather_glyph: UIGlyph = null
 var _day: Label = null
+## The ground condition and the machine's configuration, both on the same strip.
+var _ground: Label = null
+var _ground_glyph: UIGlyph = null
+var _mode: Label = null
+## The finish the customer asked for, on the job card. Null until there is one.
+var _pattern_label: Label = null
 var _fuel_caption: Label = null
 var _fuel_percent: Label = null
 var _fuel_bar: ProgressBar = null
@@ -172,6 +178,21 @@ var _pause_hint: Button = null
 var _row_area: Dictionary = {}
 var _row_features: Dictionary = {}
 var _row_contract: Dictionary = {}
+## The contract's own terms, one checklist line each. Built on demand, because
+## most contracts have none and an empty heading is worse than no heading.
+var _term_rows: Array[Dictionary] = []
+var _terms_rule: Control = null
+## The catcher. Added to the fuel card rather than given a card of its own: it
+## is the same KIND of readout - a consumable with a bar - and a fifth card in a
+## corner would be a fifth thing to look away for.
+var _bag_row: HBoxContainer = null
+var _bag_caption: Label = null
+var _bag_percent: Label = null
+var _bag_bar: ProgressBar = null
+var _bag_glyph: UIGlyph = null
+## The autonomous machine's one line. Hidden unless one came along.
+var _auto_chip: PanelContainer = null
+var _auto_label: Label = null
 
 var _progress: float = 0.0
 var _fuel: float = 1.0
@@ -319,6 +340,13 @@ func _build_job_card(parent: Node) -> void:
 	_reward = _row_contract["value"]
 	_reward.add_theme_color_override("font_color", UITheme.HUD_GREEN)
 
+	# THE REQUESTED FINISH, when there is one. Hidden on every ordinary
+	# contract, which is most of them - see `set_requested_pattern()`.
+	_pattern_label = UITheme.label(column, "RequestedPattern", "",
+		UITheme.FONT_MICRO, UITheme.HUD_GREEN)
+	_pattern_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_pattern_label.visible = false
+
 
 ## TOP CENTRE. Day, clock, weather - the three things a player checks without
 ## looking away from the lawn for long.
@@ -344,6 +372,23 @@ func _build_environment_strip(parent: Node) -> void:
 	_weather_glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(_weather_glyph)
 	_weather = UITheme.label(row, "WeatherValue", "Clear", UITheme.FONT_BODY,
+		UITheme.PAPER_INK)
+
+	# TWO MORE READINGS ON THE SAME STRIP, and no new panel. What the ground is
+	# doing and how the machine is set up are both things the player needs at a
+	# glance and neither is worth a card of its own - see the pass notes on
+	# keeping the mowing HUD to four corners with the middle empty.
+	row.add_child(_divider())
+	_ground_glyph = UIGlyph.make(UIGlyph.Kind.DROP, 15.0, UITheme.HUD_GREEN)
+	_ground_glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(_ground_glyph)
+	_ground = UITheme.label(row, "GroundValue", "Damp", UITheme.FONT_BODY,
+		UITheme.PAPER_INK)
+	row.add_child(_divider())
+	var mode_mark := UIGlyph.make(UIGlyph.Kind.STRIPES, 15.0, UITheme.HUD_GREEN)
+	mode_mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(mode_mark)
+	_mode = UITheme.label(row, "ModeValue", "BAG", UITheme.FONT_BODY,
 		UITheme.PAPER_INK)
 
 
@@ -380,6 +425,40 @@ func _build_fuel_card(parent: Node) -> void:
 	_fuel_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	UITheme.style_paper_progress(_fuel_bar)
 	column.add_child(_fuel_bar)
+
+	# ---------------------------------------------------------------- the bag
+	# THE SAME KIND OF READOUT, so it lives on the same card. Fuel and clippings
+	# are both a consumable with a bar, both decide when the player has to break
+	# off and drive somewhere, and putting the second one in its own corner would
+	# be a fifth place to look away to.
+	#
+	# Hidden entirely on a machine that does not collect. A push mower with a
+	# greyed-out catcher gauge is a gauge that means nothing, every second of
+	# every contract it is used on.
+	column.add_child(_spacer(3))
+	_bag_row = HBoxContainer.new()
+	_bag_row.name = "BagRow"
+	_bag_row.add_theme_constant_override("separation", 8)
+	_bag_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(_bag_row)
+	_bag_glyph = UIGlyph.make(UIGlyph.Kind.LEAF, 15.0, UITheme.HUD_GREEN)
+	_bag_glyph.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_bag_row.add_child(_bag_glyph)
+	_bag_caption = UITheme.label(_bag_row, "BagCaption", "CATCHER",
+		UITheme.FONT_LABEL, UITheme.PAPER_INK_DIM)
+	_bag_caption.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_bag_percent = UITheme.label(_bag_row, "BagPercent", "0%",
+		UITheme.FONT_LABEL, UITheme.PAPER_INK)
+
+	_bag_bar = ProgressBar.new()
+	_bag_bar.name = "BagBar"
+	_bag_bar.custom_minimum_size = Vector2(0, 9)
+	_bag_bar.max_value = 1.0
+	_bag_bar.step = 0.0001
+	_bag_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	UITheme.style_paper_progress(_bag_bar, UITheme.HUD_GREEN)
+	column.add_child(_bag_bar)
+	set_bag(0.0, 0.0)
 
 
 ## BOTTOM RIGHT. One chip, and only while there is something to say.
@@ -551,6 +630,186 @@ func set_site_notes(pond: bool, obstacles: int) -> void:
 # ================================================================ progress
 
 ## Expects 0.0 - 1.0. Animates the bar; safe to call every frame.
+## ---------------------------------------------------------------------------
+## THE CATCHER
+## ---------------------------------------------------------------------------
+## `capacity` of zero means the machine mulches, and the whole readout goes away
+## rather than sitting there at nought per cent for the length of the contract.
+func set_bag(kilograms: float, capacity: float) -> void:
+	if _bag_bar == null:
+		return
+	var collects := capacity > 0.0
+	_bag_row.visible = collects
+	_bag_bar.visible = collects
+	if not collects:
+		return
+	var fraction := clampf(kilograms / capacity, 0.0, 1.0)
+	_bag_bar.value = fraction
+	_bag_percent.text = "%d%%" % int(round(fraction * 100.0))
+	# FULL IS A STATE WORTH SEEING WITHOUT READING. It changes the wording as
+	# well as the colour, because nothing here is ever said by colour alone.
+	var full := fraction >= 0.999
+	var fill := UITheme.ORANGE if full else (
+		UITheme.WARN if fraction >= 0.8 else UITheme.HUD_GREEN)
+	UITheme.style_paper_progress(_bag_bar, fill)
+	_bag_glyph.set_colour(fill)
+	_bag_caption.text = "CATCHER FULL" if full else "CATCHER"
+	_bag_caption.add_theme_color_override("font_color",
+		UITheme.ORANGE if full else UITheme.PAPER_INK_DIM)
+	_bag_percent.add_theme_color_override("font_color",
+		UITheme.ORANGE if full else UITheme.PAPER_INK)
+
+
+func bag_fraction() -> float:
+	if _bag_bar == null or not _bag_bar.visible:
+		return 0.0
+	return _bag_bar.value
+
+
+func bag_is_shown() -> bool:
+	return _bag_bar != null and _bag_bar.visible
+
+
+## ---------------------------------------------------------------------------
+## WHAT THIS CONTRACT ASKS FOR
+## ---------------------------------------------------------------------------
+## One line per term, under the checklist that was already there, in exactly the
+## same form - a mark, a caption and a value. A contract with no terms gets no
+## heading and no rule, so the card is the size it always was.
+##
+## `terms` is `ACAContractTerms.describe()`: `{ flag, text, mandatory }` each.
+func set_contract_terms(terms: Array) -> void:
+	for row: Dictionary in _term_rows:
+		(row["mark"] as Node).get_parent().queue_free()
+	_term_rows.clear()
+	if _terms_rule != null:
+		_terms_rule.queue_free()
+		_terms_rule = null
+	if terms.is_empty():
+		return
+	var column := _row_contract["value"].get_parent().get_parent() as VBoxContainer
+	if column == null:
+		return
+	_terms_rule = _rule()
+	column.add_child(_terms_rule)
+	for term: Dictionary in terms:
+		var caption := String(term["text"])
+		if bool(term["mandatory"]):
+			caption += "  (required)"
+		var row := _checklist_row(column, UIGlyph.Kind.DROP, caption, "")
+		(row["label"] as Label).add_theme_color_override("font_color",
+			UITheme.ORANGE if bool(term["mandatory"]) else UITheme.PAPER_INK_DIM)
+		row["flag"] = int(term["flag"])
+		_term_rows.append(row)
+
+
+## Tick or untick each term against what has happened so far. Called as the
+## contract runs, so a collection term goes green the moment enough has actually
+## been delivered rather than only at the results screen.
+func set_term_states(met_flags: int) -> void:
+	for row: Dictionary in _term_rows:
+		var met := (met_flags & int(row["flag"])) != 0
+		(row["value"] as Label).text = "done" if met else ""
+		(row["mark"] as UIGlyph).set_colour(
+			UITheme.HUD_GREEN if met else UITheme.PAPER_INK_FAINT)
+
+
+## ---------------------------------------------------------------------------
+## THE MACHINE WORKING BESIDE THE PLAYER
+## ---------------------------------------------------------------------------
+## ONE LINE, and only when there is a machine to report. This is deliberately
+## not a fleet panel over the gameplay view: the player is mowing, and what they
+## want to know is that the thing they paid for is working and whether it has
+## gone back to the truck.
+## ---------------------------------------------------------------------------
+## THE GROUND, AND HOW THE MACHINE IS SET UP
+## ---------------------------------------------------------------------------
+## Both live on the environment strip beside the clock and the sky, because both
+## are conditions rather than objectives. Neither is ever the only way something
+## is communicated: wet grass fills the catcher visibly faster, and a machine set
+## to mulch has no catcher gauge at all.
+func set_ground_condition(state: int) -> void:
+	_build()
+	if _ground == null:
+		return
+	_ground.text = ACAGroundConditions.state_name(state)
+	var wet := ACAGroundConditions.is_wet(state)
+	_ground.add_theme_color_override("font_color",
+		UITheme.ORANGE if wet else UITheme.PAPER_INK)
+	if _ground_glyph != null:
+		_ground_glyph.set_colour(UITheme.ORANGE if wet else UITheme.HUD_GREEN)
+
+
+func ground_condition_text() -> String:
+	return _ground.text if _ground != null else ""
+
+
+func set_mowing_mode(mode: int) -> void:
+	_build()
+	if _mode == null:
+		return
+	_mode.text = ACAMowingMode.short_name(mode)
+
+
+func mowing_mode_text() -> String:
+	return _mode.text if _mode != null else ""
+
+
+## THE FINISH THE CUSTOMER ASKED FOR, as a line on the job card's checklist.
+## It arrives through `set_contract_terms()` like every other term; this exists
+## so the mowing scene has somewhere to send the pattern when there is one, and
+## it deliberately does nothing when there is not.
+func set_requested_pattern(pattern: int) -> void:
+	_build()
+	if _pattern_label == null:
+		return
+	var text := ACAFinishPattern.pattern_name(pattern)
+	_pattern_label.visible = pattern != ACAFinishPattern.Pattern.NONE
+	_pattern_label.text = "Requested finish: %s" % text.to_lower()
+
+
+func set_autonomous_status(text: String) -> void:
+	if _auto_chip == null:
+		if text.is_empty():
+			return
+		_build_autonomous_chip()
+	_auto_chip.visible = not text.is_empty()
+	if not text.is_empty():
+		_auto_label.text = text
+
+
+func autonomous_status_text() -> String:
+	return _auto_label.text if _auto_label != null else ""
+
+
+func _build_autonomous_chip() -> void:
+	_auto_chip = PanelContainer.new()
+	_auto_chip.name = "AutonomousChip"
+	_auto_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_auto_chip.add_theme_stylebox_override("panel",
+		UITheme.hud_chip(UITheme.RADIUS_CHIP))
+	add_child(_auto_chip)
+	# Bottom centre, clear of the minimap on the left and the pause chip on the
+	# right, and out of the middle where the lawn is.
+	_auto_chip.anchor_left = 0.5
+	_auto_chip.anchor_right = 0.5
+	_auto_chip.anchor_top = 1.0
+	_auto_chip.anchor_bottom = 1.0
+	_auto_chip.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_auto_chip.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_auto_chip.offset_bottom = -EDGE_MARGIN
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_auto_chip.add_child(row)
+	var mark := UIGlyph.make(UIGlyph.Kind.STRIPES, 14.0, UITheme.HUD_GREEN)
+	mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(mark)
+	_auto_label = UITheme.label(row, "AutoStatus", "", UITheme.FONT_META,
+		UITheme.PAPER_INK_DIM)
+
+
 func set_progress(value: float) -> void:
 	_build()
 	var target := clampf(value, 0.0, 1.0)

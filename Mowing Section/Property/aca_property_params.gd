@@ -49,7 +49,22 @@ extends Resource
 ## version 2 save DOES gain when it is reloaded is the obstacles, which is safe:
 ## a cell that has become unmowable simply stops counting, and `ACALawn` masks
 ## the restored cut state with the mowable flag rather than trusting it.
-const GENERATION_VERSION := 4
+## Version 5 added the property's CONDITION (see `ACAPropertyCondition`) and
+## CONSERVATION ZONES. Neither draws inside `for_seed()`: the condition only
+## reshapes values the seed already drew, exactly as the archetype does, and the
+## zone comes from a separate stream keyed off the same seed - so the random
+## sequence is byte for byte the sequence it has always been, and no existing
+## property moves. A property generated at version 4 or below is deliberately
+## NOT given a conservation zone when it reloads: that would move the completion
+## denominator of a contract already in progress.
+## Version 6 arranges the lawn obstacles into LAYOUTS instead of scattering them
+## uniformly (see `ACALawnObstacles`). It changes no field and moves no draw in
+## `for_seed()` - obstacles have always come from their own stream - but it does
+## change where that stream puts them, so a property generated at version 5 or
+## below is deliberately kept on the scatter it was built with. A contract
+## already in progress would otherwise have its obstacles, and therefore its
+## completion denominator, moved underneath it.
+const GENERATION_VERSION := 7
 
 # ------------------------------------------------------------------ identity
 ## The one number every deterministic draw comes from.
@@ -66,6 +81,33 @@ const GENERATION_VERSION := 4
 ## RURAL, which is exactly the property it was played on - rural was the only
 ## kind the generator could make.
 @export var archetype: int = ACAPropertyArchetype.Kind.RURAL
+
+## WHAT CONDITION THIS PROPERTY IS IN. See `ACAPropertyCondition`.
+##
+## Not drawn from the seed either: it comes from how many times the business has
+## already serviced this customer, which `ACABusiness` keeps. Saved, so a
+## contract resumed tomorrow is the same rescue job it was this morning.
+##
+## MAINTAINED is the neutral default and reshapes nothing, so a save written
+## before conditions existed loads as exactly the property it was played on.
+@export var condition_stage: int = ACAPropertyCondition.Stage.MAINTAINED
+
+# ------------------------------------------------------- condition reshaping
+## These four are written by `ACAPropertyCondition.apply()` and by nothing else.
+## Every one of them is a MULTIPLIER or a 0-1 dial on something the generator
+## already did, so leaving them at their defaults is the property the game has
+## always built.
+@export_group("Condition")
+## How far over the standard the uncut grass on the contract stands. 1.0 is an
+## ordinary overdue lawn; a neglected property is well above it.
+@export_range(0.5, 3.0, 0.01) var grass_height_scale: float = 1.0
+## Extra things standing in the grass, 0-1, on top of what the seed drew.
+@export_range(0.0, 1.0, 0.01) var clutter: float = 0.0
+## How far the planted beds have spread past their own edge, 0-1.
+@export_range(0.0, 1.0, 0.01) var bed_overgrowth: float = 0.0
+## How well kept the boundary treatment is. 1.0 is the fence the seed chose.
+@export_range(0.0, 1.0, 0.01) var boundary_condition: float = 1.0
+@export_group("")
 
 # ---------------------------------------------------------------- lawn sizes
 ## Side length of the mowable rectangle, in world units. Also the number of
@@ -87,7 +129,34 @@ const GENERATION_VERSION := 4
 ## being pleasant to steer on.
 @export_range(0.0, 1.0, 0.01) var fine_variation: float = 0.28
 ## Very small surface relief, so the ground is never a perfect plane.
-@export_range(0.0, 1.0, 0.02) var micro_relief: float = 0.34
+##
+## LOWERED FROM 0.34 AT GENERATION VERSION 7. At 0.34 this was a bump every two
+## and a half metres, and once the machines began sitting on the real ground
+## rather than being tilted by their own steering, that read as a mower
+## twitching its way across a lawn. The movement a property is supposed to have
+## is `lawn_grade` below: broad, and felt rather than seen.
+##
+## A property saved before version 7 keeps the value it was built with.
+@export_range(0.0, 1.0, 0.02) var micro_relief: float = 0.12
+
+## THE LAWN'S GRADE, in world units of relief, over a wavelength of about 120.
+##
+## This is the ONE term that is not levelled inside the mowable rectangle, and
+## it is deliberately the only one: a lawn should sit on a gentle rise or fall
+## the way a real garden does, and that shape is what gives the machine
+## something honest to lean on.
+##
+## Kept small on purpose, and measured rather than guessed. Over twenty seeds
+## at the 0.6-2.5 this generator rolls, a 144-unit lawn rises and falls by
+## 75 cm on average, and its steepest slope over the length of a machine is
+## 6.8 degrees, worst 8.9. The same measurement with no grade at all reads
+## 30 cm and 7.6 degrees - so this adds two and a half times the RELIEF while
+## barely moving the steepest slope, which is exactly the shape wanted: broad,
+## and not bumpy.
+##
+## ZERO BY DEFAULT, which is what a property saved before generation version 7
+## reconstructs with, so no existing property has ground moved underneath it.
+@export_range(0.0, 6.0, 0.05) var lawn_grade: float = 0.0
 ## How strongly the mowable rectangle is levelled. 1.0 is dead flat; 0.0 leaves
 ## the lawn as hilly as the surroundings.
 @export_range(0.0, 1.0, 0.01) var playable_flatness: float = 0.86
@@ -222,7 +291,31 @@ static func for_job(job: ACAJob) -> ACAPropertyParams:
 		return preset(&"default")
 	var size: int = job.grid_size.x if job.grid_size.x > 0 else 96
 	return for_seed(job.seed, size,
-		ACAPropertyArchetype.for_property_type(job.property_type, job.seed))
+		ACAPropertyArchetype.for_property_type(job.property_type, job.seed),
+		condition_stage_for(job),
+		ACAServiceTerritory.region_for_job(job))
+
+
+## WHAT CONDITION THE BUSINESS HAS LEFT THIS PROPERTY IN.
+##
+## A stage is the contract's own seed plus one number the company keeps: how
+## many times it has finished a contract on this property. `ACABusiness` owns
+## that number, so this asks - the same way `ACAContractTerms` asks the Job
+## System for a contract's estimated duration rather than keeping a second copy
+## of the calculation.
+##
+## With no company in the tree - a probe, the standalone bench - the honest
+## answer is a property nobody has serviced yet, which is what the derivation
+## returns for zero visits.
+static func condition_stage_for(job: ACAJob) -> int:
+	if job == null:
+		return ACAPropertyCondition.Stage.MAINTAINED
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null:
+		var business := tree.root.get_node_or_null(^"/root/Business")
+		if business != null:
+			return int(business.call(&"condition_stage_for", job))
+	return ACAPropertyCondition.stage_for(job.seed, int(job.property_type), 0)
 
 
 ## The same derivation without a contract, for probes and the standalone bench.
@@ -230,7 +323,9 @@ static func for_job(job: ACAJob) -> ACAPropertyParams:
 ## `archetype` defaults to RURAL, which is what every caller that predates
 ## archetypes was implicitly asking for.
 static func for_seed(property_seed: int, lawn_size_units: int,
-		archetype_kind: int = ACAPropertyArchetype.Kind.RURAL) -> ACAPropertyParams:
+		archetype_kind: int = ACAPropertyArchetype.Kind.RURAL,
+		condition: int = ACAPropertyCondition.Stage.MAINTAINED,
+		region: int = -1) -> ACAPropertyParams:
 	var p := ACAPropertyParams.new()
 	p.seed = property_seed
 	p.lawn_size = maxi(lawn_size_units, 16)
@@ -272,11 +367,30 @@ static func for_seed(property_seed: int, lawn_size_units: int,
 	var wanted_pond := rng.randf() < p.pond_probability
 	_roll_pond(p, rng, 1.0 if (wanted_feature and wanted_pond) else MODEST_POND_SCALE)
 
+	# GENERATION VERSION 7, APPENDED AFTER EVERY EXISTING DRAW. Every property
+	# this function has ever produced draws the identical sequence above and
+	# gets the identical everything; this one value is new on the end of it.
+	#
+	# Some properties are nearly level and some have a real fall across them.
+	# Both are lawns, and a flat one is what makes the next graded one read.
+	p.lawn_grade = rng.randf_range(0.6, 2.5)
+
 	# LAST, AND AFTER EVERY DRAW. The archetype reshapes what was drawn; it never
 	# draws. Putting it here rather than anywhere earlier is what guarantees the
 	# random sequence above is byte for byte the sequence it has always been.
 	p.archetype = archetype_kind
 	ACAPropertyArchetype.apply(p)
+
+	# THEN WHERE IN THE WORLD IT IS. Same rule again: it reshapes what the
+	# archetype reshaped and it never draws. A `region` of -1 - which is every
+	# caller that predates regions - changes nothing.
+	ACARegionalContext.apply(p, region)
+
+	# AND THE CONDITION LAST OF ALL, for the same reason and under the same
+	# rule: it reshapes what was drawn and it never draws. At MAINTAINED - which
+	# is every property that is not a project - it changes nothing at all.
+	p.condition_stage = condition
+	ACAPropertyCondition.apply(p)
 	return p
 
 
@@ -402,12 +516,18 @@ func to_dictionary() -> Dictionary:
 		"generation_version": generation_version,
 		"seed": seed,
 		"archetype": archetype,
+		"condition_stage": condition_stage,
+		"grass_height_scale": grass_height_scale,
+		"clutter": clutter,
+		"bed_overgrowth": bed_overgrowth,
+		"boundary_condition": boundary_condition,
 		"lawn_size": lawn_size,
 		"near_margin": near_margin,
 		"terrain_amplitude": terrain_amplitude,
 		"broad_hill_strength": broad_hill_strength,
 		"fine_variation": fine_variation,
 		"micro_relief": micro_relief,
+		"lawn_grade": lawn_grade,
 		"playable_flatness": playable_flatness,
 		"flatten_falloff": flatten_falloff,
 		"distant_hill_strength": distant_hill_strength,
@@ -446,12 +566,28 @@ static func from_dictionary(data: Dictionary) -> ACAPropertyParams:
 	# RURAL for anything written before archetypes, which is the truth: it is
 	# the only kind of property the generator could produce.
 	p.archetype = int(data.get("archetype", ACAPropertyArchetype.Kind.RURAL))
+	# MAINTAINED for anything written before conditions, which is the truth: a
+	# property generated then was neither neglected nor recovering, because the
+	# game had no such idea. Its four reshaping dials default to neutral, so it
+	# rebuilds byte for byte as the property it was played on.
+	p.condition_stage = int(data.get("condition_stage",
+		ACAPropertyCondition.Stage.MAINTAINED))
+	p.grass_height_scale = float(data.get("grass_height_scale", 1.0))
+	p.clutter = float(data.get("clutter", 0.0))
+	p.bed_overgrowth = float(data.get("bed_overgrowth", 0.0))
+	p.boundary_condition = float(data.get("boundary_condition", 1.0))
 	p.lawn_size = int(data.get("lawn_size", 96))
 	p.near_margin = float(data.get("near_margin", p.near_margin))
 	p.terrain_amplitude = float(data.get("terrain_amplitude", p.terrain_amplitude))
 	p.broad_hill_strength = float(data.get("broad_hill_strength", p.broad_hill_strength))
 	p.fine_variation = float(data.get("fine_variation", p.fine_variation))
-	p.micro_relief = float(data.get("micro_relief", p.micro_relief))
+	# 0.34 rather than this build's default: a save that predates the key was
+	# built on ground with the OLD relief in it, and that is what it should get.
+	p.micro_relief = float(data.get("micro_relief", 0.34))
+	# NOT `p.lawn_grade` as the fallback: a save written before version 7 has no
+	# grade because the ground it was built on had none, and reconstructing it
+	# with this build's default would move the lawn under a contract in progress.
+	p.lawn_grade = float(data.get("lawn_grade", 0.0))
 	p.playable_flatness = float(data.get("playable_flatness", p.playable_flatness))
 	p.flatten_falloff = float(data.get("flatten_falloff", p.flatten_falloff))
 	p.distant_hill_strength = float(data.get("distant_hill_strength", p.distant_hill_strength))

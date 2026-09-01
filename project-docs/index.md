@@ -1,7 +1,7 @@
 # A Cut Above: Mow & Grow — Developer Documentation
 
 Status: Internal developer documentation
-Last repository review: **2026-08-20** (session 8: the procedural property, terrain and lawn replaced the custom grid map and the authored terrain)
+Last repository review: **2026-08-30** (game-feel, debugger, property-layout and workmanship reconciliation)
 Configured entry point: **`res://Game/App/Main Menu Screen.tscn`**
 
 ## Purpose
@@ -67,7 +67,7 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 | What kind of place a property is | `ACAPropertyArchetype` — `Mowing Section/Property/aca_property_archetype.gd` |
 | Clear ground a solid feature owes the deck | `ACAMowerClearance` — `Mowing Section/Property/aca_mower_clearance.gd` |
 | What stands outside the fence | `ACAPropertySurrounds` — `Mowing Section/Property/aca_property_surrounds.gd` |
-| Grass cutting | `ACALawn` + `ACAMowerCutter` — compact cell state, no physics bodies |
+| Grass cutting | `ACALawn` + `ACAMowerCutter` — compact cell state, deck geometry, no per-grass physics bodies |
 | Terrain / foliage | `ACATerrain`, `ACALawnGrass`, `ACAForest` — all procedural |
 | Money | `GameSession` — **the one balance** |
 | Market and prices | `Economy` autoload — `Game/Economy/economy_manager.gd` |
@@ -79,6 +79,10 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 | Weather LOOK | `addons/aca_sky3d_environment/` (reusable package) via `Weather/Visual/weather_visual_adapter.gd`; `town_light_adapter.gd` for the town |
 | Rain particles | `ACAPrecipitationRig`, built in code inside the package |
 | Ponds | `ACAPondFeature`, built on the carver in `Mowing Section/Experimental/Pond/` |
+| Obstacle layouts | `ACALawnObstacles` — six version-6 layouts; generation versions <=5 retain scatter |
+| Mower handling | `ACAMowerHandling` — per-machine momentum, steering, reverse and lean profiles |
+| Ground condition | `ACAGroundWetness` — presentation adapter for the existing lawn material properties |
+| Property place context | `ACARegionalContext` — deterministic parameter reshaping and air-layer values |
 | Player UI | `res://UI/` driven by `Game/App/gameplay_ui.gd` |
 | Pause stack | `Game/App/pause_layer.gd` (`ACAPauseLayer`) — one implementation, both screens |
 | Cursor ownership | `AppUI` — the only writer of `Input.mouse_mode` |
@@ -105,7 +109,7 @@ An unreferenced file is not automatically unused. GDScript `class_name` and
 - [Weather, time of day, and audio](systems/weather-time-and-audio.md)
 - [HUD, menus, and interface systems](systems/ui-hud-and-menus.md)
 - [Jobs and economy](systems/jobs-and-economy.md)
-- [Pond prototype](systems/pond-prototype.md) — the carver, now integrated
+- [Pond prototype](systems/pond-prototype.md) — the standalone demo/carver; production uses `ACAPondFeature`
 - [Save and load](systems/save-and-load.md)
 
 ### Reference and maintenance

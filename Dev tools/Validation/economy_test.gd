@@ -370,11 +370,38 @@ func _test_job_pricing_and_lock() -> void:
 	_check("Jobs: ACCEPTED PAY IS LOCKED across %.0f days of market movement"
 		% 120.0, job.base_pay == agreed)
 
+	# THE GUARANTEE IS ABOUT `base_pay`, NOT ABOUT THE TOTAL.
+	#
+	# This used to assert that completing a contract moved the balance by
+	# EXACTLY the agreed figure, which is only true of a contract that earns no
+	# bonus at all - and which of the board's offers that happens to be moves
+	# whenever anything about generation changes. It broke the first time the
+	# board's contents changed for an unrelated reason, and it was right to,
+	# because it was measuring the wrong thing.
+	#
+	# What the game actually promises is that `base_pay` is what the board said
+	# and is never rewritten. Everything above it is a BONUS, itemised on the
+	# results sheet - contract terms met, and the premium for a rescue.
 	var money_before := GameSession.money()
+	# MERGED, NOT ASSIGNED. A GDScript lambda captures a local by VALUE, so
+	# `settled = summary` inside one leaves the outer dictionary empty; merging
+	# into it mutates the object both sides are holding.
+	var settled := {}
+	var listener := func(summary: Dictionary) -> void: settled.merge(summary, true)
+	GameSession.job_settled.connect(listener)
 	JobManager.begin_new_job(job.id)
 	GameSession.complete_current_job(1.0, 60.0)
-	_check("Jobs: completion pays the AGREED figure, not today's",
-		GameSession.money() == money_before + agreed)
+	GameSession.job_settled.disconnect(listener)
+
+	var paid := GameSession.money() - money_before
+	var bonus := int(settled.get("bonus", 0))
+	_check("Jobs: the sheet's base pay IS the agreed figure (%d)" % agreed,
+		int(settled.get("base_pay", -1)) == agreed)
+	_check("Jobs: the balance moved by the agreed figure plus the itemised "
+		+ "bonus (%d = %d + %d)" % [paid, agreed, bonus],
+		paid == agreed + bonus)
+	_check("Jobs: and the sheet's total agrees with the balance (%d)" % paid,
+		int(settled.get("total", -1)) == paid)
 
 
 # ================================================================ persistence

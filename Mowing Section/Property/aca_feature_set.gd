@@ -98,6 +98,42 @@ func is_mowable(x: float, z: float, ground_y: float) -> bool:
 	return mowing_exclusion_at(x, z, ground_y) < ACAPropertyFeature.EXCLUDED_THRESHOLD
 
 
+## ...and the second one, asked only of ground that is already unavailable: is
+## it PROTECTED VEGETATION? See `ACAPropertyFeature.is_protected_vegetation()`.
+##
+## Answered by whether a protecting feature is the one taking this ground, so a
+## rock standing inside a wildflower strip is still a rock: the feature with the
+## strongest claim on the point decides what the point is.
+func is_protected(x: float, z: float, ground_y: float) -> bool:
+	if _features.is_empty():
+		return false
+	var point := Vector2(x, z)
+	var best := 0.0
+	var protecting := false
+	for i in _features.size():
+		if not _rects[i].has_point(point):
+			continue
+		var f := _features[i]
+		if not f.blocks_mowing():
+			continue
+		var value := f.exclusion_at(x, z, ground_y)
+		if value < ACAPropertyFeature.EXCLUDED_THRESHOLD or value < best:
+			continue
+		best = value
+		protecting = f.is_protected_vegetation()
+	return protecting
+
+
+## Every protecting feature on this property. The minimap asks, so it can draw
+## the zones a contract must not touch.
+func protected_features() -> Array[ACAPropertyFeature]:
+	var out: Array[ACAPropertyFeature] = []
+	for f in _features:
+		if f.is_protected_vegetation():
+			out.append(f)
+	return out
+
+
 func build_nodes(parent: Node3D, terrain: Node3D, params: ACAPropertyParams) -> void:
 	for f in _features:
 		f.build_nodes(parent, terrain, params)

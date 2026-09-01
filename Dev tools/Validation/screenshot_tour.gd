@@ -135,16 +135,13 @@ func _run() -> void:
 
 	var ui := _gameplay_ui()
 	var intro: JobIntroScreen = ui.get_node_or_null(^"Job Intro") if ui != null else null
-	var frames := 0
-	while intro != null and intro.is_open() and frames < 900:
-		await get_tree().process_frame
-		frames += 1
-	await _settle(30)
+	await _wait_for_intro_to_clear(intro)
 	await _capture("06-mowing-hud")
 
 	# Weather readout under a different preset.
 	WorldClock.set_weather("Rain")
 	await _settle(120)
+	await _wait_for_the_screen_to_be_uncovered()
 	await _capture("07-mowing-rain")
 
 	# FUEL. Three frames, because fuel is the one gameplay state a screenshot
@@ -288,3 +285,53 @@ func _find_main_menu() -> Control:
 	for node in scene.find_children("*", "MainMenuScreen", true, false):
 		return node as Control
 	return null
+
+
+## WAIT FOR THE ARRIVAL CARD TO BE GONE, not for it to have been asked to go.
+##
+## `JobIntroScreen.is_open()` flips the instant `hide_intro()` is called, and the
+## card then fades out over `fade_time` behind a full-screen blackout. Waiting on
+## `is_open()` and settling a fixed number of frames photographed the mowing
+## scene through that blackout: every shot from here to the end of the mowing
+## section came out as a black screen with a terrain silhouette in it, and it
+## looked exactly like a lighting fault.
+##
+## `visible` is set by the fade's own completion callback, so it is the honest
+## signal. The frame settle afterwards is for the scene, not for the card.
+func _wait_for_intro_to_clear(intro: JobIntroScreen) -> void:
+	var frames := 0
+	while intro != null and intro.is_open() and frames < 900:
+		await get_tree().process_frame
+		frames += 1
+	while intro != null and intro.visible and frames < 1800:
+		await get_tree().process_frame
+		frames += 1
+	await _wait_for_the_screen_to_be_uncovered()
+
+
+## AND FOR EVERY FADE OVER THE TOP OF IT TO HAVE FINISHED.
+##
+## THE SETTLES IN THIS FILE ARE COUNTED IN FRAMES AND THE FADES ARE MEASURED IN
+## SECONDS, and on the machine this runs on those are not the same thing: thirty
+## frames at a hundred and sixty is a fifth of a second, against a 0.32-second
+## card fade and a transition on top of it. Every shot from the arrival card
+## onwards came out as a dark screen with the HUD drawn cleanly over it, which
+## looks exactly like a lighting fault and is not one - the Weather Matrix
+## renders the same scene at the same hour correctly in all thirty-two of its
+## shots.
+##
+## So this waits on the transition layer's own answer AND then on the CLOCK, and
+## the timer ignores the game's time scale so a paused or slowed world cannot
+## stall the tool.
+func _wait_for_the_screen_to_be_uncovered() -> void:
+	var transition := AppUI.transition()
+	var frames := 0
+	while transition != null and transition.is_busy() and frames < 900:
+		await get_tree().process_frame
+		frames += 1
+	await _wait_seconds(1.2)
+
+
+## Real seconds, whatever the frame rate and whatever the world's time scale.
+func _wait_seconds(seconds: float) -> void:
+	await get_tree().create_timer(seconds, true, false, true).timeout

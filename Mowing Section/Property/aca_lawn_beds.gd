@@ -167,6 +167,11 @@ func _roll(params: ACAPropertyParams, lawn_centre: Vector2,
 			_biased(rng, edge_bias) * reach, _biased(rng, edge_bias) * reach)
 		if not _acceptable(at, radius, arrival, existing):
 			continue
+		# AN OVERGROWN BED SPREADS. Zero on an ordinary property, so the radius
+		# the seed drew is the radius that is used; on a neglected one the
+		# planting has plainly got away from whoever was looking after it.
+		if params.bed_overgrowth > 0.0:
+			radius = minf(radius * (1.0 + params.bed_overgrowth * 0.35), usable)
 		_beds.append({
 			"position": at,
 			"radius": radius,
@@ -231,6 +236,20 @@ func _recompute_bounds() -> void:
 
 func bounds() -> AABB:
 	return _bounds
+
+
+## THE BEDS THEMSELVES. Same reasoning as the obstacles' - see
+## `ACAPropertyFeature.footprints()`. A bed is an oval; the circle returned here
+## is its long axis, which is the conservative reading and is what a placer
+## keeping clear of it wants.
+func footprints() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for b: Dictionary in _beds:
+		out.append({
+			"position": b["position"] as Vector2,
+			"radius": float(b["radius"]),
+		})
+	return out
 
 
 ## Beds are level with the lawn. They are mulch on the ground, not a raised box.

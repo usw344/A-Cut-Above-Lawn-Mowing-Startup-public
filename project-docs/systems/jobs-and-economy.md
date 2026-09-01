@@ -1,6 +1,6 @@
 # Jobs and Economy
 
-Status: **Current** — source-verified 2026-08-20 (session 7, Milestones C & D).
+Status: **Current** — source-verified 2026-08-30 (game-feel and debugger pass).
 Canonical owners: `JobManager` (jobs) · `Economy` (market) · `MowerUpgrades`
 (equipment) · `GameSession` (**money**).
 Important paths:
@@ -243,10 +243,9 @@ Costs rise `base_cost * cost_growth^(level-1)`, deterministically, and the marke
 applies `equipment_index` on top. Rounded to $5.
 
 !!! note "Two deliberate absences"
-    **Cut width is not an upgrade.** The grid cuts whatever the mower's
-    `CharacterBody3D` physically touched (`custom_grid_map_collision_handler`
-    reads `get_slide_collision()`), so widening the cut means widening the
-    collision shape — a physics change wearing an upgrade's clothes.
+    **Cut width is not an upgrade.** `ACAMowerCutter` cuts the active mower's
+    declared deck geometry through `ACALawn`; widening the deck would change
+    the machine's authored physical footprint, not an economy multiplier.
 
     **The push mower has two categories, not three**, because it burns no fuel.
     That is the machine being simpler, not the system being incomplete.
@@ -281,7 +280,7 @@ that when the world next moves.
 
 ## Validation
 
-`Economy Test` — 120 assertions plus a **90-day simulation with a fixed seed**
+`Economy Test` — 122 assertions plus a **90-day simulation with a fixed seed**
 that prints what the market actually did. Unit tests prove the economy is
 consistent; they cannot say whether it is any good to live in.
 
@@ -299,7 +298,8 @@ Representative run (seed 20260820):
 
 ## Known limitations
 
-1. No mower ownership or dealership. All three machines are available.
+1. Ownership is per mower type, not per serial-numbered machine. `Equipment`
+   owns the Rider by default; the Powered and Push types are purchased.
 2. No fuel inventory or gas cans. Fuel goes into the tank.
 3. Job payouts do not yet consider the mower used or the time taken — only lawn
    size, the authored variation, the market and the difficulty pay scale.

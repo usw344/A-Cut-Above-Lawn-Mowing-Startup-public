@@ -1,6 +1,6 @@
 # Project Settings and Input
 
-Status: **Current** — confirmed from `project.godot`, 2026-08-19
+Status: **Current** — confirmed from `project.godot`, 2026-08-30
 
 ## Application
 
@@ -9,7 +9,7 @@ Status: **Current** — confirmed from `project.godot`, 2026-08-19
 | Project name | `A Cut Above: Claude Work Repo` | Display/export identity |
 | Feature tags | `4.6`, `Mobile` | Godot compatibility and renderer feature selection |
 | Main scene | `res://Game/App/Main Menu Screen.tscn` | Authoritative runtime root. **Changed 2026-08-19** — was the MVP mowing bench. |
-| Maximum FPS | 144 | Main-loop cap |
+| Maximum FPS | 240 | Main-loop cap |
 | Icon | `res://icon.svg` | Application icon |
 
 ## Autoloads
@@ -25,6 +25,14 @@ GameSettings="*res://Game/App/game_settings.gd"
 AppUI="*res://Game/App/app_ui.gd"
 GameSession="*res://Game/App/game_session.gd"
 SaveService="*res://Game/App/save_service.gd"
+Economy="*res://Game/Economy/economy_manager.gd"
+MowerUpgrades="*res://Game/Economy/mower_upgrades.gd"
+Equipment="*res://Game/Economy/equipment.gd"
+Clippings="*res://Game/Economy/clippings.gd"
+Business="*res://Game/Economy/business.gd"
+Territory="*res://Game/Business/service_territory.gd"
+Agreements="*res://Game/Business/service_agreements.gd"
+Portfolio="*res://Game/Business/portfolio.gd"
 ```
 
 The leading `*` enables the autoload as a scene-tree node. Scripts access each by
@@ -60,7 +68,10 @@ The UI package is authored around this project resolution (1920x1080).
 
 The two differently named Jolt body-limit settings likely come from different configuration eras. Which one Godot 4.6 consumes should be verified before relying on a specific effective limit.
 
-The high tick rate and body limits are closely related to the grass system’s many individual collision bodies. See [Performance architecture](performance.md).
+The lawn no longer creates individual grass collision bodies. The high tick
+rate supports stable mower movement, fuel and collision timing, while the
+property uses one terrain body plus feature/boundary bodies. See [Performance
+architecture](performance.md).
 
 **576 ticks per second is a trap for anything that counts frames.** The old fuel
 model added a fixed amount per physics tick and emptied a full tank in about
@@ -109,12 +120,16 @@ Some current controls use `InputEventKey.keycode` rather than named input action
 |---|---|---|
 | Mouse movement | Mower controllers | Turn mower and move camera |
 | P | Rider mower | Toggle mode that disables vertical camera movement |
-| `/` | MVP HUD | Toggle captured/visible mouse |
-| H | MVP HUD | Show or hide the HUD |
-| 1 / 2 / 3 | MVP root | Day / Evening / Night |
+| ENTER | `AppUI` through the shared input bridge | Capture/release the mouse; inert while a modal hold exists |
+| P | Rider mower | Toggle pitch-lock mode while keeping steering |
+| C | Canonical mower controllers | Toggle precision view: closer deck camera and FOV |
+| H | `ACAPauseLayer` | Open/close the Developer Debugger in Town or mowing |
+| 1 / 2 / 3 / 4 | MVP root | Morning / Day / Evening / Night |
 | 7 / 8 / 9 | MVP root | Clear / Foggy / Rain |
 
-HUD buttons expose most of the time/weather functions without requiring the numeric shortcuts.
+F7 refuels and F8 toggles Auto Refuel for development; F10 completes the
+current job through the real completion path. HUD buttons expose the same
+world functions without requiring numeric shortcuts.
 
 ### Development or noncanonical actions
 
@@ -124,7 +139,7 @@ HUD buttons expose most of the time/weather functions without requiring the nume
 | `mower_1`, `mower_2`, `mower_3` | Footage demo script |
 | `dev_hud` | Legacy `Mowing Section/Mower/Mower.gd` |
 | `Toggle Mouse Capture` | Legacy `Main.gd` |
-| `Save` | Disabled grid save/load test path |
+| `Save` | Disabled legacy grid save/load test path |
 | `Cloud_Decrease`, `Cloud_Increase`, `Testing` | No project-script consumer found |
 
 The `Day`, `Night`, and related terms also appear as weather/time preset names; that is separate from consuming the named input actions.

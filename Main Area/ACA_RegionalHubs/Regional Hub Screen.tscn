@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Main Area/ACA_RegionalHubs/regional_hub_screen.gd" id="1_host"]
+[ext_resource type="PackedScene" path="res://Game/App/Pause Layer.tscn" id="2_pause"]
+
+[node name="Regional Hub Screen" type="Node3D"]
+script = ExtResource("1_host")
+
+[node name="Pause Layer" parent="." instance=ExtResource("2_pause")]

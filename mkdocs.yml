@@ -39,6 +39,8 @@ nav:
       - Weather, Time of Day, and Audio: systems/weather-time-and-audio.md
       - HUD, Menus, and Interface Systems: systems/ui-hud-and-menus.md
       - Jobs and Economy: systems/jobs-and-economy.md
+      - The Business Simulation: systems/business-simulation.md
+      - Territories, Equipment and Operations: systems/territories-and-operations.md
       - Business Town: systems/business-town.md
       - Pond Prototype (experimental): systems/pond-prototype.md
       - Save and Load: systems/save-and-load.md

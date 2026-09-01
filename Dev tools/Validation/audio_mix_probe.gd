@@ -78,6 +78,8 @@ func _run() -> void:
 
 	_print_table()
 	_assert_mix(authored_ambience_db)
+	await _assert_environment_beds()
+	await _assert_ui_sound()
 
 	print("=============================================")
 	print("[AUDIO MIX PROBE] %d passed, %d failed" % [_passes, _failures])
@@ -164,6 +166,93 @@ func _peak_db(bus: StringName) -> float:
 	return maxf(
 		AudioServer.get_bus_peak_volume_left_db(index, 0),
 		AudioServer.get_bus_peak_volume_right_db(index, 0))
+
+
+## ---------------------------------------------------------------------------
+## THE AIR RESPONDS TO THE SKY
+## ---------------------------------------------------------------------------
+## `ACAEnvironmentAudio` adds wind, wildlife and far rain and mixes them from
+## the weather. Bus peaks cannot show that - all three share a bus with things
+## that were already there - so this reads the three players directly and checks
+## the CLAIM: birds in the clear, wind and rain instead of them in the wet.
+func _assert_environment_beds() -> void:
+	var scene := get_tree().current_scene
+	var env = scene.get("environment_audio") if scene != null else null
+	if env == null:
+		_check("Environment audio is mounted in the mowing scene", false)
+		return
+	_check("Environment audio is mounted in the mowing scene", true)
+
+	print("")
+	print("  sky            wind   wildlife   far rain")
+	print("  ------------ ------ ---------- ----------")
+	var readings := {}
+	for preset: String in ["Clear", "Overcast", "Light Rain", "Rain"]:
+		WorldClock.set_weather(preset)
+		# The beds walk at a fixed decibels per second, deliberately, so they
+		# need real time to arrive rather than a frame.
+		await _wait_seconds(7.0)
+		var row := {
+			"wind": _bed_db(env, "Wind"),
+			"wildlife": _bed_db(env, "Wildlife"),
+			"far_rain": _bed_db(env, "Far Rain"),
+		}
+		readings[preset] = row
+		print("  %-12s %6.1f %10.1f %10.1f" % [preset, row["wind"],
+			row["wildlife"], row["far_rain"]])
+
+	var clear: Dictionary = readings["Clear"]
+	var rain: Dictionary = readings["Rain"]
+	_check("Wildlife is loud in the clear (%.1f dB)" % clear["wildlife"],
+		clear["wildlife"] > -30.0)
+	_check("Wildlife goes quiet in heavy rain (%.1f -> %.1f dB)"
+		% [clear["wildlife"], rain["wildlife"]],
+		rain["wildlife"] < clear["wildlife"] - 6.0)
+	_check("Wind rises with the weather (%.1f -> %.1f dB)"
+		% [clear["wind"], rain["wind"]], rain["wind"] > clear["wind"] + 3.0)
+	_check("Far rain is silent when it is dry (%.1f dB)" % clear["far_rain"],
+		clear["far_rain"] < -50.0)
+	_check("Far rain is present in rain (%.1f dB)" % rain["far_rain"],
+		rain["far_rain"] > -30.0)
+	_check("Light rain is quieter than heavy rain (%.1f vs %.1f dB)"
+		% [readings["Light Rain"]["far_rain"], rain["far_rain"]],
+		readings["Light Rain"]["far_rain"] < rain["far_rain"] - 0.5)
+	WorldClock.set_weather("Clear")
+
+
+## ---------------------------------------------------------------------------
+## THE UI BUS IS NO LONGER RESERVED
+## ---------------------------------------------------------------------------
+## It carried no signal at all until this pass. Every cue is checked to actually
+## reach the bus, because a UI sound set that is wired to nothing looks exactly
+## like one that works.
+func _assert_ui_sound() -> void:
+	print("")
+	print("  cue          peak on UI bus")
+	print("  ------------ --------------")
+	var quiet := 0
+	for cue: StringName in ACAUISound.CUES:
+		# SEVERAL TIMES, AND THE PEAK OF ALL OF THEM. Two of these clips are TEN
+		# MILLISECONDS long, and a single one can fall entirely between two
+		# mixer callbacks - which reads as silence and is not.
+		var peak := -200.0
+		for _shot in 5:
+			AppUI.play_sound(cue)
+			var t := 0.0
+			while t < 0.45:
+				await get_tree().process_frame
+				t += get_process_delta_time()
+				peak = maxf(peak, _peak_db(ACAAudioMix.UI))
+		print("  %-12s %10.2f dBFS" % [String(cue), peak])
+		if peak <= -60.0:
+			quiet += 1
+		await _wait_seconds(0.6)
+	_check("every UI cue reaches the UI bus", quiet == 0)
+
+
+func _bed_db(env: Node, bed_name: String) -> float:
+	var player := env.get_node_or_null(NodePath(bed_name)) as AudioStreamPlayer
+	return player.volume_db if player != null else -200.0
 
 
 func _print_table() -> void:

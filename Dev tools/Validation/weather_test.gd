@@ -29,6 +29,7 @@ func _run() -> void:
 	print("\n=============== WEATHER TEST ===============")
 
 	await _step()
+	_test_the_eight_skies()
 	_test_composition()
 	_test_audio_buses()
 	await _test_scene_visuals()
@@ -38,6 +39,164 @@ func _run() -> void:
 	print("[WEATHER TEST] %d passed, %d failed" % [_passes, _failures])
 	print("============================================\n")
 	get_tree().quit(0 if _failures == 0 else 1)
+
+
+# =============================================================== the schedule
+##
+## EIGHT SKIES, ONE AUTHORITY. `ACAWorldClock` is where a weather comes from and
+## `res://addons/aca_sky3d_environment/profiles/weather/` is where it gets a
+## look. These assertions are about the two agreeing.
+
+func _test_the_eight_skies() -> void:
+	var adapter := ACAWeatherVisualAdapter.new()
+	var looks := adapter.weather_ids()
+
+	var missing := PackedStringArray()
+	for preset in ACAWorldClock.WEATHER_PRESETS:
+		if not looks.has(preset):
+			missing.append(preset)
+	_check("Skies: every preset the clock can schedule has a look (%s)"
+		% ("none missing" if missing.is_empty() else str(missing)),
+		missing.is_empty())
+	_check("Skies: the adapter presents exactly what the clock schedules (%d/%d)"
+		% [ACAWorldClock.WEATHER_PRESETS.size(), looks.size()],
+		ACAWeatherVisualAdapter.WEATHER_NAMES == ACAWorldClock.WEATHER_PRESETS)
+
+	# The three names a save written before this pass can carry are all still
+	# presets, so no save loads with a sky the game does not recognise.
+	for legacy in ["Clear", "Foggy", "Rain"]:
+		_check("Skies: the legacy name %s still loads" % legacy,
+			ACAWorldClock.WEATHER_PRESETS.has(legacy))
+
+	# ------------------------------------------------------- classification
+	_check("Skies: both rains are rain",
+		ACAWorldClock.is_rain("Rain") and ACAWorldClock.is_rain("Light Rain"))
+	_check("Skies: mist and fog are not rain",
+		not ACAWorldClock.is_rain("Mist") and not ACAWorldClock.is_rain("Foggy"))
+	_check("Skies: mist and fog are damp air",
+		ACAWorldClock.is_damp_air("Mist") and ACAWorldClock.is_damp_air("Foggy"))
+	_check("Skies: a clear sky is neither",
+		not ACAWorldClock.is_rain("Clear")
+			and not ACAWorldClock.is_damp_air("Clear"))
+
+	# ------------------------------------------------------------ the looks
+	#
+	# The two that carry the pass's argument, asserted as a RELATION rather than
+	# as a number: overcast has to be structurally different from clear rather
+	# than merely darker, and light rain has to be lighter than heavy rain.
+	var clear := adapter.compose("Clear", 12.0)
+	var overcast := adapter.compose("Overcast", 12.0)
+	_check("Look: overcast softens the sun rather than only dimming it (%.2f < %.2f shadow)"
+		% [float(overcast["sky:sun_shadow_opacity"]),
+			float(clear["sky:sun_shadow_opacity"])],
+		float(overcast["sky:sun_shadow_opacity"])
+			< float(clear["sky:sun_shadow_opacity"]) * 0.5)
+	_check("Look: ...and the sky does more of the lighting (%.2f > %.2f ambient)"
+		% [float(overcast["sky:ambient_energy"]),
+			float(clear["sky:ambient_energy"])],
+		float(overcast["sky:ambient_energy"]) > float(clear["sky:ambient_energy"]))
+	_check("Look: ...and it is covered (%.2f > %.2f)"
+		% [float(overcast["dome:clouds_cumulus_coverage"]),
+			float(clear["dome:clouds_cumulus_coverage"])],
+		float(overcast["dome:clouds_cumulus_coverage"])
+			> float(clear["dome:clouds_cumulus_coverage"]))
+
+	var light := adapter.compose("Light Rain", 12.0)
+	var heavy := adapter.compose("Rain", 12.0)
+	_check("Look: light rain is lighter than rain (%.2f < %.2f)"
+		% [float(light["fx:rain_intensity"]), float(heavy["fx:rain_intensity"])],
+		float(light["fx:rain_intensity"]) < float(heavy["fx:rain_intensity"]))
+	_check("Look: and both of them are wet",
+		float(light["fx:rain_intensity"]) > 0.0
+			and float(heavy["fx:rain_intensity"]) > 0.0)
+	_check("Look: nothing dry emits any rain at all",
+		is_zero_approx(float(clear["fx:rain_intensity"]))
+			and is_zero_approx(float(overcast["fx:rain_intensity"]))
+			and is_zero_approx(float(adapter.compose("Mist", 12.0)["fx:rain_intensity"])))
+
+	# ---------------------------------------------------------- FOG IS RANGE
+	#
+	# THE ONE THING FOG MUST NOT DO IS FILL THE NEAR FIELD. A first render of
+	# the heavy fog had `fog_depth_begin` at eighteen units, which put the
+	# mower's own grass inside it.
+	for wet in ["Mist", "Foggy", "Rain", "Light Rain"]:
+		var look := adapter.compose(wet, 12.0)
+		_check("Fog: %s leaves the near field clear (%.0f units)"
+			% [wet, float(look["env:fog_depth_begin"])],
+			float(look["env:fog_depth_begin"]) >= 30.0)
+		_check("Fog: %s does not swallow the sky (%.2f)"
+			% [wet, float(look["env:fog_sky_affect"])],
+			float(look["env:fog_sky_affect"]) <= 0.25)
+
+	# ---------------------------------------------------------- THE PLACE
+	#
+	# A region says how far you can see. It says nothing else, and it lives in
+	# its own layer so a media capture cannot clear it.
+	var flat := adapter.compose("Clear", 12.0)
+	adapter.set_region(ACAServiceTerritory.Region.HOSPITALITY_STRIP)
+	var hazy := adapter.compose("Clear", 12.0)
+	adapter.set_region(ACAServiceTerritory.Region.RURAL_HIGHWAY)
+	var open := adapter.compose("Clear", 12.0)
+	_check("Place: a regional centre has more air in it than the default (%.3f > %.3f)"
+		% [float(hazy["env:fog_density"]), float(flat["env:fog_density"])],
+		float(hazy["env:fog_density"]) > float(flat["env:fog_density"]))
+	_check("Place: open country has less (%.3f < %.3f)"
+		% [float(open["env:fog_density"]), float(hazy["env:fog_density"])],
+		float(open["env:fog_density"]) < float(hazy["env:fog_density"]))
+	_check("Place: and it changes NOTHING about the light (%.3f)"
+		% float(open["sky:sun_energy"]),
+		is_equal_approx(float(open["sky:sun_energy"]),
+			float(flat["sky:sun_energy"]))
+			and is_equal_approx(float(hazy["sky:sun_energy"]),
+				float(flat["sky:sun_energy"])))
+	adapter.clear_region()
+	_check("Place: clearing it puts the world back (%.3f)"
+		% float(adapter.compose("Clear", 12.0)["env:fog_density"]),
+		is_equal_approx(float(adapter.compose("Clear", 12.0)["env:fog_density"]),
+			float(flat["env:fog_density"])))
+
+	# ------------------------------------------------------- WET GROUND
+	#
+	# `ACAGroundWetness` turns a ground condition into two shader numbers, and
+	# the one thing it must not do is compound: the sky changes eight times a
+	# day and a lawn rained on twice must not be twice as shiny.
+	var wet_values := ACAGroundWetness.values_for(ACAGroundConditions.State.WET)
+	var dry_values := ACAGroundWetness.values_for(ACAGroundConditions.State.DRY)
+	_check("Ground: wet grass is cooler than dry (%.2f < %.2f)"
+		% [float(wet_values["bias_delta"]), float(dry_values["bias_delta"])],
+		float(wet_values["bias_delta"]) < float(dry_values["bias_delta"]))
+	_check("Ground: and less matte (%.2f < %.2f)"
+		% [float(wet_values["roughness_scale"]),
+			float(dry_values["roughness_scale"])],
+		float(wet_values["roughness_scale"])
+			< float(dry_values["roughness_scale"]))
+
+	# ------------------------------------------------- CLEARING IS EARNED
+	#
+	# `Clearing` is not in the season weights. It is what a bright block that
+	# FOLLOWS A WET ONE is called, which is the best-looking thing the weather
+	# does and costs one extra hash to derive. The contract is that it never
+	# appears out of a dry sky.
+	var clock := get_node_or_null(^"/root/WorldClock")
+	if clock != null:
+		var clearings := 0
+		var wrong := 0
+		var block_minutes: float = ACAWorldClock.WEATHER_BLOCK_MINUTES
+		for block in range(1, 400):
+			var here: String = clock.call(&"weather_at", float(block) * block_minutes)
+			if here != "Clearing":
+				continue
+			clearings += 1
+			var before: String = clock.call(&"weather_at",
+				float(block - 1) * block_minutes)
+			if not ACAWorldClock.is_rain(before):
+				wrong += 1
+		_check("Skies: clearing happens (%d blocks in 400)" % clearings,
+			clearings > 0)
+		_check("Skies: and every one of them followed rain (%d that did not)"
+			% wrong, wrong == 0)
+
+	adapter.queue_free()
 
 
 # ============================================================== composition
@@ -58,9 +217,8 @@ func _test_composition() -> void:
 	_check("Composition: the four time profiles loaded (%s)" % str(time_ids),
 		time_ids.has("Morning") and time_ids.has("Day")
 		and time_ids.has("Evening") and time_ids.has("Night"))
-	_check("Composition: the three weather profiles loaded (%s)" % str(weather_ids),
-		weather_ids.has("Clear") and weather_ids.has("Foggy")
-		and weather_ids.has("Rain"))
+	_check("Composition: all eight weather profiles loaded (%s)" % str(weather_ids),
+		weather_ids.size() == ACAWorldClock.WEATHER_PRESETS.size())
 
 	# Every profile has to produce the same key set or blending between two of
 	# them is partial and values pop at the anchor boundary.

@@ -51,6 +51,23 @@ var _fade: Tween
 var _countdown: Timer
 var _message_timer: Timer
 
+## ---------------------------------------------------------------------------
+## THE GROUP FILTER
+## ---------------------------------------------------------------------------
+## Built in code and inserted under the tabs, because it only EXISTS when the
+## host has told the manager how to group offers AND the offers on the board
+## fall into more than one group. A host that never sets a group provider - and
+## a business that only works one part of the map - gets the board it always
+## had, with no extra row and no extra node.
+##
+## The board does not know what a group IS. It renders the labels the manager
+## hands it and filters on the ids; in A Cut Above those are service
+## territories, and this package has still never heard of one.
+var _group_row: HBoxContainer = null
+var _group_buttons: Array[Button] = []
+## Empty means "everything". Otherwise the one group id being shown.
+var _group_filter: StringName = &""
+
 
 func _ready() -> void:
 	visible = false
@@ -241,7 +258,7 @@ func _rebuild() -> void:
 		_set_subtitle("")
 		return
 
-	var jobs: Array[ACAJob] = []
+	var jobs: Array = []
 	var mode := ACAJobCard.Mode.AVAILABLE
 	match _tab:
 		Tab.AVAILABLE:
@@ -256,6 +273,12 @@ func _rebuild() -> void:
 			jobs.reverse()
 			mode = ACAJobCard.Mode.PAST
 
+	# WHICH GROUPS ARE ON THE BOARD, before the filter is applied - so a tab for
+	# a market with work in it never disappears because the filter is on a
+	# different one.
+	_rebuild_group_row(jobs)
+	jobs = _apply_group_filter(jobs)
+
 	_set_subtitle(_subtitle_for(jobs.size()))
 
 	if jobs.is_empty():
@@ -263,7 +286,10 @@ func _rebuild() -> void:
 		return
 	_set_empty("")
 
-	for job in jobs:
+	for entry in jobs:
+		var job := entry as ACAJob
+		if job == null:
+			continue
 		var card := _make_card()
 		if card == null:
 			return
@@ -273,6 +299,109 @@ func _rebuild() -> void:
 
 	if _tab == Tab.AVAILABLE:
 		_apply_accept_availability()
+
+
+# ============================================================= the group filter
+
+## Rebuild the filter row for this set of jobs. Removes itself entirely when
+## there is nothing to filter by, which is the common case.
+func _rebuild_group_row(jobs: Array) -> void:
+	var groups: Array = _manager.groups_in(jobs) if _manager != null else []
+	if groups.size() < 2:
+		_clear_group_row()
+		return
+
+	# The filter cannot be pointing at a group that is no longer on the board.
+	if not String(_group_filter).is_empty():
+		var still := false
+		for group: Dictionary in groups:
+			if StringName(String(group["id"])) == _group_filter:
+				still = true
+				break
+		if not still:
+			_group_filter = &""
+
+	_ensure_group_row()
+	for button in _group_buttons:
+		button.queue_free()
+	_group_buttons.clear()
+
+	_add_group_button(&"", "ALL", jobs.size(), ACAJobUIStyle.INK_DIM)
+	for group: Dictionary in groups:
+		var colour: Variant = group.get("colour", ACAJobUIStyle.INK_DIM)
+		_add_group_button(StringName(String(group["id"])),
+			String(group.get("label", "")), int(group.get("count", 0)),
+			colour if colour is Color else ACAJobUIStyle.INK_DIM)
+
+
+func _ensure_group_row() -> void:
+	if _group_row != null and is_instance_valid(_group_row):
+		_group_row.visible = true
+		return
+	if available_tab_button == null:
+		return
+	var tabs := available_tab_button.get_parent() as Control
+	if tabs == null or tabs.get_parent() == null:
+		return
+	_group_row = HBoxContainer.new()
+	_group_row.name = "Groups"
+	_group_row.add_theme_constant_override("separation", 6)
+	var column := tabs.get_parent()
+	column.add_child(_group_row)
+	column.move_child(_group_row, tabs.get_index() + 1)
+
+
+func _clear_group_row() -> void:
+	_group_filter = &""
+	for button in _group_buttons:
+		if is_instance_valid(button):
+			button.queue_free()
+	_group_buttons.clear()
+	if _group_row != null and is_instance_valid(_group_row):
+		_group_row.visible = false
+
+
+func _add_group_button(id: StringName, text: String, count: int,
+		colour: Color) -> void:
+	if _group_row == null:
+		return
+	var button := Button.new()
+	button.text = "%s  %d" % [text, count] if not text.is_empty() else "ALL"
+	button.focus_mode = Control.FOCUS_NONE
+	ACAJobUIStyle.style_tab(button)
+	ACAJobUIStyle.set_tab_selected(button, id == _group_filter)
+	# The group's own colour on the selected one only, so the row reads as a
+	# set of markets rather than as a paint chart.
+	if id == _group_filter and not String(id).is_empty():
+		button.add_theme_color_override("font_color", colour)
+	button.pressed.connect(func() -> void: _set_group_filter(id))
+	_group_row.add_child(button)
+	_group_buttons.append(button)
+
+
+func _set_group_filter(id: StringName) -> void:
+	if _group_filter == id:
+		return
+	_group_filter = id
+	_rebuild()
+	if scroll != null:
+		scroll.scroll_vertical = 0
+
+
+## Which group the board is showing. Empty means all of them.
+func group_filter() -> StringName:
+	return _group_filter
+
+
+func _apply_group_filter(jobs: Array) -> Array:
+	if String(_group_filter).is_empty() or _manager == null:
+		return jobs
+	var out: Array = []
+	for entry in jobs:
+		var group := _manager.job_group(entry as ACAJob)
+		if StringName(String(group.get("id", ""))) == _group_filter:
+			out.append(entry)
+	return out
 
 
 func _make_card() -> ACAJobCard:
@@ -288,13 +417,19 @@ func _make_card() -> ACAJobCard:
 		return null
 	card.accept_pressed.connect(_on_accept_pressed)
 	card.action_pressed.connect(_on_begin_pressed)
+	card.secondary_pressed.connect(_on_secondary_pressed)
 	return card
 
 
 ## V1 holds one contract at a time, so the Accept buttons grey out while the
 ## player already has a job. The message on click still explains why.
+## V1 held one contract at a time and greyed ACCEPT out against the manager's own
+## capacity. That capacity is the BUSINESS's now - a company with machines out
+## holds several - so the button asks the question it actually means: may the
+## PLAYER take another contract themselves?
 func _apply_accept_availability() -> void:
-	var blocked := _manager != null and not _manager.has_current_capacity()
+	var blocked := _manager != null \
+		and not bool(_manager.player_may_accept().get("allowed", true))
 	for card in _cards:
 		card.set_action_disabled(blocked)
 
@@ -338,6 +473,19 @@ func _on_begin_pressed(job_id: StringName) -> void:
 		# Emits ACAJobManager.begin_job_requested and stops.
 		# The host project does the actual gameplay transition.
 		_manager.begin_new_job(job_id)
+
+
+## The host's second action. The board does not know what it does; it passes the
+## contract on and rebuilds afterwards, because whatever the host did almost
+## certainly changed what the board should be showing.
+func _on_secondary_pressed(job_id: StringName) -> void:
+	if _manager == null:
+		return
+	var job := _manager.get_job(job_id)
+	if job == null:
+		return
+	_manager.offer_action_requested.emit(job)
+	_rebuild()
 
 
 func _on_accept_failed(_job_id: StringName, reason: String) -> void:

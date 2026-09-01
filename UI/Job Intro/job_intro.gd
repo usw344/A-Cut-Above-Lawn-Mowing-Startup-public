@@ -78,6 +78,14 @@ class_name JobIntroScreen
 signal intro_shown()
 signal intro_hidden()
 
+## The sheet's padding, in pixels. Horizontal is wider than vertical because the
+## sheet is a portrait block of text: the eye reads the side margins as the page
+## and the top/bottom ones as the space above and below a paragraph.
+const PAD_H: int = 44
+const PAD_V: int = 34
+## How wide the text column is. The sheet is this plus twice `PAD_H`.
+const TEXT_MEASURE: int = 520
+
 ## Seconds for the screen to fade in / out.
 @export var fade_time: float = 0.32
 ## Pixels the content block rises through on entrance.
@@ -95,6 +103,21 @@ signal intro_hidden()
 
 ## Built in `_become_a_work_order()` rather than by the scene.
 var _site_notes: Label = null
+## The breathing space above the site line. Hidden with it, so an empty line
+## does not leave a gap where a line used to be.
+var _notes_gap: Control = null
+## WHAT THE CONTRACT ASKS FOR, one line each, under the two figures. Built here
+## rather than in the scene for the same reason the site line is: the scene
+## predates contract terms.
+var _term_lines: Array[Label] = []
+## The column every line on the sheet is a direct child of.
+var _column: Control = null
+## What the business put on the trailer. One line, under the requirements.
+var _equipment: Label = null
+## Breathing space above the block. Hidden when there is nothing in it.
+var _requirements_gap: Control = null
+## ...and between the requirements and the trailer line.
+var _equipment_gap: Control = null
 
 var _open: bool = false
 var _tween: Tween
@@ -122,30 +145,206 @@ func _ready() -> void:
 ## which is what a work order looks like.
 func _become_a_work_order() -> void:
 	var column := _holder.get_node_or_null(^"Column") as Control
-	if column == null or column.get_parent() is PanelContainer:
+	if column == null or column.get_parent() is MarginContainer:
 		return
 	var sheet := PanelContainer.new()
 	sheet.name = "Sheet"
-	sheet.add_theme_stylebox_override("panel",
-		UITheme.hud_panel(UITheme.RADIUS_PANEL, 40.0, 30.0))
-	# NO minimum size of its own. The column inside already declares 520, and a
-	# sheet narrower than its contents does not shrink them - it lets them hang
-	# over both edges, which is exactly what the first attempt did.
+	# THE PADDING IS A CONTAINER, NOT A STYLEBOX. The first version put the
+	# margins on the sheet's own stylebox, and `repaint_to_paper()` - which has
+	# to replace that stylebox to change its colour - dropped them on the floor.
+	# The card shipped with the heading clipped at the top, the values running
+	# off the right edge and the status line cut in half at the bottom. A
+	# MarginContainer cannot be repainted away, which is why the results sheet
+	# has always used one.
+	var pad := MarginContainer.new()
+	pad.name = "Pad"
+	for side in [&"margin_left", &"margin_right"]:
+		pad.add_theme_constant_override(side, PAD_H)
+	for side in [&"margin_top", &"margin_bottom"]:
+		pad.add_theme_constant_override(side, PAD_V)
+
 	_holder.remove_child(column)
 	_holder.add_child(sheet)
-	sheet.add_child(column)
+	sheet.add_child(pad)
+	pad.add_child(column)
+
+	# EVERY WRAPPED LABEL DECLARES THE MEASURE IT WRAPS AT.
+	#
+	# A Label with `autowrap_mode` set and no minimum width reports a minimum
+	# size derived from its CURRENT width, and a CenterContainer sizes itself
+	# from its child's minimum. The two chase each other: the label wraps
+	# narrower, so it needs to be taller, so the holder grows, and it does not
+	# converge. Measured, the card holder came out 3,824 px tall on a Large
+	# contract with site notes - the sheet was centred in a rectangle three and
+	# a half screens high and drew far below the window.
+	#
+	# `JobName` was authored with the measure on it, which is why the fault only
+	# ever showed on contracts whose property had something worth noting. The
+	# site line is a wrapped label too and was added without one.
+	column.custom_minimum_size = Vector2(TEXT_MEASURE, 0)
+	_job_name.custom_minimum_size = Vector2(TEXT_MEASURE, 0)
+	_job_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# A forty-point heading set on the font's default leading reads as three
+	# separate lines rather than as one name. Tightened, a three-line contract
+	# name holds together as a block.
+	_job_name.add_theme_constant_override(&"line_spacing", -6)
 
 	# The site line, for anything the property has on it that is worth knowing
 	# before the machine is unloaded. Built here because the scene predates it.
 	_site_notes = UITheme.label(column, "SiteNotes", "", UITheme.FONT_LABEL,
 		UITheme.PAPER_INK_FAINT, true)
-	column.move_child(_site_notes, _job_size.get_index() + 1)
+	_site_notes.custom_minimum_size = Vector2(TEXT_MEASURE, 0)
+	var notes_gap := Control.new()
+	notes_gap.name = "SiteNotesGap"
+	notes_gap.custom_minimum_size = Vector2(0, 8)
+	notes_gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(notes_gap)
+	column.move_child(notes_gap, _job_size.get_index() + 1)
+	column.move_child(_site_notes, notes_gap.get_index() + 1)
+	notes_gap.visible = false
+	_notes_gap = notes_gap
 	_site_notes.visible = false
 
+	_build_requirements(column)
+
 	UITheme.repaint_to_paper(sheet)
+	# Applied AFTER the repaint, deliberately: the repaint owns the colour, the
+	# screen owns the shadow. Zero content margins because `Pad` is the padding.
+	sheet.add_theme_stylebox_override("panel",
+		UITheme.hud_panel(UITheme.RADIUS_PANEL, 0.0, 0.0))
 	# The heading is the one thing on the sheet that is green.
 	_job_name.add_theme_color_override("font_color", UITheme.HUD_GREEN)
 	_contract_type.add_theme_color_override("font_color", UITheme.PAPER_INK_FAINT)
+
+
+## THE REQUIREMENTS AND THE TRAILER, between the two figures and the status line.
+##
+## Placed AFTER the contract-value row and before the bottom rule, because the
+## reading order of a work order is: who, what kind of place, what is on it, what
+## it pays, what they want doing, and what you brought to do it with.
+##
+## EVERY LINE IS A DIRECT CHILD OF THE COLUMN, not of a VBoxContainer of its own.
+## The first version nested them, and the card holder came out 2,731 px tall on a
+## contract with three terms: a wrapped Label reports a minimum height derived
+## from its CURRENT width, and inside a nested container that width is measured
+## before the outer column has told it how wide it is. The site line has always
+## been a direct child for the same reason, and it has always been fine.
+func _build_requirements(column: Control) -> void:
+	_column = column
+	var gap := Control.new()
+	gap.name = "RequirementsGap"
+	gap.custom_minimum_size = Vector2(0, 14)
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(gap)
+	gap.visible = false
+	_requirements_gap = gap
+
+	var equipment_gap := Control.new()
+	equipment_gap.name = "EquipmentGap"
+	equipment_gap.custom_minimum_size = Vector2(0, 8)
+	equipment_gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(equipment_gap)
+	equipment_gap.visible = false
+	_equipment_gap = equipment_gap
+
+	_equipment = UITheme.label(column, "Equipment", "", UITheme.FONT_LABEL,
+		UITheme.PAPER_INK_FAINT, true)
+	_equipment.custom_minimum_size = Vector2(TEXT_MEASURE, 0)
+	_equipment.visible = false
+	_reorder_block()
+
+
+## Put the block back where it belongs in the column: after the contract-value
+## row, before the bottom rule. Called whenever a line is added or removed, so
+## the order cannot drift as the card is repopulated.
+func _reorder_block() -> void:
+	if _column == null:
+		return
+	var order: Array[Control] = []
+	if _requirements_gap != null:
+		order.append(_requirements_gap)
+	order.append_array(_term_lines)
+	if _equipment_gap != null:
+		order.append(_equipment_gap)
+	if _equipment != null:
+		order.append(_equipment)
+	# PUSH THE BLOCK TO THE END, THEN PUT THE SHEET'S FOOT BACK AFTER IT. Moving
+	# each line to a fixed index counted from the bottom rule does not work,
+	# because every move shifts the rule; this is order-independent.
+	for control in order:
+		_column.move_child(control, _column.get_child_count() - 1)
+	for foot in ["BottomRuleGap", "BottomRule", "StatusGap", "StatusLabel"]:
+		var node := _column.get_node_or_null(NodePath(foot)) as Control
+		if node != null:
+			_column.move_child(node, _column.get_child_count() - 1)
+
+
+## What this customer wants beyond a cut lawn. `terms` is
+## `ACAContractTerms.describe()`. An empty list hides the whole block, spacing
+## and all, so a contract with no terms is exactly the card it always was.
+func set_requirements(terms: Array) -> void:
+	if _column == null:
+		return
+	for line in _term_lines:
+		if is_instance_valid(line):
+			_column.remove_child(line)
+			line.queue_free()
+	_term_lines.clear()
+
+	if not terms.is_empty():
+		_term_lines.append(_measured_line("RequirementsHeading",
+			"THE CUSTOMER ASKS", UITheme.FONT_MICRO, UITheme.PAPER_INK_FAINT, false))
+		for term: Dictionary in terms:
+			var text := String(term["text"])
+			var required := bool(term["mandatory"])
+			if required:
+				text += "  (required)"
+			_term_lines.append(_measured_line("Term", text, UITheme.FONT_LABEL,
+				UITheme.ORANGE if required else UITheme.PAPER_INK_DIM, true))
+
+	_reorder_block()
+	_update_block_visibility()
+
+
+## What the business brought. Empty hides the line.
+func set_equipment_line(value: String) -> void:
+	if _equipment == null:
+		return
+	_equipment.text = value
+	_equipment.visible = not value.is_empty()
+	_update_block_visibility()
+
+
+## A LABEL THAT IS TOLD HOW WIDE IT IS BEFORE IT IS GIVEN ANYTHING TO SAY.
+##
+## The order matters, and it is not obvious. A wrapped Label computes its
+## minimum HEIGHT from the width it had when its text was last set - so a label
+## created with its text already in it, before anything has told it it is 520 px
+## wide, measures itself at nought width and reports a minimum height of one
+## line per character. Inside a CenterContainer that minimum is what the whole
+## card is centred in, and the card ends up 2,722 px down the screen.
+##
+## The site line has always been built empty and filled later, which is why it
+## never showed this. Every wrapped line on the sheet is built the same way now.
+func _measured_line(node_name: String, text: String, size: int,
+		colour: Color, wrap: bool) -> Label:
+	var line := Label.new()
+	line.name = node_name
+	line.add_theme_font_size_override("font_size", size)
+	line.add_theme_color_override("font_color", colour)
+	line.custom_minimum_size = Vector2(TEXT_MEASURE, 0)
+	if wrap:
+		line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_column.add_child(line)
+	line.text = text
+	return line
+
+
+func _update_block_visibility() -> void:
+	if _requirements_gap == null:
+		return
+	_requirements_gap.visible = not _term_lines.is_empty() \
+		or (_equipment != null and _equipment.visible)
 
 
 # ================================================================== content
@@ -167,6 +366,8 @@ func set_site_notes(value: String) -> void:
 		return
 	_site_notes.text = value
 	_site_notes.visible = not value.is_empty()
+	if _notes_gap != null:
+		_notes_gap.visible = _site_notes.visible
 
 
 ## The line above the job name, e.g. "Residential Contract".

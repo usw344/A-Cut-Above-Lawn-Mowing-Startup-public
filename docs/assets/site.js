@@ -61,7 +61,7 @@ const trailerVideoId = getYouTubeVideoId(config.trailerUrl);
 if (trailerVideoId && trailerSection && trailerEmbed) {
   const iframe = document.createElement("iframe");
   iframe.src = `https://www.youtube-nocookie.com/embed/${trailerVideoId}?rel=0`;
-  iframe.title = "A Cut Above: Mow & Grow official trailer";
+  iframe.title = "A Cut Above: Mow & Grow v0.3 gameplay showcase";
   iframe.loading = "lazy";
   iframe.referrerPolicy = "strict-origin-when-cross-origin";
   iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
@@ -72,7 +72,7 @@ if (trailerVideoId && trailerSection && trailerEmbed) {
   trailerLinks.forEach((link) => {
     link.href = "#trailer";
     link.removeAttribute("aria-disabled");
-    link.textContent = "Watch the trailer";
+    link.textContent = "Watch the showcase";
   });
 
   if (trailerExternal) trailerExternal.href = config.trailerUrl;
